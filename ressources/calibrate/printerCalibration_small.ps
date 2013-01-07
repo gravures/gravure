@@ -1,0 +1,777 @@
+%!PS-Adobe-2.0%%BoundingBox: 0 0 595 84210 dict begin /this currentdict def /y 720 def /ebuf 200 string def /prnt{ 36//this/y get moveto//ebuf cvs show//this/y 2 copy get 12 sub put }bind def /newline{ 36//this/y get moveto //this/y 2 copy get 12 sub put}bind def errordict/handleerror {systemdict begin $error begin newerror {(%%[ Error handled by opdfread.ps : )print errorname//ebuf cvs print(; OffendingCommand: )print/command load//ebuf cvs print( ]%%)= flush /newerror false store vmstatus pop pop 0 ne {grestoreall}if errorname(VMerror)ne {showpage }if initgraphics 0 720 moveto errorname(VMerror)eq {//this/ehsave known{clear//this/ehsave get restore 2 vmreclaim }if vmstatus exch pop exch pop } /Courier 12 selectfont {(ERROR: )//prnt exec errorname//prnt exec (OFFENDING COMMAND: )//prnt exec /command load//prnt exec $error/ostack known{(%%[STACK:)= (STACK:)//prnt exec $error/ostack get aload length{ //newline exec dup mark eq{ (-mark-)dup = show}{ dup type/nametype eq{ dup xcheck not{ (/)show (/)print }if }if dup =//ebuf cvs show }ifelse }repeat}if }ifelse (%%]%)= //systemdict/showpage get exec quit }if end end }bind readonly put end 50 dict begin/DefaultSwitch { dup where{ pop pop }{ false def }ifelse }bind def /=string 256 string def /=only{ //=string cvs print}bind def /HexDigits(0123456789ABCDEF)readonly def /PrintHex {8{ dup -28 bitshift//HexDigits exch 1 getinterval//=only exec4 bitshift }repeat pop }bind def /PDFR_DEBUG DefaultSwitch /PDFR_DUMP DefaultSwitch /PDFR_STREAM DefaultSwitch/TTFDEBUG DefaultSwitch /RotatePages DefaultSwitch /FitPages DefaultSwitch /SetPageSize DefaultSwitch/error { counttomark 1 sub -1 0{ index dup type/arraytype eq{==}{=only}ifelse }for ()= cleartomark ....Undefined}bind def //SetPageSize{ //RotatePages//FitPages or{ mark(/RotatePages, /FitPages are not allowed with /SetPageSize)//error exec}if }if /knownget { 2 copy known{ get true }{ pop pop false }ifelse }bind def /IsUpper {dup(A)0 get ge exch(Z)0 get le and}bind def /cpa2g{ dup length array 0 1 2 index length 1 sub{ dup 3 index exch get cp2g 3 copy put pop pop}for exch pop }bind def /cpd2g{ dup length dict exch{ cp2g 2 index 3 1 roll put }forall }bind def /cps2g{dup length string copy }bind def /cp2gprocs <</arraytype//cpa2g/dicttype//cpd2g/packedarraytype//cpa2g/stringtype//cps2g >>def /cp2g{ dup gcheck not{ dup//cp2gprocs 1 index type 2 copy known{ get currentglobal 3 1 roll true setglobal exec exch setglobal1 index wcheck not{readonly}if 1 index xcheck{cvx}if exch pop }{ pop pop }ifelse }if }bind def /BlockBuffer 65535 string def/PDFReader currentdict def /ObjectRegistry 50 array def /CurrentObject null def /DoneDocumentStructure false def/GraphicState 20 dict begin /InitialTextMatrix matrix def /InitialMatrix matrix currentmatrix def currentdict end def/TempMatrix matrix def /GraphicStateStack 20 array def /GraphicStateStackPointer 0 def /PDFColorSpaces 50 dict def/InstalledFonts 50 dict def /MacRomanEncodingInverse null def currentglobal false setglobal userdict/PDFR_InitialGS gstate putuserdict/PDFR_Patterns 50 dict put userdict/FuncDataReader 10 dict put setglobal /InitialExtGState 20 dict begin/BG2 currentblackgeneration cp2g def /UCR2 currentundercolorremoval cp2g def /TR2 currentglobal false setglobal[currentcolortransfer]exch setglobal cp2g def/HT currenthalftone cp2g def currentdict end readonly def /InitialGraphicState 20 dict begin /FontSize 0 def/CharacterSpacing 0 def /TextLeading 0 def /TextRenderingMode 0 def /WordSpacing 0 def currentdict end readonly def/SimpleColorSpaceNames 15 dict begin /DeviceGray true def /DeviceRGB true def /DeviceCMYK true def currentdict end readonly def/1_24_bitshift_1_sub 1 24 bitshift 1 sub def /ReadFontProcs 10 dict def /Register { exch dup //PDFReader/ObjectRegistry get length ge{dup dup 2 idiv add array dup //PDFReader/ObjectRegistry get dup length 3 2 roll exch 0 exch getinterval copy pop//PDFReader exch/ObjectRegistry exch put }if exch//PDFReader/ObjectRegistry get 3 1 roll 3 copy pop getdup xcheck{ 5 4 roll pop //PDFR_DEBUG{ (Have a daemon for )print 2 index = }if exec }{ dup null ne{ mark(The object )4 index( already defined : )4 index//error exec}{ pop }ifelse 4 3 roll exec }ifelse put }bind def /IsRegistered { //PDFReader/ObjectRegistry get dup length2 index le{ pop pop false }{ exch get null ne }ifelse }bind def /GetRegistered { //PDFReader/ObjectRegistry getdup length 2 index le{ exch mark exch(Object )exch( isn't defined before needed (1).)//error exec }if1 index get dup xcheck{ exch mark exch(Object )exch( isn't defined before needed (2).)//error exec }{dup null eq{ exch mark exch(Object )exch( isn't defined before needed (3).)//error exec }if exch pop}ifelse }bind def /StandardFontNames<< /Times-Roman true /Helvetica true /Courier true /Symbol true /Times-Bold true/Helvetica-Bold true /Courier-Bold true /ZapfDingbats true /Times-Italic true /Helvetica-Oblique true/Courier-Oblique true /Times-BoldItalic true /Helvetica-BoldOblique true /Courier-BoldOblique true >>def/CleanAllResources {//PDFR_DEBUG{ (CleanAllResources beg)= }if //PDFReader/ObjectRegistry get dup length 0 exch 1 exch 1 sub{2 copy get dup xcheck{ pop pop }{ dup null eq{ pop pop }{ dup type/dicttype eq{/.Global known}{pop false}ifelse{pop }{ //PDFR_DEBUG{ (Dropping )print dup = }if 1 index exch/DroppedObject put }ifelse }ifelse }ifelse}for pop FontDirectory length dict begin FontDirectory{ pop dup//StandardFontNames exch known not{ dup null def}if pop }forall currentdict end{ pop //PDFR_DEBUG{ (Undefining font )print dup = }if undefinefont }forall//PDFR_DEBUG{ (CleanAllResources end)= }if }bind def /PrintReference { //PDFR_DEBUG{ ({ )print dup{ =only( )print}forall ( })= }if }bind def /R { 0 ne{ exch mark exch(A referred object generation )exch( isn't 0.)//error exec}if [ exch//GetRegistered/exec load ]cvx //PrintReference exec }bind def /IsObjRef { dup type/arraytype eq{dup length 3 eq{ dup xcheck exch dup 0 get type/integertype eq 3 2 roll and exch dup 1 get//GetRegistered eq 3 2 roll and exch2 get/exec load eq and }{ pop false }ifelse }{ pop false }ifelse }bind def /DoNothing { }def /RunTypeDaemon{ dup type/dicttype eq{ dup/Type//knownget exec{ //PDFReader/TypeDaemons get exch //knownget exec{ exec}if }if }if }bind def /obj { //PDFR_DEBUG{ (Defining )print 1 index =only( )print dup =only( obj)= }if0 ne{ exch mark exch(An object generation )exch( isn't 0.)//error exec }if }bind def /endobj { //PDFR_DEBUG{(endobj )= }if dup type/dicttype eq{ dup/.endobj_daemon//knownget exec{ //PDFR_DEBUG{(.endobj_daemon for )print 2 index =}ifexec }if }if dup type/dicttype eq{dup/ImmediateExec known}{false}ifelse{ pop pop }{ //PDFR_DEBUG{ (Storing )print 1 index =}if //RunTypeDaemon exec //DoNothing 3 1 roll//Register exec }ifelse }bind def /StoreBlock { //PDFR_DEBUG{(StoreBlock )print//PDFReader/BlockCount get =only(, Length = )print dup length = }if dup length string copy//PDFReader/BlockCount get exch //PDFReader/CurrentObject get 3 1 roll put //PDFReader/BlockCount get 1 add//PDFReader exch/BlockCount exch put }bind def /CheckLength {dup type/integertype ne{ mark(Object length isn't an integer.)//error exec}if }bind def /ResolveD { 3 copy pop get dup//IsObjRef exec{ //PDFR_DEBUG{ (Resolving )print//PrintReference exec}if exec exch exec }{ exch pop }ifelse dup 4 1 roll put }bind def /ResolveA {2 index 2 index get dup//IsObjRef exec{exec exch exec 3 copy put }{ exch pop }ifelse exch pop exch pop }bind def /StoreStream { dup//PDFReader exch/CurrentObject exch put//PDFReader/BlockCount 0 put dup/Length//CheckLength//ResolveD exec //PDFR_DEBUG{ (StoreStream Length = )print dup =}if currentfile exch()/SubFileDecode filter {dup//BlockBuffer readstring{ //StoreBlock exec }{ //StoreBlock execexit }ifelse }loop pop //PDFReader/CurrentObject null put //PDFR_DEBUG{ (StoreStream end.)= }if }bind def/MakeStreamDumper { //PDFR_DEBUG{ (MakeStreamDumper beg.)= }if currentglobal exch dup gcheck setglobal[exch 1 dict dup/c 0 put exch 1024 string {readstring pop (StreamDumper )print 1 index/c get =string cvs print( )printdup length =string cvs print( <)print dup print(>\n)print dup length 3 2 roll dup/c get 3 2 roll add/c exch put}/exec load ] cvx 0()/SubFileDecode filter exch setglobal //PDFR_DEBUG{ (MakeStreamDumper end.)= }if}bind def /ShortFilterNames 15 dict begin /AHx/ASCIIHexDecode def /A85/ASCII85Decode def /LZW/LZWDecode def/Fl/FlateDecode def /RL/RunLengthDecode def /CCF/CCITTFaxDecode def /DCT/DCTDecode def currentdict end readonly def/AppendFilters { //PDFR_DEBUG{ (AppendFilters beg.)= }if dup 3 1 roll /Filter//knownget exec{ dup type/nametype eq{dup//ShortFilterNames exch//knownget exec{ exch pop }if 2 index/DecodeParms//knownget exec{ exch }iffilter }{ dup 0 exch 1 exch length 1 sub{ 2 copy get dup//ShortFilterNames exch//knownget exec{ exch pop}if 3 1 roll 4 index/DecodeParms//knownget exec{ exch get }{ pop null }ifelse dup null eq{ pop 3 1 roll filter exch}{ 3 1 roll 4 1 roll filter exch }ifelse }for pop }ifelse //PDFR_DEBUG//PDFR_DUMP and{ //MakeStreamDumper exec}if }if exch pop //PDFR_DEBUG{ (AppendFilters end.)= }if }bind def /ExecuteStream { dup//PDFReader exch/CurrentObject exch putdup/Length//CheckLength//ResolveD exec //PDFR_DEBUG{ (ExecuteStream id = )print 2 index =only( Length = )print dup =}if //PDFReader/InitialGraphicState get //PDFReader/GraphicState get copy pop //PDFReader/Operators get beginpop currentfile 0(endstream)/SubFileDecode filter 1 index//AppendFilters exec cvx mark exch exec counttomark 0 ne{mark(Data left on ostack after an immediate stream execution.)//error exec }if cleartomark end //PDFR_DEBUG{(ExecuteStream end.)= }if //PDFReader/CurrentObject null put dup/IsPage known{ dup/Context get/NumCopies//knownget exec{1 sub{ copypage }repeat }if showpage }if }bind def /stream { //PDFR_DEBUG{ 1 index =only( stream)= }if//PDFReader/ObjectRegistry get dup length 3 index gt{ 2 index get dup xcheck{ exec //PDFReader/ObjectRegistry get 2 index null put}{ pop }ifelse }{ pop }ifelse dup/ImmediateExec known{ dup/GlobalExec//knownget exec{ currentglobal 4 1 rollsetglobal //ExecuteStream exec 3 2 roll setglobal }{ //ExecuteStream exec }ifelse }{ //StoreStream exec}ifelse dup/.CleanResources//knownget exec{ /All eq{ //CleanAllResources exec }if }if }bind def /HookFont{ //PDFR_DEBUG{ (Loaded the font )print dup/FontName get = }if { dup/FontFileType get dup/Type1 eq exch/MMType1 eq or{dup/FontName get //PDFReader/RemoveFontNamePrefix get exec findfont exit }if dup/FontFileType get/TrueType eq{//PDFReader/MakeType42 get exec //PDFR_DEBUG{ (Font dict <<)= dup{ 1 index/sfnts eq{ exch pop (/sfnts [)print{ (-string\()print length//=only exec(\)- )= }forall (])= }{ exch//=only exec( )print == }ifelse }forall(>>)= }if dup/FontName get exch definefont exit }if mark(FontHook has no proc for )2 index/FontFileType get//error exec}loop /Font exch put }bind def /endstream { }bind def /xref { //PDFR_DEBUG{ (xref)= //PDFR_DUMP{ //PDFReader/ObjectRegistry get ==}if }if end count 0 ne{ mark(Excessive data on estack at the end of the interpretation.)//error exec}if currentfile 1(%%EOF)/SubFileDecode filter flushfile cleardictstack }bind def /ResolveDict {dup{ pop 1 index exch//DoNothing//ResolveD exec pop }forall pop }bind def /SetupPageView { //PDFR_DEBUG{ (SetupPageView beg)=}if //GraphicState/InitialMatrix get setmatrix /MediaBox get aload pop 3 index neg 3 index neg translate3 -1 roll sub 3 1 roll exch sub exch userdict/.HWMargins//knownget exec{ aload pop }{ currentpagedevice/.HWMargins//knownget exec{aload pop }{ 0 0 0 0 }ifelse }ifelse currentpagedevice/PageSize get aload pop 3 -1 roll sub 3 1 roll exch sub exchexch 3 index sub exch 3 index sub //SetPageSize{ //PDFR_DEBUG{ (Setting page size to )print 1 index//=only exec( )print dup =}if pop pop 3 index 3 index 2 copy currentglobal false setglobal 3 1 roll 2 array astore << exch/PageSize exch >>setpagedeviceuserdict/PDFR_InitialGS gstate put setglobal }if //RotatePages{ 2 copy gt 6 index 6 index gt ne{ 1 index 5 index le 1 index 5 index le and not}{ false }ifelse }{ false }ifelse {//FitPages{ 1 index 5 index div 1 index 7 index div 2 copy gt{ exch}if pop dup scale }if 90 rotate 0 5 index neg translate }{ //FitPages{ 1 index 6 index div 1 index 6 index div2 copy gt{ exch }if pop dup scale }if }ifelse pop pop translate pop pop //PDFR_DEBUG{ (SetupPageView end)=}if }bind def /PageContentsDaemon { //PDFR_DEBUG{ (Executing PageContentsDaemon for )print 2 index =}if 1 index exch/Context exch put dup/ImmediateExec true put dup/IsPage true put dup/Context get//SetupPageView exec}bind def /FontFileDaemon { //PDFR_DEBUG{ (Executing FontFileDaemon for )print 2 index = }if dup/FontFileType get2 index exch dup//ReadFontProcs exch//knownget exec{ exch pop exec }{ mark(FontFile reader for )2 index( isn't implemented yet.)//error exec}ifelse //PDFR_DEBUG{ (FontFileDaemon end)= }if pop }bind def /FontDescriptorDaemon { //PDFR_DEBUG{ (Executing FontDescriptorDaemon for )print 2 index =}if 2 copy/FontResource exch put /Subtype get 1 index exch/FontFileType exch put }bind def /UnPDFEscape{dup dup length string cvs dup(#)search{ { pop (16#--)2 index 0 2 getinterval 1 index 3 2 getinterval copy popcvi 0 exch put 0 1 index 2 1 index length 2 sub getinterval 3 copy putinterval length 3 copy exch putgetinterval (#)search not{ pop exit }if }loop (\0)search pop exch pop exch pop cvn exch pop }{ pop pop}ifelse }bind def /TypeDaemons<< /Page {//PDFR_DEBUG{ (Recognized a page.)= }if dup/Contents//knownget exec{0 get//DoNothing exch [ 3 index//PageContentsDaemon/exec load ]cvx //Register exec }{ (fixme: page with no Contents won't be printed.)=}ifelse }bind /FontDescriptor {//PDFR_DEBUG{ (Recognized a font descriptor.)= }if dup/FontName//knownget exec{1 index/FontName 3 -1 roll//UnPDFEscape exec put }if dup dup/FontFile known{/FontFile}{/FontFile2}ifelse//knownget exec{ 0 get//DoNothing exch [ 3 index//FontFileDaemon/exec load ]cvx //Register exec }{ (Font descriptor )print 1 index =only( has no FontFile.)=}ifelse }bind /Font {//PDFR_DEBUG{ (Recognized a font resource.)= }if dup/BaseFont//knownget exec{ //UnPDFEscape exec 2 copy/BaseFont exch put//PDFReader/RemoveFontNamePrefix get exec currentglobal exch dup/Font resourcestatus{ pop pop //PDFReader/GetInstalledFont get exec pop}{ pop }ifelse setglobal }if dup/FontDescriptor//knownget exec{ 0 get dup//IsRegistered exec{ //PDFR_DEBUG{(already registered )print dup = }if pop }{ //DoNothing exch [ 3 index//FontDescriptorDaemon/exec load]cvx //Register exec }ifelse }if }bind >>def /MakeStreamReader {dup [ exch //PDFR_DEBUG{ (Stream proc )/print load //PDFR_STREAM{ (<) /print load }if }if 1 dict dup/i -1 put /dup load /i /get load 1 /add load/dup load 3 1 /roll load /i /exch load /put load //knownget /exec load /not load {()} /if load //PDFR_DEBUG{//PDFR_STREAM{ /dup load /print load (>) /print load }if ( end of stream proc.\n) /print load }if ]cvx//PDFR_DEBUG{ (Stream reader )print dup == }if 0()/SubFileDecode filter exch//AppendFilters exec }bind def/RunDelayedStream { //MakeStreamReader exec mark exch cvx exec counttomark 0 ne{ mark(Data left on ostack after a delayed stream execution.)//error exec}if cleartomark }bind def //ReadFontProcs begin /Type1 {//PDFR_DEBUG{ (ReadFontProcs.Type1)= }if dup/.endobj_daemon[4 index//HookFont/exec load]cvx putdup/ImmediateExec true put /GlobalExec true put }bind def /MMType1//Type1 def /TrueType {//PDFR_DEBUG{(ReadFontProcs.TrueType)= }if dup/.endobj_daemon[4 index//HookFont/exec load]cvx put pop }bind def end/.opdloadttfontdict 50 dict def .opdloadttfontdict begin /maxstring 65400 def end /.InsertionSort { /CompareProc exch def/Array exch def 1 1 Array length 1 sub { /Ix exch def /Value1 Array Ix get def /Jx Ix 1 sub def { Jx 0 lt{exit }if /Value2 Array Jx get def Value1 Value2 CompareProc{ exit }if Array Jx 1 add Value2 put /Jx Jx 1 sub def}loop Array Jx 1 add Value1 put }for Array }bind def /putu16{ 3 copy -8 bitshift put exch 1 add exch 16#ff and put}bind def /putu32{ 3 copy -16 bitshift putu16 exch 2 add exch 16#ffff and putu16 }bind def /.readtable{dup dup 1 and add string dup 0 4 -1 roll getinterval 3 -1 roll exch dup()ne{readstring}if pop pop }bind def/.readbigtable{ dup maxstring lt{ .readtable }{ currentuserparams/VMReclaim get -2 vmreclaim [4 2 roll{dup maxstring le{exit}if 1 index maxstring string readstring pop 3 1 roll maxstring sub }loop .readtable]exch vmreclaim }ifelse }bind def /ReadTTF { .opdloadttfontdict begin /TTFontFile exch def /TableDir TTFontFile 12 string readstring pop def/tables TTFontFile TableDir 4 getu16 16 mul string readstring pop def /tabarray tables length 16 idiv array defTableDir 0 4 getinterval(ttcf)eq{ QUIET not{(Can't handle TrueType font Collections.)=}if /.loadttfonttables cvx/invalidfont signalerror}{ 0 16 tables length 1 sub{ dup tables exch 16 getinterval exch 16 div cvi exch tabarray 3 1 roll put}for }ifelse tabarray{exch 8 getu32 exch 8 getu32 gt}.InsertionSort pop /Read TableDir length tables length add def/tabs[ tabarray{ dup 8 getu32 Read sub dup 0 gt{ dup string TTFontFile exch readstring pop pop Read add/Read exch def}{ pop }ifelse 12 getu32 dup Read add /Read exch def TTFontFile exch .readbigtable }forall ]def end }bind def/GetLocaType { 0 1 tabarray length 1 sub{ dup tabarray exch get 0 4 getinterval(head)eq{ tabs exch get50 gets16 /LocaType exch def exit }{ pop }ifelse }for }bind def /GetNumGlyphs { 0 1 tabarray length 1 sub{dup tabarray exch get 0 4 getinterval(maxp)eq{ tabs exch get 4 getu16 /NumGlyphs exch def exit }{ pop}ifelse }for }bind def /StringToLoca { /LocaIndex exch def /StringOffset 0 def { dup length StringOffset gt{dup LocaType 1 eq{ StringOffset getu32 LocaArray LocaIndex 3 -1 roll put /LocaIndex LocaIndex 1 add def/StringOffset StringOffset 4 add def }{ dup StringOffset getu16 LocaArray LocaIndex 3 -1 roll put /LocaIndex LocaIndex 1 add def/StringOffset StringOffset 4 add def }ifelse }{ pop LocaIndex exit }ifelse }loop }bind def /GetSortedLoca{ NumGlyphs 1 add array/LocaArray exch def 0 1 tabarray length 1 sub{ dup tabarray exch get 0 4 getinterval(loca)eq{tabs exch get exit }{ pop }ifelse }for dup type/stringtype eq{ 0 StringToLoca pop }{ 0 exch { exch StringToLoca}forall pop }ifelse LocaArray{gt}.InsertionSort pop }bind def /GetWorkingString { WorkString 0 GlyfArray GlyfStringIndex getputinterval /WorkBytes GlyfArray GlyfStringIndex get length def /GlyfStringIndex GlyfStringIndex 1 add def}bind def /GetWorkingBytes { /BytesToRead exch def WorkString 0 BytesToRead getinterval dup length string copyWorkString BytesToRead WorkBytes BytesToRead sub getinterval dup length string copy WorkString 0 3 -1 roll putinterval/WorkBytes WorkBytes BytesToRead sub def }bind def /GetGlyfBytes { /ToRead exch def WorkBytes 0 eq{ GetWorkingString}if WorkBytes ToRead ge{ ToRead string dup 0 ToRead GetWorkingBytes putinterval }{ ToRead string dup0 WorkString 0 WorkBytes getinterval putinterval dup WorkBytes ToRead WorkBytes sub GetWorkingStringGetWorkingBytes putinterval }ifelse }bind def /SplitGlyf { /GlyfArray exch def /DestArray GlyfArray length 2 mul array def/DestArrayIndex 0 def /LastLoca 0 def /NextLocaIndex 0 def /LastLocaIndex 0 def /GlyfStringIndex 0 def/WorkString maxstring string def /WorkBytes 0 def { LocaArray NextLocaIndex get LastLoca sub maxstring gt{ LocaArray LastLocaIndex get LastLoca sub GetGlyfBytes DestArray DestArrayIndex 3 -1 roll put /DestArrayIndex DestArrayIndex 1 add defLocaArray LastLocaIndex get/LastLoca exch def }{ /LastLocaIndex NextLocaIndex def /NextLocaIndex NextLocaIndex 1 add defNextLocaIndex NumGlyphs gt { WorkBytes GlyfStringIndex GlyfArray length lt{ GlyfArray GlyfStringIndex get lengthadd string dup 0 WorkString 0 WorkBytes getinterval putinterval dup WorkBytes GetWorkingString WorkString 0 WorkBytes getintervalputinterval }{ pop WorkString 0 WorkBytes getinterval }ifelse dup length string copy DestArray DestArrayIndex 3 -1 roll putexit }if }ifelse }loop DestArray }bind def /ProcessTTData { .opdloadttfontdict begin 0 1 tabarray length 1 sub{/ix exch def tabarray ix get 12 getu32 dup maxstring le{ dup 4 mod 0 ne{ 4 div cvi 1 add 4 mul string/newstring exch def/oldstring tabs ix get def newstring 0 oldstring putinterval 0 1 newstring length oldstring length sub 1 sub{newstring exch oldstring length add 0 put }for tabs ix newstring put }{ pop }ifelse }{ dup 4 mod 0 ne{dup maxstring idiv maxstring mul sub 4 idiv 1 add 4 mul string/newstring exch def tabs ix get dup length 1 sub dup/iy exch def get/oldstring exch defnewstring 0 oldstring putinterval 0 1 newstring length oldstring length sub 1 sub{ newstring exch oldstring length add 0 put}for tabs ix get iy newstring put }{ pop }ifelse }ifelse }for 0 1 tabarray length 1 sub{ dup tabarray exch getdup 12 getu32 maxstring gt{ 0 4 getinterval dup(glyf)eq{ pop GetLocaType GetNumGlyphs GetSortedLoca dup tabs exch getSplitGlyf tabs 3 1 roll put }{ (Warning, table )print print( > 64Kb\n)print pop }ifelse }{ pop pop }ifelse}for end }bind def /Makesfnts { .opdloadttfontdict begin 0 tabs{ dup type/stringtype eq{ pop 1 add }{{ type/stringtype eq{ 1 add }if }forall }ifelse }forall 1 add /TTOffset TableDir length tabarray length 16 mul adddef 0 tabarray{ exch dup 1 add 3 1 roll dup tabs exch get dup type/stringtype eq{ length 2 index exchTTOffset dup 3 1 roll add /TTOffset exch def 8 exch putu32 exch tabarray 3 1 roll put }{ 0 exch { dup type/stringtype eq{length add }{ pop }ifelse }forall 2 index exch TTOffset dup 3 1 roll add /TTOffset exch def 8 exch putu32exch tabarray 3 1 roll put }ifelse }forall pop array dup 0 TableDir length tables length add string dup 0 TableDir putintervaldup 12 tables putinterval put dup /ix 1 def tabs{ dup type/stringtype eq{ ix exch put dup /ix ix 1 add def}{ { dup type/stringtype eq{ ix exch put dup /ix ix 1 add def }{ pop }ifelse }forall }ifelse }forallpop end }bind def /MakeType42 { //PDFR_DEBUG{ (MakeType42 beg)= }if 10 dict begin /FontName 1 index/FontName get def/FontType 42 def /FontMatrix[1 0 0 1 0 0]def /FontBBox 1 index/FontBBox get def dup/FontResource getdup/Encoding known{ //PDFReader/ObtainEncoding get exec /Encoding get }{ pop null }ifelse /PDFEncoding exch def/CharStrings 2 index//PDFReader/MakeTTCharStrings get exec def /sfnts 2 index//MakeStreamReader execReadTTF ProcessTTData Makesfnts def /Encoding StandardEncoding def /PaintType 0 def currentdict end //PDFR_DEBUG{(MakeType42 end)= }if }bind def /GetInstalledFont { dup//InstalledFonts exch knownget{ exch pop }{ dup findfont dup 3 1 roll//InstalledFonts 3 1 roll put }ifelse }bind def /RemoveFontNamePrefix {//=string cvs true 0 1 5{ 2 index exch get//IsUpper exec not{pop false exit }if }for {(+)search{ pop pop }if }if cvn }bind def /CheckFont {dup/Type get/Font ne{ mark(Resource )3 index( must have /Type/Font .)//error exec}if }bind def /CheckEncoding {dup type/nametype ne{ dup/Type get/Encoding ne{ mark(Resource )3 index( must have /Type/Encoding .)//error exec}if }if }bind def /ObtainEncoding {dup/Encoding known{ dup dup/Encoding//CheckEncoding//ResolveD execdup type dup/arraytype eq exch/packedarraytype eq or{ pop pop }{ dup type/nametype eq{ /Encoding findresource}{ dup/BaseEncoding//knownget exec not{ /StandardEncoding }if /Encoding findresource exch /Differences//knownget exec{exch dup length array copy exch 0 exch { dup type/integertype eq{ exch pop }{ 3 copy put pop 1 add }ifelse}forall pop }if }ifelse /Encoding exch put }ifelse }{ dup/Encoding/StandardEncoding/Encoding findresource put}ifelse }bind def /ObtainMetrics {dup/Widths//knownget exec{ 1 index/Encoding get 256 dict 3 index/Subtype get/TrueType eq{1000 }{ 1 }ifelse 4 index/MissingWidth//knownget exec not{ 0 }if 5 index/FirstChar//knownget exec not{0 }if 6 5 roll dup 0 exch 1 exch length 1 sub{ 2 copy get exch 3 index add 7 index exch get dup null ne{6 index 3 1 roll exch 6 index div 3 copy pop//knownget exec{ 0 eq }{ true }ifelse {put }{ pop pop pop}ifelse }{ pop pop }ifelse }for pop pop pop pop exch pop 1 index exch/Metrics exch put }{ dup/MissingWidth//knownget exec{256 dict 2 index/Encoding get{ dup null ne{ 3 copy 3 2 roll put }if pop }forall exch pop 1 index exch/Metrics exch put}if }ifelse }bind def /NotDef { FontMatrix aload pop pop pop exch pop exch pop 1 exch div exch 1 exch div exch1 index 0 setcharwidth o setlinewidth 0 0 moveto 2 copy rlineto 1 index 0 rlineto neg exch neg exch rlinetoclosepath stroke }bind def /BuildChar {//PDFR_DEBUG{ (BuildChar )print dup//=only exec( )print }if exch beginEncoding exch get //PDFR_DEBUG{ dup = }if dup null eq{ pop//NotDef exec }{ CharProcs exch//knownget exec{//RunDelayedStream exec }{ //NotDef exec }ifelse }ifelse end }bind def /printdict {(<<)= {exch = ==}forall(>>)= }bind def /printfont { dup{ exch dup = dup/Encoding eq{ pop = }{ dup/FontInfo eq exch/Private eq or{//printdict exec }{ == }ifelse }ifelse }forall }bind def /ScaleMetrics {1 index{ 2 index div 3 index3 1 roll put }forall pop }bind def /ResolveAndSetFontAux {exch dup //PDFReader/CurrentObject get/Context get/Resources get/Font//DoNothing//ResolveD exec exch//CheckFont//ResolveD exec dup/Font//knownget exec{ exch pop exch pop}{ { dup/Subtype get dup dup/Type1 eq exch/TrueType eq or exch/MMType1 eq or{ exch pop dup/BaseFont get//RemoveFontNamePrefix exec //PDFR_DEBUG{ (Font )print dup = }if 1 index/FontDescriptor known{ //PDFR_DEBUG{(Font from a font descriptor.)= }if 1 index /FontDescriptor//DoNothing//ResolveD exec /Font//knownget exec{exch pop }{ //PDFR_DEBUG{ (Font descriptor has no Font resolved.)= }if //GetInstalledFont exec }ifelse}{ //GetInstalledFont exec }ifelse exch dup/Encoding known not{ 1 index/Encoding get 1 index exch/Encoding exch put}if //ObtainEncoding exec //ObtainMetrics exec exch dup length dict copy dup 2 index/Encoding get /Encoding exch put1 index/Metrics//knownget exec{ 2 index/Subtype get/TrueType ne{ 1 index/FontMatrix get 0 get dup 0 eq{pop 1 index/FontMatrix get 1 get dup 0 eq{pop 1}if }if 0.001 div //ScaleMetrics exec }{ 1 index/sfnts known not{1 index/FontMatrix get 0 get dup 0 eq{ pop 1 index/FontMatrix get 1 get dup 0 eq{pop 1}if }if //ScaleMetrics exec}if }ifelse 1 index exch/Metrics exch put }if 1 index/BaseFont get exch dup/FID undef dup/UniqueID undefdefinefont dup 3 1 roll /Font exch put exit }if dup/Subtype get/Type3 eq{ //ObtainEncoding exec 2 copy exch/FontName exch putdup/CharProcs get//ResolveDict exec dup/FontType 3 put dup/BuildChar//BuildChar put dup dup/Font exch putdup 3 1 roll definefont 2 copy ne{ 2 copy/Font exch put }if exch pop exit }if dup/Subtype get/Type0 eq{}if dup/Subtype get/CIDFontType0 eq{ }if dup/Subtype get/CIDFontType2 eq{ }if mark(Unknown font type )2 index/Subtype get//error exec}loop }ifelse exch scalefont setfont }bind def /ResolveAndSetFont { //ResolveAndSetFontAux exec }bind def/.knownget {2 copy known{ get true }{ pop pop false }ifelse }bind def /.min {2 copy lt{ exch }if pop}bind def /.max {2 copy gt{ exch }if pop }bind def /.dicttomark {>> }bind def /getu16{ 2 copy get 8 bitshift 3 1 roll 1 add get add}bind def /gets16{ getu16 16#8000 xor 16#8000 sub }bind def /getu32{ 2 copy getu16 16 bitshift 3 1 roll 2 add getu16 add}bind def /gets32{ 2 copy gets16 16 bitshift 3 1 roll 2 add getu16 add }bind def /cmapformats mark 0{6 256 getinterval{}forall 256 packedarray }bind 2{ /sHK_sz 2 def /sH_sz 8 def dup 2 getu16/cmapf2_tblen exch defdup 4 getu16/cmapf2_lang exch def dup 6 256 sHK_sz mul getinterval/sHKs exch def 0 0 1 255{ sHKs exch2 mul getu16 1 index 1 index lt{exch}if pop }for /sH_len exch def dup 6 256 sHK_sz mul add cmapf2_tblen 1 index sub getinterval/sH_gIA exch def /cmapf2_glyph_array 65535 array def /.cmapf2_putGID{ /cmapf2_ch cmapf2_ch_hi 8 bitshift cmapf2_ch_lo add deffirstCode cmapf2_ch_lo le cmapf2_ch_lo firstCode entryCount add lt and{ sH_offset idRangeOffset add cmapf2_ch_lo firstCode sub 2 muladd 6 add sH_gIA exch getu16 dup 0 gt{ idDelta add cmapf2_glyph_array exch cmapf2_ch exch put }{ pop}ifelse }{ }ifelse }def 16#00 1 16#ff{ /cmapf2_ch_hi exch def sHKs cmapf2_ch_hi sHK_sz mul getu16 /sH_offset exch defsH_gIA sH_offset sH_sz getinterval dup 0 getu16/firstCode exch def dup 2 getu16/entryCount exch def dup 4 gets16/idDelta exch defdup 6 getu16/idRangeOffset exch def pop sH_offset 0 eq{ /cmapf2_ch_lo cmapf2_ch_hi def /cmapf2_ch_hi 0 def.cmapf2_putGID }{ 16#00 1 16#ff{ /cmapf2_ch_lo exch def .cmapf2_putGID }for }ifelse }for pop 0 1 cmapf2_glyph_array length 1 sub{dup cmapf2_glyph_array exch get null eq{cmapf2_glyph_array exch 0 put}{pop}ifelse }for cmapf2_glyph_array}bind 4{ /etab exch def /nseg2 etab 6 getu16 def 14/endc etab 2 index nseg2 getinterval def 2 add nseg2 add/startc etab 2 index nseg2 getinterval defnseg2 add/iddelta etab 2 index nseg2 getinterval def nseg2 add/idroff etab 2 index nseg2 getinterval defpop /firstcode startc 0 getu16 16#ff00 and dup 16#f000 ne{pop 0}if def /putglyph{ glyphs code 3 -1 roll put/code code 1 add def}bind def /numcodes 0 def/glyphs 0 0 2 nseg2 3 sub{ /i2 exch def /scode startc i2 getu16 def /ecode endc i2 getu16 defnumcodes scode firstcode sub exch sub 0 .max ecode scode sub 1 add add exch 1 index add exch numcodes add/numcodes exch def}for array def glyphs length 1024 ge{ .array1024z 0 1024 glyphs length 1023 sub{glyphs exch 2 index putinterval}forglyphs dup length 1024 sub 3 -1 roll putinterval }{ 0 1 glyphs length 1 sub{glyphs exch 0 put}for }ifelse/numcodes 0 def/code 0 def 0 2 nseg2 3 sub{ /i2 exch def /scode startc i2 getu16 def /ecode endc i2 getu16 defnumcodes scode firstcode sub exch sub 0 .max dup/code exch code exch add def ecode scode sub 1 add add numcodes add/numcodes exch def/delta iddelta i2 gets16 def TTFDEBUG{ (scode=)print scode =only ( ecode=)print ecode =only ( delta=)print delta =only( droff=)print idroff i2 getu16 = }if idroff i2 getu16 dup 0 eq{ pop scode delta add 65535 and 1 ecode delta add 65535 and{putglyph}for }{ /gloff exch 14 nseg2 3 mul add 2 add i2 add add def 0 1 ecode scode sub{ 2 mul gloff add etab exch getu16dup 0 ne{delta add 65535 and}if putglyph }for }ifelse }for glyphs/glyphs null def }bind 6{ dup 6 getu16/firstcode exch def dup 8 getu16/ng exch deffirstcode ng add array 0 1 firstcode 1 sub{2 copy 0 put pop}for dup firstcode ng getinterval 0 1 ng 1 sub{dup 2 mul 10 add 4 index exch getu16 3 copy put pop pop }for pop exch pop }bind .dicttomark readonly def/cmaparray{ dup 0 getu16 cmapformats exch .knownget{ TTFDEBUG{ (cmap: format )print 1 index 0 getu16 = flush}if exec }{ (Can't handle format )print 0 getu16 = flush 0 1 255{}for 256 packedarray }ifelse TTFDEBUG{(cmap: length=)print dup length = dup == }if }bind def /postremap mark /Cdot/Cdotaccent /Edot/Edotaccent/Eoverdot/Edotaccent /Gdot/Gdotaccent /Ldot/Ldotaccent /Zdot/Zdotaccent /cdot/cdotaccent /edot/edotaccent/eoverdot/edotaccent /gdot/gdotaccent /ldot/ldotaccent /zdot/zdotaccent .dicttomark readonly def /get_from_stringarray{1 index type/stringtype eq{ get }{ exch{ 2 copy length ge{ length sub }{ exch get exit }ifelse }forall}ifelse }bind def /getinterval_from_stringarray { 2 index type/stringtype eq{ getinterval }{ string exch 04 3 roll{ dup length dup 4 index lt{ 3 index exch sub exch pop 3 1 roll exch pop }{ dup 3 1 roll 4 index sub5 index length 4 index sub 2 copy gt{exch}if pop dup 3 1 roll 5 index exch getinterval 5 index 4 index 3 indexgetinterval copy pop exch pop add exch pop 0 exch dup 3 index length ge{exit}if }ifelse }forall pop pop}ifelse }bind def /string_array_size {dup type/stringtype eq{ length }{ 0 exch{length add}forall }ifelse}bind def /postformats mark 16#00010000{ pop MacGlyphEncoding } 16#00020000{ dup dup type/arraytype eq{0 get}if length 36 lt{TTFDEBUG{(post format 2.0 invalid.)= flush}if pop[] }{ /postglyphs exch def /post_first postglyphs dup type/arraytype eq{0 get}if defpost_first 32 getu16/numglyphs exch def /glyphnames numglyphs 2 mul 34 add def /postpos glyphnames def/total_length postglyphs//string_array_size exec def numglyphs array 0 1 numglyphs 1 sub{ postpos total_length ge{1 numglyphs 1 sub{1 index exch/.notdef put}for exit }if postglyphs postpos//get_from_stringarray execpostglyphs postpos 1 add 2 index//getinterval_from_stringarray exec cvn exch postpos add 1 add/postpos exch def2 index 3 1 roll put }for /postnames exch def numglyphs array 0 1 numglyphs 1 sub{ dup 2 mul 34 add postglyphs exch 2//getinterval_from_stringarray execdup 0 get 8 bitshift exch 1 get add dup 258 lt{ MacGlyphEncoding exch get }{ dup 32768 ge{ pop/.notdef}{ 258 sub dup postnames length ge{ TTFDEBUG{(   *** warning: glyph index past end of 'post' table)= flush}ifpop exit }if postnames exch get postremap 1 index .knownget{exch pop}if }ifelse }ifelse 2 index 3 1 roll put}for } ifelse }bind 16#00030000{ pop[] }bind .dicttomark readonly def /first_post_string { post dup type/arraytype eq{0 get}if}bind def /.getpost{ /glyphencoding post null eq{ TTFDEBUG{(post missing)= flush}if[] }{ postformats first_post_string 0 getu32 .knownget{TTFDEBUG{ (post: format )print first_post_string dup 0 getu16 =only(,)print 2 getu16 = flush }if post exch exec}{ TTFDEBUG{(post: unknown format )print post 0 getu32 = flush}if[] }ifelse }ifelse def }bind def /TTParser<</Pos 0 /post null >>def /readu8 {read not{ mark(Insufficient data in the stream.)//error exec }if }bind def/readu16 {dup//readu8 exec 8 bitshift exch//readu8 exec or }bind def /reads16 {//readu16 exec 16#8000 xor 16#8000 sub}bind def /readu32 {dup//readu16 exec 16 bitshift exch//readu16 exec or }bind def /reads32 {dup//reads16 exec 16 bitshift exch//readu16 exec or}bind def /SkipToPosition {dup//TTParser/Pos get exch//TTParser exch/Pos exch put sub //PDFR_DEBUG{ (Skipping )print dup//=only exec( bytes.)=}if dup 0 eq{ pop pop }{ dup 3 1 roll ()/SubFileDecode filter exch {1 index//BlockBuffer readstring pop lengthdup 0 eq{pop exch pop exit}if sub }loop 0 ne{ mark(Insufficient data in the stream for SkipToPosition.)//error exec}if }ifelse }bind def /TagBuffer 4 string def /ParseTTTableDirectory {//PDFR_DEBUG{ (ParseTTTableDirectory beg)=}if 15 dict begin dup//readu32 exec 16#00010000 ne{ mark(Unknown True Type version.)//error exec }ifdup//readu16 exec/NumTables exch def dup//readu16 exec/SearchRange exch def dup//readu16 exec/EntrySelector exch defdup//readu16 exec/RangeShift exch def //PDFR_DEBUG{ (NumTables = )print NumTables = }if NumTables{ dup//TagBuffer readstring not{mark(Could not read TT tag.)//error exec }if cvn [2 index//readu32 exec pop 2 index//readu32 exec 3 index//readu32 exec] //PDFR_DEBUG{ 2 copy exch//=only exec( )print == }if def }repeat pop //TTParser/Pos 12 NumTables 16 mul add putcurrentdict end //PDFR_DEBUG{ (ParseTTTableDirectory end)= }if }bind def /ParseTTcmap {//PDFR_DEBUG{(ParseTTcmap beg)= }if /cmap get aload pop 3 1 roll 7 dict begin //PDFR_DEBUG{ (Current position = )print//TTParser/Pos get =(cmap position = )print dup = }if 1 index exch//SkipToPosition exec //TTParser/Pos get/TablePos exch defdup//readu16 exec pop dup//readu16 exec/NumEncodings exch def //PDFR_DEBUG{ (NumEncodings = )print NumEncodings =}if null NumEncodings{ 1 index//readu32 exec 2 index//readu32 exec 3 array dup 3 2 roll 0 exch put 2 index null ne{dup 0 get 3 index 0 get sub 3 index exch 1 exch put }if dup 4 3 roll pop 3 1 roll def }repeat dup 0 get4 3 roll exch sub 1 exch put //PDFR_DEBUG{ currentdict{ exch dup type/integertype eq{ //PrintHex exec( )print ==}{ pop pop }ifelse }forall }if 4 NumEncodings 8 mul add/HeaderLength exch def //TTParser/Pos//TTParser/Pos get HeaderLength add put0 NumEncodings{ 16#7FFFFFF null currentdict{ 1 index type/integertype eq{ exch pop dup 0 get dup 5 index gt{dup 4 index lt{ 4 1 roll exch pop exch pop }{ pop pop }ifelse }{ pop pop }ifelse }{ pop pop }ifelse }forall//PDFR_DEBUG{ (Obtaining subtable for )print dup == }if 3 2 roll pop 3 copy pop TablePos add//SkipToPosition exec3 copy exch pop 1 get //TTParser/Pos//TTParser/Pos get 3 index add put string readstring not{ mark(Can't read a cmap subtable.)//error exec}if 2 exch put }repeat pop pop currentdict end //PDFR_DEBUG{ (ParseTTcmap end)= }if }bind def /GetTTEncoding{//PDFR_DEBUG{ (GetTTEncoding beg)= }if get exch pop 2 get 10 dict begin /TTFDEBUG//PDFR_DEBUG def //cmaparray execend //PDFR_DEBUG{ (GetTTEncoding end)= dup == }if }bind def /InverseEncoding { 256 dict begin dup length 1 sub -1 0{2 copy get exch 1 index currentdict exch//knownget exec{ dup type/arraytype eq{ aload length 1 add array astore}{ 2 array astore }ifelse }if def }for pop currentdict end }bind def /GetMacRomanEncodingInverse {//PDFReader/MacRomanEncodingInverse getdup null eq{ pop MacRomanEncoding//InverseEncoding exec dup//PDFReader exch/MacRomanEncodingInverse exch put}if }bind def /PutCharStringSingle { dup 3 index length lt{ 2 index exch get dup 0 ne{ def }{ pop pop}ifelse }{ pop pop }ifelse }bind def /PutCharString {1 index type/nametype ne{ mark(Bad charstring name)//error exec}if dup type/arraytype eq{ { 3 copy//PutCharStringSingle exec pop pop }forall pop }{ //PutCharStringSingle exec}ifelse }bind def /ComposeCharStrings { //PDFR_DEBUG{ (ComposeCharStrings beg)= }if 1 index length 1 add dict begin/.notdef 0 def exch //TTParser/post get dup null ne{ exch 1 index length 1 sub -1 0{ dup 3 index exch get exchdup 0 eq{ pop pop }{ def }ifelse }for }if exch pop exch { //PutCharString exec }forall pop currentdict end//PDFR_DEBUG{ (ComposeCharStrings end)= }if }bind def /ParseTTpost { //PDFR_DEBUG{ (ParseTTpost beg)=}if /post get aload pop 3 1 roll //PDFR_DEBUG{ (Current position = )print//TTParser/Pos get = (post position = )print dup =}if 1 index exch//SkipToPosition exec //TTParser/Pos//TTParser/Pos get 4 index add put exch dup 65535 le{string readstring not{ mark(Insufficient data in the stream for ParseTTpost.)//error exec }if }{ [3 1 rolldup 16384 div floor cvi exch 1 index 16384 mul sub exch 1 sub 0 1 3 -1 roll { 1 add index 16384 string readstring not{mark(Insufficient data in the stream for ParseTTpost.)//error exec }if }for counttomark -2 roll string readstring not{mark(Insufficient data in the stream for ParseTTpost.)//error exec }if ] }ifelse 1 dict begin /post exch def//.getpost exec //TTParser/post glyphencoding put //PDFR_DEBUG{ (ParseTTpost end)= glyphencoding == }ifend }bind def /MakeTTCharStrings {//MakeStreamReader exec dup dup//ParseTTTableDirectory exec //TTParser/post null putdup/post//knownget exec{ 0 get 1 index/cmap get 0 get lt{ 2 copy//ParseTTpost exec //ParseTTcmap exec}{ 2 copy//ParseTTcmap exec 3 1 roll //ParseTTpost exec }ifelse }{ //ParseTTcmap exec }ifelse { dup 16#00030001 known{//PDFR_DEBUG{ (Using the TT cmap encoding for Windows Unicode.)= }if 16#00030001//GetTTEncoding execAdobeGlyphList//ComposeCharStrings exec exit }if dup 16#00010000 known{ //PDFR_DEBUG{ (Using the TT cmap encoding for Macintosh Roman.)=}if 16#00010000//GetTTEncoding exec PDFEncoding dup null eq{ pop//GetMacRomanEncodingInverse exec }{//InverseEncoding exec }ifelse //ComposeCharStrings exec exit }if dup 16#00030000 known{ //PDFR_DEBUG{(Using the TT cmap encoding 3.0 - not sure why Ghostscript writes it since old versions.)= }if 16#00030000//GetTTEncoding execPDFEncoding dup null eq{ pop//GetMacRomanEncodingInverse exec }{ //InverseEncoding exec }ifelse //ComposeCharStrings execexit }if mark(True Type cmap has no useful encodings.)//error exec }loop //PDFR_DEBUG{ (CharStrings <<)=dup{ exch dup type/nametype eq{ //=only exec }{ == }ifelse ( )print == }forall (>>)= }if }bind def /ScaleVal{ aload pop 1 index sub 3 2 roll mul add }bind def /ScaleArg { aload pop 1 index sub 3 1 roll sub exch div}bind def /ScaleArgN { dup length 2 sub -2 0{ 2 2 index 3 1 roll getinterval 3 2 roll exch//ScaleArg exec1 index length 2 idiv 1 add 1 roll }for pop }bind def /ComputeFunction_10 { //PDFR_DEBUG{ (ComputeFunction_10 beg )print 1 index//=only exec( stack=)print count =}if exch dup 1 eq{ pop dup length 1 sub get }{ 1 index length 1 sub mul dup dup floor sub dup 0 eq{ pop cvi get}{ 3 1 roll floor cvi 2 getinterval aload pop 2 index mul 3 2 roll 1 exch sub 3 2 roll mul add }ifelse}ifelse //PDFR_DEBUG{ (ComputeFunction_10 end )print dup//=only exec( stack=)print count = }if }bind def/ComputeFunction_n0 { //PDFR_DEBUG{ (ComputeFunction_n0 beg N=)print dup//=only exec( stack=)print count =}if dup 0 eq{ pop }{ dup 2 add -1 roll dup 3 index length 1 sub ge{ pop 1 sub exch dup length 1 sub get exch//PDFReader/ComputeFunction_n0 get exec }{ dup floor cvi dup 4 index exch get 3 index dup 5 add copy6 2 roll pop pop pop pop 1 sub //PDFReader/ComputeFunction_n0 get exec 3 2 roll pop exch 4 3 roll exch4 add 2 roll 1 add 3 2 roll exch get exch 1 sub //PDFReader/ComputeFunction_n0 get exec 1 index mul 3 1 roll1 exch sub mul add }ifelse }ifelse //PDFR_DEBUG{ (ComputeFunction_n0 end )print dup//=only exec( stack=)print count =}if }bind def /FunctionToProc_x01 { dup/Domain get exch dup/Data get 0 get exch /Size get length [4 1 roll//PDFR_DEBUG{ {(function beg, stack =)print count//=only exec(\n)print}/exec load 5 2 roll }if dup 1 gt{{mark exch 3 add 2 roll //ScaleArgN exec counttomark dup 3 add -2 roll pop exch //ComputeFunction_n0 exec}/exec load }{ pop 3 1/roll load//ScaleArg/exec load /exch load //ComputeFunction_10/exec load }ifelse//PDFR_DEBUG{ (function end, stack =)/print load/count load//=only/exec load(\n)/print load }if ]cvx//PDFR_DEBUG{ (Made a procedure for the 1-result function :)= dup == }if }bind def /FunctionProcDebugBeg{(FunctionProcDebugBeg )print count = }bind def /FunctionProcDebugEnd {(FunctionProcDebugEnd )print count =}bind def /FunctionToProc_x0n { PDFR_DEBUG{ (FunctionToProc_x0n beg m=)print dup = }if 1 index/Size get length exchdup 7 mul 2 add array PDFR_DEBUG{ dup 0//FunctionProcDebugBeg put }{ dup 0//DoNothing put }ifelse dup 1/exec load putdup 2 5 index/Domain get put 2 index 1 eq{ dup 3//ScaleArg put }{ dup 3//ScaleArgN put }ifelse dup 4/exec load put1 index 1 sub 0 exch 1 exch{ dup 7 mul 5 add 1 index 4 index 1 sub ne{ dup 3 index exch 6 index put 1 adddup 3 index exch/copy load put 1 add }if [ 6 index/Data get 3 index get 6 index 1 eq{ //ComputeFunction_10/exec load}{ 6 index //ComputeFunction_n0/exec load }ifelse ]cvx 3 index exch 2 index exch put 1 add 2 index 1 index/exec load put 1 add1 index 4 index 1 sub ne{ 2 index 1 index 6 index 1 add put 1 add 2 index 1 index 1 put 1 add 2 index 1 index/roll load put}if pop pop }for PDFR_DEBUG{ dup dup length 2 sub//FunctionProcDebugEnd put }{ dup dup length 2 sub//DoNothing put}ifelse dup dup length 1 sub/exec load put cvx exch pop exch pop exch pop //PDFR_DEBUG{ (Made a procedure for the n-argument function :)=dup == }if PDFR_DEBUG{ (FunctionToProc_x0n end)= }if }bind def /MakeTableRec { 0 exec }bind def /MakeTable{//PDFR_DEBUG{ (MakeTable beg )print count = }if 1 index/Size get exch 1 sub dup 3 1 roll get array 1 index 0 eq{exch pop exch pop }{ dup length 1 sub -1 0{ 3 index 3 index//MakeTableRec exec 2 index 3 1 roll put }forexch pop exch pop }ifelse //PDFR_DEBUG{ (MakeTable end )print count = }if }bind def //MakeTableRec 0//MakeTable put/StoreSample { 1 sub dup 0 eq{ pop }{ -1 1{ I exch get get }for }ifelse I 0 get 3 2 roll put }bind def/ReadSample32 { 4{ File read not{ mark(Insufficient data for function.)//error exec }if }repeat pop 3 1 roll exch256 mul add 256 mul add //1_24_bitshift_1_sub div }bind def /ReadSample { Buffer BitsLeft BitsPerSample{2 copy ge{ exit }if 3 1 roll 8 add 3 1 roll 256 mul File read not{ mark(Insufficient data for function.)//error exec}if add 3 1 roll }loop sub dup 2 index exch neg bitshift 2 copy exch bitshift 4 3 roll exch sub /Buffer exch defexch/BitsLeft exch def Div div }bind def /ReadSamplesRec {0 exec }bind def /ReadSamples { //PDFR_DEBUG{(ReadSamples beg )print count = }if dup 1 eq{ pop 0 1 Size 0 get 1 sub{ I exch 0 exch put 0 1 M 1 sub{dup Range exch 2 mul 2 getinterval //PDFR_DEBUG{ (Will read a sample ... )print }if BitsPerSample 32 eq{//ReadSample32}{//ReadSample}ifelseexec exch//ScaleVal exec //PDFR_DEBUG{ (value=)print dup = }if exch Table exch get Size length//StoreSample exec}for }for }{ 1 sub dup Size exch get 0 exch 1 exch 1 sub{ I exch 2 index exch put dup//ReadSamplesRec exec}for pop }ifelse //PDFR_DEBUG{ (ReadSamples end )print count = }if }bind def //ReadSamplesRec 0//ReadSamples put/StreamToArray {//PDFR_DEBUG{ (StreamToArray beg )print count = }if userdict/FuncDataReader get begindup/BitsPerSample get/BitsPerSample exch def dup/Size get length/N exch def dup/Range get length 2 idiv/M exch def1 BitsPerSample bitshift 1 sub/Div exch def /BitsLeft 0 def /Buffer 0 def dup/Size get/Size exch defdup/Range get/Range exch def /File 1 index//MakeStreamReader exec def /I[N{0}repeat]def M array dup length 1 sub -1 0{2 index N//MakeTable exec 2 index 3 1 roll put }for /Table exch def N//ReadSamples exec PDFR_DEBUG{ (Table = )print Table ==}if /Data Table put end //PDFR_DEBUG{ (StreamToArray end )print count = }if }bind def /FunctionToProc10{ PDFR_DEBUG{ (FunctionToProc10 beg, Range = )print dup/Range get == }if dup/Order//knownget exec{ 1 ne{(Underimplemented function Type 0 Order 3.)= }if }if dup//StreamToArray exec dup/Range get length dup 2 eq{pop//FunctionToProc_x01 exec }{ 2 idiv//FunctionToProc_x0n exec }ifelse PDFR_DEBUG{ (FunctionToProc10 end)=}if }bind def /FunctionToProc12 {begin currentdict/C0//knownget exec{length 1 eq}{true}ifelse{ N currentdict/C0//knownget exec{0 get }{ 0 }ifelse currentdict/C1//knownget exec{ 0 get }{ 1 }ifelse 1 index sub [4 1 roll { 4 2 rollexcp mul add }aload pop ]cvx }{ [ 0 1 C0 length 1 sub{ N C0 2 index get C1 3 index get 4 3 roll pop 1 index sub[/dup load 5 2 roll { 4 2 roll exp mul add exch }aload pop ]cvx /exec load }for /pop load ]cvx }ifelseend //PDFR_DEBUG{ (FunctionType2Proc : )print dup == }if }bind def /FunctionToProc14 {//MakeStreamReader exec cvx exec//PDFR_DEBUG{ (FunctionType4Proc : )print dup == }if }bind def /FunctionToProc1 { dup/FunctionType get{dup 0 eq{ pop//FunctionToProc10 exec exit }if dup 2 eq{ pop//FunctionToProc12 exec exit }if dup 4 eq{pop//FunctionToProc14 exec exit }if mark exch(Function type )exch( isn't implemented yet.)//error exec}loop }bind def /FunctionToProc20 { PDFR_DEBUG{ (FunctionToProc20, Range = )print dup/Range get == }ifdup/Order//knownget exec{ 1 ne{ (Underimplemented function Type 0 Order 3.)= }if }if dup//StreamToArray execdup/Range get length dup 2 eq{ pop//FunctionToProc_x01 exec }{ 2 idiv//FunctionToProc_x0n exec }ifelse}bind def /FunctionToProc {//PDFR_DEBUG{ (FunctionToProc beg )print count = }if dup/Domain get length 2 idiv{ dup 1 eq{ pop//FunctionToProc1 exec exit }if dup 2 eq{ pop//FunctionToProc20 exec exit }if mark(Functions with many arguments aren't implemented yet.)//error exec}loop //PDFR_DEBUG{ (FunctionToProc end )print count = }if }bind def /spotfunctions mark /Round{ abs exch abs 2 copy add 1 le{dup mul exch dup mul add 1 exch sub }{ 1 sub dup mul exch 1 sub dup mul add 1 sub }ifelse } /Diamond{abs exch abs 2 copy add .75 le{ dup mul exch dup mul add 1 exch sub }{ 2 copy add 1.23 le{ .85 mul add 1 exch sub}{ 1 sub dup mul exch 1 sub dup mul add 1 sub }ifelse }ifelse } /Ellipse{ abs exch abs 2 copy 3 mul exch 4 mul add 3 sub dup 0 lt{pop dup mul exch .75 div dup mul add 4 div 1 exch sub }{ dup 1 gt{ pop 1 exch sub dup mul exch 1 exch sub.75 div dup mul add 4 div 1 sub }{ .5 exch sub exch pop exch pop }ifelse }ifelse } /EllipseA{dup mul .9 mul exch dup mul add 1 exch sub}/InvertedEllipseA{dup mul .9 mul exch dup mul add 1 sub} /EllipseB{dup 5 mul 8 div mul exch dup mul exch add sqrt 1 exch sub}/EllipseC{dup mul .9 mul exch dup mul add 1 exch sub} /InvertedEllipseC{dup mul .9 mul exch dup mul add 1 sub}/Line{exch pop abs neg} /LineX{pop} /LineY{exch pop} /Square{abs exch abs 2 copy lt{exch}if pop neg}/Cross{abs exch abs 2 copy gt{exch}if pop neg} /Rhomboid{abs exch abs 0.9 mul add 2 div} /DoubleDot{2{360 mul sin 2 div exch}repeat add}/InvertedDoubleDot{2{360 mul sin 2 div exch}repeat add neg} /SimpleDot{dup mul exch dup mul add 1 exch sub}/InvertedSimpleDot{dup mul exch dup mul add 1 sub} /CosineDot{180 mul cos exch 180 mul cos add 2 div}/Double{exch 2 div exch 2{360 mul sin 2 div exch}repeat add} /InvertedDouble{ exch 2 div exch 2{360 mul sin 2 div exch}repeat add neg} .dicttomark readonly def /CheckColorSpace { dup type/arraytype ne{ mark(Resource )3 index( must be an array.)//error exec}if }bind def /SubstitutePDFColorSpaceRec {0 exec }bind def /SubstitutePDFColorSpace { { dup 0 get/Pattern eq{dup length 1 gt{ dup dup 1//CheckColorSpace//ResolveA exec dup type/nametype ne{ //SubstitutePDFColorSpaceRec exec}if 1 exch put }if exit }if dup 0 get/Indexed eq{ exit }if dup 0 get/Separation eq{ dup dup 2//CheckColorSpace//ResolveA execdup type/nametype ne{ //SubstitutePDFColorSpaceRec exec }if 2 exch put exit }if dup 0 get/CalGray eq{1 get dup/Gamma//knownget exec{ [exch/exp load]cvx 1 index exch/DecodeLMN exch put }if [exch/CIEBasedA exch]exit }if dup 0 get/CalRGB eq{ 1 get dup/Matrix//knownget exec{ 1 index exch/MatrixLMN exch put }if dup/Gamma//knownget exec{aload pop [exch/exp load]cvx 3 1 roll [exch/exp load]cvx 3 1 roll [exch/exp load]cvx 3 1 roll 3 array astore1 index exch/DecodeLMN exch put }if [exch/CIEBasedABC exch] exit }if dup 0 get/Lab eq{ 1 get begin currentdict/Range//knownget exec{aload pop}{-100 100 -100 100}ifelse0 100 6 2 roll 6 array astore /RangeABC exch def /DecodeABC[{16 add 116 div}bind{500 div}bind{200 div}bind]def/MatrixABC[1 1 1 1 0 0 0 0 -1]def {dup 6 29 div ge{dup dup mul mul}{4 29 div sub 108 841 div mul}ifelse}/DecodeLMN[ [3 index aload pop WhitePoint 0 get/mul load]cvx [4 index aload pop WhitePoint 1 get/mul load]cvx[5 index aload pop WhitePoint 2 get/mul load]cvx ]def pop //PDFR_DEBUG{ (Constructed from Lab <<)= currentdict{exch = ==}forall(>>)= }if [/CIEBasedABC currentdict] end exit pop }if mark exch(Unimplemented color space )exch//error exec}loop }bind def //SubstitutePDFColorSpaceRec 0//SubstitutePDFColorSpace put /ResolveArrayElement {2 copy get xcheck{2 copy get exec 2 index 4 1 roll put }{ pop }ifelse }bind def /ResolveColorSpaceArrayRec {0 exec }bind def/SetColorSpaceSafe { PDFR_DEBUG{ (SetColorSpaceSafe beg)= }if currentcolorspace dup type/arraytype eq{1 index type/arraytype eq{ dup length 2 index length eq{ false exch dup length 0 exch 1 exch 1 sub{ dup4 index exch get exch 2 index exch get ne{ exch pop true exch exit }if }for pop { setcolorspace }{ pop}ifelse }{ pop setcolorspace }ifelse }{ pop setcolorspace }ifelse }{ pop setcolorspace }ifelse PDFR_DEBUG{(SetColorSpaceSafe end)= }if }bind def /ResolveColorSpaceArray { //PDFR_DEBUG{ (ResolveColorSpaceArray beg )print dup ==}if dup 0 get/Indexed eq{ 1//ResolveArrayElement exec dup dup 1 get dup type/arraytype eq{ //SubstitutePDFColorSpace exec//ResolveColorSpaceArrayRec exec 1 exch put }{ pop pop }ifelse }if dup 0 get/Separation eq{ 3//ResolveArrayElement execdup 3 get//FunctionToProc exec 2 copy 3 exch put pop }if PDFR_DEBUG{ (Construcrted color space :)= dup ==}if //PDFR_DEBUG{ (ResolveColorSpaceArray end )print dup == }if }bind def //ResolveColorSpaceArrayRec 0//ResolveColorSpaceArray put/ResolveColorSpace { //PDFR_DEBUG{ (ResolveColorSpace beg )print dup = }if dup//SimpleColorSpaceNames exch known not{dup//PDFColorSpaces exch//knownget exec{ exch pop //PDFR_DEBUG{ (ResolveColorSpace known )= }if }{ dup//PDFReader/CurrentObject get/Context get/Resources get /ColorSpace//DoNothing//ResolveD exec exch//CheckColorSpace//ResolveD execdup type/arraytype eq{ //SubstitutePDFColorSpace exec //ResolveColorSpaceArray exec dup//PDFColorSpaces 4 2 roll put}if }ifelse }if //PDFR_DEBUG{ (ResolveColorSpace end )print dup == }if }bind def /CheckPattern { dup/PatternType//knownget exec{dup 1 ne{ mark(Resource )4 index( is a shading, which can't be handled at level 2. )//error exec }ifpop }if dup/Type get/Pattern ne{ mark(Resource )4 index( must have /Type/Pattern .)//error exec }if }bind def/PaintProc {/Context get //RunDelayedStream exec }bind def /ResolvePattern { dup userdict/PDFR_Patterns getexch//knownget exec{ exch pop }{ dup //PDFReader/CurrentObject get/Context get/Resources get /Pattern//DoNothing//ResolveD execexch//CheckPattern//ResolveD exec dup dup/Context exch put dup/Resources//DoNothing//ResolveD exec popdup/PaintProc//PaintProc put gsave userdict/PDFR_InitialGS get setgstate currentglobal exch false setglobaldup/Matrix get makepattern exch setglobal grestore dup userdict/PDFR_Patterns get 4 2 roll put }ifelse}bind def /SetColor {//PDFR_DEBUG{ (SetColor beg)= }if currentcolorspace dup type/nametype eq{ pop setcolor}{ 0 get/Pattern eq{ //ResolvePattern exec setpattern }{ setcolor }ifelse }ifelse //PDFR_DEBUG{ (SetColor end)=}if }bind def /ImageKeys 15 dict begin /BPC/BitsPerComponent def /CS/ColorSpace def /D/Decode def /DP/DecodeParms def/F/Filter def /H/Height def /IM/ImageMask def /I/Interpolate def /W/Width def currentdict end readonly def/ImageValues 15 dict begin /G/DeviceGray def /RGB/DeviceRGB def /CMYK/DeviceCMYK def /I/Indexed def /AHx/ASCIIHexDecode def/A85/ASCII85Decode def /LZW/LZWDecode def /Fl/FlateDecode def /RL/RunLengthDecode def /CCF/CCITTFaxDecode def/DCT/DCTDecode def currentdict end readonly def /GetColorSpaceRange {2 index/ColorSpace get dup type/arraytype eq{1 get }if exch//knownget exec{ exch pop }if }bind def /DecodeArrays 15 dict begin /DeviceGray{[0 1]}def/DeviceRGB{[0 1 0 1 0 1]}def /DeviceCMYK{[0 1 0 1 0 1 0 1]}def /Indexed{dup/ColorSpace get 2 get[exch 0 exch]}def/Separation{[0 1]}def /CIEBasedA{[0 1]/RangeA//GetColorSpaceRange exec}def /CIEBasedABC{[0 1 0 1 0 1]/RangeABC//GetColorSpaceRange exec}defcurrentdict end readonly def /Substitute {1 index//knownget exec{ exch pop }if }bind def /DebugImagePrinting{ //PDFR_DEBUG{ (Image :)= dup{exch//=only exec( )print == }forall }if }bind def /CompleteImage { dup/ColorSpace known{dup/ColorSpace//CheckColorSpace//ResolveD exec pop }if dup/Decode known not{ dup/ColorSpace//knownget exec{dup type/arraytype eq{ 0 get }if //DecodeArrays exch get exec }{ [0 1] }ifelse 1 index exch/Decode exch put}if dup/ImageMatrix[2 index/Width get 0 0 5 index/Height get neg 0 7 index/Height get]put //DebugImagePrinting exec}bind def /CompleteInlineImage { //PDFR_DEBUG{ (CompleteInlineImage beg)= }if dup/ImageType known not{dup/ImageType 1 put }if dup length dict exch{ exch//ImageKeys//Substitute exec dup/Filter eq{ exch//ImageValues//Substitute exec exch}if dup/ColorSpace eq{ exch dup//ImageValues exch//knownget exec{ exch pop }{ //ResolveColorSpace exec}ifelse exch }if exch 2 index 3 1 roll put }forall //CompleteImage exec dup/DataSource 2 copy get 2 index//AppendFilters exec put//PDFR_DEBUG{ (CompleteInlineImage end)= }if }bind def /CompleteOutlineImage { currentglobal exch dup gcheck setglobal//PDFR_DEBUG{ (CompleteOutlineImage beg)= }if dup dup//MakeStreamReader exec/DataSource exch put dup/ImageType known not{//CompleteImage exec dup/ImageType 1 put dup/ColorSpace known{ dup/ColorSpace//CheckColorSpace//ResolveD execdup type/arraytype eq{ //ResolveColorSpaceArray exec //SubstitutePDFColorSpace exec 1 index exch/ColorSpace exch put}{ pop }ifelse }if }if //PDFR_DEBUG{ (CompleteOutlineImage end)= }if exch setglobal }bind def /DoImage{ //PDFR_DEBUG{ (DoImage beg)= }if gsave dup/ColorSpace//knownget exec{setcolorspace}if dup/ImageMask//knownget exec not{false}if{imagemask}{image}ifelse grestore //PDFR_DEBUG{ (DoImage end)= }if }bind def /GSave { gsave //PDFReader/GraphicStateStackPointer getdup//GraphicStateStack exch get null eq{ dup//GraphicStateStack exch//InitialGraphicState length dict put}if dup//GraphicStateStack exch get //GraphicState exch copy pop 1 add//PDFReader exch/GraphicStateStackPointer exch put}bind def /GRestore { grestore //PDFReader/GraphicStateStackPointer get 1 sub dup //PDFReader exch/GraphicStateStackPointer exch put//GraphicStateStack exch get //GraphicState copy pop }bind def /SetFont {dup//GraphicState exch/FontSize exch put//ResolveAndSetFont exec //GraphicState/FontMatrixNonHV currentfont/FontMatrix get 1 get 0 ne put }bind def/ShowText {//GraphicState/TextRenderingMode get 0 eq{ //GraphicState/WordSpacing get 0 32 //GraphicState/CharacterSpacing get 06 5 roll //GraphicState/FontMatrixNonHV get{ [ 7 -2 roll pop 5 -2 roll pop 5 -1 roll { exch pop 3 index addexch 2 index eq{3 index add}if 4 1 roll } currentfont/FontMatrix get 0 get 0 ne{ 1 1 index length 1 sub getinterval cvx}if 5 index cshow pop pop pop] xshow }{ awidthshow }ifelse }{ //GraphicState/CharacterSpacing get 0 eq//GraphicState/FontMatrixNonHV get not and //GraphicState/WordSpacing get 0 eq and{ true charpath }{{ exch pop 0 currentpoint 5 4 roll ( )dup 0 3 index put true charpath 5 1 roll moveto rmoveto //GraphicState/CharacterSpacing get 0 rmoveto32 eq{ //GraphicState/WordSpacing get 0 rmoveto }if } //GraphicState/FontMatrixNonHV get dup not exch{pop currentfont/FontMatrix get 0 get 0 ne }if{ 1 1 index length 1 sub getinterval cvx }if exch cshow}ifelse }ifelse }bind def /ShowTextBeg {//GraphicState/TextRenderingMode get 0 ne{ currentpoint newpath moveto}if }bind def /ShowTextEnd {//GraphicState/TextRenderingMode get {dup 1 eq{ stroke exit }if dup 2 eq{gsave fill grestore stroke exit }if dup 3 eq{ currentpoint newpath moveto }if dup 4 eq{ gsave fill grestore clip exit}if dup 5 eq{ gsave stroke grestore clip exit }if dup 6 eq{ gsave fill grestore gsave stroke grestore fill exit}if dup 7 eq{ clip exit }if exit }loop pop }bind def /ShowTextWithGlyphPositioning {//ShowTextBeg exec{dup type/stringtype eq{ //ShowText exec }{ neg 1000 div//GraphicState/FontSize get mul 0 rmoveto }ifelse}forall //ShowTextEnd exec }bind def /CheckFont {dup/Type get/ExtGState ne{ mark(Resource )3 index( must have /Type/ExtGState.)//error exec}if }bind def /SetTransfer { //PDFR_DEBUG{(SetTransfer beg )print count =}if dup type/arraytype eq 1 index xcheck not and{0 4 getinterval aload pop setcolortransfer }{ settransfer }ifelse //PDFR_DEBUG{(SetTransfer end )print count =}if}bind def /CheckExtGState {dup/Type get/ExtGState ne{ mark(Resource )3 index( must have /Type/ExtGState.)//error exec}if }bind def /CheckHalftone {dup/HalftoneType known not{ mark(Resource )3 index( must have /HalftoneType.)//error exec}if }bind def /ResolveFunction { //PDFR_DEBUG{(ResolveFunction beg )print dup = count =}if 2 copy get//IsObjRef exec{2 copy//DoNothing//ResolveD exec 3 copy put pop }if 2 copy get dup type/arraytype eq exch xcheck and not{2 copy get dup type/arraytype eq 1 index xcheck not and{ dup length 1 sub -1 0{ 2 copy//DoNothing ResolveAdup/Identity eq{ pop 2 copy{}put }{ //FunctionToProc exec 3 copy put pop }ifelse pop }for }{ dup/Default eq{}{ dup/Identity eq{ pop{} }{dup type/nametype eq{ //spotfunctions exch get }{ //FunctionToProc exec }ifelse}ifelse }ifelse }ifelse 3 copy put exch pop }{ 1 index exch get }ifelse //PDFR_DEBUG{(ResolveFunction end )print dup == count =}if}bind def /ResolveFunctionSafe {2 copy known{ //ResolveFunction exec }if pop }bind def /CreateHalftoneThresholds{ dup/Thresholds known not{ dup/HalftoneType get 10 eq{ dup dup//MakeStreamReader exec /Thresholds exch put}if dup/HalftoneType get dup 3 eq exch 6 eq or{ dup dup//MakeStreamReader exec //BlockBuffer readstring popdup length dup 0 eq{ mark(Could not read Thresholds)//error exec }if string copy/Thresholds exch putdup/HalftoneType 3 put }if }if }bind def /SetExtGState { //PDFReader/CurrentObject get/Context get/Resources get/ExtGState//DoNothing//ResolveD exec exch//CheckExtGState//ResolveD exec dup/LW//knownget exec{ setlinewidth}if dup/LC//knownget exec{ setlinecap }if dup/LJ//knownget exec{ setlinejoin }if dup/ML//knownget exec{setmeterlimit }if dup/D//knownget exec{ setdash }if dup/RI//knownget exec{ mark(Unimplemented ExtGState.RI)//error exec}if dup/OP//knownget exec{ setoverprint }if dup/op//knownget exec{ setoverprint }if dup/OPM//knownget exec{mark(Unimplemented ExtGState.OPM)//error exec }if dup/Font//knownget exec{ mark(Unimplemented ExtGState.Font)//error exec}if dup/BG known{ /BG//ResolveFunction exec setblackgeneration }if dup/BG2 known{ /BG2//ResolveFunction execdup/Default eq{ //InitialExtGState/BG2 get }if setblackgeneration }if dup/UCR known{ /UCR//ResolveFunction execsetundercolorremoval }if dup/UCR2 known{ /UCR2//ResolveFunction exec dup/Default eq{ //InitialExtGState/UCR2 get}if setundercolorremoval }if dup/TR known{ /TR//ResolveFunction exec //SetTransfer exec }if dup/TR2 known{/TR2//ResolveFunction exec dup/Default eq{ pop//InitialExtGState/TR2 get aload pop setcolortransfer }{//SetTransfer exec }ifelse }if dup/HT//knownget exec{ dup/Default eq{ pop//InitialExtGState/HT get sethalftone}{ //PDFR_DEBUG{(Ht beg)=}if pop dup/HT//CheckHalftone//ResolveD exec /SpotFunction//ResolveFunctionSafe exec/TransferFunction//ResolveFunctionSafe exec null exch dup/HalftoneType get dup 5 eq exch dup 4 eq exch 2 eq or or{dup{ dup//IsObjRef exec{ pop 1 index exch//CheckHalftone ResolveD }if dup type/dicttype eq{ dup/SpotFunction//ResolveFunctionSafe exec/TransferFunction//ResolveFunctionSafe exec //CreateHalftoneThresholds exec dup/HalftoneType get 5 gt{4 3 roll pop dup 4 1 roll }if }if pop pop }forall }if //CreateHalftoneThresholds exec //PDFR_DEBUG{ (HT:)=dup{ 1 index/Default eq{ (Default <<)= exch pop {exch = ==}forall (>>)= }{ exch = == }ifelse }forall(HT end)= flush }if exch dup null ne{ (Warning: Ignoring a halftone with a Level 3 component halftone Type )print dup/HalftoneType get =pop pop }{ pop dup/HalftoneType get 5 gt{ (Warning: Ignoring a Level 3 halftone Type )print dup/HalftoneType get =pop }{ sethalftone }ifelse }ifelse //PDFR_DEBUG{(HT set)= flush}if }ifelse }if dup/FL//knownget exec{setflattness }if dup/SM//knownget exec{ setsmoothness }if dup/SA//knownget exec{ setstrokeadjust }ifdup/BM//knownget exec{ mark(Unimplemented ExtGState.BM)//error exec }if dup/SMask//knownget exec{ mark(Unimplemented ExtGState.SMask)//error exec}if dup/CA//knownget exec{ mark(Unimplemented ExtGState.CA)//error exec }if dup/ca//knownget exec{ mark(Unimplemented ExtGState.ca)//error exec}if dup/AIS//knownget exec{ mark(Unimplemented ExtGState.AIS)//error exec }if dup/TK//knownget exec{mark(Unimplemented ExtGState.TK)//error exec }if pop }bind def /CheckXObject {dup/Subtype get dup/Image ne exch dup/Form ne exch/PS ne and and{mark(Resource )3 index( must have /Subtype /Image or /Form or /PS.)//error exec }if }bind def /DoXObject{ //PDFReader/CurrentObject get/Context get/Resources get /XObject//DoNothing//ResolveD exec exch//CheckXObject//ResolveD execdup/Subtype get dup/Image eq{ pop //CompleteOutlineImage exec //DoImage exec }{ dup/PS eq{ PDFR_DEBUG{(Executing a PS Xobject)= }if pop //RunDelayedStream exec }{ dup/Form eq{ pop PDFR_DEBUG{ (Executing a Form XObject)=}if //PDFReader/CurrentObject get exch dup//PDFReader exch<< exch/Context exch >>/CurrentObject exch putdup/Matrix get concat dup/BBox get aload pop exch 3 index sub exch 2 index sub rectclip //RunDelayedStream exec//PDFReader exch/CurrentObject exch put }{ mark exch(unimplemented XObject type )exch//error exec }ifelse}ifelse }ifelse }bind def /Operators 50 dict begin /q{//GSave exec}bind def /Q{//GRestore exec}bind def/cm{//TempMatrix astore concat}bind def /i{1 .min setflat}bind def /J/setlinecap load def /d/setdash load def/j/setlinejoin load def /w/setlinewidth load def /M/setmiterlimit load def /gs{SetExtGState}bind def/g/setgray load def /rg/setrgbcolor load def /k/setcmykcolor load def /cs{//ResolveColorSpace exec//SetColorSpaceSafe exec}bind def /sc/setcolor load def /scn{//SetColor exec}bind def /G/setgray load def /RG/setrgbcolor load def/K/setcmykcolor load def /CS//cs def /ri{SetColorRenderingIntent}bind def /SC/setcolor load def /SCN{//SetColor exec}bind def/m/moveto load def /l/lineto load def /c/curveto load def /v{currentpoint 6 2 roll curveto}bind def /y{2 copy curveto}bind def/re{ 4 2 roll moveto exch dup 0 rlineto 0 3 -1 roll rlineto neg 0 rlineto closepath }def /h/closepath load def/n/newpath load def /S/stroke load def /s{closepath stroke}bind def /f/fill load def /f*/eofill load def/B{gsave fill grestore stroke}bind def /b{closepath gsave fill grestore stroke}bind def /B*{gsave eofill grestore stroke}bind def/b*{closepath gsave eofill grestore stroke}bind def /W/clip load def /W*/eoclip load def /sh{ ResolveShadingdup/Background known{ gsave dup/ColorSpace get setcolorspace dup/Background get aload pop setcolor pathbbox2 index sub exch 3 index sub exch rectfill grestore }if shfill }bind def /Do{//DoXObject exec}bind def/BI{currentglobal false setglobal<<}bind def /ID{>> dup/DataSource currentfile 2 index/F//knownget exec{/A85 eq{ 0(~>)/SubFileDecode filter }if }if put //CompleteInlineImage exec exch setglobal //DoImage exec}bind def /EI{}bind def /BT{gsave//GraphicState/InitialTextMatrix get currentmatrix pop}bind def /ET{grestore}bind def/Tc{//GraphicState exch/CharacterSpacing exch put}bind def /TL{//GraphicState exch/TextLeading exch put}bind def/Tr{//GraphicState exch/TextRenderingMode exch put}bind def /Ts{ mark(Unimplemented SetTextRise)//error exec}bind def /Tw{//GraphicState exch/WordSpacing exch put}bind def /Tz{ mark(Unimplemented SetHorizontalTextScaling)//error exec}bind def /Td{translate 0 0 moveto}bind def /TD{dup neg//TL exec//Td exec}bind def /Tm{//GraphicState/InitialTextMatrix get setmatrix//TempMatrix astore concat 0 0 moveto}bind def /T*{0//GraphicState/TextLeading get neg//Td exec}bind def/Tj{//ShowTextBeg exec//ShowText exec//ShowTextEnd exec}bind def /'{//T* exec//ShowText exec//ShowTextEnd exec}bind def/"{3 2 roll//Tw exec exch//Tc exec//' exec}bind def /TJ//ShowTextWithGlyphPositioning def /Tf//SetFont def/d0/setcharwidth load def /d1/setcachedevice load def /BDC{BeginMarkedContentSequenceWithPropertyList}bind def/BMC{BeginMarkedContentSequence}bind def /EMC{EndMarkedContentSequence}bind def /BX{BeginCompatibilitySection}bind def/EX{EndCompatibilitySection}bind def /DP{DefineMarkedContentPointWithPropertyList}bind def /MP{DefineMarkedContentPoint}bind def/PS{cvx exec}bind def currentdict end def //PDFR_STREAM{ //Operators length dict begin //Operators{ exch dup[exch//=only/exec load ( )/print load 8 7 roll dup type/arraytype eq{ /exec load }if ( )/print load ]cvxdef }forall currentdict end/Operators exch def }if /.registerencoding {pop pop }bind def /.defineencoding{def }bind def /.findencoding {load }bind def /AdobeGlyphList 1500 dict dup/A 16#0041 put dup/AE 16#00C6 put dup/AEacute 16#01FC put dup/AEsmall 16#F7E6 putdup/Aacute 16#00C1 put dup/Aacutesmall 16#F7E1 put dup/Abreve 16#0102 put dup/Acircumflex 16#00C2 putdup/Acircumflexsmall 16#F7E2 put dup/Acute 16#F6C9 put dup/Acutesmall 16#F7B4 put dup/Adieresis 16#00C4 putdup/Adieresissmall 16#F7E4 put dup/Agrave 16#00C0 put dup/Agravesmall 16#F7E0 put dup/Alpha 16#0391 putdup/Alphatonos 16#0386 put dup/Amacron 16#0100 put dup/Aogonek 16#0104 put dup/Aring 16#00C5 put dup/Aringacute 16#01FA putdup/Aringsmall 16#F7E5 put dup/Asmall 16#F761 put dup/Atilde 16#00C3 put dup/Atildesmall 16#F7E3 putdup/B 16#0042 put dup/Beta 16#0392 put dup/Brevesmall 16#F6F4 put dup/Bsmall 16#F762 put dup/C 16#0043 putdup/Cacute 16#0106 put dup/Caron 16#F6CA put dup/Caronsmall 16#F6F5 put dup/Ccaron 16#010C put dup/Ccedilla 16#00C7 putdup/Ccedillasmall 16#F7E7 put dup/Ccircumflex 16#0108 put dup/Cdotaccent 16#010A put dup/Cedillasmall 16#F7B8 putdup/Chi 16#03A7 put dup/Circumflexsmall 16#F6F6 put dup/Csmall 16#F763 put dup/D 16#0044 put dup/Dcaron 16#010E putdup/Dcroat 16#0110 put dup/Delta[16#2206 16#0394]put dup/Dieresis 16#F6CB put dup/DieresisAcute 16#F6CC putdup/DieresisGrave 16#F6CD put dup/Dieresissmall 16#F7A8 put dup/Dotaccentsmall 16#F6F7 put dup/Dsmall 16#F764 putdup/E 16#0045 put dup/Eacute 16#00C9 put dup/Eacutesmall 16#F7E9 put dup/Ebreve 16#0114 put dup/Ecaron 16#011A putdup/Ecircumflex 16#00CA put dup/Ecircumflexsmall 16#F7EA put dup/Edieresis 16#00CB put dup/Edieresissmall 16#F7EB putdup/Edotaccent 16#0116 put dup/Egrave 16#00C8 put dup/Egravesmall 16#F7E8 put dup/Emacron 16#0112 putdup/Eng 16#014A put dup/Eogonek 16#0118 put dup/Epsilon 16#0395 put dup/Epsilontonos 16#0388 put dup/Esmall 16#F765 putdup/Eta 16#0397 put dup/Etatonos 16#0389 put dup/Eth 16#00D0 put dup/Ethsmall 16#F7F0 put dup/Euro 16#20AC putdup/F 16#0046 put dup/Fsmall 16#F766 put dup/G 16#0047 put dup/Gamma 16#0393 put dup/Gbreve 16#011E putdup/Gcaron 16#01E6 put dup/Gcircumflex 16#011C put dup/Gcommaaccent 16#0122 put dup/Gdotaccent 16#0120 putdup/Grave 16#F6CE put dup/Gravesmall 16#F760 put dup/Gsmall 16#F767 put dup/H 16#0048 put dup/H18533 16#25CF putdup/H18543 16#25AA put dup/H18551 16#25AB put dup/H22073 16#25A1 put dup/Hbar 16#0126 put dup/Hcircumflex 16#0124 putdup/Hsmall 16#F768 put dup/Hungarumlaut 16#F6CF put dup/Hungarumlautsmall 16#F6F8 put dup/I 16#0049 putdup/IJ 16#0132 put dup/Iacute 16#00CD put dup/Iacutesmall 16#F7ED put dup/Ibreve 16#012C put dup/Icircumflex 16#00CE putdup/Icircumflexsmall 16#F7EE put dup/Idieresis 16#00CF put dup/Idieresissmall 16#F7EF put dup/Idotaccent 16#0130 putdup/Ifraktur 16#2111 put dup/Igrave 16#00CC put dup/Igravesmall 16#F7EC put dup/Imacron 16#012A put dup/Iogonek 16#012E putdup/Iota 16#0399 put dup/Iotadieresis 16#03AA put dup/Iotatonos 16#038A put dup/Ismall 16#F769 put dup/Itilde 16#0128 putdup/J 16#004A put dup/Jcircumflex 16#0134 put dup/Jsmall 16#F76A put dup/K 16#004B put dup/Kappa 16#039A putdup/Kcommaaccent 16#0136 put dup/Ksmall 16#F76B put dup/L 16#004C put dup/LL 16#F6BF put dup/Lacute 16#0139 putdup/Lambda 16#039B put dup/Lcaron 16#013D put dup/Lcommaaccent 16#013B put dup/Ldot 16#013F put dup/Lslash 16#0141 putdup/Lslashsmall 16#F6F9 put dup/Lsmall 16#F76C put dup/M 16#004D put dup/Macron 16#F6D0 put dup/Macronsmall 16#F7AF putdup/Msmall 16#F76D put dup/Mu 16#039C put dup/N 16#004E put dup/Nacute 16#0143 put dup/Ncaron 16#0147 putdup/Ncommaaccent 16#0145 put dup/Nsmall 16#F76E put dup/Ntilde 16#00D1 put dup/Ntildesmall 16#F7F1 putdup/Nu 16#039D put dup/O 16#004F put dup/OE 16#0152 put dup/OEsmall 16#F6FA put dup/Oacute 16#00D3 putdup/Oacutesmall 16#F7F3 put dup/Obreve 16#014E put dup/Ocircumflex 16#00D4 put dup/Ocircumflexsmall 16#F7F4 putdup/Odieresis 16#00D6 put dup/Odieresissmall 16#F7F6 put dup/Ogoneksmall 16#F6FB put dup/Ograve 16#00D2 putdup/Ogravesmall 16#F7F2 put dup/Ohorn 16#01A0 put dup/Ohungarumlaut 16#0150 put dup/Omacron 16#014C putdup/Omega[16#2126 16#03A9]put dup/Omegatonos 16#038F put dup/Omicron 16#039F put dup/Omicrontonos 16#038C putdup/Oslash 16#00D8 put dup/Oslashacute 16#01FE put dup/Oslashsmall 16#F7F8 put dup/Osmall 16#F76F putdup/Otilde 16#00D5 put dup/Otildesmall 16#F7F5 put dup/P 16#0050 put dup/Phi 16#03A6 put dup/Pi 16#03A0 putdup/Psi 16#03A8 put dup/Psmall 16#F770 put dup/Q 16#0051 put dup/Qsmall 16#F771 put dup/R 16#0052 putdup/Racute 16#0154 put dup/Rcaron 16#0158 put dup/Rcommaaccent 16#0156 put dup/Rfraktur 16#211C put dup/Rho 16#03A1 putdup/Ringsmall 16#F6FC put dup/Rsmall 16#F772 put dup/S 16#0053 put dup/SF010000 16#250C put dup/SF020000 16#2514 putdup/SF030000 16#2510 put dup/SF040000 16#2518 put dup/SF050000 16#253C put dup/SF060000 16#252C put dup/SF070000 16#2534 putdup/SF080000 16#251C put dup/SF090000 16#2524 put dup/SF100000 16#2500 put dup/SF110000 16#2502 put dup/SF190000 16#2561 putdup/SF200000 16#2562 put dup/SF210000 16#2556 put dup/SF220000 16#2555 put dup/SF230000 16#2563 put dup/SF240000 16#2551 putdup/SF250000 16#2557 put dup/SF260000 16#255D put dup/SF270000 16#255C put dup/SF280000 16#255B put dup/SF360000 16#255E putdup/SF370000 16#255F put dup/SF380000 16#255A put dup/SF390000 16#2554 put dup/SF400000 16#2569 put dup/SF410000 16#2566 putdup/SF420000 16#2560 put dup/SF430000 16#2550 put dup/SF440000 16#256C put dup/SF450000 16#2567 put dup/SF460000 16#2568 putdup/SF470000 16#2564 put dup/SF480000 16#2565 put dup/SF490000 16#2559 put dup/SF500000 16#2558 put dup/SF510000 16#2552 putdup/SF520000 16#2553 put dup/SF530000 16#256B put dup/SF540000 16#256A put dup/Sacute 16#015A put dup/Scaron 16#0160 putdup/Scaronsmall 16#F6FD put dup/Scedilla[16#015E 16#F6C1]put dup/Scircumflex 16#015C put dup/Scommaaccent 16#0218 putdup/Sigma 16#03A3 put dup/Ssmall 16#F773 put dup/T 16#0054 put dup/Tau 16#03A4 put dup/Tbar 16#0166 putdup/Tcaron 16#0164 put dup/Tcommaaccent[16#0162 16#021A]put dup/Theta 16#0398 put dup/Thorn 16#00DE putdup/Thornsmall 16#F7FE put dup/Tildesmall 16#F6FE put dup/Tsmall 16#F774 put dup/U 16#0055 put dup/Uacute 16#00DA putdup/Uacutesmall 16#F7FA put dup/Ubreve 16#016C put dup/Ucircumflex 16#00DB put dup/Ucircumflexsmall 16#F7FB putdup/Udieresis 16#00DC put dup/Udieresissmall 16#F7FC put dup/Ugrave 16#00D9 put dup/Ugravesmall 16#F7F9 putdup/Uhorn 16#01AF put dup/Uhungarumlaut 16#0170 put dup/Umacron 16#016A put dup/Uogonek 16#0172 put dup/Upsilon 16#03A5 putdup/Upsilon1 16#03D2 put dup/Upsilondieresis 16#03AB put dup/Upsilontonos 16#038E put dup/Uring 16#016E putdup/Usmall 16#F775 put dup/Utilde 16#0168 put dup/V 16#0056 put dup/Vsmall 16#F776 put dup/W 16#0057 putdup/Wacute 16#1E82 put dup/Wcircumflex 16#0174 put dup/Wdieresis 16#1E84 put dup/Wgrave 16#1E80 put dup/Wsmall 16#F777 putdup/X 16#0058 put dup/Xi 16#039E put dup/Xsmall 16#F778 put dup/Y 16#0059 put dup/Yacute 16#00DD putdup/Yacutesmall 16#F7FD put dup/Ycircumflex 16#0176 put dup/Ydieresis 16#0178 put dup/Ydieresissmall 16#F7FF putdup/Ygrave 16#1EF2 put dup/Ysmall 16#F779 put dup/Z 16#005A put dup/Zacute 16#0179 put dup/Zcaron 16#017D putdup/Zcaronsmall 16#F6FF put dup/Zdotaccent 16#017B put dup/Zeta 16#0396 put dup/Zsmall 16#F77A put dup/a 16#0061 putdup/aacute 16#00E1 put dup/abreve 16#0103 put dup/acircumflex 16#00E2 put dup/acute 16#00B4 put dup/acutecomb 16#0301 putdup/adieresis 16#00E4 put dup/ae 16#00E6 put dup/aeacute 16#01FD put dup/afii00208 16#2015 put dup/afii10017 16#0410 putdup/afii10018 16#0411 put dup/afii10019 16#0412 put dup/afii10020 16#0413 put dup/afii10021 16#0414 putdup/afii10022 16#0415 put dup/afii10023 16#0401 put dup/afii10024 16#0416 put dup/afii10025 16#0417 putdup/afii10026 16#0418 put dup/afii10027 16#0419 put dup/afii10028 16#041A put dup/afii10029 16#041B putdup/afii10030 16#041C put dup/afii10031 16#041D put dup/afii10032 16#041E put dup/afii10033 16#041F putdup/afii10034 16#0420 put dup/afii10035 16#0421 put dup/afii10036 16#0422 put dup/afii10037 16#0423 putdup/afii10038 16#0424 put dup/afii10039 16#0425 put dup/afii10040 16#0426 put dup/afii10041 16#0427 putdup/afii10042 16#0428 put dup/afii10043 16#0429 put dup/afii10044 16#042A put dup/afii10045 16#042B putdup/afii10046 16#042C put dup/afii10047 16#042D put dup/afii10048 16#042E put dup/afii10049 16#042F putdup/afii10050 16#0490 put dup/afii10051 16#0402 put dup/afii10052 16#0403 put dup/afii10053 16#0404 putdup/afii10054 16#0405 put dup/afii10055 16#0406 put dup/afii10056 16#0407 put dup/afii10057 16#0408 putdup/afii10058 16#0409 put dup/afii10059 16#040A put dup/afii10060 16#040B put dup/afii10061 16#040C putdup/afii10062 16#040E put dup/afii10063 16#F6C4 put dup/afii10064 16#F6C5 put dup/afii10065 16#0430 putdup/afii10066 16#0431 put dup/afii10067 16#0432 put dup/afii10068 16#0433 put dup/afii10069 16#0434 putdup/afii10070 16#0435 put dup/afii10071 16#0451 put dup/afii10072 16#0436 put dup/afii10073 16#0437 putdup/afii10074 16#0438 put dup/afii10075 16#0439 put dup/afii10076 16#043A put dup/afii10077 16#043B putdup/afii10078 16#043C put dup/afii10079 16#043D put dup/afii10080 16#043E put dup/afii10081 16#043F putdup/afii10082 16#0440 put dup/afii10083 16#0441 put dup/afii10084 16#0442 put dup/afii10085 16#0443 putdup/afii10086 16#0444 put dup/afii10087 16#0445 put dup/afii10088 16#0446 put dup/afii10089 16#0447 putdup/afii10090 16#0448 put dup/afii10091 16#0449 put dup/afii10092 16#044A put dup/afii10093 16#044B putdup/afii10094 16#044C put dup/afii10095 16#044D put dup/afii10096 16#044E put dup/afii10097 16#044F putdup/afii10098 16#0491 put dup/afii10099 16#0452 put dup/afii10100 16#0453 put dup/afii10101 16#0454 putdup/afii10102 16#0455 put dup/afii10103 16#0456 put dup/afii10104 16#0457 put dup/afii10105 16#0458 putdup/afii10106 16#0459 put dup/afii10107 16#045A put dup/afii10108 16#045B put dup/afii10109 16#045C putdup/afii10110 16#045E put dup/afii10145 16#040F put dup/afii10146 16#0462 put dup/afii10147 16#0472 putdup/afii10148 16#0474 put dup/afii10192 16#F6C6 put dup/afii10193 16#045F put dup/afii10194 16#0463 putdup/afii10195 16#0473 put dup/afii10196 16#0475 put dup/afii10831 16#F6C7 put dup/afii10832 16#F6C8 putdup/afii10846 16#04D9 put dup/afii299 16#200E put dup/afii300 16#200F put dup/afii301 16#200D put dup/afii57381 16#066A putdup/afii57388 16#060C put dup/afii57392 16#0660 put dup/afii57393 16#0661 put dup/afii57394 16#0662 putdup/afii57395 16#0663 put dup/afii57396 16#0664 put dup/afii57397 16#0665 put dup/afii57398 16#0666 putdup/afii57399 16#0667 put dup/afii57400 16#0668 put dup/afii57401 16#0669 put dup/afii57403 16#061B putdup/afii57407 16#061F put dup/afii57409 16#0621 put dup/afii57410 16#0622 put dup/afii57411 16#0623 putdup/afii57412 16#0624 put dup/afii57413 16#0625 put dup/afii57414 16#0626 put dup/afii57415 16#0627 putdup/afii57416 16#0628 put dup/afii57417 16#0629 put dup/afii57418 16#062A put dup/afii57419 16#062B putdup/afii57420 16#062C put dup/afii57421 16#062D put dup/afii57422 16#062E put dup/afii57423 16#062F putdup/afii57424 16#0630 put dup/afii57425 16#0631 put dup/afii57426 16#0632 put dup/afii57427 16#0633 putdup/afii57428 16#0634 put dup/afii57429 16#0635 put dup/afii57430 16#0636 put dup/afii57431 16#0637 putdup/afii57432 16#0638 put dup/afii57433 16#0639 put dup/afii57434 16#063A put dup/afii57440 16#0640 putdup/afii57441 16#0641 put dup/afii57442 16#0642 put dup/afii57443 16#0643 put dup/afii57444 16#0644 putdup/afii57445 16#0645 put dup/afii57446 16#0646 put dup/afii57448 16#0648 put dup/afii57449 16#0649 putdup/afii57450 16#064A put dup/afii57451 16#064B put dup/afii57452 16#064C put dup/afii57453 16#064D putdup/afii57454 16#064E put dup/afii57455 16#064F put dup/afii57456 16#0650 put dup/afii57457 16#0651 putdup/afii57458 16#0652 put dup/afii57470 16#0647 put dup/afii57505 16#06A4 put dup/afii57506 16#067E putdup/afii57507 16#0686 put dup/afii57508 16#0698 put dup/afii57509 16#06AF put dup/afii57511 16#0679 putdup/afii57512 16#0688 put dup/afii57513 16#0691 put dup/afii57514 16#06BA put dup/afii57519 16#06D2 putdup/afii57534 16#06D5 put dup/afii57636 16#20AA put dup/afii57645 16#05BE put dup/afii57658 16#05C3 putdup/afii57664 16#05D0 put dup/afii57665 16#05D1 put dup/afii57666 16#05D2 put dup/afii57667 16#05D3 putdup/afii57668 16#05D4 put dup/afii57669 16#05D5 put dup/afii57670 16#05D6 put dup/afii57671 16#05D7 putdup/afii57672 16#05D8 put dup/afii57673 16#05D9 put dup/afii57674 16#05DA put dup/afii57675 16#05DB putdup/afii57676 16#05DC put dup/afii57677 16#05DD put dup/afii57678 16#05DE put dup/afii57679 16#05DF putdup/afii57680 16#05E0 put dup/afii57681 16#05E1 put dup/afii57682 16#05E2 put dup/afii57683 16#05E3 putdup/afii57684 16#05E4 put dup/afii57685 16#05E5 put dup/afii57686 16#05E6 put dup/afii57687 16#05E7 putdup/afii57688 16#05E8 put dup/afii57689 16#05E9 put dup/afii57690 16#05EA put dup/afii57694 16#FB2A putdup/afii57695 16#FB2B put dup/afii57700 16#FB4B put dup/afii57705 16#FB1F put dup/afii57716 16#05F0 putdup/afii57717 16#05F1 put dup/afii57718 16#05F2 put dup/afii57723 16#FB35 put dup/afii57793 16#05B4 putdup/afii57794 16#05B5 put dup/afii57795 16#05B6 put dup/afii57796 16#05BB put dup/afii57797 16#05B8 putdup/afii57798 16#05B7 put dup/afii57799 16#05B0 put dup/afii57800 16#05B2 put dup/afii57801 16#05B1 putdup/afii57802 16#05B3 put dup/afii57803 16#05C2 put dup/afii57804 16#05C1 put dup/afii57806 16#05B9 putdup/afii57807 16#05BC put dup/afii57839 16#05BD put dup/afii57841 16#05BF put dup/afii57842 16#05C0 putdup/afii57929 16#02BC put dup/afii61248 16#2105 put dup/afii61289 16#2113 put dup/afii61352 16#2116 putdup/afii61573 16#202C put dup/afii61574 16#202D put dup/afii61575 16#202E put dup/afii61664 16#200C putdup/afii63167 16#066D put dup/afii64937 16#02BD put dup/agrave 16#00E0 put dup/aleph 16#2135 put dup/alpha 16#03B1 putdup/alphatonos 16#03AC put dup/amacron 16#0101 put dup/ampersand 16#0026 put dup/ampersandsmall 16#F726 putdup/angle 16#2220 put dup/angleleft 16#2329 put dup/angleright 16#232A put dup/anoteleia 16#0387 putdup/aogonek 16#0105 put dup/approxequal 16#2248 put dup/aring 16#00E5 put dup/aringacute 16#01FB putdup/arrowboth 16#2194 put dup/arrowdblboth 16#21D4 put dup/arrowdbldown 16#21D3 put dup/arrowdblleft 16#21D0 putdup/arrowdblright 16#21D2 put dup/arrowdblup 16#21D1 put dup/arrowdown 16#2193 put dup/arrowhorizex 16#F8E7 putdup/arrowleft 16#2190 put dup/arrowright 16#2192 put dup/arrowup 16#2191 put dup/arrowupdn 16#2195 putdup/arrowupdnbse 16#21A8 put dup/arrowvertex 16#F8E6 put dup/asciicircum 16#005E put dup/asciitilde 16#007E putdup/asterisk 16#002A put dup/asteriskmath 16#2217 put dup/asuperior 16#F6E9 put dup/at 16#0040 put dup/atilde 16#00E3 putdup/b 16#0062 put dup/backslash 16#005C put dup/bar 16#007C put dup/beta 16#03B2 put dup/block 16#2588 putdup/braceex 16#F8F4 put dup/braceleft 16#007B put dup/braceleftbt 16#F8F3 put dup/braceleftmid 16#F8F2 putdup/bracelefttp 16#F8F1 put dup/braceright 16#007D put dup/bracerightbt 16#F8FE put dup/bracerightmid 16#F8FD putdup/bracerighttp 16#F8FC put dup/bracketleft 16#005B put dup/bracketleftbt 16#F8F0 put dup/bracketleftex 16#F8EF putdup/bracketlefttp 16#F8EE put dup/bracketright 16#005D put dup/bracketrightbt 16#F8FB put dup/bracketrightex 16#F8FA putdup/bracketrighttp 16#F8F9 put dup/breve 16#02D8 put dup/brokenbar 16#00A6 put dup/bsuperior 16#F6EA putdup/bullet 16#2022 put dup/c 16#0063 put dup/cacute 16#0107 put dup/caron 16#02C7 put dup/carriagereturn 16#21B5 putdup/ccaron 16#010D put dup/ccedilla 16#00E7 put dup/ccircumflex 16#0109 put dup/cdotaccent 16#010B putdup/cedilla 16#00B8 put dup/cent 16#00A2 put dup/centinferior 16#F6DF put dup/centoldstyle 16#F7A2 putdup/centsuperior 16#F6E0 put dup/chi 16#03C7 put dup/circle 16#25CB put dup/circlemultiply 16#2297 putdup/circleplus 16#2295 put dup/circumflex 16#02C6 put dup/club 16#2663 put dup/colon 16#003A put dup/colonmonetary 16#20A1 putdup/comma 16#002C put dup/commaaccent 16#F6C3 put dup/commainferior 16#F6E1 put dup/commasuperior 16#F6E2 putdup/congruent 16#2245 put dup/copyright 16#00A9 put dup/copyrightsans 16#F8E9 put dup/copyrightserif 16#F6D9 putdup/currency 16#00A4 put dup/cyrBreve 16#F6D1 put dup/cyrFlex 16#F6D2 put dup/cyrbreve 16#F6D4 put dup/cyrflex 16#F6D5 putdup/d 16#0064 put dup/dagger 16#2020 put dup/daggerdbl 16#2021 put dup/dblGrave 16#F6D3 put dup/dblgrave 16#F6D6 putdup/dcaron 16#010F put dup/dcroat 16#0111 put dup/degree 16#00B0 put dup/delta 16#03B4 put dup/diamond 16#2666 putdup/dieresis 16#00A8 put dup/dieresisacute 16#F6D7 put dup/dieresisgrave 16#F6D8 put dup/dieresistonos 16#0385 putdup/divide 16#00F7 put dup/dkshade 16#2593 put dup/dnblock 16#2584 put dup/dollar 16#0024 put dup/dollarinferior 16#F6E3 putdup/dollaroldstyle 16#F724 put dup/dollarsuperior 16#F6E4 put dup/dong 16#20AB put dup/dotaccent 16#02D9 putdup/dotbelowcomb 16#0323 put dup/dotlessi 16#0131 put dup/dotlessj 16#F6BE put dup/dotmath 16#22C5 putdup/dsuperior 16#F6EB put dup/e 16#0065 put dup/eacute 16#00E9 put dup/ebreve 16#0115 put dup/ecaron 16#011B putdup/ecircumflex 16#00EA put dup/edieresis 16#00EB put dup/edotaccent 16#0117 put dup/egrave 16#00E8 putdup/eight 16#0038 put dup/eightinferior 16#2088 put dup/eightoldstyle 16#F738 put dup/eightsuperior 16#2078 putdup/element 16#2208 put dup/ellipsis 16#2026 put dup/emacron 16#0113 put dup/emdash 16#2014 put dup/emptyset 16#2205 putdup/endash 16#2013 put dup/eng 16#014B put dup/eogonek 16#0119 put dup/epsilon 16#03B5 put dup/epsilontonos 16#03AD putdup/equal 16#003D put dup/equivalence 16#2261 put dup/estimated 16#212E put dup/esuperior 16#F6EC putdup/eta 16#03B7 put dup/etatonos 16#03AE put dup/eth 16#00F0 put dup/exclam 16#0021 put dup/exclamdbl 16#203C putdup/exclamdown 16#00A1 put dup/exclamdownsmall 16#F7A1 put dup/exclamsmall 16#F721 put dup/existential 16#2203 putdup/f 16#0066 put dup/female 16#2640 put dup/ff 16#FB00 put dup/ffi 16#FB03 put dup/ffl 16#FB04 put dup/fi 16#FB01 putdup/figuredash 16#2012 put dup/filledbox 16#25A0 put dup/filledrect 16#25AC put dup/five 16#0035 putdup/fiveeighths 16#215D put dup/fiveinferior 16#2085 put dup/fiveoldstyle 16#F735 put dup/fivesuperior 16#2075 putdup/fl 16#FB02 put dup/florin 16#0192 put dup/four 16#0034 put dup/fourinferior 16#2084 put dup/fouroldstyle 16#F734 putdup/foursuperior 16#2074 put dup/fraction[16#2044 16#2215]put dup/franc 16#20A3 put dup/g 16#0067 putdup/gamma 16#03B3 put dup/gbreve 16#011F put dup/gcaron 16#01E7 put dup/gcircumflex 16#011D put dup/gcommaaccent 16#0123 putdup/gdotaccent 16#0121 put dup/germandbls 16#00DF put dup/gradient 16#2207 put dup/grave 16#0060 putdup/gravecomb 16#0300 put dup/greater 16#003E put dup/greaterequal 16#2265 put dup/guillemotleft 16#00AB putdup/guillemotright 16#00BB put dup/guilsinglleft 16#2039 put dup/guilsinglright 16#203A put dup/h 16#0068 putdup/hbar 16#0127 put dup/hcircumflex 16#0125 put dup/heart 16#2665 put dup/hookabovecomb 16#0309 putdup/house 16#2302 put dup/hungarumlaut 16#02DD put dup/hyphen[16#002D 16#00AD]put dup/hypheninferior 16#F6E5 putdup/hyphensuperior 16#F6E6 put dup/i 16#0069 put dup/iacute 16#00ED put dup/ibreve 16#012D put dup/icircumflex 16#00EE putdup/idieresis 16#00EF put dup/igrave 16#00EC put dup/ij 16#0133 put dup/imacron 16#012B put dup/infinity 16#221E putdup/integral 16#222B put dup/integralbt 16#2321 put dup/integralex 16#F8F5 put dup/integraltp 16#2320 putdup/intersection 16#2229 put dup/invbullet 16#25D8 put dup/invcircle 16#25D9 put dup/invsmileface 16#263B putdup/iogonek 16#012F put dup/iota 16#03B9 put dup/iotadieresis 16#03CA put dup/iotadieresistonos 16#0390 putdup/iotatonos 16#03AF put dup/isuperior 16#F6ED put dup/itilde 16#0129 put dup/j 16#006A put dup/jcircumflex 16#0135 putdup/k 16#006B put dup/kappa 16#03BA put dup/kcommaaccent 16#0137 put dup/kgreenlandic 16#0138 put dup/l 16#006C putdup/lacute 16#013A put dup/lambda 16#03BB put dup/lcaron 16#013E put dup/lcommaaccent 16#013C put dup/ldot 16#0140 putdup/less 16#003C put dup/lessequal 16#2264 put dup/lfblock 16#258C put dup/lira 16#20A4 put dup/ll 16#F6C0 putdup/logicaland 16#2227 put dup/logicalnot 16#00AC put dup/logicalor 16#2228 put dup/longs 16#017F putdup/lozenge 16#25CA put dup/lslash 16#0142 put dup/lsuperior 16#F6EE put dup/ltshade 16#2591 put dup/m 16#006D putdup/macron[16#00AF 16#02C9]put dup/male 16#2642 put dup/minus 16#2212 put dup/minute 16#2032 put dup/msuperior 16#F6EF putdup/mu[16#00B5 16#03BC]put dup/multiply 16#00D7 put dup/musicalnote 16#266A put dup/musicalnotedbl 16#266B putdup/n 16#006E put dup/nacute 16#0144 put dup/napostrophe 16#0149 put dup/ncaron 16#0148 put dup/ncommaaccent 16#0146 putdup/nine 16#0039 put dup/nineinferior 16#2089 put dup/nineoldstyle 16#F739 put dup/ninesuperior 16#2079 putdup/notelement 16#2209 put dup/notequal 16#2260 put dup/notsubset 16#2284 put dup/nsuperior 16#207F putdup/ntilde 16#00F1 put dup/nu 16#03BD put dup/numbersign 16#0023 put dup/o 16#006F put dup/oacute 16#00F3 putdup/obreve 16#014F put dup/ocircumflex 16#00F4 put dup/odieresis 16#00F6 put dup/oe 16#0153 put dup/ogonek 16#02DB putdup/ograve 16#00F2 put dup/ohorn 16#01A1 put dup/ohungarumlaut 16#0151 put dup/omacron 16#014D put dup/omega 16#03C9 putdup/omega1 16#03D6 put dup/omegatonos 16#03CE put dup/omicron 16#03BF put dup/omicrontonos 16#03CC putdup/one 16#0031 put dup/onedotenleader 16#2024 put dup/oneeighth 16#215B put dup/onefitted 16#F6DC putdup/onehalf 16#00BD put dup/oneinferior 16#2081 put dup/oneoldstyle 16#F731 put dup/onequarter 16#00BC putdup/onesuperior 16#00B9 put dup/onethird 16#2153 put dup/openbullet 16#25E6 put dup/ordfeminine 16#00AA putdup/ordmasculine 16#00BA put dup/orthogonal 16#221F put dup/oslash 16#00F8 put dup/oslashacute 16#01FF putdup/osuperior 16#F6F0 put dup/otilde 16#00F5 put dup/p 16#0070 put dup/paragraph 16#00B6 put dup/parenleft 16#0028 putdup/parenleftbt 16#F8ED put dup/parenleftex 16#F8EC put dup/parenleftinferior 16#208D put dup/parenleftsuperior 16#207D putdup/parenlefttp 16#F8EB put dup/parenright 16#0029 put dup/parenrightbt 16#F8F8 put dup/parenrightex 16#F8F7 putdup/parenrightinferior 16#208E put dup/parenrightsuperior 16#207E put dup/parenrighttp 16#F8F6 put dup/partialdiff 16#2202 putdup/percent 16#0025 put dup/period 16#002E put dup/periodcentered[16#00B7 16#2219]put dup/periodinferior 16#F6E7 putdup/periodsuperior 16#F6E8 put dup/perpendicular 16#22A5 put dup/perthousand 16#2030 put dup/peseta 16#20A7 putdup/phi 16#03C6 put dup/phi1 16#03D5 put dup/pi 16#03C0 put dup/plus 16#002B put dup/plusminus 16#00B1 putdup/prescription 16#211E put dup/product 16#220F put dup/propersubset 16#2282 put dup/propersuperset 16#2283 putdup/proportional 16#221D put dup/psi 16#03C8 put dup/q 16#0071 put dup/question 16#003F put dup/questiondown 16#00BF putdup/questiondownsmall 16#F7BF put dup/questionsmall 16#F73F put dup/quotedbl 16#0022 put dup/quotedblbase 16#201E putdup/quotedblleft 16#201C put dup/quotedblright 16#201D put dup/quoteleft 16#2018 put dup/quotereversed 16#201B putdup/quoteright 16#2019 put dup/quotesinglbase 16#201A put dup/quotesingle 16#0027 put dup/r 16#0072 putdup/racute 16#0155 put dup/radical 16#221A put dup/radicalex 16#F8E5 put dup/rcaron 16#0159 put dup/rcommaaccent 16#0157 putdup/reflexsubset 16#2286 put dup/reflexsuperset 16#2287 put dup/registered 16#00AE put dup/registersans 16#F8E8 putdup/registerserif 16#F6DA put dup/revlogicalnot 16#2310 put dup/rho 16#03C1 put dup/ring 16#02DA putdup/rsuperior 16#F6F1 put dup/rtblock 16#2590 put dup/rupiah 16#F6DD put dup/s 16#0073 put dup/sacute 16#015B putdup/scaron 16#0161 put dup/scedilla[16#015F 16#F6C2]put dup/scircumflex 16#015D put dup/scommaaccent 16#0219 putdup/second 16#2033 put dup/section 16#00A7 put dup/semicolon 16#003B put dup/seven 16#0037 put dup/seveneighths 16#215E putdup/seveninferior 16#2087 put dup/sevenoldstyle 16#F737 put dup/sevensuperior 16#2077 put dup/shade 16#2592 putdup/sigma 16#03C3 put dup/sigma1 16#03C2 put dup/similar 16#223C put dup/six 16#0036 put dup/sixinferior 16#2086 putdup/sixoldstyle 16#F736 put dup/sixsuperior 16#2076 put dup/slash 16#002F put dup/smileface 16#263A putdup/space[16#0020 16#00A0]put dup/spade 16#2660 put dup/ssuperior 16#F6F2 put dup/sterling 16#00A3 putdup/suchthat 16#220B put dup/summation 16#2211 put dup/sun 16#263C put dup/t 16#0074 put dup/tau 16#03C4 putdup/tbar 16#0167 put dup/tcaron 16#0165 put dup/tcommaaccent[16#0163 16#021B]put dup/therefore 16#2234 putdup/theta 16#03B8 put dup/theta1 16#03D1 put dup/thorn 16#00FE put dup/three 16#0033 put dup/threeeighths 16#215C putdup/threeinferior 16#2083 put dup/threeoldstyle 16#F733 put dup/threequarters 16#00BE put dup/threequartersemdash 16#F6DE putdup/threesuperior 16#00B3 put dup/tilde 16#02DC put dup/tildecomb 16#0303 put dup/tonos 16#0384 put dup/trademark 16#2122 putdup/trademarksans 16#F8EA put dup/trademarkserif 16#F6DB put dup/triagdn 16#25BC put dup/triaglf 16#25C4 putdup/triagrt 16#25BA put dup/triagup 16#25B2 put dup/tsuperior 16#F6F3 put dup/two 16#0032 put dup/twodotenleader 16#2025 putdup/twoinferior 16#2082 put dup/twooldstyle 16#F732 put dup/twosuperior 16#00B2 put dup/twothirds 16#2154 putdup/u 16#0075 put dup/uacute 16#00FA put dup/ubreve 16#016D put dup/ucircumflex 16#00FB put dup/udieresis 16#00FC putdup/ugrave 16#00F9 put dup/uhorn 16#01B0 put dup/uhungarumlaut 16#0171 put dup/umacron 16#016B put dup/underscore 16#005F putdup/underscoredbl 16#2017 put dup/union 16#222A put dup/universal 16#2200 put dup/uogonek 16#0173 putdup/upblock 16#2580 put dup/upsilon 16#03C5 put dup/upsilondieresis 16#03CB put dup/upsilondieresistonos 16#03B0 putdup/upsilontonos 16#03CD put dup/uring 16#016F put dup/utilde 16#0169 put dup/v 16#0076 put dup/w 16#0077 putdup/wacute 16#1E83 put dup/wcircumflex 16#0175 put dup/wdieresis 16#1E85 put dup/weierstrass 16#2118 putdup/wgrave 16#1E81 put dup/x 16#0078 put dup/xi 16#03BE put dup/y 16#0079 put dup/yacute 16#00FD putdup/ycircumflex 16#0177 put dup/ydieresis 16#00FF put dup/yen 16#00A5 put dup/ygrave 16#1EF3 put dup/z 16#007A putdup/zacute 16#017A put dup/zcaron 16#017E put dup/zdotaccent 16#017C put dup/zero 16#0030 put dup/zeroinferior 16#2080 putdup/zerooldstyle 16#F730 put dup/zerosuperior 16#2070 put dup/zeta 16#03B6 put def /currentglobal where {pop currentglobal{setglobal}true setglobal} {{}} ifelse /MacRomanEncoding StandardEncoding 0 39 getinterval aload pop/quotesingle StandardEncoding 40 56 getinterval aload pop /grave StandardEncoding 97 31 getinterval aload pop/Adieresis/Aring/Ccedilla/Eacute/Ntilde/Odieresis/Udieresis/aacute /agrave/acircumflex/adieresis/atilde/aring/ccedilla/eacute/egrave/ecircumflex/edieresis/iacute/igrave /icircumflex/idieresis/ntilde/oacute /ograve/ocircumflex/odieresis/otilde/uacute/ugrave/ucircumflex/udieresis /dagger/degree/cent/sterling/section/bullet/paragraph/germandbls/registered/copyright/trademark/acute/dieresis/.notdef/AE/Oslash /.notdef/plusminus/.notdef/.notdef/yen/mu/.notdef/.notdef/.notdef/.notdef/.notdef/ordfeminine/ordmasculine/.notdef/ae/oslash /questiondown/exclamdown/logicalnot/.notdef/florin/.notdef/.notdef/guillemotleft /guillemotright/ellipsis/space/Agrave/Atilde/Otilde/OE/oe /endash/emdash/quotedblleft/quotedblright/quoteleft/quoteright/divide/.notdef /ydieresis/Ydieresis/fraction/currency /guilsinglleft/guilsinglright/fi/fl/daggerdbl/periodcentered/quotesinglbase/quotedblbase /perthousand/Acircumflex/Ecircumflex/Aacute /Edieresis/Egrave/Iacute/Icircumflex/Idieresis/Igrave/Oacute/Ocircumflex /.notdef/Ograve/Uacute/Ucircumflex /Ugrave/dotlessi/circumflex/tilde/macron/breve/dotaccent/ring/cedilla/hungarumlaut/ogonek/caron 256 packedarray 5 1 index .registerencoding.defineencoding exec /currentglobal where {pop currentglobal{setglobal}true setglobal} {{}} ifelse /MacRomanEncoding .findencoding/MacGlyphEncoding /.notdef/.null/CR 4 index 32 95 getinterval aload pop 99 index 128 45 getinterval aload pop/notequal/AE /Oslash/infinity/plusminus/lessequal/greaterequal /yen/mu1/partialdiff/summation/product/pi/integral/ordfeminine/ordmasculine/Ohm /ae/oslash/questiondown/exclamdown/logicalnot /radical/florin/approxequal/increment/guillemotleft/guillemotright/ellipsis/nbspace 174 index 203 12 getinterval aload pop /lozenge 187 index 216 24 getinterval aload pop/applelogo 212 index 241 7 getinterval aload pop /overscore 220 index 249 7 getinterval aload pop /Lslash/lslash/Scaron/scaron/Zcaron/zcaron/brokenbar/Eth/eth /Yacute/yacute/Thorn/thorn/minus /multiply/onesuperior/twosuperior/threesuperior/onehalf/onequarter/threequarters/franc/Gbreve/gbreve /Idotaccent/Scedilla/scedilla/Cacute/cacute /Ccaron/ccaron/dmacron260 -1 roll pop 258 packedarray 7 1 index .registerencoding .defineencoding exec %PDF-1.2
+4 0 obj
+<</Type/Page/MediaBox [0 0 595.28 841.89]
+/Parent 3 0 R
+/Resources<</ProcSet[/PDF]
+>>
+/Contents 5 0 R
+>>
+endobj
+3 0 obj
+<< /Type /Pages /Kids [
+4 0 R
+] /Count 1
+>>
+endobj
+1 0 obj
+<</Type /Catalog /Pages 3 0 R
+>>
+endobj
+5 0 obj
+<</Length 18383>>stream
+q 0.1 0 0 0.1 0 0 cm
+0.960938 G
+0.960938 g
+1901.81 7156.18 m
+2107.39 7156.18 l
+2107.39 6950.6 l
+1901.81 6950.6 l
+1901.81 7156.18 l
+f*
+6.04372 w
+0 g
+0 G
+1901.81 7156.18 m
+2107.39 7156.18 l
+2107.39 6950.6 l
+1901.81 6950.6 l
+1901.81 7156.18 l
+h
+S
+1922.58 7190 m
+1922.58 7187.18 l
+1918.13 7187.18 l
+1918.13 7179.83 l
+1914.7 7179.83 l
+1914.7 7187.18 l
+1902.34 7187.18 l
+1902.34 7190 l
+1916.2 7209.62 l
+1918.13 7209.62 l
+1918.13 7190 l
+1922.58 7190 l
+1922.58 7190 l
+h
+1914.61 7190 m
+1914.61 7205.09 l
+1904.14 7190 l
+1914.61 7190 l
+f
+1969.3 7196.16 m
+1971.46 7196.16 1972.65 7194.92 v
+1973.84 7193.69 1973.84 7191.45 v
+1973.84 7188.85 1972.82 7186.34 v
+1971.81 7183.84 1970.05 7182.07 v
+1967.77 7179.83 1964.95 7179.83 v
+1962.53 7179.83 1961.1 7181.37 v
+1959.67 7182.91 1959.67 7185.51 v
+1959.67 7189.6 1962.64 7192.88 v
+1965.61 7196.16 1969.3 7196.16 v
+1969.3 7196.16 l
+h
+1969.66 7194.7 m
+1967.5 7194.7 1965.83 7192.2 v
+1964.64 7190.48 1963.79 7188.08 v
+1962.93 7185.68 1962.93 7183.97 v
+1962.93 7182.73 1963.72 7181.92 v
+1964.51 7181.11 1965.65 7181.11 v
+1967.81 7181.11 1969.92 7183.62 v
+1971.15 7185.16 1971.93 7187.25 v
+1972.7 7189.34 1972.7 7191.23 v
+1972.7 7192.68 1971.81 7193.69 v
+1970.93 7194.7 1969.66 7194.7 v
+1969.66 7194.7 l
+h
+1967.77 7209.62 m
+1950.82 7179.26 l
+1948.71 7179.26 l
+1964.16 7206.85 l
+1961.96 7205.48 1959.32 7205.48 v
+1957.6 7205.48 1956.41 7205.92 v
+1956.77 7204.91 1956.77 7203.99 v
+1956.77 7201.57 1955.78 7199.15 v
+1954.79 7196.73 1953.07 7194.97 v
+1950.78 7192.55 1947.75 7192.55 v
+1945.59 7192.55 1944.09 7194.18 v
+1942.6 7195.8 1942.6 7198.14 v
+1942.6 7202.32 1945.57 7205.64 v
+1948.54 7208.96 1952.32 7208.96 v
+1953.34 7208.96 1953.95 7208.74 v
+1954.57 7208.52 1955.36 7207.82 v
+1956.77 7206.58 1959.19 7206.58 v
+1961.25 7206.58 1962.77 7207.24 v
+1964.29 7207.9 1966.05 7209.62 v
+1967.77 7209.62 l
+1967.77 7209.62 l
+h
+1955.27 7206.28 m
+1953.73 7206.63 1952.8 7207.33 v
+1952.5 7207.68 1952.32 7207.68 v
+1951.22 7207.68 1950.05 7206.61 v
+1948.89 7205.53 1948.01 7203.72 v
+1947.09 7202.14 1946.52 7200.14 v
+1945.94 7198.14 1945.94 7196.73 v
+1945.94 7195.58 1946.64 7194.84 v
+1947.35 7194.09 1948.49 7194.09 v
+1951.18 7194.09 1953.42 7197.21 v
+1955.67 7200.34 1955.67 7204.07 v
+1955.67 7204.91 1955.27 7206.28 v
+f
+0.800781 G
+0.800781 g
+2386.51 7156.18 m
+2592.09 7156.18 l
+2592.09 6950.6 l
+2386.51 6950.6 l
+2386.51 7156.18 l
+f*
+0 g
+0 G
+2386.51 7156.18 m
+2592.09 7156.18 l
+2592.09 6950.6 l
+2386.51 6950.6 l
+2386.51 7156.18 l
+h
+S
+2407.41 7185.9 m
+2404.99 7179.83 l
+2387.79 7179.83 l
+2387.79 7180.36 l
+2395.66 7188.68 l
+2401.38 7194.79 2401.38 7200.12 v
+2401.38 7202.89 2399.66 7204.61 v
+2397.95 7206.32 2395.22 7206.32 v
+2392.89 7206.32 2391.5 7205.09 v
+2390.12 7203.86 2388.84 7200.6 v
+2387.88 7200.86 l
+2388.84 7204.91 2390.69 7206.85 v
+2393.2 7209.62 2397.03 7209.62 v
+2400.46 7209.62 2402.79 7207.36 v
+2405.12 7205.09 2405.12 7201.79 v
+2405.12 7196.82 2399.54 7190.92 v
+2392.1 7183.18 l
+2402.7 7183.18 l
+2404.15 7183.18 2404.88 7183.68 v
+2405.61 7184.19 2406.79 7186.08 v
+2407.41 7185.9 l
+f
+2419.6 7209.62 m
+2423.95 7209.62 2426.68 7205.38 v
+2429.41 7201.13 2429.41 7194.35 v
+2429.41 7190.35 2428.24 7186.8 v
+2427.08 7183.26 2425.14 7181.5 v
+2422.81 7179.17 2419.46 7179.17 v
+2415.59 7179.17 2413.04 7182.21 v
+2411.5 7184.05 2410.49 7187.53 v
+2409.48 7191.01 2409.48 7194.57 v
+2409.48 7198.45 2410.64 7201.94 v
+2411.81 7205.44 2413.75 7207.29 v
+2416.21 7209.62 2419.6 7209.62 v
+2419.6 7209.62 l
+h
+2419.46 7208.43 m
+2416.7 7208.43 2415.22 7204.8 v
+2413.75 7201.17 2413.75 7194.22 v
+2413.75 7180.36 2419.46 7180.36 v
+2425.14 7180.36 2425.14 7194.26 v
+2425.14 7208.43 2419.46 7208.43 v
+f
+2475.96 7196.16 m
+2478.12 7196.16 2479.3 7194.92 v
+2480.49 7193.69 2480.49 7191.45 v
+2480.49 7188.85 2479.48 7186.34 v
+2478.47 7183.84 2476.71 7182.07 v
+2474.42 7179.83 2471.61 7179.83 v
+2469.19 7179.83 2467.76 7181.37 v
+2466.32 7182.91 2466.32 7185.51 v
+2466.32 7189.6 2469.3 7192.88 v
+2472.27 7196.16 2475.96 7196.16 v
+2475.96 7196.16 l
+h
+2476.31 7194.7 m
+2474.16 7194.7 2472.48 7192.2 v
+2471.3 7190.48 2470.44 7188.08 v
+2469.58 7185.68 2469.58 7183.97 v
+2469.58 7182.73 2470.38 7181.92 v
+2471.17 7181.11 2472.31 7181.11 v
+2474.46 7181.11 2476.58 7183.62 v
+2477.81 7185.16 2478.58 7187.25 v
+2479.35 7189.34 2479.35 7191.23 v
+2479.35 7192.68 2478.47 7193.69 v
+2477.59 7194.7 2476.31 7194.7 v
+2476.31 7194.7 l
+h
+2474.42 7209.62 m
+2457.48 7179.26 l
+2455.37 7179.26 l
+2470.81 7206.85 l
+2468.61 7205.48 2465.97 7205.48 v
+2464.26 7205.48 2463.07 7205.92 v
+2463.42 7204.91 2463.42 7203.99 v
+2463.42 7201.57 2462.43 7199.15 v
+2461.44 7196.73 2459.73 7194.97 v
+2457.44 7192.55 2454.4 7192.55 v
+2452.25 7192.55 2450.75 7194.18 v
+2449.25 7195.8 2449.25 7198.14 v
+2449.25 7202.32 2452.22 7205.64 v
+2455.2 7208.96 2458.98 7208.96 v
+2459.99 7208.96 2460.61 7208.74 v
+2461.22 7208.52 2462.02 7207.82 v
+2463.42 7206.58 2465.84 7206.58 v
+2467.91 7206.58 2469.43 7207.24 v
+2470.95 7207.9 2472.71 7209.62 v
+2474.42 7209.62 l
+2474.42 7209.62 l
+h
+2461.93 7206.28 m
+2460.39 7206.63 2459.46 7207.33 v
+2459.15 7207.68 2458.98 7207.68 v
+2457.88 7207.68 2456.71 7206.61 v
+2455.55 7205.53 2454.67 7203.72 v
+2453.74 7202.14 2453.17 7200.14 v
+2452.6 7198.14 2452.6 7196.73 v
+2452.6 7195.58 2453.3 7194.84 v
+2454.01 7194.09 2455.15 7194.09 v
+2457.84 7194.09 2460.08 7197.21 v
+2462.32 7200.34 2462.32 7204.07 v
+2462.32 7204.91 2461.93 7206.28 v
+f
+0.450928 G
+0.450928 g
+2871.2 7156.18 m
+3076.78 7156.18 l
+3076.78 6950.6 l
+2871.2 6950.6 l
+2871.2 7156.18 l
+f*
+0 g
+0 G
+2871.2 7156.18 m
+3076.78 7156.18 l
+3076.78 6950.6 l
+2871.2 6950.6 l
+2871.2 7156.18 l
+h
+S
+2879.21 7205 m
+2877.32 7201.26 l
+2881.14 7200.6 2883.3 7199.72 v
+2885.46 7198.84 2886.91 7197.39 v
+2888.62 7195.76 2889.33 7194.07 v
+2890.03 7192.37 2890.03 7190 v
+2890.03 7185.02 2887.04 7182.16 v
+2883.7 7178.69 2877.98 7178.69 v
+2875.51 7178.69 2874.06 7179.44 v
+2872.61 7180.18 2872.61 7181.46 v
+2872.61 7183.09 2874.5 7183.09 v
+2875.78 7183.09 2877.84 7181.68 v
+2879.56 7180.36 2880.79 7180.36 v
+2883.34 7180.36 2885.12 7182.54 v
+2886.91 7184.71 2886.91 7187.84 v
+2886.91 7191.14 2885.12 7193.25 v
+2883.34 7195.36 2879.52 7196.64 v
+2876.88 7197.48 2874.54 7197.48 v
+2874.02 7197.48 2874.02 7197.83 v
+2874.02 7198.05 l
+2878.86 7208.48 l
+2888.1 7208.48 l
+2889.33 7208.48 2890.07 7209.62 v
+2890.47 7209.31 l
+2888.8 7205.39 l
+2888.67 7205 2887.74 7205 v
+2879.21 7205 l
+f
+2901.16 7205 m
+2899.27 7201.26 l
+2903.1 7200.6 2905.26 7199.72 v
+2907.41 7198.84 2908.86 7197.39 v
+2910.58 7195.76 2911.29 7194.07 v
+2911.99 7192.37 2911.99 7190 v
+2911.99 7185.02 2909 7182.16 v
+2905.65 7178.69 2899.93 7178.69 v
+2897.47 7178.69 2896.02 7179.44 v
+2894.56 7180.18 2894.56 7181.46 v
+2894.56 7183.09 2896.46 7183.09 v
+2897.73 7183.09 2899.8 7181.68 v
+2901.52 7180.36 2902.75 7180.36 v
+2905.3 7180.36 2907.08 7182.54 v
+2908.86 7184.71 2908.86 7187.84 v
+2908.86 7191.14 2907.08 7193.25 v
+2905.3 7195.36 2901.47 7196.64 v
+2898.83 7197.48 2896.5 7197.48 v
+2895.97 7197.48 2895.97 7197.83 v
+2895.97 7198.05 l
+2900.81 7208.48 l
+2910.05 7208.48 l
+2911.29 7208.48 2912.03 7209.62 v
+2912.43 7209.31 l
+2910.76 7205.39 l
+2910.62 7205 2909.7 7205 v
+2901.16 7205 l
+f
+2960.65 7195.67 m
+2962.81 7195.67 2964 7194.44 v
+2965.18 7193.21 2965.18 7190.96 v
+2965.18 7188.37 2964.17 7185.86 v
+2963.16 7183.35 2961.4 7181.59 v
+2959.11 7179.35 2956.3 7179.35 v
+2953.88 7179.35 2952.45 7180.89 v
+2951.02 7182.43 2951.02 7185.02 v
+2951.02 7189.12 2953.98 7192.39 v
+2956.96 7195.67 2960.65 7195.67 v
+2960.65 7195.67 l
+h
+2961 7194.22 m
+2958.85 7194.22 2957.18 7191.71 v
+2955.99 7190 2955.13 7187.6 v
+2954.27 7185.2 2954.27 7183.48 v
+2954.27 7182.25 2955.06 7181.44 v
+2955.86 7180.62 2957 7180.62 v
+2959.16 7180.62 2961.27 7183.13 v
+2962.5 7184.67 2963.27 7186.76 v
+2964.04 7188.85 2964.04 7190.74 v
+2964.04 7192.2 2963.16 7193.21 v
+2962.28 7194.22 2961 7194.22 v
+2961 7194.22 l
+h
+2959.11 7209.14 m
+2942.17 7178.78 l
+2940.06 7178.78 l
+2955.5 7206.36 l
+2953.3 7205 2950.66 7205 v
+2948.95 7205 2947.76 7205.44 v
+2948.11 7204.43 2948.11 7203.5 v
+2948.11 7201.08 2947.12 7198.66 v
+2946.13 7196.24 2944.42 7194.48 v
+2942.13 7192.06 2939.09 7192.06 v
+2936.94 7192.06 2935.44 7193.69 v
+2933.95 7195.32 2933.95 7197.65 v
+2933.95 7201.83 2936.91 7205.15 v
+2939.88 7208.48 2943.67 7208.48 v
+2944.68 7208.48 2945.3 7208.25 v
+2945.91 7208.04 2946.7 7207.33 v
+2948.11 7206.1 2950.53 7206.1 v
+2952.6 7206.1 2954.12 7206.76 v
+2955.64 7207.42 2957.39 7209.14 v
+2959.11 7209.14 l
+2959.11 7209.14 l
+h
+2946.62 7205.79 m
+2945.07 7206.14 2944.15 7206.85 v
+2943.84 7207.2 2943.67 7207.2 v
+2942.57 7207.2 2941.4 7206.12 v
+2940.23 7205.04 2939.36 7203.24 v
+2938.43 7201.66 2937.86 7199.65 v
+2937.29 7197.65 2937.29 7196.24 v
+2937.29 7195.1 2937.99 7194.35 v
+2938.7 7193.61 2939.84 7193.61 v
+2942.52 7193.61 2944.77 7196.73 v
+2947.01 7199.85 2947.01 7203.59 v
+2947.01 7204.43 2946.62 7205.79 v
+f
+0.902344 G
+0.902344 g
+2144.16 7156.18 m
+2349.74 7156.18 l
+2349.74 6950.6 l
+2144.16 6950.6 l
+2144.16 7156.18 l
+f*
+0 g
+0 G
+2144.16 7156.18 m
+2349.74 7156.18 l
+2349.74 6950.6 l
+2144.16 6950.6 l
+2144.16 7156.18 l
+h
+S
+2156.96 7209.62 m
+2157.32 7209.49 l
+2157.32 7183.13 l
+2157.32 7181.5 2158.11 7181.02 v
+2158.9 7180.54 2161.5 7180.49 v
+2161.5 7179.83 l
+2149.39 7179.83 l
+2149.39 7180.49 l
+2151.6 7180.54 2152.48 7181.06 v
+2153.49 7181.64 2153.49 7183.88 v
+2153.49 7203.86 l
+2153.49 7205.92 2152.21 7205.92 v
+2151.55 7205.92 2150.23 7205.44 v
+2149.04 7204.96 l
+2149.04 7205.53 l
+2156.96 7209.62 l
+f
+2177.25 7209.62 m
+2181.61 7209.62 2184.33 7205.38 v
+2187.06 7201.13 2187.06 7194.35 v
+2187.06 7190.35 2185.89 7186.8 v
+2184.73 7183.26 2182.79 7181.5 v
+2180.46 7179.17 2177.12 7179.17 v
+2173.24 7179.17 2170.69 7182.21 v
+2169.15 7184.05 2168.14 7187.53 v
+2167.13 7191.01 2167.13 7194.57 v
+2167.13 7198.45 2168.29 7201.94 v
+2169.46 7205.44 2171.39 7207.29 v
+2173.86 7209.62 2177.25 7209.62 v
+2177.25 7209.62 l
+h
+2177.12 7208.43 m
+2174.34 7208.43 2172.87 7204.8 v
+2171.39 7201.17 2171.39 7194.22 v
+2171.39 7180.36 2177.12 7180.36 v
+2182.79 7180.36 2182.79 7194.26 v
+2182.79 7208.43 2177.12 7208.43 v
+f
+2233.61 7196.16 m
+2235.77 7196.16 2236.96 7194.92 v
+2238.14 7193.69 2238.14 7191.45 v
+2238.14 7188.85 2237.13 7186.34 v
+2236.12 7183.84 2234.36 7182.07 v
+2232.07 7179.83 2229.26 7179.83 v
+2226.84 7179.83 2225.41 7181.37 v
+2223.98 7182.91 2223.98 7185.51 v
+2223.98 7189.6 2226.95 7192.88 v
+2229.92 7196.16 2233.61 7196.16 v
+2233.61 7196.16 l
+h
+2233.96 7194.7 m
+2231.81 7194.7 2230.14 7192.2 v
+2228.95 7190.48 2228.09 7188.08 v
+2227.23 7185.68 2227.23 7183.97 v
+2227.23 7182.73 2228.02 7181.92 v
+2228.82 7181.11 2229.96 7181.11 v
+2232.12 7181.11 2234.23 7183.62 v
+2235.46 7185.16 2236.23 7187.25 v
+2237 7189.34 2237 7191.23 v
+2237 7192.68 2236.12 7193.69 v
+2235.24 7194.7 2233.96 7194.7 v
+2233.96 7194.7 l
+h
+2232.07 7209.62 m
+2215.13 7179.26 l
+2213.02 7179.26 l
+2228.46 7206.85 l
+2226.27 7205.48 2223.62 7205.48 v
+2221.91 7205.48 2220.72 7205.92 v
+2221.07 7204.91 2221.07 7203.99 v
+2221.07 7201.57 2220.08 7199.15 v
+2219.09 7196.73 2217.38 7194.97 v
+2215.09 7192.55 2212.05 7192.55 v
+2209.89 7192.55 2208.4 7194.18 v
+2206.9 7195.8 2206.9 7198.14 v
+2206.9 7202.32 2209.88 7205.64 v
+2212.84 7208.96 2216.63 7208.96 v
+2217.64 7208.96 2218.26 7208.74 v
+2218.87 7208.52 2219.66 7207.82 v
+2221.07 7206.58 2223.49 7206.58 v
+2225.56 7206.58 2227.08 7207.24 v
+2228.6 7207.9 2230.36 7209.62 v
+2232.07 7209.62 l
+2232.07 7209.62 l
+h
+2219.57 7206.28 m
+2218.04 7206.63 2217.11 7207.33 v
+2216.8 7207.68 2216.63 7207.68 v
+2215.53 7207.68 2214.36 7206.61 v
+2213.2 7205.53 2212.32 7203.72 v
+2211.39 7202.14 2210.82 7200.14 v
+2210.25 7198.14 2210.25 7196.73 v
+2210.25 7195.58 2210.95 7194.84 v
+2211.66 7194.09 2212.8 7194.09 v
+2215.48 7194.09 2217.73 7197.21 v
+2219.97 7200.34 2219.97 7204.07 v
+2219.97 7204.91 2219.57 7206.28 v
+f
+0.552734 G
+0.552734 g
+2628.86 7156.18 m
+2834.44 7156.18 l
+2834.44 6950.6 l
+2628.86 6950.6 l
+2628.86 7156.18 l
+f*
+0 g
+0 G
+2628.86 7156.18 m
+2834.44 7156.18 l
+2834.44 6950.6 l
+2628.86 6950.6 l
+2628.86 7156.18 l
+h
+S
+2649.63 7189.51 m
+2649.63 7186.7 l
+2645.18 7186.7 l
+2645.18 7179.35 l
+2641.75 7179.35 l
+2641.75 7186.7 l
+2629.39 7186.7 l
+2629.39 7189.51 l
+2643.25 7209.14 l
+2645.18 7209.14 l
+2645.18 7189.51 l
+2649.63 7189.51 l
+2649.63 7189.51 l
+h
+2641.66 7189.51 m
+2641.66 7204.61 l
+2631.19 7189.51 l
+2641.66 7189.51 l
+f
+2658.82 7205 m
+2656.93 7201.26 l
+2660.76 7200.6 2662.91 7199.72 v
+2665.07 7198.84 2666.52 7197.39 v
+2668.24 7195.76 2668.95 7194.07 v
+2669.65 7192.37 2669.65 7190 v
+2669.65 7185.02 2666.66 7182.16 v
+2663.31 7178.69 2657.59 7178.69 v
+2655.13 7178.69 2653.68 7179.44 v
+2652.22 7180.18 2652.22 7181.46 v
+2652.22 7183.09 2654.12 7183.09 v
+2655.39 7183.09 2657.46 7181.68 v
+2659.18 7180.36 2660.41 7180.36 v
+2662.96 7180.36 2664.74 7182.54 v
+2666.52 7184.71 2666.52 7187.84 v
+2666.52 7191.14 2664.74 7193.25 v
+2662.96 7195.36 2659.13 7196.64 v
+2656.49 7197.48 2654.16 7197.48 v
+2653.63 7197.48 2653.63 7197.83 v
+2653.63 7198.05 l
+2658.47 7208.48 l
+2667.71 7208.48 l
+2668.95 7208.48 2669.69 7209.62 v
+2670.09 7209.31 l
+2668.41 7205.39 l
+2668.29 7205 2667.36 7205 v
+2658.82 7205 l
+f
+2718.31 7195.67 m
+2720.47 7195.67 2721.66 7194.44 v
+2722.84 7193.21 2722.84 7190.96 v
+2722.84 7188.37 2721.83 7185.86 v
+2720.82 7183.35 2719.06 7181.59 v
+2716.77 7179.35 2713.96 7179.35 v
+2711.54 7179.35 2710.11 7180.89 v
+2708.68 7182.43 2708.68 7185.02 v
+2708.68 7189.12 2711.64 7192.39 v
+2714.62 7195.67 2718.31 7195.67 v
+2718.31 7195.67 l
+h
+2718.66 7194.22 m
+2716.51 7194.22 2714.84 7191.71 v
+2713.65 7190 2712.79 7187.6 v
+2711.93 7185.2 2711.93 7183.48 v
+2711.93 7182.25 2712.72 7181.44 v
+2713.52 7180.62 2714.66 7180.62 v
+2716.82 7180.62 2718.93 7183.13 v
+2720.16 7184.67 2720.93 7186.76 v
+2721.7 7188.85 2721.7 7190.74 v
+2721.7 7192.2 2720.82 7193.21 v
+2719.94 7194.22 2718.66 7194.22 v
+2718.66 7194.22 l
+h
+2716.77 7209.14 m
+2699.83 7178.78 l
+2697.72 7178.78 l
+2713.16 7206.36 l
+2710.96 7205 2708.32 7205 v
+2706.61 7205 2705.42 7205.44 v
+2705.77 7204.43 2705.77 7203.5 v
+2705.77 7201.08 2704.78 7198.66 v
+2703.79 7196.24 2702.07 7194.48 v
+2699.79 7192.06 2696.75 7192.06 v
+2694.6 7192.06 2693.1 7193.69 v
+2691.61 7195.32 2691.61 7197.65 v
+2691.61 7201.83 2694.57 7205.15 v
+2697.54 7208.48 2701.33 7208.48 v
+2702.34 7208.48 2702.96 7208.25 v
+2703.57 7208.04 2704.36 7207.33 v
+2705.77 7206.1 2708.19 7206.1 v
+2710.26 7206.1 2711.78 7206.76 v
+2713.3 7207.42 2715.05 7209.14 v
+2716.77 7209.14 l
+2716.77 7209.14 l
+h
+2704.28 7205.79 m
+2702.73 7206.14 2701.81 7206.85 v
+2701.5 7207.2 2701.33 7207.2 v
+2700.23 7207.2 2699.06 7206.12 v
+2697.89 7205.04 2697.02 7203.24 v
+2696.09 7201.66 2695.52 7199.65 v
+2694.95 7197.65 2694.95 7196.24 v
+2694.95 7195.1 2695.65 7194.35 v
+2696.36 7193.61 2697.5 7193.61 v
+2700.18 7193.61 2702.43 7196.73 v
+2704.67 7199.85 2704.67 7203.59 v
+2704.67 7204.43 2704.28 7205.79 v
+f
+0.199951 G
+0.199951 g
+3113.55 7156.18 m
+3319.13 7156.18 l
+3319.13 6950.6 l
+3113.55 6950.6 l
+3113.55 7156.18 l
+f*
+0 g
+0 G
+3113.55 7156.18 m
+3319.13 7156.18 l
+3319.13 6950.6 l
+3113.55 6950.6 l
+3113.55 7156.18 l
+h
+S
+3126.31 7196.16 m
+3130.27 7193.21 3131.7 7191.21 v
+3133.13 7189.2 3133.13 7186.65 v
+3133.13 7183.26 3130.78 7181.22 v
+3128.42 7179.17 3124.46 7179.17 v
+3120.72 7179.17 3118.37 7181.22 v
+3116.02 7183.26 3116.02 7186.48 v
+3116.02 7188.76 3117.09 7190.26 v
+3118.17 7191.75 3121.73 7194.48 v
+3118.3 7197.43 3117.29 7198.95 v
+3116.28 7200.47 3116.28 7202.67 v
+3116.28 7205.62 3118.68 7207.62 v
+3121.07 7209.62 3124.64 7209.62 v
+3127.94 7209.62 3130.05 7207.86 v
+3132.16 7206.1 3132.16 7203.37 v
+3132.16 7201.08 3130.86 7199.48 v
+3129.57 7197.87 3126.31 7196.16 v
+3126.31 7196.16 l
+h
+3125.52 7191.62 m
+3122.88 7193.56 l
+3120.98 7192.02 3120.17 7190.48 v
+3119.36 7188.94 3119.36 7186.87 v
+3119.36 7183.97 3120.9 7182.23 v
+3122.44 7180.49 3124.95 7180.49 v
+3127.1 7180.49 3128.45 7181.83 v
+3129.79 7183.18 3129.79 7185.33 v
+3129.79 7187.14 3128.86 7188.5 v
+3127.94 7189.86 3125.52 7191.62 v
+3125.52 7191.62 l
+h
+3125.04 7196.99 m
+3125.21 7197.12 3125.43 7197.21 v
+3129.12 7199.72 3129.12 7203.37 v
+3129.12 7205.62 3127.83 7206.96 v
+3126.53 7208.3 3124.33 7208.3 v
+3122.26 7208.3 3120.9 7207.09 v
+3119.54 7205.88 3119.54 7203.99 v
+3119.54 7202.14 3120.81 7200.49 v
+3122.09 7198.84 3125.04 7196.99 v
+f
+3146.64 7209.62 m
+3150.99 7209.62 3153.72 7205.38 v
+3156.45 7201.13 3156.45 7194.35 v
+3156.45 7190.35 3155.29 7186.8 v
+3154.12 7183.26 3152.18 7181.5 v
+3149.85 7179.17 3146.51 7179.17 v
+3142.63 7179.17 3140.08 7182.21 v
+3138.54 7184.05 3137.53 7187.53 v
+3136.52 7191.01 3136.52 7194.57 v
+3136.52 7198.45 3137.68 7201.94 v
+3138.85 7205.44 3140.79 7207.29 v
+3143.25 7209.62 3146.64 7209.62 v
+3146.64 7209.62 l
+h
+3146.51 7208.43 m
+3143.73 7208.43 3142.26 7204.8 v
+3140.79 7201.17 3140.79 7194.22 v
+3140.79 7180.36 3146.51 7180.36 v
+3152.18 7180.36 3152.18 7194.26 v
+3152.18 7208.43 3146.51 7208.43 v
+f
+3203 7196.16 m
+3205.16 7196.16 3206.35 7194.92 v
+3207.54 7193.69 3207.54 7191.45 v
+3207.54 7188.85 3206.52 7186.34 v
+3205.51 7183.84 3203.75 7182.07 v
+3201.46 7179.83 3198.64 7179.83 v
+3196.23 7179.83 3194.8 7181.37 v
+3193.37 7182.91 3193.37 7185.51 v
+3193.37 7189.6 3196.34 7192.88 v
+3199.3 7196.16 3203 7196.16 v
+3203 7196.16 l
+h
+3203.36 7194.7 m
+3201.2 7194.7 3199.53 7192.2 v
+3198.34 7190.48 3197.48 7188.08 v
+3196.62 7185.68 3196.62 7183.97 v
+3196.62 7182.73 3197.41 7181.92 v
+3198.21 7181.11 3199.35 7181.11 v
+3201.51 7181.11 3203.62 7183.62 v
+3204.85 7185.16 3205.62 7187.25 v
+3206.39 7189.34 3206.39 7191.23 v
+3206.39 7192.68 3205.51 7193.69 v
+3204.63 7194.7 3203.36 7194.7 v
+3203.36 7194.7 l
+h
+3201.46 7209.62 m
+3184.52 7179.26 l
+3182.41 7179.26 l
+3197.86 7206.85 l
+3195.65 7205.48 3193.02 7205.48 v
+3191.3 7205.48 3190.11 7205.92 v
+3190.46 7204.91 3190.46 7203.99 v
+3190.46 7201.57 3189.47 7199.15 v
+3188.48 7196.73 3186.77 7194.97 v
+3184.48 7192.55 3181.44 7192.55 v
+3179.29 7192.55 3177.79 7194.18 v
+3176.29 7195.8 3176.29 7198.14 v
+3176.29 7202.32 3179.27 7205.64 v
+3182.23 7208.96 3186.02 7208.96 v
+3187.03 7208.96 3187.64 7208.74 v
+3188.26 7208.52 3189.05 7207.82 v
+3190.46 7206.58 3192.88 7206.58 v
+3194.95 7206.58 3196.47 7207.24 v
+3197.98 7207.9 3199.75 7209.62 v
+3201.46 7209.62 l
+3201.46 7209.62 l
+h
+3188.96 7206.28 m
+3187.43 7206.63 3186.5 7207.33 v
+3186.2 7207.68 3186.02 7207.68 v
+3184.92 7207.68 3183.75 7206.61 v
+3182.59 7205.53 3181.71 7203.72 v
+3180.78 7202.14 3180.21 7200.14 v
+3179.64 7198.14 3179.64 7196.73 v
+3179.64 7195.58 3180.34 7194.84 v
+3181.05 7194.09 3182.19 7194.09 v
+3184.88 7194.09 3187.12 7197.21 v
+3189.36 7200.34 3189.36 7204.07 v
+3189.36 7204.91 3188.96 7206.28 v
+f
+Q
+
+endstream
+endobj
+2 0 obj
+<</Producer(GPL Ghostscript 8.64)
+/CreationDate(D:20091004161310+02'00')
+/ModDate(D:20091004161310+02'00')
+/Author()
+/Title()
+/Creator(Scribus1.3.3.12)>>endobj
+xref
+0 6
+0000000000 65535 f 
+0000000188 00000 n 
+0000018669 00000 n 
+0000000129 00000 n 
+0000000009 00000 n 
+0000000236 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R /Info 2 0 R
+/ID [<4F5535A102A9D09F2E6D292D8D86F3B8><4F5535A102A9D09F2E6D292D8D86F3B8>]
+>>
+startxref
+18837
+%%EOF
+

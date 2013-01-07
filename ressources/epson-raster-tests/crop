@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<root xmlns="http://www.vips.ecs.soton.ac.uk/nip/7.14.5">
+  <Workspace filename="/home/atelierobscur/PY-WORK/ENGRAVER/engraver/scribus/EPSON RASTER TESTS/crop" view="WORKSPACE_MODE_REGULAR" scale="1" offset="0" window_width="700" window_height="786" lpane_position="100" lpane_open="false" rpane_position="400" rpane_open="false" local_defs="// private definitions for this workspace&#10;" name="untitled" caption="Default empty workspace">
+    <Column x="0" y="0" open="true" selected="true" sform="false" next="4" name="A" caption="untitled">
+      <Subcolumn vislevel="3">
+        <Row popup="false" name="A1">
+          <Rhs vislevel="5" flags="7">
+            <iImage window_x="520" window_y="258" window_width="750" window_height="750" image_left="6444" image_top="5580" image_mag="-18" show_status="true" show_paintbox="false" show_convert="true" show_rulers="true" scale="1" offset="0" falsecolour="false" type="true"/>
+            <Subcolumn vislevel="3"/>
+            <iText formula="Image_file &quot;/home/atelierobscur/PY-WORK/ENGRAVER/engraver/scribus/EPSON RASTER TESTS/out2.tif&quot;"/>
+          </Rhs>
+        </Row>
+        <Row popup="false" name="A3">
+          <Rhs vislevel="5" flags="7">
+            <iImage window_x="0" window_y="31" window_width="750" window_height="750" image_left="349" image_top="301" image_mag="1" show_status="true" show_paintbox="false" show_convert="true" show_rulers="true" scale="1" offset="0" falsecolour="false" type="true"/>
+            <Subcolumn vislevel="3">
+              <Row name="x">
+                <Rhs vislevel="0" flags="4">
+                  <iText/>
+                </Rhs>
+              </Row>
+              <Row name="super">
+                <Rhs vislevel="1" flags="1">
+                  <iImage window_x="482" window_y="153" window_width="750" window_height="750" image_left="6444" image_top="5580" image_mag="-18" show_status="true" show_paintbox="false" show_convert="true" show_rulers="true" scale="1" offset="0" falsecolour="false" type="true"/>
+                  <Subcolumn vislevel="0"/>
+                  <iText/>
+                </Rhs>
+              </Row>
+              <Row name="l">
+                <Rhs vislevel="1" flags="1">
+                  <Expression caption="Crop left"/>
+                  <Subcolumn vislevel="0">
+                    <Row name="caption">
+                      <Rhs vislevel="0" flags="4">
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                    <Row name="expr">
+                      <Rhs vislevel="0" flags="4">
+                        <iText formula="0"/>
+                      </Rhs>
+                    </Row>
+                    <Row name="super">
+                      <Rhs vislevel="1" flags="4">
+                        <Subcolumn vislevel="0"/>
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                  </Subcolumn>
+                  <iText/>
+                </Rhs>
+              </Row>
+              <Row name="t">
+                <Rhs vislevel="1" flags="1">
+                  <Expression caption="Crop top"/>
+                  <Subcolumn vislevel="0">
+                    <Row name="caption">
+                      <Rhs vislevel="0" flags="4">
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                    <Row name="expr">
+                      <Rhs vislevel="0" flags="4">
+                        <iText formula="0"/>
+                      </Rhs>
+                    </Row>
+                    <Row name="super">
+                      <Rhs vislevel="1" flags="4">
+                        <Subcolumn vislevel="0"/>
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                  </Subcolumn>
+                  <iText/>
+                </Rhs>
+              </Row>
+              <Row name="w">
+                <Rhs vislevel="1" flags="1">
+                  <Expression caption="Crop width"/>
+                  <Subcolumn vislevel="0">
+                    <Row name="caption">
+                      <Rhs vislevel="0" flags="4">
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                    <Row name="expr">
+                      <Rhs vislevel="0" flags="4">
+                        <iText formula="10770"/>
+                      </Rhs>
+                    </Row>
+                    <Row name="super">
+                      <Rhs vislevel="1" flags="4">
+                        <Subcolumn vislevel="0"/>
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                  </Subcolumn>
+                  <iText/>
+                </Rhs>
+              </Row>
+              <Row name="h">
+                <Rhs vislevel="1" flags="1">
+                  <Expression caption="Crop height"/>
+                  <Subcolumn vislevel="0">
+                    <Row name="caption">
+                      <Rhs vislevel="0" flags="4">
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                    <Row name="expr">
+                      <Rhs vislevel="0" flags="4">
+                        <iText formula="7900"/>
+                      </Rhs>
+                    </Row>
+                    <Row name="super">
+                      <Rhs vislevel="1" flags="4">
+                        <Subcolumn vislevel="0"/>
+                        <iText/>
+                      </Rhs>
+                    </Row>
+                  </Subcolumn>
+                  <iText/>
+                </Rhs>
+              </Row>
+            </Subcolumn>
+            <iText formula="Image_crop_item.action A1"/>
+          </Rhs>
+        </Row>
+      </Subcolumn>
+    </Column>
+  </Workspace>
+</root>
+
+
+

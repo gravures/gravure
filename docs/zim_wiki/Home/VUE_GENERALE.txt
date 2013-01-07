@@ -1,0 +1,23 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2012-12-17T09:19:09+01:00
+
+====== VUE GENERALE ======
+Created lundi 17 décembre 2012
+
+
+
+==== Debian Tasksel ====
+http://lists.debian.org/debian-boot/2004/12/msg01010.html
+http://lists.debian.org/debian-live/2011/04/msg00009.html
+→ http://schlutech.com/2011/07/the-debian-install-process/
+→ http://schlutech.com/2011/11/fslinux_build-debian-custom-build-script/
+
+==== Remasterize distro ====
+http://www.geekconnection.org/remastersys/
+http://linuxcoe.sourceforge.net/
+http://www.reconstructor.org/
+http://trac.64studio.com/pdk
+http://www.timesys.com/embedded-linux/distribution-builder
+http://www.diy-linux.org/about
+http://maketecheasier.com/6-tools-to-easily-create-your-own-custom-linux-distro/2010/04/08

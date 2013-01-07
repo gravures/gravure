@@ -1,0 +1,45 @@
+%!PS 
+%%Make Raster Beginn
+%%
+%%
+
+[ 			% Put a mark on the stack
+  currenttransfer 	% Put the current transfer function on the stack
+  aload pop		% Unload the function
+   {			% Put our function on the stack
+
+      	/ExecTab { 
+		  /xi exch def 
+		  /tb Tab length 1 sub def 
+		  /ib 0 def
+	 		{/ib ib 2 add def
+  		 		ib tb gt {exit} if  
+  		 		xi Tab ib get le {exit} if
+			} loop 
+  		 		xi Tab ib 2 sub get sub Tab ib 1 add get Tab ib 1 sub get sub mul 
+    	  			Tab ib get Tab ib 2 sub get sub div Tab ib 1 sub get add 
+	} def
+
+ 	% Define tables x,y(x) by any number of entries.
+ 	% Values for x=0.0 and x=1.0 are compulsary.
+ 	/Tab % Gray Correction Table - REF VALUE ¦ CORR VALUE
+ 	 [  0.00  0.00	% Black	  100%
+		0.0001  1.00	%  everything else black become white
+		
+ 	     1.00  1.00 % White     0%
+	  ] def
+
+  	  ExecTab 
+   }   			% End of our transfer fucntion
+
+  aload pop		% Unload our function 
+] 			% Create the array from the combined fcn. contents
+cvx 			% Convert it to executable (i.e. to a proc)
+settransfer		% Make the concatenated fcns our new xfer fcn
+
+%%Make Raster End 
+
+
+
+
+

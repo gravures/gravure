@@ -1,0 +1,21 @@
+%!PS 
+
+
+
+/Halftone 4 dict def 
+Halftone begin 
+
+	/HalftoneType 1 def
+	/Frequency 80 def
+	/Angle 15 def
+	/SpotFunction { abs exch abs 2 copy 3 mul exch 4 mul add 3 sub dup 0 lt { pop dup mul exch .75 div dup mul add 4 div 1 exch sub } { dup 1 gt {pop 1 exch sub dup mul exch 1 exch sub .75 div dup mul add 4 div 1 sub } { .5 exch sub exch pop exch pop } ifelse } ifelse } def
+	/AccurateScreens true def
+	/TransferFunction {} def
+end
+
+Halftone
+/Default exch /Halftone defineresource
+sethalftone 
+
+<< /HalftoneMode 1 >> setuserparams
+

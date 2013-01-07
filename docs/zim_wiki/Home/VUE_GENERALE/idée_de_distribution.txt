@@ -1,0 +1,103 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2012-12-17T09:19:39+01:00
+
+====== idée de distribution ======
+Created lundi 17 décembre 2012
+http://www.semageek.com/une-distribution-linux-pour-hacker-les-cartes-rfid/
+
+**DEBIAN GNU LINUX basé sur testing - GNOME 3**
+
+
+=== DESKTOP ===
+nemo / Marlin https://launchpad.net/marlin
+gtk3-theme : basé sur mint-theme, manque un theme shell (http://www.webupd8.org/2013/01/elegance-colors-gnome-shell-theme-gets.html)
+http://gnome-look.org/content/show.php/Trevilla+theme+%28flat+style%29?content=156120
+http://www.webupd8.org/2012/11/pin-notes-on-your-desktop-with.html#more
+http://gnome-look.org/content/show.php/FlatStudio?content=154296
+http://gnome-look.org/content/download.php?content=135654&id=1&tan=99496073
+http://deviantn7k1.deviantart.com/art/Nitrux-OS-Icons-293634207
+http://gnome-look.org/content/show.php/PinguyOS+12.10+Gnome+3.6+Theme?content=155317
+
+
+zim
+**HELP SYSTEM accès documentations : doc-base, dhelp, dwww, doc-central**
+gnome-pie
+
+=== RIP ===
+**CUPS**
+filtre raster2gs modiflé (nointerpolate, no colord, + d'options)
+
+**GUTENPRINT**
+genuine
+
+**GHOSTSCRIPT**
+cups device modifié (RIP_CACHE activé)
+gravure device
+genhalftone modifié
+
+**CUTTING**
+http://libregraphicsworld.org/blog/entry/vinyl-cutting-on-linux-the-real-deal
+
+=== SYSTEM MONITOR ===
+**CPULIMIT**
+**ACTIVATION RIP_CACHE**
+**TEA4CUPS**
+(**PYKOTA)**
+CONTROLEUR DE CHAINE DE FILTRE (PSRIP/PDFRIP) + INFOS SUR CHAQUE FILTRE (QUI, QUOI, COMMENT)
+
+=== UTILITAIRES ===
+ne
+
+=== GESTION DE LA COULEUR ===
+**ARGYLL** 
+**DISPCAL GUI**
+LPROF
+**SOME SPECIAL ARGYLL GUI**
+**OYRANOS**
+**ICC EXAMIN**
+~~COLORD~~
+
+=== PHOTOS EDITEUR ===
+**CINEPAINT **avant complète intégration de gegl dans gimp
+IMAGEVIEWER : http://spiegl.de/qiv/,http://gwenview.sourceforge.net/screenshots.php?action=view&album=/2.4&pos=1
+http://www.kornelix.com/fotoxx.html
+http://geeqie.sourceforge.net/
+RAW PHOTO IMAGE EDITOR :
+http://www.darktable.org/
+http://lightzoneproject.org/node/57
+INKSCAPE
+Imagemagick
+
+=== MISE EN PAGE ===
+**SCRIBUS**
+MOONSHINER http://sourceforge.net/apps/mediawiki/moonshiner/index.php?title=Main_Page
+SWATCHBOOKER
+
+=== IMPOSITION ===
+http://multivalent.sourceforge.net/Tools/index.html
+
+=== PDF ===
+~~EVINCE~~
+**SPECIAL MUPDF **
+http://wiki.scribus.net/canvas/Help:Manual_Toolsareader
+**PDFTOOLS** :
+GSCAN2PDF (OCR)
+
+=== FONTS ===
+**FONTMATRIX**
+FONTFORGE
+http://gitorious.org/fontik
+
+=== AUTRES ===
+CENON
+http://www.vips.ecs.soton.ac.uk/index.php?title=VIPS
+http://enblend.sourceforge.net/
+http://xaraxtreme.org/
+http://www.levien.com/libart/
+
+=== RESSOURCES ===
+www.targets.coloraid.de 
+
+=== DOCS ===
+

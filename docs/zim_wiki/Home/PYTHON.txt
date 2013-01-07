@@ -1,0 +1,15 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2011-11-14T11:14:58+01:00
+
+====== PYTHON ======
+Created lundi 14 novembre 2011
+
+---------------------------------------------------------------------------------------------
+
+==== environnement ====
+
+[[http://packages.python.org/spyder/index.html|spyder]]
+
+
+
