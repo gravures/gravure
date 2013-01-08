@@ -52,6 +52,26 @@ project-id: 38af64fb2c7ed67c8b8f75f5a9eabb35c4509895
 server-id:  3295d17c222801f9857353959a2d2b5969a7da1b
 admin-user: gilles (password is "f68dc2")
 
+=== gravure ===
+root@blackcat:/srv/apache/srv/FOSSIL# fossil new -A gilles gravure.fossil
+project-id: e91e1d2e2af5760fc98bf1181bc93ac38b5a9940
+server-id:  607a1d9a00cceb57ae4590903f19c7fd0a1542a5
+admin-user: gilles (initial password is "on the sunny...")
+___________________________________________________
+project-id: e91e1d2e2af5760fc98bf1181bc93ac38b5a9940
+server-id:  ad6273d94964136db6a7d53baed54b03a1abf5d4
+admin-user: gilles (password is "62b3c6")
+
+=== gravure-ghostscript ===
+root@blackcat:/srv/apache/srv/FOSSIL# fossil new -A gilles gravure-ghostscript.fossil
+project-id: 1ff3acfb408c14614c6288da241f7c9de426ab42
+server-id:  d1cea8f89caf5f12ec6d2029a59b9db97572b736
+admin-user: gilles (initial password is "on the sunny...")
+______________________________________________________________________
+project-id: 1ff3acfb408c14614c6288da241f7c9de426ab42
+server-id:  43e4fe24b800fd2f32cc11256b726e2ab9a8cee2
+admin-user: gilles (password is "8c3dba")
+
 
 
 
