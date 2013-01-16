@@ -7,9 +7,32 @@ Created lundi 14 novembre 2011
 
 ---------------------------------------------------------------------------------------------
 
-==== environnement ====
-
+==== IDE ====
 [[http://packages.python.org/spyder/index.html|spyder]]
+
+==== Framework ====
+http://code.enthought.com/
+http://www.riverbankcomputing.com/static/Docs/dip/index.html
+
+==== Debian et Python ====
+http://www.debian.org/doc/packaging-manuals/python-policy/
+
+
+=== GTK3 ===
+→ http://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html
+→ http://developer.gnome.org/gtk3/stable/
+https://live.gnome.org/PyGObject
+→ http://gnipsel.com/glade/index.html
+http://pfrields.fedorapeople.org/presentations/OhioLF2011/PyGObject.pdf
+http://zetcode.com/gui/pygtk/
+→ http://learngtk.org/pygobject-tutorial/examples/
+
+http://developer.gnome.org/gnome-devel-demos/stable/
+
+=== Custom Widget ===
+http://zetcode.com/tutorials/gtktutorial/customwidget/
+http://developer.gnome.org/gtk3/stable/GtkDrawingArea.html
+https://github.com/tliron/pygobject-example
 
 
 

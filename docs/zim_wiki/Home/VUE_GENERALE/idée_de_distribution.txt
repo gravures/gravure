@@ -62,7 +62,7 @@ LPROF
 **CINEPAINT **avant complète intégration de gegl dans gimp
 IMAGEVIEWER : http://spiegl.de/qiv/,http://gwenview.sourceforge.net/screenshots.php?action=view&album=/2.4&pos=1
 http://www.kornelix.com/fotoxx.html
-http://geeqie.sourceforge.net/
+→ http://geeqie.sourceforge.net/
 RAW PHOTO IMAGE EDITOR :
 http://www.darktable.org/
 http://lightzoneproject.org/node/57

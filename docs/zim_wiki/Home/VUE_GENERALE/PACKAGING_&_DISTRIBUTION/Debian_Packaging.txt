@@ -16,6 +16,7 @@ http://www.debian.org/doc/debian-policy/index.html#contents
 http://www.gnu.org/software/autoconf/
 http://www.lrde.epita.fr/~adl/dl/autotools.pdf
 http://www.gnu.org/prep/standards/
+http://inti.sourceforge.net/tutorial/libinti/autotoolsproject.html
 
 ==== Debian packaging guides ====
 → http://www.debian.org/doc/manuals/maint-guide/index.fr.html
@@ -24,18 +25,31 @@ http://www.gnu.org/prep/standards/
 http://www.debian.org/devel/wnpp/prospective
 http://rcrowley.org/articles/packaging.html
 
+==== Construire un paquet ====
+
+* ''sudo mk-build-deps -ir''
+* dpkg-buildpackage ou debuild
+* pbuilder
+
 ==== Environnement pbuilder ====
 → http://www.megatunix.com/blog/2012/05/09/using-pbuilder-for-making-debianubuntu-packages/
+→ http://wiki.debian.org/PbuilderTricks
 
 * apt-cacher-ng | pbuilder | debootstrap | quilt
 * /usr/lib/pbuilder/hooks
 * /var/cache/pbuilder/repo
-* [[/usr/lib/pbuilder/D05deps]]
-* [[/etc/pbuilderrc]]
-* [[~/.pbuilderrc]]
+* [[/usr/lib/pbuilder/hooks/D05deps]]
+* [[/etc/pbuilderrc]] → fusion de toutes la conf ici
+* ~~~(root)/.pbuilderrc~~
 ''for arch in `echo i386 amd64` ; do for dist in `echo testing unstable stable` ; do sudo DIST=${dist} ARCH=${arch} pbuilder --create --architecture ${arch} --distribution ${dist}  --http-proxy http://localhost:3142 ; done ; done''
+
+''sudo DIST=testing ARCH=amd64 pbuilder --create --architecture amd64 --distribution testing --http-proxy  http://localhost:3142''
+
+
 * ''pdebuild --architecture <i386|amd64>  --buildresult /tmp --pbuilderroot "sudo DIST=<unstable|stable|testing|hardy|lucid|natty|oneiric|precise> ARCH=<i386|amd64>"''
-''pdebuild --architecture <amd64>  --buildresult /tmp --pbuilderroot "sudo DIST=<stable|testing> ARCH=<amd64>"''
+
+''pdebuild --architecture amd64  --buildresult /tmp --pbuilderroot "sudo DIST=testing ARCH=amd64"''
+
 
 === cdbs ===
 http://debathena.mit.edu/packaging/

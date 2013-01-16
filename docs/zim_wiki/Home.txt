@@ -5,6 +5,10 @@ Creation-Date: 2011-06-04T11:34:09.534023
 ====== Home GRAVURE ======
 Created samedi 04 juin 2011
 
+__Setting up libpaper1:amd64 (1.1.24+nmu2) ...__
+__Creating config file /etc/papersize with new version__
+
+
 moap swiss army knife for project maintener
 
 

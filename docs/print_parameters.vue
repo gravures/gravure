@@ -1,18 +1,18 @@
-<!-- Tufts VUE 3.1.2 concept-map (print_parameters.vue) 2013-01-07 -->
+<!-- Tufts VUE 3.1.2 concept-map (print_parameters.vue) 2013-01-13 -->
 <!-- Tufts VUE: http://vue.tufts.edu/ -->
 <!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/usr/local/bin/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Mon Jan 07 08:51:15 CET 2013 by gilles on platform Linux 3.2.0-3-amd64 in JVM 1.6.0_24-b24 -->
+<!-- Do Not Remove: Saved date Sun Jan 13 21:43:33 CET 2013 by gilles on platform Linux 3.2.0-3-amd64 in JVM 1.6.0_24-b24 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built March 8 2012 at 1310 by vue on Linux 2.4.21-63.EL i386 JVM 1.5.0_06-b05(bits=32) -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0"
     label="print_parameters.vue" created="1356589822507" x="0.0" y="0.0"
     width="2886.0" height="1748.0" strokeWidth="0.0" autoSized="false">
-    <resource referenceCreated="1357545075938" size="54076"
-        spec="/home/gilles/DEVELOPPEMENT/PROJETS/Gravure/gravure/docs/print_parameters.vue"
+    <resource referenceCreated="1358109813294" size="54618"
+        spec="/home/gilles/FOSSILS/gravure/docs/print_parameters.vue"
         type="1" xsi:type="URLResource">
         <title>print_parameters.vue</title>
-        <property key="File" value="/home/gilles/DEVELOPPEMENT/PROJETS/Gravure/gravure/docs/print_parameters.vue"/>
+        <property key="File" value="/home/gilles/FOSSILS/gravure/docs/print_parameters.vue"/>
     </resource>
     <fillColor>#FFFFFF</fillColor>
     <strokeColor>#404040</strokeColor>
@@ -238,7 +238,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="13" label="print line #2" layerID="7"
-        created="1356590254969" x="108.5" y="-198.25" width="119.0"
+        created="1356590254969" x="108.5" y="-222.25" width="119.0"
         height="33.0" strokeWidth="2.0" autoSized="true" xsi:type="node">
         <fillColor>#00000000</fillColor>
         <strokeColor>#9DDB53</strokeColor>
@@ -257,7 +257,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="15" label="print line #n" layerID="7"
-        created="1356590273249" x="108.5" y="-158.75" width="118.0"
+        created="1356590273249" x="108.5" y="-182.75" width="118.0"
         height="33.0" strokeWidth="2.0" autoSized="true" xsi:type="node">
         <fillColor>#00000000</fillColor>
         <strokeColor>#9DDB53</strokeColor>
@@ -311,19 +311,19 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db34ce0e7f0001010ffba15df028aaaf</URIString>
         <richText>&lt;html&gt;
-  &lt;head style="color: #ffffff" color="#ffffff"&gt;
+  &lt;head color="#ffffff" style="color: #ffffff"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p style="color: #ffffff" color="#ffffff"&gt;
+    &lt;p color="#ffffff" style="color: #ffffff"&gt;
       RASTER FILTER
     &lt;/p&gt;
   &lt;/body&gt;
@@ -348,19 +348,19 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db34ce107f0001010ffba15db570caf6</URIString>
         <richText>&lt;html&gt;
-  &lt;head style="color: #ffffff" color="#ffffff"&gt;
+  &lt;head color="#ffffff" style="color: #ffffff"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p style="color: #ffffff" color="#ffffff"&gt;
+    &lt;p color="#ffffff" style="color: #ffffff"&gt;
       DRIVER FILTER
     &lt;/p&gt;
   &lt;/body&gt;
@@ -385,19 +385,19 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db34ce127f0001010ffba15d52503fa6</URIString>
         <richText>&lt;html&gt;
-  &lt;head style="color: #ffffff" color="#ffffff"&gt;
+  &lt;head color="#ffffff" style="color: #ffffff"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p style="color: #ffffff" color="#ffffff"&gt;
+    &lt;p color="#ffffff" style="color: #ffffff"&gt;
       BACKEND FILTER
     &lt;/p&gt;
   &lt;/body&gt;
@@ -422,19 +422,19 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db34ce147f0001010ffba15d3afa4901</URIString>
         <richText>&lt;html&gt;
-  &lt;head style="color: #ffffff" color="#ffffff"&gt;
+  &lt;head color="#ffffff" style="color: #ffffff"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p style="color: #ffffff" color="#ffffff"&gt;
+    &lt;p color="#ffffff" style="color: #ffffff"&gt;
       PRE-FILTER
     &lt;/p&gt;
   &lt;/body&gt;
@@ -572,19 +572,19 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db3992d37f0001010ffba15ddf95687d</URIString>
         <richText>&lt;html&gt;
-  &lt;head style="color: #ffffff" color="#ffffff"&gt;
+  &lt;head color="#ffffff" style="color: #ffffff"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p style="color: #ffffff" color="#ffffff"&gt;
+    &lt;p color="#ffffff" style="color: #ffffff"&gt;
       &lt;font color="#f2ae45"&gt;POST-FILTER&lt;/font&gt;
     &lt;/p&gt;
   &lt;/body&gt;
@@ -634,7 +634,7 @@
         <ID2 xsi:type="text">36</ID2>
     </child>
     <child ID="39"
-        label="DEVICE LEVEL&#xa;    &#xa;    &#xa;      &#xa;    &#xa;    &#xa;      ppd's options here should be restricted to some specific parameters, eg. &#xa;      inkset option from some gutenprint drivers.&#xa;    &#xa;    &#xa;      Here we have too all the well knows cups queue options."
+        label="DEVICE LEVEL ppd's options here should be restricted to some specific parameters, eg. &#xa;      inkset option from some gutenprint drivers. Here we have too all the well knows cups queue options."
         layerID="7" created="1356594318164" x="-275.5" y="-78.0"
         width="260.0" height="185.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -654,10 +654,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
@@ -679,20 +679,11 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>DEVICE LEVEL
-    
-    
-      
-    
-    
-      ppd's options here should be restricted to some specific parameters, eg. 
-      inkset option from some gutenprint drivers.
-    
-    
-      Here we have too all the well knows cups queue options.</label>
+        <label>DEVICE LEVEL ppd's options here should be restricted to some specific parameters, eg. 
+      inkset option from some gutenprint drivers. Here we have too all the well knows cups queue options.</label>
     </child>
     <child ID="41"
-        label="QUEUE / LINE LEVEL&#xa;    &#xa;    &#xa;      &#xa;    &#xa;    &#xa;      Colors management is on a per print line basis.&#xa;    &#xa;    &#xa;      Changing paramater's here is part of a calibration process. If &#xa;      somethings happened to change here, calibration and characterisation &#xa;      shoul'be invalidate for this print line."
+        label="QUEUE / LINE LEVEL Colors management is on a per print line basis. Changing paramater's here is part of a calibration process. If somethings happened to change here, calibration and characterisation &#xa;      shoul'be invalidate for this print line."
         layerID="7" created="1356594529870" x="107.0" y="-78.0"
         width="260.0" height="229.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -712,10 +703,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
@@ -738,21 +729,11 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>QUEUE / LINE LEVEL
-    
-    
-      
-    
-    
-      Colors management is on a per print line basis.
-    
-    
-      Changing paramater's here is part of a calibration process. If 
-      somethings happened to change here, calibration and characterisation 
+        <label>QUEUE / LINE LEVEL Colors management is on a per print line basis. Changing paramater's here is part of a calibration process. If somethings happened to change here, calibration and characterisation 
       shoul'be invalidate for this print line.</label>
     </child>
     <child ID="42"
-        label="JOB LEVEL&#xa;    &#xa;    &#xa;      &#xa;    &#xa;    &#xa;      Some parameters should be change as a job option with respect to &#xa;      calibration and characterisation&#xa;    &#xa;    &#xa;      For exemple paper's format."
+        label="JOB LEVEL Some parameters should be change as a job option with respect to &#xa;      calibration and characterisation For exemple paper's format."
         layerID="7" created="1356594978165" x="457.0" y="-78.0"
         width="260.0" height="170.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -772,10 +753,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
@@ -797,20 +778,11 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>JOB LEVEL
-    
-    
-      
-    
-    
-      Some parameters should be change as a job option with respect to 
-      calibration and characterisation
-    
-    
-      For exemple paper's format.</label>
+        <label>JOB LEVEL Some parameters should be change as a job option with respect to 
+      calibration and characterisation For exemple paper's format.</label>
     </child>
     <child ID="43"
-        label="RIP LEVEL&#xa;    &#xa;    &#xa;      &#xa;    &#xa;    &#xa;      At a RIP level we could show more controls on the cups server.Some &#xa;      ghostcript options could appears at this stage too.&#xa;    &#xa;    &#xa;      We could have a view of knows icc files or fonts from the whole system.&#xa;    &#xa;    &#xa;      It will be posssible to to fixe limits on memory or on % cpu usage."
+        label="RIP LEVEL At a RIP level we could show more controls on the cups server.Some &#xa;      ghostcript options could appears at this stage too. We could have a view of knows icc files or fonts from the whole system. It will be posssible to to fixe limits on memory or on % cpu usage."
         layerID="7" created="1356595193571" x="-597.0" y="-78.0"
         width="232.0" height="296.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -830,10 +802,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
@@ -858,20 +830,8 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>RIP LEVEL
-    
-    
-      
-    
-    
-      At a RIP level we could show more controls on the cups server.Some 
-      ghostcript options could appears at this stage too.
-    
-    
-      We could have a view of knows icc files or fonts from the whole system.
-    
-    
-      It will be posssible to to fixe limits on memory or on % cpu usage.</label>
+        <label>RIP LEVEL At a RIP level we could show more controls on the cups server.Some 
+      ghostcript options could appears at this stage too. We could have a view of knows icc files or fonts from the whole system. It will be posssible to to fixe limits on memory or on % cpu usage.</label>
     </child>
     <child ID="44"
         label="FINE TUNNING OF THE RIP &#xa;      PROCESS THOUGHT THE FILTERS CHAIN"
@@ -891,24 +851,24 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db6dddb37f0001010ffba15da770a0f6</URIString>
         <richText>&lt;html&gt;
-  &lt;head style="color: #000000" color="#000000"&gt;
+  &lt;head color="#000000" style="color: #000000"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #000000 }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #000000 }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #000000; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #000000; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p style="text-align: center; color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:28;" color="#ffffff"&gt;FINE TUNNING OF THE RIP 
+    &lt;p color="#000000" style="color: #000000; text-align: center"&gt;
+      &lt;font color="#ffffff" style="font-size:28;"&gt;FINE TUNNING OF THE RIP 
       PROCESS &lt;/font&gt;
     &lt;/p&gt;
-    &lt;p style="text-align: center; color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:28;" color="#ffffff"&gt;THOUGHT THE FILTERS CHAIN&lt;/font&gt;
+    &lt;p color="#000000" style="color: #000000; text-align: center"&gt;
+      &lt;font color="#ffffff" style="font-size:28;"&gt;THOUGHT THE FILTERS CHAIN&lt;/font&gt;
     &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -917,7 +877,7 @@
       PROCESS THOUGHT THE FILTERS CHAIN</label>
     </child>
     <child ID="45"
-        label="Ghostscript icc related parameters have to be sort between this two &#xa;      stages. Colors transformations depends on colours sources files, print line &#xa;      characterisations, CMS policy and specifics job treatement (eg. a proof print)."
+        label="Ghostscript icc related parameters have to be sort between this two &#xa;      stages. Colors transformations depends on colours sources files, print line characterisations, CMS policy and specifics job treatement (eg. a proof print)."
         layerID="7" created="1356597059801" x="297.0" y="216.66666"
         width="261.0" height="180.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -937,10 +897,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
@@ -959,8 +919,7 @@
 &lt;/html&gt;
 </richText>
         <label>Ghostscript icc related parameters have to be sort between this two 
-      stages. Colors transformations depends on colours sources files, print line 
-      characterisations, CMS policy and specifics job treatement (eg. a proof print).</label>
+      stages. Colors transformations depends on colours sources files, print line characterisations, CMS policy and specifics job treatement (eg. a proof print).</label>
     </child>
     <child ID="46" layerID="7" created="1356597132152" x="232.0"
         y="138.33333" width="312.6667" height="55.625" strokeWidth="2.0"
@@ -1003,10 +962,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; margin-bottom: 0px; margin-top: 0px; font-size: 18; margin-left: 0px; color: #ffffff }
-        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
-        p { margin-right: 0; margin-bottom: 0; margin-top: 0; margin-left: 0; color: #ffffff }
-        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-top: 6; font-size: 18; margin-left: 30 }
+        body { color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; font-family: Arial; font-size: 18; margin-bottom: 0px }
+        ol { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
+        p { color: #ffffff; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0 }
+        ul { list-style-position: outside; margin-left: 30; margin-top: 6; font-family: Arial; vertical-align: middle; font-size: 18 }
       --&gt;
     &lt;/style&gt;
     
@@ -1052,8 +1011,8 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/db1380c17f0001010ffba15d841a16d7</URIString>
     </layer>
-    <userZoom>0.75</userZoom>
-    <userOrigin x="-850.25" y="-540.5"/>
+    <userZoom>1.0</userZoom>
+    <userOrigin x="-891.0" y="-718.0"/>
     <presentationBackground>#202020</presentationBackground>
     <PathwayList currentPathway="0" revealerIndex="-1">
         <pathway ID="0" label="Chemin sans nom" created="1356589822506"
@@ -1126,6 +1085,6 @@
     <date>2012-12-27</date>
     <mapFilterModel/>
     <modelVersion>5</modelVersion>
-    <saveLocation>/home/gilles/DEVELOPPEMENT/PROJETS/Gravure/gravure/docs</saveLocation>
-    <saveFile>/home/gilles/DEVELOPPEMENT/PROJETS/Gravure/gravure/docs/print_parameters.vue</saveFile>
+    <saveLocation>/home/gilles/FOSSILS/gravure/docs</saveLocation>
+    <saveFile>/home/gilles/FOSSILS/gravure/docs/print_parameters.vue</saveFile>
 </LW-MAP>

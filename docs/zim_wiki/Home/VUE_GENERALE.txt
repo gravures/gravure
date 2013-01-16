@@ -5,19 +5,42 @@ Creation-Date: 2012-12-17T09:19:09+01:00
 ====== VUE GENERALE ======
 Created lundi 17 décembre 2012
 
+=== fonctionnalité plannifiés ===
+* pouvoir utiliser / mettre en place la première mouture de la [[VUE GENERALE:idée de distribution|distribution]]
+* gestion des limites de ressources du RIP
+* disposer d'une première implémentation des lignes d'impressions
+	* composite/séparation
+	* monitorer les chaînes de filtres
+	* définition des profils icc d'une ligne d'impression composites
+	* ''	  des courbes de calibrations en composite/séparation
+	* disposer d'un tramage AM
+* Centralisation des formats papiers (voir libpaper)
+* preview/controle du placement sur format (rasterview)	
 
 
-==== Debian Tasksel ====
-http://lists.debian.org/debian-boot/2004/12/msg01010.html
-http://lists.debian.org/debian-live/2011/04/msg00009.html
-→ http://schlutech.com/2011/07/the-debian-install-process/
-→ http://schlutech.com/2011/11/fslinux_build-debian-custom-build-script/
+=== recherche d'implémentations ===
+* développer une première mouture d'un RipManager, incluant notamment un analyseur de chaîne de filtres, qui au mieux pourrait permettre de modifier une chaîne.
+* Tester les fusions de ppd
+* étudier les contraintes d'ui des ppd
+* étudier un hack du system-config-printer
+* étudier genppd de gutenprint en vue d'une regénération des ppd de libgutenprint 
 
-==== Remasterize distro ====
-http://www.geekconnection.org/remastersys/
-http://linuxcoe.sourceforge.net/
-http://www.reconstructor.org/
-http://trac.64studio.com/pdk
-http://www.timesys.com/embedded-linux/distribution-builder
-http://www.diy-linux.org/about
-http://maketecheasier.com/6-tools-to-easily-create-your-own-custom-linux-distro/2010/04/08
+
+==== NEMO ====
+[*] empaquetage de vers wheezy
+
+==== NEMO-EXTENSIONS ====
+[*] empaquetage de file-roller vers wheezy
+
+==== GHOSTSCRIPT-GRAVURE ====
+[*] empaquetage de ghostscript-9.06 pour wheezy
+[ ] empaquetage de gen_ordered
+[ ] portage de icc_creator
+[ ] empaquetage de device gravure pour test
+
+==== RASTERVIEW ====
+[*] empaquetage pour wheezy
+
+==== GRAVURE-PYGUTENPRINT ====
+
+==== GRAVURE ====
