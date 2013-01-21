@@ -1,0 +1,8 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-01-17T19:38:55+01:00
+
+====== Color Management ======
+Created jeudi 17 janvier 2013
+
+http://www.freedesktop.org/wiki/OpenIcc

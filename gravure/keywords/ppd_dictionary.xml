@@ -1,0 +1,734 @@
+<?xml version="1.0" ?>
+<ppd_dictionary>
+  <keywords>
+    <_BlackSubstitution base_type="color-adjustement" origin="adobe" version="4.3"/>
+    <_ColorModel base_type="color-adjustement" origin="adobe" version="4.3"/>
+    <_ColorRenderDict base_type="color-adjustement" origin="adobe" version="4.3"/>
+    <_RenderingIntent base_type="color-adjustement" origin="adobe" version="4.3"/>
+    <_PageDeviceName base_type="color-adjustement" origin="adobe" version="4.3"/>
+    <_HalftoneName base_type="color-adjustement" origin="adobe" version="4.3"/>
+    <_Separations base_type="color-separation" origin="adobe" version="4.3"/>
+    <_DefaultColorSep base_type="color-separation" origin="adobe" version="4.3"/>
+    <_ColorSepScreenFreq base_type="color-separation" origin="adobe" version="4.3"/>
+    <_ColorSepScreenAngle base_type="color-separation" origin="adobe" version="4.3"/>
+    <_ColorSepScreenProc base_type="color-separation" origin="adobe" version="4.3"/>
+    <_ColorSepTransfer base_type="color-separation" origin="adobe" version="4.3"/>
+    <_CustomCMYK base_type="color-separation" origin="adobe" version="4.3"/>
+    <_InkName base_type="color-separation" origin="adobe" version="4.3"/>
+    <_Protocols base_type="emulators-protocols" origin="adobe" version="4.3"/>
+    <_Emulators base_type="emulators-protocols" origin="adobe" version="4.3"/>
+    <_StartEmulator_emulatorOption base_type="emulators-protocols" origin="adobe" version="4.3"/>
+    <_StopEmulator_emulatorOption base_type="emulators-protocols" origin="adobe" version="4.3"/>
+    <_Collate base_type="finishing" origin="adobe" version="4.3"/>
+    <_FoldType base_type="finishing" origin="adobe" version="4.3"/>
+    <_FoldWhen base_type="finishing" origin="adobe" version="4.3"/>
+    <_Sorter base_type="finishing" origin="adobe" version="4.3"/>
+    <_StapleLocation base_type="finishing" origin="adobe" version="4.3"/>
+    <_StapleX base_type="finishing" origin="adobe" version="4.3"/>
+    <_StapleY base_type="finishing" origin="adobe" version="4.3"/>
+    <_StapleWhen base_type="finishing" origin="adobe" version="4.3"/>
+    <_StapleOrientation base_type="finishing" origin="adobe" version="4.3"/>
+    <_BindEdge base_type="finishing" origin="adobe" version="4.3"/>
+    <_BindType base_type="finishing" origin="adobe" version="4.3"/>
+    <_BindColor base_type="finishing" origin="adobe" version="4.3"/>
+    <_BindWhen base_type="finishing" origin="adobe" version="4.3"/>
+    <_Booklet base_type="finishing" origin="adobe" version="4.3"/>
+    <_Slipsheet base_type="finishing" origin="adobe" version="4.3"/>
+    <_InsertSheet base_type="finishing" origin="adobe" version="4.3"/>
+    <_Jog base_type="finishing" origin="adobe" version="4.3"/>
+    <_FDirSize base_type="font" origin="adobe" version="4.3"/>
+    <_FCacheSize base_type="font" origin="adobe" version="4.3"/>
+    <_Font base_type="font" origin="adobe" version="4.3"/>
+    <_FontList base_type="font" origin="adobe" version="4.3"/>
+    <_FontQuery base_type="font" origin="adobe" version="4.3"/>
+    <_AccurateScreensSupport base_type="halftone" origin="adobe" version="4.3"/>
+    <_ContoneOnly base_type="halftone" origin="adobe" version="4.3"/>
+    <_DefaultHalftoneType base_type="halftone" origin="adobe" version="4.3"/>
+    <_ScreenAngle base_type="halftone" origin="adobe" version="4.3"/>
+    <_ScreenFreq base_type="halftone" origin="adobe" version="4.3"/>
+    <_ResScreenFreq base_type="halftone" origin="adobe" version="4.3"/>
+    <_ResScreenAngle base_type="halftone" origin="adobe" version="4.3"/>
+    <_ScreenProc base_type="halftone" origin="adobe" version="4.3"/>
+    <_Transfer base_type="halftone" origin="adobe" version="4.3"/>
+    <_MirrorPrint base_type="imagesetter" origin="adobe" version="4.3"/>
+    <_NegativePrint base_type="imagesetter" origin="adobe" version="4.3"/>
+    <_AdvanceMedia base_type="imagesetter" origin="adobe" version="4.3"/>
+    <_CutMedia base_type="imagesetter" origin="adobe" version="4.3"/>
+    <_ReferencePunch base_type="imagesetter" origin="adobe" version="4.3"/>
+    <_FileVersion base_type="informations" origin="adobe" version="4.3"/>
+    <_FormatVersion base_type="informations" origin="adobe" version="4.3"/>
+    <_LanguageEncoding base_type="informations" origin="adobe" version="4.3"/>
+    <_LanguageVersion base_type="informations" origin="adobe" version="4.3"/>
+    <_Manufacturer base_type="informations" origin="adobe" version="4.3"/>
+    <_ModelName base_type="informations" origin="adobe" version="4.3"/>
+    <_NickName base_type="informations" origin="adobe" version="4.3"/>
+    <_PCFileName base_type="informations" origin="adobe" version="4.3"/>
+    <_Product base_type="informations" origin="adobe" version="4.3"/>
+    <_PSVersion base_type="informations" origin="adobe" version="4.3"/>
+    <_ShortNickName base_type="informations" origin="adobe" version="4.3"/>
+    <_ColorDevice base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_DefaultColorSpace base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_Extensions base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_FaxSupport base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_FileSystem base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_LanguageLevel base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_Throughput base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_TTRasterizer base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_1284Modes base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_1284DeviceID base_type="informations-capabilities" origin="adobe" version="4.3"/>
+    <_JCLFrameBufferSize base_type="JCL" origin="adobe" version="4.3"/>
+    <_JCLResolution base_type="JCL" origin="adobe" version="4.3"/>
+    <_JCLBegin base_type="JCL-structure" origin="adobe" version="4.3"/>
+    <_JCLToPSInterpreter base_type="JCL-structure" origin="adobe" version="4.3"/>
+    <_JCLEnd base_type="JCL-structure" origin="adobe" version="4.3"/>
+    <_JCLOpenUI base_type="JCL-structure" origin="adobe" version="4.3"/>
+    <_JCLCloseUI base_type="JCL-structure" origin="adobe" version="4.3"/>
+    <_CustomPageSize base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_MaxMediaWidth base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_MaxMediaHeight base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_CurrentMediaWidth base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_CurrentMediaHeight base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_CenterRegistered base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_LeadingEdge base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_HWMargins base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_UseHWMargins base_type="media-custom-page-size" origin="adobe" version="4.3"/>
+    <_OutputBin base_type="media-handling" origin="adobe" version="4.3"/>
+    <_OutputOrder base_type="media-handling" origin="adobe" version="4.3"/>
+    <_PageStackOrder base_type="media-handling" origin="adobe" version="4.3"/>
+    <_TraySwitch base_type="media-handling" origin="adobe" version="4.3"/>
+    <_Signature base_type="media-handling" origin="adobe" version="4.3"/>
+    <_Duplex base_type="media-handling" origin="adobe" version="4.3"/>
+    <_OutputMode base_type="media-handling" origin="adobe" version="4.3"/>
+    <_InputSlot base_type="media-selection" origin="adobe" version="4.3"/>
+    <_ManualFeed base_type="media-selection" origin="adobe" version="4.3"/>
+    <_PageSize base_type="media-selection" origin="adobe" version="4.3"/>
+    <_PageRegion base_type="media-selection" origin="adobe" version="4.3"/>
+    <_MediaType base_type="media-selection" origin="adobe" version="4.3"/>
+    <_MediaColor base_type="media-selection" origin="adobe" version="4.3"/>
+    <_MediaWeight base_type="media-selection" origin="adobe" version="4.3"/>
+    <_ImageableArea base_type="media-size-informations" origin="adobe" version="4.3"/>
+    <_PaperDimension base_type="media-size-informations" origin="adobe" version="4.3"/>
+    <_RequiresPageRegion base_type="media-size-informations" origin="adobe" version="4.3"/>
+    <_LandscapeOrientation base_type="media-size-informations" origin="adobe" version="4.3"/>
+    <_InstallableOptions base_type="options" origin="adobe" version="4.3"/>
+    <_PrinterError base_type="printer-messages" origin="adobe" version="4.3"/>
+    <_Status base_type="printer-messages" origin="adobe" version="4.3"/>
+    <_Source base_type="printer-messages" origin="adobe" version="4.3"/>
+    <_Message base_type="printer-messages" origin="adobe" version="4.3"/>
+    <_Resolution base_type="resolution-appearance" origin="adobe" version="4.3"/>
+    <_SetResolution base_type="resolution-appearance" origin="adobe" version="4.3"/>
+    <_Smoothing base_type="resolution-appearance" origin="adobe" version="4.3"/>
+    <_BitsPerPixel base_type="resolution-appearance" origin="adobe" version="4.3"/>
+    <_ExitServer base_type="sections" origin="adobe" version="4.3"/>
+    <_Prolog base_type="sections" origin="adobe" version="4.3"/>
+    <_DocumentSetup base_type="sections" origin="adobe" version="4.3"/>
+    <_PageSetup base_type="sections" origin="adobe" version="4.3"/>
+    <_JCLSetup base_type="sections" origin="adobe" version="4.3"/>
+    <_AnySetup base_type="sections" origin="adobe" version="4.3"/>
+    <_PPD-Adobe base_type="structure" origin="adobe" version="4.3"/>
+    <_OpenUI base_type="structure" origin="adobe" version="4.3"/>
+    <_CloseUI base_type="structure" origin="adobe" version="4.3"/>
+    <_OpenGroup base_type="structure" origin="adobe" version="4.3"/>
+    <_CloseGroup base_type="structure" origin="adobe" version="4.3"/>
+    <_OpenSubGroup base_type="structure" origin="adobe" version="4.3"/>
+    <_CloseSubGroup base_type="structure" origin="adobe" version="4.3"/>
+    <_OrderDependency base_type="structure" origin="adobe" version="4.3"/>
+    <_NonUIOrderDependency base_type="structure" origin="adobe" version="4.3"/>
+    <_QueryOrderDependency base_type="structure" origin="adobe" version="4.3"/>
+    <_UIConstraints base_type="structure" origin="adobe" version="4.3"/>
+    <_NonUIConstraints base_type="structure" origin="adobe" version="4.3"/>
+    <_Include base_type="structure" origin="adobe" version="4.3"/>
+    <_End base_type="structure" origin="adobe" version="4.3"/>
+    <_SymbolLength base_type="symbolic" origin="adobe" version="4.3"/>
+    <_SymbolValue base_type="symbolic" origin="adobe" version="4.3"/>
+    <_SymbolEnd base_type="symbolic" origin="adobe" version="4.3"/>
+    <_PatchFile base_type="system-management" origin="adobe" version="4.3"/>
+    <_JobPatchFile base_type="system-management" origin="adobe" version="4.3"/>
+    <_FreeVM base_type="system-management" origin="adobe" version="4.3"/>
+    <_VMOption base_type="system-management" origin="adobe" version="4.3"/>
+    <_InstalledMemory base_type="system-management" origin="adobe" version="4.3"/>
+    <_Reset base_type="system-management" origin="adobe" version="4.3"/>
+    <_Password base_type="system-management" origin="adobe" version="4.3"/>
+    <_ExitJamRecovery base_type="system-management" origin="adobe" version="4.3"/>
+    <_SuggestedJobTimeout base_type="system-management" origin="adobe" version="4.3"/>
+    <_SuggestedManualfFeedTimeout base_type="system-management" origin="adobe" version="4.3"/>
+    <_SuggestedWaitTimeout base_type="system-management" origin="adobe" version="4.3"/>
+    <_PrintPSErrors base_type="system-management" origin="adobe" version="4.3"/>
+    <_DeviceAdjustMatrix base_type="system-management" origin="adobe" version="4.3"/>
+    <_APAutoSetupTool base_type="auto-configuration" origin="apple" version="10.5"/>
+    <_cupsColorProfile base_type="color-profile" origin="cups" version="1"/>
+    <_cupsICCProfile base_type="color-profile" origin="cups" version="1.2"/>
+    <_cupsICCQualifier1 base_type="color-profile" origin="cups" version="1.2"/>
+    <_cupsICCQualifier2 base_type="color-profile" origin="cups" version="1.2"/>
+    <_cupsICCQualifier3 base_type="color-profile" origin="cups" version="1.2"/>
+    <_APSupportsCustomColorMatching base_type="color-profile" origin="apple" version="10.4"/>
+    <_APCustomColorMatchingName base_type="color-profile" origin="apple" version="10.5"/>
+    <_APCustomColorMatchingProfile base_type="color-profile" origin="apple" version="10.5"/>
+    <_APDefaultCustomColorMatchingProfile base_type="color-profile" origin="apple" version="10.5"/>
+    <_cupsUIConstraints base_type="structure" origin="cups" version="1.4"/>
+    <_cupsUIResolver base_type="structure" origin="cups" version="1.4"/>
+    <_cupsLanguages base_type="informations" origin="cups" version="1.2"/>
+    <_cupsMediaQualifier2 base_type="media-custom-page-size" origin="cups" version="1.4"/>
+    <_cupsMediaQualifier3 base_type="media-custom-page-size" origin="cups" version="1.4"/>
+    <_cupsMinSize base_type="media-custom-page-size" origin="cups" version="1.4"/>
+    <_cupsMaxSize base_type="media-custom-page-size" origin="cups" version="1.4"/>
+    <_cupsPageSizeCategory base_type="media-selection" origin="cups" version="1.4"/>
+    <_cupsBackSide base_type="media-handling" origin="cups" version="1.3"/>
+    <_cupsEvenDuplex base_type="media-handling" origin="cups" version="1.3"/>
+    <_cupsFax base_type="informations-capabilities" origin="cups" version="1.3"/>
+    <_cupsFlipDuplex base_type="media-handling" origin="cups" version="1"/>
+    <_cupsIPPFinishings base_type="finishing" origin="cups" version="1.3"/>
+    <_cupsManualCopies base_type="informations-capabilities" origin="cups" version="1.2"/>
+    <_cupsMaxCopies base_type="informations-capabilities" origin="cups" version="1.6"/>
+    <_cupsModelNumber base_type="informations" origin="cups" version="1.6"/>
+    <_cupsPJLCharset base_type="informations" origin="cups" version="1.3"/>
+    <_cupsPortMonitor base_type="system-management" origin="cups" version="1.2"/>
+    <_cupsFilter base_type="system-management" origin="cups" version="1.3"/>
+    <_cupsIPPReason base_type="system-management" origin="cups" version="1.3"/>
+    <_cupsPreFilter base_type="system-management" origin="cups" version="1.3"/>
+    <_cupsPrintQuality base_type="resolution-appearance" origin="cups" version="1.5"/>
+    <_cupsFilter2 base_type="system-management" origin="cups" version="1.5"/>
+    <_cupsIPPSupplies base_type="system-management" origin="cups" version="1.5"/>
+    <_cupsSingleFile base_type="system-management" origin="cups" version="1.5"/>
+    <_cupsCommands base_type="system-management" origin="cups" version="1.4"/>
+    <_cupsMarkerName base_type="system-management" origin="cups" version="1.4"/>
+    <_cupsMarkerNotice base_type="system-management" origin="cups" version="1.4"/>
+    <_cupsSNMPSupplies base_type="system-management" origin="cups" version="1.4"/>
+    <_cupsPJLDisplay base_type="informations" origin="cups" version="1.4"/>
+    <_cupsVersion base_type="informations" origin="cups" version="1.4"/>
+    <_JCLToPDFInterpreter base_type="system-management" origin="cups" version="1.6"/>
+    <_APDuplexRequiresFlippedMargin base_type="media-handling" origin="apple" version="10.4"/>
+    <_APHelpBook base_type="system-management" origin="apple" version="10.4"/>
+    <_APPrinterLowInkTool base_type="system-management" origin="apple" version="10.4"/>
+    <_APPrinterPreset base_type="system-management" origin="apple" version="10.5"/>
+    <_APICADriver base_type="informations-capabilities" origin="apple" version="10.6"/>
+    <_APScannerOnly base_type="informations-capabilities" origin="apple" version="10.6"/>
+    <_APDialogExtension base_type="system-management" origin="apple" version="10.3"/>
+    <_APPrinterIconPath base_type="system-management" origin="apple" version="10.3"/>
+    <_APPrinterPrinterUtilityPath base_type="system-management" origin="apple" version="10.3"/>
+    <_APScanAppBundleID base_type="system-management" origin="apple" version="10.3"/>
+    <_StpDriverName base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDriverModelFamily base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpPPDLocation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLocale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpPageSize base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultPageSize base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultPageRegion base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultImageableArea base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultPaperDimension base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultColorModel base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpColorPrecision base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpColorPrecision base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpMediaType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultMediaType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpInputSlot base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultInputSlot base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpQuality base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpQuality base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpQuality base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpResolution base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultResolution base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpResolutionMap base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultOutputOrder base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpiShrinkOutput base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpiShrinkOutput base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDuplex base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultDuplex base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpInkSet base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpInkSet base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpInkSet base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFullBleed base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFullBleed base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFullBleed base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpPrintingDirection base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpPrintingDirection base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpPrintingDirection base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpWeave base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpWeave base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpWeave base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpInkType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpInkType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpInkType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpBandEnhancement base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpBandEnhancement base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpBandEnhancement base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpPaperThickness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpPaperThickness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpPaperThickness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpVacuumIntensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpVacuumIntensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpVacuumIntensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFeedAdjustment base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFeedAdjustment base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFeedAdjustment base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpColorCorrection base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpColorCorrection base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpColorCorrection base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpBrightness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpBrightness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpBrightness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineBrightness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineBrightness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineBrightness base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpSaturation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpSaturation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpSaturation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineSaturation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineSaturation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineSaturation base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpImageType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpImageType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpImageType base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpCyanDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpCyanDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpCyanDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineCyanDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineCyanDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineCyanDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpMagentaDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpMagentaDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpMagentaDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineMagentaDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineMagentaDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineMagentaDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpYellowDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpYellowDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpYellowDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineYellowDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineYellowDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineYellowDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpBlackDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpBlackDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpBlackDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineBlackDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineBlackDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineBlackDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineDensity base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDitherAlgorithm base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDitherAlgorithm base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDitherAlgorithm base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpCyanGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpCyanGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpCyanGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineCyanGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineCyanGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineCyanGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpMagentaGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpMagentaGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpMagentaGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineMagentaGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineMagentaGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineMagentaGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpYellowGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpYellowGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpYellowGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineYellowGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineYellowGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineYellowGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpBlackGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpBlackGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpBlackGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineBlackGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineBlackGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineBlackGamma base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpCyanBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpCyanBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpCyanBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineCyanBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineCyanBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineCyanBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpMagentaBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpMagentaBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpMagentaBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineMagentaBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineMagentaBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineMagentaBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpYellowBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpYellowBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpYellowBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineYellowBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineYellowBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineYellowBalance base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLinearContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLinearContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLinearContrast base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDropSize1 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDropSize1 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDropSize1 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineDropSize1 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDropSize1 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineDropSize1 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDropSize2 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDropSize2 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDropSize2 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDropSize base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDropSize2 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_DefaultStpFineDropSize2 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDropSize3 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDropSize3 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDropSize3 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineDropSize3 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDropSize3 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineDropSize3 base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightCyanValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightCyanValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightCyanValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightCyanValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightCyanValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightCyanValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightCyanTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightCyanTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightCyanTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightCyanTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightCyanTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightCyanTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightCyanScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightCyanScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightCyanScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightCyanScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightCyanScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightCyanScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightMagentaValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightMagentaValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightMagentaValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightMagentaValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightMagentaValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightMagentaValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightMagentaScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightMagentaScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightMagentaScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightMagentaScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightMagentaScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightMagentaScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightMagentaTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightMagentaTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightMagentaTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightMagentaTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightMagentaTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightMagentaTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDarkGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDarkGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDarkGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineDarkGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDarkGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineDarkGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDarkGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDarkGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDarkGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineDarkGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDarkGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineDarkGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDarkGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpDarkGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpDarkGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineDarkGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineDarkGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineDarkGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightGrayValue base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightGrayTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpLightGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpLightGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpLightGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineLightGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineLightGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineLightGrayScale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray5Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray5Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray5Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray5Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray5Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray5Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray5Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray5Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray5Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray5Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray5Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray5Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray5Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray5Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray5Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray5Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray5Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray5Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray4Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray4Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray4Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray4Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray4Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray4Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray4Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray4Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray4Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray4Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray4Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray4Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray4Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray4Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray4Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray4Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray4Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray4Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray3Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray3Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray3Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray2Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray2Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray2Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray1Value base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray1Trans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpHGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpHGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpHGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineHGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineHGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineHGray1Scale base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpBlackTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpBlackTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpBlackTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineBlackTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineBlackTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineBlackTrans base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGCRLower base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGCRLower base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGCRLower base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGCRLower base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGCRLower base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGCRLower base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpGCRUpper base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpGCRUpper base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpGCRUpper base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineGCRUpper base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineGCRUpper base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineGCRUpper base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpSubchannelCutoff base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpSubchannelCutoff base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpSubchannelCutoff base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineSubchannelCutoff base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineSubchannelCutoff base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineSubchannelCutoff base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpInkLimit base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpInkLimit base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpInkLimit base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpFineInkLimit base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpStpFineInkLimit base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_StpDefaultStpFineInkLimit base_type="all" origin="gutenprint" version="5.2.9"/>
+    <_ColorKeyWords base_type="color-profile" origin="openicc" version="all"/>
+  </keywords>
+  <qualifiers>
+    <required keyword="DefaultImageableArea"/>
+    <required keyword="DefaultPaperDimension"/>
+    <required keyword="ImageableArea"/>
+    <required keyword="Manufacturer"/>
+    <required keyword="PageRegion"/>
+    <required keyword="PCFileName"/>
+    <required keyword="PSVersion"/>
+    <required keyword="DefaultPageRegion"/>
+    <required keyword="FileVersion"/>
+    <required keyword="LanguageEncoding"/>
+    <required keyword="ModelName"/>
+    <required keyword="PageSize"/>
+    <required keyword="PPD-Adobe"/>
+    <required keyword="ShortNickName"/>
+    <required keyword="DefaultPageSize"/>
+    <required keyword="FormatVersion"/>
+    <required keyword="LanguageVersion"/>
+    <required keyword="NickName"/>
+    <required keyword="PaperDimension"/>
+    <required keyword="Product"/>
+    <ui keyword="AdvanceMedia"/>
+    <ui keyword="BindColor"/>
+    <ui keyword="BindEdge"/>
+    <ui keyword="BindType"/>
+    <ui keyword="BindWhen"/>
+    <ui keyword="BitsPerPixel"/>
+    <ui keyword="BlackSubstitution"/>
+    <ui keyword="Booklet"/>
+    <ui keyword="Collate"/>
+    <ui keyword="ColorModel"/>
+    <ui keyword="CutMedia"/>
+    <ui keyword="Duplex"/>
+    <ui keyword="ExitJamRecovery"/>
+    <ui keyword="FoldType"/>
+    <ui keyword="FoldWhen"/>
+    <ui keyword="InputSlot"/>
+    <ui keyword="InstalledMemory"/>
+    <ui keyword="Jog"/>
+    <ui keyword="ManualFeed"/>
+    <ui keyword="MediaColor"/>
+    <ui keyword="MediaType"/>
+    <ui keyword="MediaWeight"/>
+    <ui keyword="MirrorPrint"/>
+    <ui keyword="NegativePrint"/>
+    <ui keyword="OutputBin"/>
+    <ui keyword="OutputMode"/>
+    <ui keyword="OutputOrder"/>
+    <ui keyword="PageSize"/>
+    <ui keyword="PageRegion"/>
+    <ui keyword="Resolution"/>
+    <ui keyword="Separations"/>
+    <ui keyword="Signature"/>
+    <ui keyword="Slipsheet"/>
+    <ui keyword="Smoothing"/>
+    <ui keyword="Sorter"/>
+    <ui keyword="StapleLocation"/>
+    <ui keyword="StapleOrientation"/>
+    <ui keyword="StapleWhen"/>
+    <ui keyword="StapleX"/>
+    <ui keyword="StapleY"/>
+    <ui keyword="TraySwitch"/>
+    <repeated keyword="HalftoneName"/>
+    <repeated keyword="Include"/>
+    <repeated keyword="Message"/>
+    <repeated keyword="NonUIConstraints"/>
+    <repeated keyword="NonUIOrderDependency"/>
+    <repeated keyword="OrderDependency"/>
+    <repeated keyword="PageDeviceName"/>
+    <repeated keyword="PrinterError"/>
+    <repeated keyword="Product"/>
+    <repeated keyword="PSVersion"/>
+    <repeated keyword="QueryOrderDependency"/>
+    <repeated keyword="RenderingIntent"/>
+    <repeated keyword="Source"/>
+    <repeated keyword="Status"/>
+    <repeated keyword="UIConstraints"/>
+  </qualifiers>
+</ppd_dictionary>

@@ -5,6 +5,8 @@ Creation-Date: 2012-12-17T09:19:09+01:00
 ====== VUE GENERALE ======
 Created lundi 17 décembre 2012
 
+==== GRAVURE ====
+
 === fonctionnalité plannifiés ===
 * pouvoir utiliser / mettre en place la première mouture de la [[VUE GENERALE:idée de distribution|distribution]]
 * gestion des limites de ressources du RIP
@@ -16,7 +18,7 @@ Created lundi 17 décembre 2012
 	* disposer d'un tramage AM
 * Centralisation des formats papiers (voir libpaper)
 * preview/controle du placement sur format (rasterview)	
-
+* integrer les définitions de adobe ppd spec dans une help
 
 === recherche d'implémentations ===
 * développer une première mouture d'un RipManager, incluant notamment un analyseur de chaîne de filtres, qui au mieux pourrait permettre de modifier une chaîne.
@@ -24,6 +26,8 @@ Created lundi 17 décembre 2012
 * étudier les contraintes d'ui des ppd
 * étudier un hack du system-config-printer
 * étudier genppd de gutenprint en vue d'une regénération des ppd de libgutenprint 
+
+==== GRAVURE-PYGUTENPRINT ====
 
 
 ==== NEMO ====
@@ -41,6 +45,4 @@ Created lundi 17 décembre 2012
 ==== RASTERVIEW ====
 [*] empaquetage pour wheezy
 
-==== GRAVURE-PYGUTENPRINT ====
 
-==== GRAVURE ====
