@@ -39,7 +39,7 @@ PPD_DICTIONARY = etree.Element('ppd_dictionary')
 etree.SubElement(PPD_DICTIONARY, 'keywords')
 etree.SubElement(PPD_DICTIONARY, 'qualifiers')
 
-def buildDictionary(fromXML = True):
+def buildPPDDictionary(fromXML = True):
     global PPD_DICTIONARY
     keys_dir = getPPDDictionaryPath()
     if os.path.exists(keys_dir) and fromXML:
@@ -64,7 +64,6 @@ def buildDictionary(fromXML = True):
                 print('error when parsing data keywords files')
             finally : 
                 fk.close()
-    
     for files in os.listdir(keys_dir):
         if fnmatch.fnmatch(files, 'qualifier_*'):
             p = os.path.join(keys_dir, files)
