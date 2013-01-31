@@ -1,0 +1,243 @@
+%!PS-Adobe-3.0  EPSF-3.0
+%%BoundingBox:  0 0 540 540
+%%Creator:      Gernot Hoffmann
+%%Title:        Sine Curve
+%%CreationDate: Jan.30,2013
+
+
+% points per mm
+/mm {2.834646 mul} def
+
+% plotting resolution,
+% n steps for 0..1
+/plot_res 255 def
+/dx 1 plot_res div def
+
+% length of x-axis and y-axis, global scaling
+/x_scale 150 mm def
+/y_scale 150 mm def
+
+% grid subdivision
+/x_grid 10 def
+/y_grid 10 def
+
+% background box
+/box_width x_scale 20 mm add def
+/box_height y_scale 20 mm add def
+
+% origin of x-y-coordinates
+/x_orig 20 mm def
+/y_orig 20 mm def
+
+% start and end of axes
+/x_start x_orig def
+/x_end x_orig x_scale add def
+
+/y_start y_orig def
+/y_end y_orig y_scale add def
+
+/lw 0.2 mm def % standard linewidth
+
+% construction grid procedure
+/Grid
+{ newpath
+  % grid color
+  0 0 0 0.5 setcmykcolor
+  0.1 mm setlinewidth
+  % grid step
+  /gx x_orig def /x_step x_scale x_grid div def
+  /gy y_orig def /y_step y_scale y_grid div def
+  % horizontal lines
+  { gx gy moveto
+    gx x_scale add gy lineto stroke
+    /gy gy y_step add def gy y_scale 0.01 add x_step add gt {exit}if } loop
+    /gy y_orig def
+  % vertical lines
+  { gx gy moveto
+    gx gy y_scale add lineto stroke
+    /gx gx x_step add def gx x_scale 0.01 add y_step add gt {exit}if } loop
+} def
+
+/Axes
+{
+    newpath
+    % x-axes
+    x_orig y_orig moveto
+    x_end y_orig lineto
+    % y-axes
+    y_orig y_start moveto
+    y_orig y_end lineto
+    lw setlinewidth
+    0.0 setgray
+    stroke
+    % linear value line
+    x_orig y_orig moveto
+    y_end y_end lineto
+    0.2 setlinewidth
+    stroke
+} def
+
+/Box
+{ newpath
+  0.95 setgray
+  x_orig 10 mm sub y_orig 10 mm sub moveto
+  box_width 10 mm add y_orig 10 mm sub lineto
+  box_width 10 mm add box_height 10 mm add lineto
+  x_orig 10 mm sub box_height 10 mm add lineto
+  closepath
+  fill
+  newpath
+  0.72 setgray
+  x_orig 10 mm sub y_orig 10 mm sub moveto
+  box_width 10 mm add y_orig 10 mm sub lineto
+  box_width 10 mm add box_height 10 mm add lineto
+  x_orig 10 mm sub box_height 10 mm add lineto
+  closepath
+  stroke
+} def
+
+% transfer function
+/trs
+{
+  % Dot Gain Table
+  % REF VALUE | MEASURED GAIN VALUE
+  % Define tables x,y(x) by any number of entries.
+  % Values for x=0.0 and x=1.0 are compulsary.
+  /Tab
+  [ 0.00  0.00  %   0% White
+%    0.02  0.02  %   2%
+%    0.04  0.04  %   4%
+%    0.06  0.06  %   6%
+%    0.08  0.08  %   8%
+%    0.10  0.10  %  10%
+%    0.15  0.15  %  15%
+%    0.20  0.20  %  20%
+%    0.30  0.30  %  30%
+%    0.40  0.40  %  40%
+%    0.45  0.45  %  45%
+     0.50  0.70  %  50%
+%    0.55  0.55  %  55%
+%    0.60  0.60  %  60%
+%    0.70  0.70  %  70%
+%    0.80  0.80  %  80%
+%    0.85  0.85  %  85%
+%    0.90  0.90  %  90%
+%    0.92  0.92  %  92%
+%    0.94  0.94  %  94%
+%    0.96  0.96  %  96%
+%    0.98  0.98  %  98%
+    1.00  1.00 % 100% Black
+  ] def
+
+  % convert from grey postcript
+  % value to % ink coverage
+  /cvink {1 exch sub} def
+
+  % reverse table order and
+  % reverse (x,y) value pair
+  % to guess corrected value
+  % from input value.
+  /tab_reverse
+  {
+    /tmp_tab exch def
+    tmp_tab aload length
+    0 2 3 -1 roll 1 sub {
+      /pos exch def
+      tmp_tab exch pos exch put
+      tmp_tab exch pos 1 add exch put
+    } for
+  } def
+
+  % convert soustractiv input table
+  % to postscript additiv values
+  /to_additiv_tab
+  {
+    /tmp_tab exch def
+    0 1 tmp_tab length 1 sub
+    {
+      dup
+      tmp_tab exch get cvink
+      tmp_tab 3 1 roll put
+    } for
+  } def
+
+  % Linear interpolation function
+  % guess value from table
+  % with (x,y) value pair
+  /get_y
+  {
+    /tab_length Tab length 1 sub def
+    /ib 0 def
+    % stack -> input_val
+    {
+      /ib ib 2 add def             % ib = ib + 2
+      ib tab_length gt {exit} if   % if ib>tab_length : exit loop
+      dup                          % stack -> input_val | input_val
+      Tab ib get le {exit} if      % if input_val<=tab[ib] : exit loop
+    } loop                         % loop keep index position in /ib
+
+    % stack -> input_val
+    Tab ib 2 sub get sub     % (input_val - Tab[ib-2])
+    Tab ib 1 add get         % *
+    Tab ib 1 sub get sub mul % (Tab[ib+1] - Tab[ib-1])
+    Tab ib get               % stack -> resultat | Tab[ib]
+    Tab ib 2 sub get sub     % Tab[ib] - Tab[ib-2]
+    div                      % resultat / resultat2
+    Tab ib 1 sub get add     % + Tab[ib-1]
+  } def
+
+  Tab to_additiv_tab
+  Tab tab_reverse
+  get_y
+} def
+
+
+% convert from grey postcript
+% value to % ink coverage
+/cvink {1 exch sub} def
+
+% plotting procedures
+/plot_correction
+{ newpath
+  x_orig 0 trs y_scale mul y_orig add moveto
+  0 1.0 plot_res div 1.0
+  {
+    dup cvink trs cvink
+    y_scale mul y_orig add
+    exch
+    x_scale mul x_orig add
+    exch lineto
+  } for
+  0.5 setgray
+  lw setlinewidth
+  stroke
+} def
+
+/plot_gain
+{ newpath
+  x_orig 0 trs y_scale mul y_orig add moveto
+  0 1.0 plot_res div 1.0
+  {
+    dup cvink trs cvink
+    y_scale mul y_orig add
+    exch
+    x_scale mul x_orig add
+    lineto
+  } for
+  1 0 1 setrgbcolor
+  lw setlinewidth
+  stroke
+} def
+
+%—Program
+true setstrokeadjust
+gsave
+Box
+Grid
+Axes
+2 setlinecap % 0=short 1=round 2=long
+plot_correction
+plot_gain
+
+grestore
+showpage

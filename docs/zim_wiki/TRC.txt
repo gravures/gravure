@@ -1,0 +1,22 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-01-27T07:47:06+01:00
+
+====== TRC ======
+Created dimanche 27 janvier 2013
+
+http://www.poynton.com/PDFs/TIDV/Gamma.pdf
+http://diwww.epfl.ch/w3lsp/pub/papers/colour/itynmsnmbdscdotisc_05.pdf
+
+http://iprg.co.in/index.php
+
+http://www.csee.wvu.edu/~xinl/reproducible_research.html
+
+Structure aware halftoning
+http://en.pudn.com/search_db.asp?keyword=halftone
+
+http://gandalf-library.sourceforge.net/
+
+==== pycha ====
+https://bitbucket.org/lgs/pycha/wiki/Home
+https://code.launchpad.net/pycairochart

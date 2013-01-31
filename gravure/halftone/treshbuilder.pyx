@@ -19,8 +19,7 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-# this is a namespace package
-from __future__ import print_function
-
-import pkg_resources
-pkg_resources.declare_namespace(__name__)
+__author__ = "Gilles Coissac <gilles@atelierobscur.org>"
+__date__ = "Tue Jan 22 21:40:55 2013"
+__version__ = "$Revision: 0.1 $"
+__credits__ = "Atelier Obscur : www.atelierobscur.org"

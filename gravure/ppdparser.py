@@ -5,17 +5,18 @@
 # Authors:
 # Gilles Coissac <gilles@atelierobscur.org>
 
-# This program is free software; you can redistribute it and/or modify it under
-# the terms of version 2 of the GNU General Public License as published by the
-# Free Software Foundation.
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of version 2 of the GNU General Public License
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
 # You should have received a copy of the GNU General Public License with
 # the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
-# if not, write to the Free Software Foundation, Inc., 51 Franklin St, 
+# if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import print_function
@@ -39,11 +40,12 @@ PPD_DICTIONARY = etree.Element('ppd_dictionary')
 etree.SubElement(PPD_DICTIONARY, 'keywords')
 etree.SubElement(PPD_DICTIONARY, 'qualifiers')
 
-def buildPPDDictionary(fromXML = True):
+
+def buildPPDDictionary(fromXML=True):
     global PPD_DICTIONARY
     keys_dir = getPPDDictionaryPath()
     if os.path.exists(keys_dir) and fromXML:
-        PPD_DICTIONARY = openPPDDictionary()    
+        PPD_DICTIONARY = openPPDDictionary()
     for files in os.listdir(keys_dir):
         if fnmatch.fnmatch(files, 'keywords_*'):
             p = os.path.join(keys_dir, files)
@@ -52,17 +54,17 @@ def buildPPDDictionary(fromXML = True):
                 fk = open(p, 'r')
                 sp = string.rsplit(files[9:], '_', 2)
                 sp2 = string.rsplit(sp[0], '-', 2)
-                kd = {'origin':sp2[0], 'version':sp2[1], 'base_type':sp[1]}
+                kd = {'origin': sp2[0], 'version': sp2[1], 'base_type': sp[1]}
                 for line in fk:
                     tag = '_' + string.rstrip(line, '\n')
-                    if k_dict.find(tag) == None:
-                        etree.SubElement(k_dict, tag, kd)                        
+                    if k_dict.find(tag) is None:
+                        etree.SubElement(k_dict, tag, kd)
                     else:
                         print (tag, 'already in PPD_DICTIONARY')
                         print(files)
-            except IOError: 
+            except IOError:
                 print('error when parsing data keywords files')
-            finally : 
+            finally:
                 fk.close()
     for files in os.listdir(keys_dir):
         if fnmatch.fnmatch(files, 'qualifier_*'):
@@ -74,21 +76,22 @@ def buildPPDDictionary(fromXML = True):
                 for line in fk:
                     keyword = string.rstrip(line, '\n')
                     for e in q_dict.findall(tag):
-                        if e.get('keyword') == keyword: 
-                            print('qualifier already present for keyword')                            
+                        if e.get('keyword') == keyword:
+                            print('qualifier already present for keyword')
                             break
                     else:
                         # TODO: test if qualifiers not define inexistant keyword
-                        etree.SubElement(q_dict, tag, {'keyword':keyword})
-            except IOError: 
+                        etree.SubElement(q_dict, tag, {'keyword': keyword})
+            except IOError:
                 print('error when parsing data qualifiers files')
-            finally : 
+            finally:
                 fk.close()
     writePPDDictionary(PPD_DICTIONARY)
 
+
 def writePPDDictionary(element):
     keys_dir = getPPDDictionaryPath()
-    s = etree.tostring(element, encoding='UTF-8', method = 'xml')
+    s = etree.tostring(element, encoding='UTF-8', method='xml')
     p = minidom.parseString(s)
     p = p.toprettyxml(indent="  ")
     dp = os.path.join(keys_dir, PPD_DICTIONARY_FILENAME)
@@ -99,7 +102,8 @@ def writePPDDictionary(element):
         print('error when opening ppd dictionary')
     finally:
         df.close()
-        
+
+
 def openPPDDictionary():
     keys_dir = getPPDDictionaryPath()
     dp = os.path.join(keys_dir, PPD_DICTIONARY_FILENAME)
@@ -107,16 +111,13 @@ def openPPDDictionary():
     try:
         df = open(dp, 'r')
         element = etree.fromstringlist(df.readlines())
-    except IOError: 
+    except IOError:
         print('error when opening ppd dictionary')
-    finally : 
+    finally:
         df.close()
     return element
+
 
 def getPPDDictionaryPath():
     base_dir = os.path.abspath(os.path.dirname(__file__))
     return os.path.join(base_dir, 'keywords')
-
-
-
-

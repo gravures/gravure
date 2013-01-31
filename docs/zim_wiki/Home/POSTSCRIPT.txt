@@ -1,0 +1,29 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-01-25T10:49:48+01:00
+
+====== POSTSCRIPT ======
+Created vendredi 25 janvier 2013
+
+%!PS
+<<
+    /UseWTS          true
+    /AccurateScreens true
+    /MinScreenLevels 1024
+>>
+setuserparams
+
+/spot {
+    1 add 180 mul cos 1 0.08 add mul exch
+    2 add 180 mul cos 1 0.08 sub mul add
+    2 div
+} bind def
+
+<<
+    /HalftoneType     1
+    /AccurateScreens  true
+    /Frequency        600 1 dup mul 3 dup mul add sqrt div
+    /Angle            1 3 atan
+    /SpotFunction     /spot load
+>>
+sethalftone
