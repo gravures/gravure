@@ -1,4 +1,7 @@
 %!PS-Adobe-3.0  EPSF-3.0
+%%BoundingBox:  0 0 400 425
+%%Title:        Plot Transfer
+%%CreationDate: Jan.30,2013
 
 % Copyright (C) 2012 Atelier Obscur.
 % Authors:
@@ -26,22 +29,16 @@
 % by Gernot Hoffmann.
 %
 
-%%BoundingBox:  0 0 540 540
-%%Title:        Plot Transfer
-%%CreationDate: Jan.30,2013
-
-
 % points per mm
 /mm {2.834646 mul} def
 
 % plotting resolution,
 % n steps for 0..1
-/plot_res 255 def
-/dx 1 plot_res div def
+/plot_res 100 def
 
 % length of x-axis and y-axis, global scaling
-/x_scale 150 mm def
-/y_scale 150 mm def
+/x_scale 100 mm def
+/y_scale 100 mm def
 
 % grid subdivision
 /x_grid 10 def
@@ -49,11 +46,11 @@
 
 % background box
 /box_width x_scale 20 mm add def
-/box_height y_scale 20 mm add def
+/box_height y_scale 30 mm add def
 
 % origin of x-y-coordinates
 /x_orig 20 mm def
-/y_orig 20 mm def
+/y_orig 30 mm def
 
 % start and end of axes
 /x_start x_orig def
@@ -76,12 +73,14 @@
   % horizontal lines
   { gx gy moveto
     gx x_scale add gy lineto stroke
-    /gy gy y_step add def gy y_scale 0.01 add x_step add gt {exit}if } loop
+    /gy gy y_step add def
+    gy y_end  x_step add gt {exit}if } loop
     /gy y_orig def
   % vertical lines
   { gx gy moveto
     gx gy y_scale add lineto stroke
-    /gx gx x_step add def gx x_scale 0.01 add y_step add gt {exit}if } loop
+    /gx gx x_step add def
+    gx x_end y_step add gt {exit}if } loop
 } def
 
 /Axes
@@ -91,34 +90,53 @@
     x_orig y_orig moveto
     x_end y_orig lineto
     % y-axes
-    y_orig y_start moveto
-    y_orig y_end lineto
-    lw setlinewidth
+    x_orig y_start moveto
+    x_orig y_end lineto
+    lw 2 mul setlinewidth
     0.0 setgray
     stroke
     % linear value line
     x_orig y_orig moveto
-    y_end y_end lineto
-    0.2 setlinewidth
+    x_end y_end lineto
+    0.2 setgray
+    lw setlinewidth
     stroke
 } def
 
 /Box
 { newpath
   0.95 setgray
-  x_orig 10 mm sub y_orig 10 mm sub moveto
-  box_width 10 mm add y_orig 10 mm sub lineto
+  x_orig 10 mm sub y_orig 20 mm sub moveto
+  box_width 10 mm add y_orig 20 mm sub lineto
   box_width 10 mm add box_height 10 mm add lineto
   x_orig 10 mm sub box_height 10 mm add lineto
   closepath
   fill
   newpath
   0.72 setgray
-  x_orig 10 mm sub y_orig 10 mm sub moveto
-  box_width 10 mm add y_orig 10 mm sub lineto
+  x_orig 10 mm sub y_orig 20 mm sub moveto
+  box_width 10 mm add y_orig 20 mm sub lineto
   box_width 10 mm add box_height 10 mm add lineto
   x_orig 10 mm sub box_height 10 mm add lineto
   closepath
+  stroke
+} def
+
+/Gray_ramp
+{
+  .2 mm setlinewidth
+  0 .2 mm x_scale {
+    dup x_scale div 1 exch sub setgray
+    newpath
+    x_orig add dup y_orig 10 mm sub moveto
+    y_orig 5 mm sub lineto
+    stroke
+  } for
+  %newpath
+  x_orig y_orig 10 mm sub moveto
+  x_orig y_orig 5 mm sub lineto
+  x_scale x_orig add y_orig 5 mm sub lineto
+  0.3 setgray
   stroke
 } def
 
@@ -222,6 +240,7 @@
 % value to % ink coverage
 /cvink {1 exch sub} def
 
+
 % plotting procedures
 /plot_correction
 { newpath
@@ -234,10 +253,12 @@
     x_scale mul x_orig add
     exch lineto
   } for
-  0.5 setgray
-  lw setlinewidth
+  0 .6 0.3 setrgbcolor
+  lw 2 mul setlinewidth
+  [3 mm 3 mm] 0 setdash
   stroke
 } def
+
 
 /plot_gain
 { newpath
@@ -245,14 +266,14 @@
   0 1.0 plot_res div 1.0
   {
     dup cvink trs cvink
-    y_scale mul y_orig add
+    y_scale mul x_orig add
     exch
-    x_scale mul x_orig add
+    x_scale mul y_orig add
     lineto
   } for
   1 0 1 setrgbcolor
   lw setlinewidth
-  stroke
+  [] 0 setdash stroke
 } def
 
 %—Program
@@ -261,6 +282,7 @@ gsave
 Box
 Grid
 Axes
+Gray_ramp
 2 setlinecap % 0=short 1=round 2=long
 plot_correction
 plot_gain
