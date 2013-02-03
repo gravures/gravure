@@ -1,0 +1,288 @@
+%!PS
+
+% Copyright (C) 2012 Atelier Obscur.
+% Authors:
+% Gilles Coissac <dev@atelierobscur.org>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of version 2 of the GNU General Public License
+% as published by the Free Software Foundation.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License with
+% the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
+% if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+% Fifth Floor, Boston, MA 02110-1301, USA.
+%
+
+/grv_transfer
+{
+  % Dot Gain Table
+  % REF VALUE | MEASURED GAIN VALUE
+  % Define tables x,y(x) by any number of entries.
+  % Values for x=0.0 and x=1.0 are compulsary.
+  /Tab
+  [ 0.00  0.00  %   0% White
+%    0.02  0.02  %   2%
+%    0.04  0.04  %   4%
+%    0.06  0.06  %   6%
+%    0.08  0.08  %   8%
+%    0.10  0.10  %  10%
+%    0.15  0.15  %  15%
+%    0.20  0.20  %  20%
+%    0.30  0.30  %  30%
+%    0.40  0.40  %  40%
+%    0.45  0.45  %  45%
+     0.50  0.70  %  50%
+%    0.55  0.55  %  55%
+%    0.60  0.60  %  60%
+%    0.70  0.70  %  70%
+%    0.80  0.80  %  80%
+%    0.85  0.85  %  85%
+%    0.90  0.90  %  90%
+%    0.92  0.92  %  92%
+%    0.94  0.94  %  94%
+%    0.96  0.96  %  96%
+%    0.98  0.98  %  98%
+    1.00  1.00 % 100% Black
+  ] def
+
+
+  % convert from grey postcript
+  % value to % ink coverage
+  /cvink {1 exch sub} def
+
+
+  % reverse table order and
+  % reverse (x,y) value pair
+  % to guess corrected value
+  % from input value.
+  /tab_reverse
+  {
+    /tmp_tab exch def
+    tmp_tab aload length
+    0 2 3 -1 roll 1 sub {
+      /pos exch def
+      tmp_tab exch pos exch put
+      tmp_tab exch pos 1 add exch put
+    } for
+  } def
+
+
+  % convert soustractiv input table
+  % to postscript additiv values
+  /to_additiv_tab
+  {
+    /tmp_tab exch def
+    0 1 tmp_tab length 1 sub
+    {
+      dup
+      tmp_tab exch get cvink
+      tmp_tab 3 1 roll put
+    } for
+  } def
+
+
+  /find_controls
+  {
+    % stack -> input_val
+    % iterate trought x value only in Tab(x,y)
+    % and find interval where input_val fit
+    2 2 Tab length 1 sub {
+      dup 3 2 roll dup    % stack -> index_loop | index_loop | input_val | input_val
+      4 1 roll exch       % stack -> input_val | index_loop | input_val | index_loop
+      Tab exch get        % stack -> input_val | index_loop | input_val | tab_element
+      le {
+        % stack -> input_val | index_loop
+        %
+        % tab length == 4
+        % minimal length, white and black entry only.
+        % No information about the neighbors,
+        % so we have a straight line.
+        Tab length 4 eq {
+          % pop index loop,
+          % push a 2 pair(x,y) array
+          % on the stack and exit the loop
+          pop
+          Tab 0 4 getinterval
+          exit
+        }
+        {
+          % tab length > 4 and index_loop == 2
+          % we are in the first interval,
+          % only a right neighbor is available.
+          % push a 8 length array on the stack,
+          % copy in it our 3 pair(x,y) values
+          % with keeping its first elements pair null
+          % (meaning no left control point).
+          % and exit the loop
+          dup 2 eq {
+            pop
+            8 array dup 2
+            Tab 0 6 getinterval
+            putinterval
+            exit
+          } if
+
+          % tab length > 4 and index_loop == last pair
+          % we are in the last interval,
+          % only a left neighbor is available.
+          % Here, keeping its last 2 elements null
+          % (meaning no rigth control point).
+          % and exit the loop
+          dup Tab length 2 sub eq {
+            pop
+            8 array dup 0
+            Tab length 6 sub
+            Tab exch 6 getinterval
+            putinterval
+            exit
+          } if
+
+          % Last case, both neighbors are available.
+          % push an array with our four control points.
+          Tab exch 4 sub 8 getinterval
+          exit
+        } ifelse
+      } {pop} ifelse
+    } for
+    % stack -> input_val | array
+  } def
+
+
+  % This function calculates the curve values between
+  % the control points p2 and p3, taking the potentially
+  % existing neighbors p1 and p4 into account.
+  %
+  % This function uses a cubic bezier curve
+  % for the individual segments and calculates
+  % the necessary intermediate control points
+  % depending on the neighbor curve control points.
+  /plot_y {
+    % stack -> input_val | controls_point interval
+    /curve exch def
+    /xi exch def
+    % stack -> empty
+    /dx 0 def
+    /dy 0 def
+    /y1 0 def
+    /y2 0 def
+    /y0 0 def
+    /y3 0 def
+    /x0 0 def
+    /x3 0 def
+    /slope 0 def
+
+    % the x values of the inner control points are fixed at
+    % x1 = 2/3*x0 + 1/3*x3   and  x2 = 1/3*x0 + 2/3*x3
+    % this ensures that the x values increase linearily with the
+    % parameter t and enables us to skip the calculation of the x
+    % values altogehter - just calculate y(t) evenly spaced.
+    curve length 4 eq {
+      % 2 control points curve,
+      % calculate y1 and y2 to get a straight line
+      /x0 curve 0 get def
+      /y0 curve 1 get def
+      /x3 curve 2 get def
+      /y3 curve 3 get def
+
+      /dx x3 x0 sub def
+      /dy y3 y0 sub def
+      dx 0 lt {(ERROR) pstack pop} if
+
+      /y1 dy 3.0 div y0 add def
+      /y2 2.0 3.0 div dy mul y0 add def
+    }
+    {
+      /x0 curve 2 get def
+      /y0 curve 3 get def
+      /x3 curve 4 get def
+      /y3 curve 5 get def
+
+      /dx x3 x0 sub def
+      /dy y3 y0 sub def
+      dx 0 lt {(ERROR) pstack pop} if
+
+      curve 0 get null eq {
+        % only the right neighbor is available.
+        % Make the tangent at the right endpoint
+        % parallel to the line between the left endpoint
+        % and the right neighbor. Then point
+        % the tangent at the left towards
+        % the control handle of the right tangent,
+        % to ensure that the curve does not
+        % have an inflection point.
+        /slope curve 7 get y0 sub
+               curve 6 get x0 sub
+               div def
+        /y2 y3 dx 3.0 div slope mul sub def
+        /y1 y0 y2 y0 sub 2.0 div add def
+      } if
+
+      curve 7 get null eq {
+        % only the left neighbor is available.
+        % see previous case
+        /slope y3 curve 1 get sub
+               x3 curve 0 get sub
+               div def
+        /y1 y0 dx 3.0 div slope mul add def
+        /y2 y3 y1 y3 sub 2.0 div add def
+      } if
+
+      curve 0 get null ne curve 7 get null ne and {
+        % Both neighbors are available.
+        % Make the tangents at the endpoints
+        % parallel to the line between the
+        % opposite endpoint and the adjacent
+        % neighbor.
+        /slope y3 curve 1 get sub
+               x3 curve 0 get sub
+               div def
+        /y1 y0 dx 3.0 div slope mul add def
+
+        /slope curve 7 get y0 sub
+               curve 6 get x0 sub
+               div def
+        /y2 y3 slope dx mul 3.0 div sub def
+      } if
+    } ifelse
+
+    % finally calculate the y(t) values
+    % for the given bezier values. We can
+    % use homogenously distributed values
+    % for t, since x(t) increases linearily
+
+    % t = normalize xi.
+    /t xi x0 sub dx div def
+
+    /y 1 t sub y0 mul
+       1 t sub mul
+       1 t sub mul
+
+       3 y1 mul
+       1 t sub mul
+       1 t sub mul
+       t mul add
+
+       3 y2 mul
+       1 t sub mul
+       t mul t mul add
+
+       y3 t mul
+       t mul t mul add
+       def
+
+    % push y on the stack
+    y
+  } def
+
+  Tab to_additiv_tab
+  Tab tab_reverse
+  find_controls
+  plot_y
+
+} def
