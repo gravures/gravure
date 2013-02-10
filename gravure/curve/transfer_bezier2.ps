@@ -22,7 +22,35 @@
 /grv_transfer
 {
   % Dot Gain Table
-  /Tab [grv_gain] def
+  % REF VALUE | MEASURED GAIN VALUE
+  % Define tables x,y(x) by any number of entries.
+  % Values for x=0.0 and x=1.0 are compulsary.
+  /Tab
+  [ 0.00  0.00  %   0% White
+%    0.02  0.02  %   2%
+%    0.04  0.04  %   4%
+%    0.06  0.06  %   6%
+%    0.08  0.08  %   8%
+%    0.10  0.10  %  10%
+%    0.15  0.30  %  15%
+%    0.25  0.25  %  20%
+%    0.30  0.30  %  30%
+%    0.40  0.40  %  40%
+%    0.45  0.45  %  45%
+     0.50  0.80  %  50%
+%    0.55  0.55  %  55%
+%    0.60  0.60  %  60%
+%    0.70  0.92  %  70%
+%    0.80  0.80  %  80%
+%    0.85  0.85  %  85%
+%   0.90  0.99  %  90%
+%    0.92  0.92  %  92%
+%    0.94  0.94  %  94%
+%    0.96  0.96  %  96%
+%    0.98  0.98  %  98%
+    1.00  1.00 % 100% Black
+  ] def
+
 
   % convert from grey postcript
   % value to % ink coverage
@@ -139,15 +167,7 @@
     /curve exch def
     /xi exch def
     % stack -> empty
-    /dx 0 def
-    /dy 0 def
-    /y1 0 def
-    /y2 0 def
-    /y0 0 def
-    /y3 0 def
-    /x0 0 def
-    /x3 0 def
-    /slope 0 def
+
 
     % the x values of the inner control points are fixed at
     % x1 = 2/3*x0 + 1/3*x3   and  x2 = 1/3*x0 + 2/3*x3
@@ -170,14 +190,21 @@
       /y2 2.0 3.0 div dy mul y0 add def
     }
     {
-      /x0 curve 2 get def
-      /y0 curve 3 get def
-      /x3 curve 4 get def
-      /y3 curve 5 get def
+      /init_coef {
+        /x0 curve 2 get def
+        /y0 curve 3 get def
+        /x3 curve 4 get def
+        /y3 curve 5 get def
 
-      /dx x3 x0 sub def
-      /dy y3 y0 sub def
-      dx 0 lt {(ERROR) pstack pop} if
+        /xp1 curve 0 get def
+        /yp1 curve 1 get def
+        /xp4 curve 6 get def
+        /yp4 curve 7 get def
+
+        /dx x3 x0 sub def
+        /dy y3 y0 sub def
+         dx 0 lt {(ERROR) pstack pop} if
+      } def
 
       curve 0 get null eq {
         % only the right neighbor is available.
@@ -188,8 +215,12 @@
         % the control handle of the right tangent,
         % to ensure that the curve does not
         % have an inflection point.
-        /slope curve 7 get y0 sub
-               curve 6 get x0 sub
+        curve 2 get curve 0 3 -1 roll put
+        curve 3 get curve 1 3 -1 roll put
+        init_coef
+
+        /slope yp4 y0 sub
+               xp4 x0 sub
                div def
         /y2 y3 dx 3.0 div slope mul sub def
         /y1 y0 y2 y0 sub 2.0 div add def
@@ -198,8 +229,12 @@
       curve 7 get null eq {
         % only the left neighbor is available.
         % see previous case
-        /slope y3 curve 1 get sub
-               x3 curve 0 get sub
+        curve 4 get curve 6 3 -1 roll put
+        curve 5 get curve 7 3 -1 roll put
+        init_coef
+
+        /slope y3 yp1 sub
+               x3 xp1 sub
                div def
         /y1 y0 dx 3.0 div slope mul add def
         /y2 y3 y1 y3 sub 2.0 div add def
@@ -211,13 +246,15 @@
         % parallel to the line between the
         % opposite endpoint and the adjacent
         % neighbor.
-        /slope y3 curve 1 get sub
-               x3 curve 0 get sub
+        init_coef
+
+        /slope y3 yp1 sub
+               x3 xp1 sub
                div def
         /y1 y0 dx 3.0 div slope mul add def
 
-        /slope curve 7 get y0 sub
-               curve 6 get x0 sub
+        /slope yp4 y0 sub
+               xp4 x0 sub
                div def
         /y2 y3 slope dx mul 3.0 div sub def
       } if
@@ -230,6 +267,7 @@
 
     % t = normalize xi.
     /t xi x0 sub dx div def
+    %/t xi dx div x0 sub def
 
     /y y0 1 t sub mul
        1 t sub mul
@@ -253,7 +291,7 @@
     y 1.0 gt { /y 1 def } if
 
     % push y on the stack
-    y
+    y yp1 add
   } def
 
   Tab to_additiv_tab
@@ -261,4 +299,4 @@
   find_controls
   plot_y
 
-} bind def
+} def

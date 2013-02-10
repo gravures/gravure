@@ -145,8 +145,10 @@
 % value to % ink coverage
 /cvink {1 exch sub} def
 
-% transfer function
-/trs {grv_transfer} def
+
+% load transfer function
+(procset/grv_def_transfer.ps) run
+/trs /grv_transfer load def
 
 
 % plotting procedures

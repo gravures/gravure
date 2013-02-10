@@ -1,0 +1,15 @@
+#include"stdio.h"
+#define N 4         /*the number of x and y*/
+main()
+{
+    float vx[N],vy[N],;
+    int i,j;
+    printf("please input the value of x\n");
+    for(i=0;i<N;i++)
+    scanf("%f",&vx[i]);
+    printf("please input the value of y\n");
+    for(i=0;i<N;i++)
+    scanf("%f",&vy[i]);
+
+    getch();
+}
