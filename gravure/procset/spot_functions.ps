@@ -19,6 +19,148 @@
 % Fifth Floor, Boston, MA 02110-1301, USA.
 %
 
+% LINE X
+/grv_spot_line_x
+{
+  pop
+} bind def
+
+
+% LINE Y
+/grv_spot_line_Y
+{
+  exch pop
+} bind def
+
+
+%% LINE
+/grv_spot_line
+{
+  exch pop
+  abs neg
+} bind def
+
+
+% SIMPLE DOT
+/grv_spot_simple
+{
+  dup mul
+  exch dup
+  mul add 1
+  exch sub
+} bind def
+
+
+% COSINE DOT
+/grv_spot_cosine
+{
+  180 mul cos
+  exch 180 mul
+  cos add 2 div
+} bind def
+
+
+%% ROUND DOT
+/grv_spot_round
+{
+  abs exch
+  abs 2 copy add
+  1 le
+  {
+    dup mul
+    exch dup
+    mul add
+    1 exch sub
+  }
+  {
+    1 sub
+    dup mul
+    exch 1 sub
+    dup mul add
+    1 sub
+  } ifelse
+} bind def
+
+
+% HILL DOT
+% {/zf 1 xf dup mul yf dup mul add 20 mul 1 add div 0.1 sub def}
+/grv_spot_hill
+{
+  exch
+  % y | x
+  dup mul
+  % y | x*x
+  exch
+  % x*x | y
+  dup mul
+  % x*x | y*y
+  add 20 mul 1 add
+  % ((x*x + y*y)*20)+1
+  1 exch div
+  0.1 sub
+} bind def
+
+
+% RHOMBOID
+/grv_spot_rhomboid
+{
+  abs exch
+  abs 0.9 mul
+  add 2 div
+} bind def
+
+
+%% SQUARE DOT
+/grv_spot_square
+{
+  abs exch
+  abs 2
+  copy
+  lt { exch } if
+  pop neg
+} bind def
+
+
+%% CROSS / INVERTED SQUARE
+/grv_spot_cross
+{
+  abs exch
+  abs 2
+  copy
+  gt { exch } if
+  pop neg
+} bind def
+
+
+% DIAMOND DOT
+/grv_spot_diamond
+{
+  abs exch
+  abs 2
+  copy add .75 le
+  {
+    dup mul exch
+    dup mul add
+    1 exch sub
+  }
+  {
+    2 copy
+    add 1.23 le
+    {
+      .85 mul add
+      1 exch sub
+    }
+    {
+      1 sub
+      dup mul exch
+      1 sub dup
+      mul add 1 sub
+    } ifelse
+  } ifelse
+} bind def
+
+
+% ELLIPTICAL DOT
 /grv_spot_elliptic_80
 {
   abs exch abs
@@ -48,7 +190,107 @@
   } ifelse
 } bind def
 
-/grv_spot_line
+
+% ELLIPSE .60
+
+% ELLIPSE .75
+
+% ELLIPSE .90
+
+% ELLIPSE Blischke .85
+/grv_spot_blischke_85
 {
-  pop
+  exch abs
+  exch abs
+  2 copy 0.85 mul
+  add 0.85 lt
+  {
+    exch 0.85 div
+    dup dup mul
+    exch 2 mul
+    3 sub mul exch
+    dup dup mul exch
+    2 mul 3 sub
+    mul add 0.85
+    mul 1 add
+  }
+  {
+    2 copy 0.85 mul
+    add 1 gt
+    {
+      1 sub exch
+      1 sub 0.85 div
+      dup dup mul exch
+      2 mul 3 add
+      mul exch
+      dup dup mul
+      exch 2 mul 3 add
+      mul add 0.85 mul
+      1 sub
+    }
+    {
+      0.85 mul add
+      2 mul neg
+      1 add 0.85 add
+    } ifelse
+  } ifelse
 } bind def
+
+
+% DOUBLE
+/grv_spot_double
+{
+  exch 2 div
+  exch 2
+  {
+    360 mul
+    sin 2 div
+    exch
+  } repeat add
+} bind def
+
+
+% DOUBLE DOT
+/grv_spot_double2
+{
+  2
+  {
+    360 mul sin
+    2 div exch
+  } repeat add
+} bind def
+
+%%
+
+%% ELLIPSEA
+%% SpotFunction  { dup mul .9 mul exch dup mul add 1 exch sub } def
+%%
+%% INVERTED ELLIPSEA
+%% SpotFunction { dup mul .9 mul exch dup mul add 1 sub } def
+%%
+%% ELLIPSEB
+%% SpotFunction { dup 5 mul 8 div mul exch dup mul exch add sqrt 1 exch sub } def
+%%
+%% ELLIPSEC
+%% SpotFunction { dup mul .9 mul exch dup mul add 1 exch sub } def
+%%
+%% INVERTED ELLIPSEC
+%% SpotFunction { dup mul .9 mul exch dup mul add 1 sub } def
+%%
+
+%%
+%% EllipseC BUG
+%% SpotFunction { dup .5 gt { 1 exch sub } if dup .25 ge { .5 exch sub 4 mul dup mul 1 sub } { 4 mul dup mul 1 exch sub } ifelse exch dup .5 gt { 1 exch sub } if dup .25 ge { .5 exch sub 4 mul dup mul 1 sub } { 4 mul dup mul 1 exch sub } ifelse add -2 div } def
+%%
+%% INVERTED DOUBLE
+%% SpotFunction { exch 2 div exch 2 { 360 mul sin 2 div exch } repeat add neg } def
+%%
+%% INVERTED DOUBLE DOT
+%% SpotFunction { 2 { 360 mul sin 2 div exch } repeat add neg} def
+%%
+%% INVERTED SIMPLE DOT
+%% SpotFunction { dup mul exch dup mul add 1 sub } def
+%%
+
+
+
