@@ -17,6 +17,10 @@
 # the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
+import math
+import decimal
+from decimal import Decimal, getcontext
+
 
 __author__ = "Gilles Coissac <gilles@atelierobscur.org>"
 __date__ = "Tue Feb 12 18:23:45 2013"
@@ -30,9 +34,6 @@ __credits__ = "Atelier Obscur : www.atelierobscur.org"
 #       * version c des fonctions (cython) ?
 
 
-import math
-import decimal
-from decimal import Decimal, getcontext
 
 
 def pi():

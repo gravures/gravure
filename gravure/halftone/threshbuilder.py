@@ -29,7 +29,7 @@ from fractions import Fraction
 from decimal import *
 #import decimal.Decimal as Decimal
 
-import decimalmath as dm
+import gmath as gm
 import spotfunctions
 import matplotlib.pyplot as plt
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-03-01, 13:52:45 -->
+<!-- Saved: 2013-03-01, 13:57:45 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -66,7 +66,6 @@
     <Source>gravure/__init__.py</Source>
     <Source>gravure/curve/curve.py</Source>
     <Source>gravure/halftone/__init__.py</Source>
-    <Source>gravure/halftone/decimalmath.py</Source>
     <Source>gravure/halftone/spotfunctions.py</Source>
     <Source>gravure/halftone/threshbuilder.py</Source>
     <Source>gravure/PARAM.py</Source>
@@ -74,6 +73,7 @@
     <Source>gravure/ppdparser.py</Source>
     <Source>distribute_setup.py</Source>
     <Source>setup.py</Source>
+    <Source>gravure/gmath.py</Source>
   </Sources>
   <Forms/>
   <Translations/>

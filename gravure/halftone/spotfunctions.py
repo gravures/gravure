@@ -29,7 +29,7 @@ __credits__ = "Atelier Obscur : www.atelierobscur.org"
 #       * unitest
 
 from decimal import Decimal
-import decimalmath as dm
+import gmath as gm
 
 
 class SpotFunction(object):
@@ -109,8 +109,8 @@ class CosineDot(SpotFunction):
 
     @SpotFunction._checkBounds
     def __call__(self, x, y):
-        y = dm.cos(y * 180)
-        x = dm.cos(x * 180)
+        y = gm.cos(y * 180)
+        x = gm.cos(x * 180)
         return (y + x) / 2
 
 
@@ -120,7 +120,7 @@ class RoundDot(SpotFunction):
     def __call__(self, x, y):
         x = abs(x)
         y = abs(y)
-        if (x + y <= 1):
+        if x + y <= 1:
             x *= x
             y *= y
             z = 1 - (x + y)
