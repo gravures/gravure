@@ -34,15 +34,15 @@ class _PARAM():
     def __setattr__(self, name, val):
         # val should be int & name shouldn't exist
         if not type(val) is int:
-            raise AttributeError, 'Value of Attribute %s should be an int'%(name,)
+            raise AttributeError('Value of Attribute %s should be an int'%(name,))
         elif name in self.__dict__:
-            raise AttributeError, 'Attribute %s already exist'%(name,)
+            raise AttributeError('Attribute %s already exist'%(name,))
         else :
             self.__dict__[name] = val
 
     def __getattribute__(self,name):
         if not name in self.__dict__:
-            raise AttributeError, "Attribute %s doesn't exist"%(name,)
+            raise AttributeError("Attribute %s doesn't exist"%(name,))
         else :
             return self.__dict__[name]
 
