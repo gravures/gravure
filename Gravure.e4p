@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-5.1.dtd">
+<!-- eric5 project file for project Gravure -->
+<!-- Saved: 2013-02-24, 18:25:01 -->
+<!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
+<Project version="5.1">
+  <Language>en</Language>
+  <Hash>392578d70faf1893959699a9a8b4af82454dbca7</Hash>
+  <ProgLanguage mixed="1">Python3</ProgLanguage>
+  <ProjectType>Other</ProjectType>
+  <Description></Description>
+  <Version>0.1</Version>
+  <Author>Gilles Coissac</Author>
+  <Email>gilles@atelierobscur.org</Email>
+  <Sources>
+    <Source>ressources/__init__.py</Source>
+    <Source>ressources/calibrate/GrayTestPatch.py</Source>
+    <Source>ressources/calibrate/ruler.py</Source>
+    <Source>src/py_spline/spline.py</Source>
+    <Source>src/py_spline/spline2.py</Source>
+    <Source>src/py_spline/__init__.py</Source>
+    <Source>src/test.py</Source>
+    <Source>src/financial_ncs/decimalpy/decimalfunctions.py</Source>
+    <Source>src/financial_ncs/decimalpy/decimaltypes.py</Source>
+    <Source>src/financial_ncs/decimalpy/__init__.py</Source>
+    <Source>src/financial_ncs/decimalpy/decimalmetafunctions.py</Source>
+    <Source>src/financial_ncs/mathematical_meta_code/algebraic_structures.py</Source>
+    <Source>src/financial_ncs/mathematical_meta_code/__init__.py</Source>
+    <Source>src/python_epics/BltPlot.py</Source>
+    <Source>src/python_epics/CARSMath.py</Source>
+    <Source>src/python_epics/epicsLogger.py</Source>
+    <Source>src/python_epics/epicsMca.py</Source>
+    <Source>src/python_epics/epicsMed.py</Source>
+    <Source>src/python_epics/epicsMotor.py</Source>
+    <Source>src/python_epics/epicsPV.py</Source>
+    <Source>src/python_epics/epicsScaler.py</Source>
+    <Source>src/python_epics/epicsScan.py</Source>
+    <Source>src/python_epics/fitPeaks.py</Source>
+    <Source>src/python_epics/func.py</Source>
+    <Source>src/python_epics/hardwareMca.py</Source>
+    <Source>src/python_epics/jcpds.py</Source>
+    <Source>src/python_epics/localMedLayout_16.py</Source>
+    <Source>src/python_epics/localMedLayout_4.py</Source>
+    <Source>src/python_epics/localMedLayout_9.py</Source>
+    <Source>src/python_epics/localMedLayout.py</Source>
+    <Source>src/python_epics/mcaCalibrate2theta.py</Source>
+    <Source>src/python_epics/mcaCalibrateEnergy.py</Source>
+    <Source>src/python_epics/mcaControlPresets.py</Source>
+    <Source>src/python_epics/mcaDisplay.py</Source>
+    <Source>src/python_epics/mcaPeakFit.py</Source>
+    <Source>src/python_epics/Mca.py</Source>
+    <Source>src/python_epics/medDisplay.py</Source>
+    <Source>src/python_epics/Med.py</Source>
+    <Source>src/python_epics/mpfit.py</Source>
+    <Source>src/python_epics/myTkTop.py</Source>
+    <Source>src/python_epics/scanDisplay.py</Source>
+    <Source>src/python_epics/Scan.py</Source>
+    <Source>src/python_epics/spline.py</Source>
+    <Source>src/python_epics/Xrf.py</Source>
+    <Source>src/python_epics/__init__.py</Source>
+    <Source>src/epics_new/__init__.py</Source>
+    <Source>src/epics_new/spline.py</Source>
+    <Source>src/epics_new/func.py</Source>
+    <Source>src/CairoChart.py</Source>
+    <Source>src/example.py</Source>
+    <Source>gravure/halftone/spotfunctions.py3</Source>
+    <Source>gravure/halftone/threshbuilder.py3</Source>
+    <Source>gravure/halftone/decimalmath.py3</Source>
+    <Source>gravure/halftone/__init__.py3</Source>
+    <Source>gravure/curve/curve.py3</Source>
+    <Source>gravure/__init__.py3</Source>
+    <Source>gravure/PARAM.py3</Source>
+    <Source>gravure/parameters.py3</Source>
+    <Source>gravure/ppdparser.py3</Source>
+    <Source>__init__.py3</Source>
+    <Source>distribute_setup.py3</Source>
+    <Source>setup.py3</Source>
+  </Sources>
+  <Forms/>
+  <Translations/>
+  <Resources/>
+  <Interfaces/>
+  <Others/>
+  <MainScript>gravure/halftone/threshbuilder.py3</MainScript>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES"/>
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.py" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.rb" type="SOURCES"/>
+  </FiletypeAssociations>
+</Project>

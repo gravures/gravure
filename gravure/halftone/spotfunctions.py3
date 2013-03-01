@@ -99,7 +99,10 @@ class SimpleDot(SpotFunction):
     def __call__(self, x, y):
         y *= y
         x *= x
-        return 1 - x + y
+        return 1 - (x + y)
+
+    def __str__(self):
+        return 'Simple Dot Spot Function'
 
 
 class CosineDot(SpotFunction):
@@ -120,13 +123,13 @@ class RoundDot(SpotFunction):
         if (x + y <= 1):
             x *= x
             y *= y
-            z = 1 - x + y
+            z = 1 - (x + y)
         else:
             x -= 1
             x *= x
             y -= 1
             y *= y
-            z = x + y - 1
+            z = (x + y) - 1
         return z
 
 

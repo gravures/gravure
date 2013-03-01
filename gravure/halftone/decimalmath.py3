@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2011 Atelier Obscur.
@@ -37,7 +36,11 @@ from decimal import Decimal, getcontext
 
 
 def pi():
-    """Compute Pi to the current precision."""
+    """Compute Pi to the current precision.
+
+    :rtype: Decimal number.
+
+    """
     getcontext().prec += 2
     lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
     while s != lasts:
@@ -48,12 +51,16 @@ def pi():
         s += t
     getcontext().prec -= 2
     return +s
-pi = pi()
+PI = pi()
 
 
 def exp(x):
     """Return e raised to the power of x.
-    Result type matches input type.
+
+    :param x: Any numbers
+    :type x: int, float, decimal.
+    :rtype: Result type matches input type.
+
     """
     getcontext().prec += 2
     i, lasts, s, fact, num = 0, 0, 1, 1, 1

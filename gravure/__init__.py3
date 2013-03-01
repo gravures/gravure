@@ -20,7 +20,6 @@
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 # this is a namespace package
-from __future__ import print_function
 
 import pkg_resources
 pkg_resources.declare_namespace(__name__)
