@@ -17,27 +17,143 @@
 # the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
-import math
-import decimal
-from decimal import Decimal, getcontext
-
-
-__author__ = "Gilles Coissac <gilles@atelierobscur.org>"
-__date__ = "Tue Feb 12 18:23:45 2013"
-__version__ = "$Revision: 0.1 $"
-__credits__ = "Atelier Obscur : www.atelierobscur.org"
-
 
 #TODO:  * copyright et licence
 #       * docstring du module et des fonctions
 #       * unitest
 #       * version c des fonctions (cython) ?
 
+"""
+This module provides the same mathematical functions defined by the math \
+module but accept arguments of type : int, float, decimal and fractions.
 
+This module provides mathematical functions for decimal numbers don't define
+in the decimal module, like trigonometrics functions (sin, cos, tang, ...).
+Such functions don't map the C math function like the math module but make
+internal computation with only Decimal Numbers.
+
+For convenience functions in this module accept all real numbers (int, float,
+fractions) as arguments. For int and float numbers this module provides
+shortcut to the equivalent math module functions. By default, fractions
+numbers when passed as argument are first converted to decimal numbers to the
+current precision, eg : cos(Fraction(2,3)) == cos(Decimal(2) / Decimal(3)).
+So the type of the value returns by functions depends on the type of
+the given arguments. If arguments are decimal numbers return values will
+be decimal, for int and float the math module almost returns float numbers.
+Function without arguments like pi() returns always decimal number.
+
+This module have Contexts defining environments for computations
+and extending decimal.Context objects with few parameters. So you can use
+directly the context from this module to set context for decimal arithmetic
+operations. You can find the same module functions for context (getcontext(),
+setcontext(), localcontext()) and the DefaultContext, BasicContext and
+ExtendedContext facilities.
+
+"""
+
+import math
+import decimal
+from decimal import Decimal
+from fractions import Fraction
+from numbers import Number
+
+
+ANGLE_DEGREE = 1
+ANGLE_RADIAN = 0
+
+
+class GContext(decimal.Context):
+
+    def __init__(self, prec=None, rounding=None,
+                 traps=None, flags=None, Emin=None,
+                 Emax=None, capitals=None, clamp=None,
+                 angle_unit=ANGLE_RADIAN, Dfraction=True):
+        decimal.Context.__init__(self, prec, rounding, traps,
+                                flags, Emin, Emax, capitals, clamp)
+        self.__property = {'angle_unit' : None, 'Dfraction' : None}
+        self.angle_unit = angle_unit
+        self.Dfraction = Dfraction
+
+    @property
+    def angle_unit(self):
+        return self.__property['angle_unit']
+
+    @angle_unit.setter
+    def angle_unit(self, a):
+        self.__property['angle_unit'] = a if a in [ANGLE_DEGREE,
+                           ANGLE_RADIAN] else ANGLE_RADIAN
+
+    @property
+    def Dfraction(self):
+        return self.__property['Dfraction']
+
+    @Dfraction.setter
+    def Dfraction(self, b):
+        self.__property['Dfraction'] = bool(b)
+
+
+def __to_GContext(c):
+    return GContext(c.prec, c.rounding, c.traps, c.flags, c.Emin, c.Emax)
+
+
+def getcontext():
+    c = decimal.getcontext()
+    if not isinstance(c, GContext):
+        c = __to_GContext(c)
+        decimal.setcontext(c)
+    return c
+
+#FIXME: return decimal.Context not GContext
+def localcontext(c=None):
+    if c is None:
+        c = getcontext()
+    if not isinstance(c, GContext):
+        c = __to_GContext(c)
+    return decimal.localcontext(c)
+
+
+def setcontext(c):
+    if not isinstance(c, GContext):
+        c = __to_GContext(c)
+    decimal.setcontext(c)
+
+
+BasicContext = __to_GContext(decimal.BasicContext)
+ExtendedContext = __to_GContext(decimal.ExtendedContext)
+DefaultContext = __to_GContext(decimal.DefaultContext)
+decimal.DefaultContext = DefaultContext
+
+
+def _cast_fractions(func):
+    def cast_fractions(*args):
+        if getcontext().Dfraction:
+            rargs = []
+            for e in args:
+                if isinstance(e, Fraction):
+                    e = Decimal(e.numerator) / Decimal(e.denominator)
+                rargs.append(e)
+            return func(*rargs)
+        else:
+            return func(*args)
+    return cast_fractions
+
+
+def _cast_angles(func):
+    def cast_angles(*args):
+        if getcontext().angle_unit == ANGLE_DEGREE:
+            rargs = []
+            for e in args:
+                if isinstance(e, Number):
+                    e = radians(e)
+                rargs.append(e)
+            return func(*rargs)
+        else:
+            return func(*args)
+    return cast_angles
 
 
 def pi():
-    """Compute Pi to the current precision.
+    """Compute the mathematical constant π to the current precision.
 
     :rtype: Decimal number.
 
@@ -55,30 +171,44 @@ def pi():
 PI = pi()
 
 
+@_cast_fractions
 def exp(x):
-    """Return e raised to the power of x.
+    """Return e**x.
 
-    :param x: Any numbers
-    :type x: int, float, decimal.
-    :rtype: Result type matches input type.
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: float or decimal depending on input type.
 
     """
-    getcontext().prec += 2
-    i, lasts, s, fact, num = 0, 0, 1, 1, 1
-    while s != lasts:
-        lasts = s
-        i += 1
-        fact *= i
-        num *= x
-        s += num / fact
-    getcontext().prec -= 2
-    return +s
+    if isinstance(x, Decimal):
+        getcontext().prec += 2
+        i, lasts, s, fact, num = 0, 0, 1, 1, 1
+        while s != lasts:
+            lasts = s
+            i += 1
+            fact *= i
+            num *= x
+            s += num / fact
+        getcontext().prec -= 2
+        return +s
+    else:
+        return math.exp(x)
 e = exp(Decimal(1))
 
 
+@_cast_angles
+@_cast_fractions
 def cos(x):
-    """Return the cosine of x as measured in radians.
-       Result type matches input type.
+    """Return the cosine of x.
+
+    Unit of measurement for angle x depends on the context.
+    Default is to express x in radians. To set unit to degrees :
+    getcontext().angle_unit = ANGLE_DEGREE
+
+    :param x: Angle express by any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: float or decimal depending on input type.
+
     """
     if isinstance(x, Decimal):
         getcontext().prec += 2
@@ -96,9 +226,19 @@ def cos(x):
         return math.cos(x)
 
 
+@_cast_angles
+@_cast_fractions
 def sin(x):
-    """Return the sine of x as measured in radians.
-       Result type matches input type.
+    """Return the sine of x.
+
+    Unit of measurement for angle x depends on the context.
+    Default is to express x in radians. To set unit to degrees :
+    getcontext().angle_unit = ANGLE_DEGREE
+
+    :param x: Angle express by any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: float or decimal depending on input type.
+
     """
     if isinstance(x, Decimal):
         getcontext().prec += 2
@@ -116,6 +256,7 @@ def sin(x):
         return math.sin(x)
 
 
+@_cast_fractions
 def cosh(x):
     """Return the hyperbolic cosine of Decimal x.
        Result type matches input type.
@@ -137,6 +278,7 @@ def cosh(x):
         return math.cosh(x)
 
 
+@_cast_fractions
 def sinh(x):
     """Return the hyperbolic sine of Decimal x.
        Result type matches input type.
@@ -158,6 +300,7 @@ def sinh(x):
         return math.sinh(x)
 
 
+@_cast_fractions
 def asin(x):
     """Return the arc sine (measured in radians) of Decimal x.
        Result type matches input type.
@@ -190,6 +333,7 @@ def asin(x):
         return math.asin(x)
 
 
+@_cast_fractions
 def acos(x):
     """Return the arc cosine (measured in radians) of Decimal x.
        Result type matches input type.
@@ -222,6 +366,7 @@ def acos(x):
         return math.acos(x)
 
 
+@_cast_fractions
 def tan(x):
     """Return the tangent of Decimal x (measured in radians).
        Result type matches input type.
@@ -232,6 +377,7 @@ def tan(x):
         return math.tan(x)
 
 
+@_cast_fractions
 def tanh(x):
     """Return the hyperbolic tangent of Decimal x.
        Result type matches input type.
@@ -242,6 +388,7 @@ def tanh(x):
         return math.tanh(x)
 
 
+@_cast_fractions
 def atan(x):
     """Return the arc tangent (measured in radians) of Decimal x.
        Result type matches input type.
@@ -282,11 +429,13 @@ def atan(x):
         return math.atan(x)
 
 
+@_cast_fractions
 def sign(x):
     """Return -1 for negative numbers and 1 for positive numbers."""
     return 2 * Decimal(x >= 0) - 1
 
 
+@_cast_fractions
 def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
     Unlike atan(y/x), the signs of both x and y are considered.
@@ -317,13 +466,20 @@ def atan2(y, x):
         return math.atan2(x, y)
 
 
+@_cast_fractions
 def log(x, base=None):
-    """log(x[, base]) -> the logarithm of Decimal x
-    to the given Decimal base. If the base not specified,
-    returns the natural logarithm (base e) of x.
-    Result type matches input type.
+    """Return the logarithm of x to the given Decimal base.
+
+    If the base is not specified, returns the natural logarithm (base e) of x.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :param base: Optional base.
+    :type base: int, float, fraction, decimal or None.
+    :rtype: float or decimal depending on input type.
+
     """
-    if isinstance(x, Decimal) and isinstance(x, base):
+    if isinstance(x, Decimal):
         if x < 0:
             return Decimal('NaN')
         elif base == 1:
@@ -354,15 +510,24 @@ def log(x, base=None):
 
 
 def log10(x):
-    """log10(x) -> the base 10 logarithm of Decimal x.
-    Result type matches input type.
+    """Return the base 10 logarithm of Decimal x.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: float or decimal depending on input type.
+
     """
     return log(x, Decimal(10))
 
 
+@_cast_fractions
 def sqrt(x):
     """Return the square root of x.
-    Result type matches input type.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: float or decimal depending on input type.
+
     """
     if isinstance(x, Decimal):
         return Decimal.sqrt(x)
@@ -370,16 +535,24 @@ def sqrt(x):
         return math.sqrt(x)
 
 
+@_cast_fractions
 def pow(x, y):
     """Return x raised to the power y.
-    Result type matches input type.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :param y: Any real numbers or decimal number.
+    :type y: int, float, fraction, decimal.
+    :rtype: float or decimal depending on input type.
+
     """
-    if isinstance(x, Decimal):
-        raise NotImplementedError
+    if isinstance(x, Decimal) or isinstance(y, Decimal):
+        raise x ** y
     else:
         return math.pow(x, y)
 
 
+@_cast_fractions
 def degrees(x):
     """degrees(x) -> converts Decimal angle x from radians to degrees
     Result type matches input type.
@@ -390,6 +563,7 @@ def degrees(x):
         return math.degrees(x)
 
 
+@_cast_fractions
 def radians(x):
     """radians(x) -> converts Decimal angle x from degrees to radians
     Result type matches input type.
@@ -400,9 +574,14 @@ def radians(x):
         return math.radians(x)
 
 
+@_cast_fractions
 def ceil(x):
     """Return the smallest integral value >= x.
-    Result type matches input type.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: int or decimal depending on input type.
+
     """
     if isinstance(x, Decimal):
         return x.to_integral(rounding=decimal.ROUND_CEILING)
@@ -410,9 +589,14 @@ def ceil(x):
         return math.ceil(x)
 
 
+@_cast_fractions
 def floor(x):
     """Return the largest integral value <= x.
-    Result type matches input type.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :rtype: int or decimal depending on input type.
+
     """
     if isinstance(x, Decimal):
         return x.to_integral(rounding=decimal.ROUND_FLOOR)
@@ -420,6 +604,7 @@ def floor(x):
         return math.floor(x)
 
 
+@_cast_fractions
 def hypot(x, y):
     """Return the Euclidean distance, sqrt(x*x + y*y)."""
     if isinstance(x, Decimal) and isinstance(y, Decimal):
@@ -428,6 +613,58 @@ def hypot(x, y):
         return math.hypot(x, y)
 
 
-__all__ = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
-           'e', 'exp', 'floor', 'hypot', 'log', 'log10', 'pi',
-           'pow', 'radians', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+@_cast_fractions
+def copysign(x, y):
+    """Return x with the sign of y.
+
+    :param x: Any real numbers or decimal number.
+    :type x: int, float, fraction, decimal.
+    :param y: Any real numbers or decimal number.
+    :type y: int, float, fraction, decimal.
+    :rtype: int, float or decimal depending on input type.
+
+    """
+    if isinstance(x, Decimal):
+        return x.copy_sign(y)
+    else:
+        return math.copysign(x, y)
+
+
+__all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
+           'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
+           'DefaultContext', 'degrees',
+           'e', 'exp', 'ExtendedContext', 'floor', 'GContext', 'getcontext',
+           'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
+           'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+
+def main():
+
+    a = math.cos(math.radians(45))
+    print("math.cos(math.radians(45))  ", a)
+    b = cos(math.radians(45))
+    print("cos(math.radians(45))       ", b)
+    c = cos(radians(Decimal(45)))
+    print("cos(radians(Decimal(45)))   ", c)
+
+    print("Context angle unit", ['radian', 'degree'][getcontext().angle_unit])
+    c = cos(Decimal(45))
+    print("cos(Decimal(45))            ", c)
+    getcontext().angle_unit = ANGLE_DEGREE
+    print("Context angle unit", ['radian', 'degree'][getcontext().angle_unit])
+    c = cos(Decimal(45))
+    print("cos(Decimal(45))            ", c)
+
+    with localcontext() as lc:
+        lc.angle_unit = ANGLE_DEGREE
+        c = cos(Decimal(45))
+        print("cos(Decimal(45))            ", c)
+
+    d = cos(Fraction(2, 3))
+    print("cos(Fraction(2,3))          ", d)
+    d = cos(Decimal(2) / Decimal(3))
+    print("cos(Decimal(2) / Decimal(3))", d)
+    d = cos(2/3)
+    print("cos(2/3)                    ", d)
+
+if __name__ == "__main__":
+    main()

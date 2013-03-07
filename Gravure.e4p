@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-03-01, 13:57:45 -->
+<!-- Saved: 2013-03-05, 21:44:01 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -80,7 +80,7 @@
   <Resources/>
   <Interfaces/>
   <Others/>
-  <MainScript>gravure/halftone/threshbuilder.py</MainScript>
+  <MainScript>gravure/gmath.py</MainScript>
   <Vcs>
     <VcsType>None</VcsType>
   </Vcs>

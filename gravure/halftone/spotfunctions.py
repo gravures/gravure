@@ -32,7 +32,7 @@ from decimal import Decimal
 import gmath as gm
 
 
-class SpotFunction(object):
+class SpotFunction():
     """ Consider a halftone cell to have its own coordinate system:
         the center of the cell is the origin and the corners are at
         coordinates ±1.0 horizontally and vertically. Each pixel in
