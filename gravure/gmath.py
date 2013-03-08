@@ -28,7 +28,7 @@ This module provides the same mathematical functions defined by the math \
 module but accept arguments of type : int, float, decimal and fractions.
 
 This module provides mathematical functions for decimal numbers don't define
-in the decimal module, like trigonometrics functions (sin, cos, tang, ...).
+in the decimal module, like trigonometric functions (sin, cos, tang, ...).
 Such functions don't map the C math function like the math module but make
 internal computation with only Decimal Numbers.
 
@@ -61,15 +61,16 @@ from numbers import Number
 ANGLE_DEGREE = 1
 ANGLE_RADIAN = 0
 
-
+#TODO: __repr__()
 class GContext(decimal.Context):
 
     def __init__(self, prec=None, rounding=None,
                  traps=None, flags=None, Emin=None,
-                 Emax=None, capitals=None, clamp=None,
+                 Emax=None, capitals=None, clamp=None, _ignored_flags=None,
                  angle_unit=ANGLE_RADIAN, Dfraction=True):
         decimal.Context.__init__(self, prec, rounding, traps,
-                                flags, Emin, Emax, capitals, clamp)
+                                flags, Emin, Emax, capitals,
+                                clamp, _ignored_flags)
         self.__property = {'angle_unit' : None, 'Dfraction' : None}
         self.angle_unit = angle_unit
         self.Dfraction = Dfraction
@@ -91,9 +92,27 @@ class GContext(decimal.Context):
     def Dfraction(self, b):
         self.__property['Dfraction'] = bool(b)
 
+    def _shallow_copy(self):
+        """Returns a shallow copy from self."""
+        nc = GContext(self.prec, self.rounding, self.traps,
+                     self.flags, self.Emin, self.Emax,
+                     self.capitals, self.clamp, self._ignored_flags,
+                     self.angle_unit, self.Dfraction)
+        return nc
+
+    def copy(self):
+        """Returns a deep copy from self."""
+        nc = GContext(self.prec, self.rounding, self.traps.copy(),
+                     self.flags.copy(), self.Emin, self.Emax,
+                     self.capitals, self.clamp, self._ignored_flags,
+                     self.angle_unit, self.Dfraction)
+        return nc
+    __copy__ = copy
+
 
 def __to_GContext(c):
-    return GContext(c.prec, c.rounding, c.traps, c.flags, c.Emin, c.Emax)
+    return GContext(c.prec, c.rounding, c.traps.copy(), c.flags.copy(),\
+                    c.Emin, c.Emax, c.capitals, c.clamp, c._ignored_flags)
 
 
 def getcontext():
@@ -103,7 +122,7 @@ def getcontext():
         decimal.setcontext(c)
     return c
 
-#FIXME: return decimal.Context not GContext
+
 def localcontext(c=None):
     if c is None:
         c = getcontext()
@@ -138,8 +157,8 @@ def _cast_fractions(func):
     return cast_fractions
 
 
-def _cast_angles(func):
-    def cast_angles(*args):
+def _cast_angles_args(func):
+    def cast_angles_args(*args):
         if getcontext().angle_unit == ANGLE_DEGREE:
             rargs = []
             for e in args:
@@ -149,7 +168,16 @@ def _cast_angles(func):
             return func(*rargs)
         else:
             return func(*args)
-    return cast_angles
+    return cast_angles_args
+
+
+def _cast_return_angles(func):
+    def cast_return_angles(*args):
+        if getcontext().angle_unit == ANGLE_DEGREE:
+            return degrees(func(*args))
+        else:
+            return func(*args)
+    return cast_return_angles
 
 
 def pi():
@@ -196,7 +224,7 @@ def exp(x):
 e = exp(Decimal(1))
 
 
-@_cast_angles
+@_cast_angles_args
 @_cast_fractions
 def cos(x):
     """Return the cosine of x.
@@ -226,7 +254,7 @@ def cos(x):
         return math.cos(x)
 
 
-@_cast_angles
+@_cast_angles_args
 @_cast_fractions
 def sin(x):
     """Return the sine of x.
@@ -300,6 +328,7 @@ def sinh(x):
         return math.sinh(x)
 
 
+@_cast_return_angles
 @_cast_fractions
 def asin(x):
     """Return the arc sine (measured in radians) of Decimal x.
@@ -333,6 +362,7 @@ def asin(x):
         return math.asin(x)
 
 
+@_cast_return_angles
 @_cast_fractions
 def acos(x):
     """Return the arc cosine (measured in radians) of Decimal x.
@@ -366,6 +396,7 @@ def acos(x):
         return math.acos(x)
 
 
+@_cast_return_angles
 @_cast_fractions
 def tan(x):
     """Return the tangent of Decimal x (measured in radians).
@@ -388,6 +419,7 @@ def tanh(x):
         return math.tanh(x)
 
 
+@_cast_return_angles
 @_cast_fractions
 def atan(x):
     """Return the arc tangent (measured in radians) of Decimal x.
@@ -435,6 +467,7 @@ def sign(x):
     return 2 * Decimal(x >= 0) - 1
 
 
+@_cast_return_angles
 @_cast_fractions
 def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
@@ -655,7 +688,7 @@ def main():
     print("cos(Decimal(45))            ", c)
 
     with localcontext() as lc:
-        lc.angle_unit = ANGLE_DEGREE
+        lc.angle_unit = ANGLE_RADIAN
         c = cos(Decimal(45))
         print("cos(Decimal(45))            ", c)
 
