@@ -51,6 +51,15 @@ ExtendedContext facilities.
 
 """
 
+
+__all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
+           'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
+           'DefaultContext', 'degrees',
+           'e', 'exp', 'ExtendedContext', 'floor', 'GContext', 'getcontext',
+           'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
+           'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+
+
 import math
 import decimal
 from decimal import Decimal
@@ -662,13 +671,6 @@ def copysign(x, y):
     else:
         return math.copysign(x, y)
 
-
-__all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
-           'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
-           'DefaultContext', 'degrees',
-           'e', 'exp', 'ExtendedContext', 'floor', 'GContext', 'getcontext',
-           'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
-           'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
 
 def main():
 
