@@ -19,22 +19,19 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-__author__ = "Gilles Coissac <gilles@atelierobscur.org>"
-__date__ = "Tue Jan 22 21:40:55 2013"
-__version__ = "$Revision: 0.1 $"
-__credits__ = "Atelier Obscur : www.atelierobscur.org"
+
+__all__ = ['Point', 'DotCell', 'Cell', 'BuildOrder', 'BuildOrderSpotFunction']
+
 
 import math
 from fractions import Fraction
 from decimal import *
-#import decimal.Decimal as Decimal
 
-import gmath as gm
-import spotfunctions
-import matplotlib.pyplot as plt
+import gravure.gmath as gm
+from gravure.halftone import spotfunctions
 
 
-class Point(object):
+class Point():
     __slots__ = ['x', 'y']
     __hash__ = None
 
@@ -207,14 +204,19 @@ class DotCell(Point):
         return iter((self.x, self.y, self.w))
 
 
-class Cell(object):
+class Cell():
     """An halftone cell have its own coordinate system:
        the center of the cell is the origin and the corners are at
        coordinates ±1.0 horizontally and vertically. Each pixel in
        the cell is centered at horizontal and vertical coordinates
        that both lie in the range −1.0 to +1.0.
     """
-    __slot__ = ['width', 'height', 'data', 'normSpace', 'whiteningOrder', 'buildOrder']
+    __slot__ = ['width',
+                'height',
+                'data',
+                'normSpace',
+                'whiteningOrder',
+                'buildOrder']
     __hash__ = None
 
     def __init__(self, width=2, height=2):
@@ -271,7 +273,7 @@ class Cell(object):
         return s
 
 
-class BuildOrder(object):
+class BuildOrder():
     """Turn On Sequence Basic Class
     """
     def __init__(self):
@@ -289,43 +291,6 @@ class BuildOrderSpotFunction(BuildOrder):
     def __call__(self, norm_space, whiteningOrder):
         for i, pt in enumerate(norm_space):
             whiteningOrder[i].w = self.spotFunc(pt.x, pt.y)
-
-
-def plotCell(cell):
-    plt.xlim(-1.0,1.0)
-    plt.ylim(-1.0,1.0)
-    plt.grid(True)
-    plt.box(on=True)
-
-    ax = plt.gca()
-    ax.spines['bottom'].set_position(('data',0))
-    ax.spines['left'].set_position(('data',0))
-    ax.spines['left'].set_color('black')
-
-    #plt.xticks([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-    #plt.yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-
-    #plt.legend(['data', 'fitted f', 'tangent', '2. order'], loc='best')
-    plt.show()
-
-
-def test():
-    spot_f = spotfunctions.RoundDot()
-    h_cell = Cell(8, 8)
-    h_cell.setBuildOrder(BuildOrderSpotFunction(spot_f))
-    h_cell.fill()
-    print(spot_f)
-    print(h_cell)
-    plotCell(h_cell)
-
-
-if __name__ == '__main__':
-    FREQUENCY = 90
-    ANGLE = 30
-    XDPI = 2880
-    YDPI = 1440
-    test()
-    #findScreen(FREQUENCY, ANGLE, XDPI, YDPI)
 
 
 def findScreen(lpi, angle, xdpi, ydpi):

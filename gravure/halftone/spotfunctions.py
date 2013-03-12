@@ -68,7 +68,7 @@ __all__ = ['SpotFunction', 'CosineDot', 'Cross', 'HillDot', 'Line',
 
 
 from decimal import Decimal
-import gmath as gm
+import gravure.gmath as gm
 
 
 class SpotFunction():
@@ -77,9 +77,9 @@ class SpotFunction():
     Real spot functions should implement a __call__ method that takes
     two arguments, x and y. They should return a single number in the range
     -1.0 to 1.0.
-    Spot functions should check that both x and y parameters bind in the range
-    -1.0 to 1.0. For this purpose this abstract class provide a decorator,
-    @_checkBounds.
+    Spot functions should check that both x and y parameters bind in the
+    range -1.0 to 1.0. For this purpose this abstract class provide
+    a decorator, @_checkBounds.
     __call__ method should ensure that computation could be done
     both in floating point and Decimal arithmetic depending on input type.
     Finally, spot functions should implements a postscript() class method

@@ -121,7 +121,7 @@ class GContext(decimal.Context):
 
 def __to_GContext(c):
     return GContext(c.prec, c.rounding, c.traps.copy(), c.flags.copy(),\
-                    c.Emin, c.Emax, c.capitals, c.clamp, c._ignored_flags)
+                    c.Emin, c.Emax, c.capitals, c._clamp, c._ignored_flags)
 
 
 def getcontext():
