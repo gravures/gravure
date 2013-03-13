@@ -27,8 +27,8 @@ import math
 from fractions import Fraction
 from decimal import *
 
-import gravure.gmath as gm
-from gravure.halftone import spotfunctions
+import gmath as gm
+from halftone import spotfunctions
 
 
 class Point():
