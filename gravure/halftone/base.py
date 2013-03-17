@@ -256,20 +256,20 @@ class Cell():
 
     def fill(self):
         self.buildOrder(self.normSpace, self.whiteningOrder)
-        self._checkWhtorder()
-        print (self.whiteningOrder)
+        #self._checkWhtorder()
+        #print (self.whiteningOrder)
         self.whiteningOrder.sort()
-        print()
-        print (self.whiteningOrder)
+        #print()
+        #print (self.whiteningOrder)
         wd = self.width
         for e in self.whiteningOrder:
             self.data[e.x + (wd * e.y)] = e.w
 
     def __str__(self):
         s = 'Halftone cell ' + str(self.width) + 'x' + str(self.height)
-        s += '\n'
-        for i in range(self.height):
-            s += str(self.data[i:i + self.width]) + '\n'
+#        s += '\n'
+#        for i in range(self.height):
+#            s += str(self.data[i:i + self.width]) + '\n'
         return s
 
 
