@@ -37,108 +37,74 @@ class MatrixView(Gtk.DrawingArea, Gtk.Scrollable):
     Extends Gtk.DrawingArea and implements Gtk.Scrollable.
     """
 
-    #hadjustment = GObject.property(type=Gtk.Adjustment,
-    #                                flags=GObject.PARAM_READWRITE)
-    #vadjustment = GObject.property(type=Gtk.Adjustment,
-    #                                flags=GObject.PARAM_READWRITE)
-    vscroll_policy = GObject.property(type=Gtk.ScrollablePolicy,
-                     default=Gtk.ScrollablePolicy.MINIMUM,
-                     flags=GObject.PARAM_READWRITE)
     hscroll_policy = GObject.property(type=Gtk.ScrollablePolicy,
-                     default=Gtk.ScrollablePolicy.MINIMUM,
-                     flags=GObject.PARAM_READWRITE)
+                                      default=Gtk.ScrollablePolicy.MINIMUM,
+                                      flags=GObject.PARAM_READWRITE)
+    vscroll_policy = GObject.property(type=Gtk.ScrollablePolicy,
+                                      default=Gtk.ScrollablePolicy.MINIMUM,
+                                      flags=GObject.PARAM_READWRITE)
+
+    def set_hadjustment(self, value):
+        setattr(MatrixView.hadjustment, '_property_helper_hadjustment', value)
+        self.hadjustment.set_page_increment(5)
+        self.hadjustment.set_step_increment(1)
+        self.hadjustment.connect('value-changed',self._on_hscroll)
+
+    def get_hadjustment(self):
+        return getattr(MatrixView.hadjustment, '_property_helper_hadjustment')
+
+    hadjustment = GObject.property(type=Gtk.Adjustment,
+                                   default=None,
+                                   setter=set_hadjustment,
+                                   getter=get_hadjustment,
+                                   flags=GObject.PARAM_READWRITE)
+
+    def set_vadjustment(self, value):
+        setattr(MatrixView.vadjustment, '_property_helper_vadjustment', value)
+        self.vadjustment.set_page_increment(5)
+        self.vadjustment.set_step_increment(1)
+        self.vadjustment.connect('value-changed', self._on_vscroll)
+
+    def get_vadjustment(self):
+        return getattr(MatrixView.vadjustment, '_property_helper_vadjustment')
+
+    vadjustment = GObject.property(type=Gtk.Adjustment,
+                                   default=None,
+                                   setter=set_vadjustment,
+                                   getter=get_vadjustment,
+                                   flags=GObject.PARAM_READWRITE)
+
+    hsize = GObject.property(type=int,
+                             flags=GObject.PARAM_READWRITE,
+                             default=1,
+                             minimum=1,
+                             maximum=8000)
+
+    vsize = GObject.property(type=int,
+                             flags=GObject.PARAM_READWRITE,
+                             default=1,
+                             minimum=1,
+                             maximum=8000)
+
+    scale = GObject.property(type=float,
+                             flags=GObject.PARAM_READWRITE,
+                             default=1.0,
+                             minimum=1.0)
 
     def __init__(self):
         Gtk.DrawingArea.__init__(self)
-        #self.connect('notify::hadjustment', self._on_set_hadjustment)
-        #self.connect('notify::vadjustment', self._on_set_vadjustment)
         self.connect('draw', self._on_draw_cb)
-        self._hsize = None
-        self._vsize = None
-        self._scale = 1.0
-
-    @GObject.property(type=Gtk.Adjustment, flags=GObject.PARAM_READWRITE)
-    def hadjustment(self):
-        return self._hadjustment
-
-    @hadjustment.setter
-    def hadjustment(self, value):
-        self._hadjustment = value
-        self._hadjustment.set_page_increment(5)
-        self._hadjustment.set_step_increment(1)
-        self._hadjustment.connect('value-changed',
-                                         self._on_h_value_changed)
-
-    @GObject.property(type=Gtk.Adjustment, flags=GObject.PARAM_READWRITE)
-    def vadjustment(self):
-        return self._vadjustment
-
-    @vadjustment.setter
-    def vadjustment(self, value):
-        self._vadjustment = value
-        self._vadjustment.set_page_increment(5)
-        self._vadjustment.set_step_increment(1)
-        self._vadjustment.connect('value-changed',
-                                         self._on_v_value_changed)
-
-    @property
-    def hsize(self):
-        return self._hsize
-
-    @hsize.setter
-    def hsize(self, h):
-        if not isinstance(h, int):
-            raise TypeError('size should be an int')
-        if h < 1:
-            h = 1
-        self._hsize = h
-
-    @property
-    def vsize(self):
-        return self._vsize
-
-    @vsize.setter
-    def hsize(self, v):
-        if not isinstance(v, int):
-            raise TypeError('size should be an int')
-        if v < 1:
-            v = 1
-        self._vsize = v
 
     def set_size(self, h, v):
         self.hsize, self.vsize = h, v
 
     def get_size(self):
-        return self._hsize, self._vsize
+        return self.hsize, self.vsize
 
-    @property
-    def scale(self):
-        return self._scale
-
-    @scale.setter
-    def scale(self, s):
-        if not isinstance(v, (int, float)):
-            raise TypeError('scale should be an int or float')
-        if s < 1:
-            s = 1
-        self._scale = s
-
-#    def _on_set_hadjustment(self, _self, gparamstring):
-#        self.hadjustment.set_page_increment(5)
-#        self.hadjustment.set_step_increment(1)
-#        self.hadjustment.connect('value-changed',
-#                                         self._on_h_value_changed)
-#
-#    def _on_set_vadjustment(self, _self, gparamstring):
-#        self.vadjustment.set_page_increment(5)
-#        self.vadjustment.set_step_increment(1)
-#        self.vadjustment.connect('value-changed',
-#                                         self._on_v_value_changed)
-
-    def _on_h_value_changed(self, adjustment):
+    def _on_hscroll(self, adjustment):
         print("H scroll", adjustment.get_value())
 
-    def _on_v_value_changed(self, adjustment):
+    def _on_vscroll(self, adjustment):
         print("V scroll", adjustment.get_value())
 
     def _on_draw_cb(self, widget, ctx):
@@ -146,12 +112,10 @@ class MatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         h = self.get_allocated_height()
 
         self.hadjustment.set_page_size(w)
-
         self.hadjustment.set_lower(1)
         self.hadjustment.set_upper(1000)
 
         self.vadjustment.set_page_size(h)
-
         self.vadjustment.set_lower(1)
         self.vadjustment.set_upper(1000)
 
