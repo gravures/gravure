@@ -19,32 +19,26 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-import sys
-from gi.repository import Gtk
+from cython.view cimport array
+from cython cimport view
 
 
-class GrvApp(Gtk.Application):
+cdef class n_array
 
-    def __init__(self):
-        Gtk.Application.__init__(self)
+cdef class n_array:
+    """N dimentional array class with __array_interface__.
 
-    def do_activate(self):
-        self.topwin = Gtk.ApplicationWindow(application=self)
-        #self.win1 = Gtk.Window()
-        #self.win2 = Gtk.Window()
-        self.topwin.show_all()
-        #self.win1.show_all()
-        #self.win2.show_all()
+    """
+    cdef array _data
+    cdef object __weakref__
 
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
-
-
-def main():
-    app = GrvApp()
-    exit_code = app.run(sys.argv)
-    sys.exit(exit_code)
+    def __cinit__(self, shape, itemsize=sizeof(int), format="i",
+                  mode="c", *args, **kwargs):
+        self._data = array(shape=shape, itemsize=itemsize,
+                           format=format, mode=mode, allocate_buffer=True)
+        return self._data
 
 
-if __name__ == "__main__":
-    main()
+    def get_mv(self):
+        cdef int[:, :] mv = self._data
+        return mv

@@ -1,0 +1,28 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-03-20T10:52:23+01:00
+
+====== 2D ARRAYS ======
+Created mercredi 20 mars 2013
+
+
+==== CYTHON CEP ====
+http://wiki.cython.org/enhancements/array
+http://docs.cython.org/src/userguide/memoryviews.html
+
+https://groups.google.com/forum/?fromgroups=#!topic/cython-users/CwtU_jYADgM
+cython.view is a fake module. The cython array implementation and
+other things can be found in Cython/Utility/MemoryView.pyx.
+
+The reason it is slow is because no one ever cared to optimize it. It
+allocates shape and strides independently on the heap. So it contains
+at least 3 malloc calls, and a bunch of other code.
+
+If you want to make it really fast, implement it with a free list,
+only malloc the data and make sure the code in the constructor is
+native where possible. No one is actively working on it, but it's just
+Cython code, so patches would be appreciated and merged. 
+
+==== CARRAYS ====
+https://github.com/FrancescAlted/carray
+https://pypi.python.org/pypi/carray/0.5.1

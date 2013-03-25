@@ -19,10 +19,20 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
+#TODO: multidimentional [] method pour acces aux données, a la numpy [tuple]
+#TODO: doc du module
+#TODO: doc de class __array_interface__
+#TODO: regarde le module struct
+#TODO: Adapter supplementaires
+#TODO: Cython implementation...
+
 __all__ = ['__array_interface__']
 
 from abc import *
+from functools import reduce
 
+import pyximport; pyximport.install()
+import narray
 
 class __array_interface__(metaclass=ABCMeta):
     """ABC array interface.
@@ -184,6 +194,8 @@ __array_interface__
                          'offset':0}
         return self
 
+    #TODO: ecrire __del__() method
+
     @property
     def data(self):
         """Python buffer object pointing to the start of the array’s data.
@@ -236,10 +248,25 @@ dimension when traversing an array.
 
     @abstractmethod
     def tolist(self):
-        return NotImplementedError
+        """Return the array as a (possibly nested) list.
+        """
+        raise NotImplementedError
 
     def __len__(self):
         return self.shape[0]
+
+    def __str__(self):
+        return super().__str__() + "\n" + self.__array_interface__.__str__()
+
+    @abstractmethod
+    def __getitem__(self, index):
+        raise NotImplementedError
+
+    def __setitem__(self, index, value):
+        raise NotImplementedError
+
+    def __delitem__(self, index):
+        raise NotImplementedError
 
     @classmethod
     def __subclasshook__(cls, sbcls):
@@ -253,7 +280,7 @@ dimension when traversing an array.
 
 class Adapter(__array_interface__):
 
-    # x, c, s, p : not sure it's correct
+    #WARNING: x, c, s, p : not sure it's correct
     _format = {'x':'t',
                'c':'i',
                'b':'i',
@@ -283,23 +310,47 @@ class Adapter(__array_interface__):
             self.__array_interface__['data'] = o
             self.tolist = o.tolist
         else:
-            return NotImplementedError
+            raise NotImplementedError
 
     def from_memoryview(self, mem):
-        pass
+        raise NotImplementedError
 
     def from_list(self):
-        pass
+        raise NotImplementedError
 
     def tolist(self):
         return None
 
+    def _tuple_to_flat(self, t):
+        if isinstance(t, tuple):
+            if len(t) <= self.ndim:
+                s = self.shape
+                return reduce(lambda x, y: x + y * s[t.index(x)], t)
+            else:
+                raise IndexError('slice with tuple index out of dimension.')
+        return t
 
+    def __getitem__(self, index):
+        if isinstance(index, tuple):
+            if len(index) <= self.ndim:
+                index = self._tuple_to_flat(index)
+            else:
+                raise IndexError('tuple index out of dimension.')
+        if isinstance(index, slice):
+            index = slice(self._tuple_to_flat(index.start),
+                          self._tuple_to_flat(index.stop),
+                          self._tuple_to_flat(index.step))
+        return self.data[index]
+
+
+
+#TODO: nettoyer ça
 if __name__ == '__main__':
     import numpy as np
     __array_interface__.register(np.ndarray)
     x = np.array([[1, 2, 3], [4, 5, 6]], np.int32)
     print('numpy ndarray have AI:', isinstance(x, __array_interface__))
+
     m = memoryview(b'abcd')
     print('memoryview have AI:', isinstance(m, __array_interface__))
     #help(__array_interface__)
@@ -317,4 +368,13 @@ if __name__ == '__main__':
     print('am.data', am.data)
     print('len(am)', len(am))
     print('am.tolist():',  am.tolist())
+    print('str(am)', str(am))
+    print('am[2]:', am[2])
+    print('am[1:3]:', am[1:3].tolist())
+    print('am[(3,)]:', am[(3,)])
+    #tODO: test multidimension index
+    #am = Adapter(range(10))
     #help(Adapter)
+
+    # TEST 2D Arrays
+    na = narray.n_array(shape=(10, 10))

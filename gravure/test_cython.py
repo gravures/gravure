@@ -19,32 +19,17 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-import sys
-from gi.repository import Gtk
+import pyximport; pyximport.install()
+import narray
 
-
-class GrvApp(Gtk.Application):
-
-    def __init__(self):
-        Gtk.Application.__init__(self)
-
-    def do_activate(self):
-        self.topwin = Gtk.ApplicationWindow(application=self)
-        #self.win1 = Gtk.Window()
-        #self.win2 = Gtk.Window()
-        self.topwin.show_all()
-        #self.win1.show_all()
-        #self.win2.show_all()
-
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
-
-
-def main():
-    app = GrvApp()
-    exit_code = app.run(sys.argv)
-    sys.exit(exit_code)
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    na = narray.n_array((10, 10))
+    print(na)
+    mv = na.get_mv()
+    print(mv)
+    print(dir(mv))
+    print(mv.ndim)
+    print(mv.shape)
+    print(mv.base)
+    print(mv.strides)
+    print(mv.size)
