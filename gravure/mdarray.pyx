@@ -19,6 +19,9 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
+cdef extern from "Python.h":
+    int PyIndex_Check(object)
+    object PyLong_FromVoidPtr(void *)
 
 cdef extern from "pythread.h":
     ctypedef void *PyThread_type_lock
@@ -103,7 +106,7 @@ cdef class mdarray:
         if encode:
             format = encode('ASCII')
         self._format = format
-        self.format = self._format
+        #self.format = self._format
 
         self._shape = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
         self._strides = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
@@ -227,51 +230,56 @@ cdef class mdarray:
             return  memoryview(self, flags, self.dtype_is_object)
 
     property T:
-        @cname('__pyx_memoryview_transpose')
+        @cname('transpose')
         def __get__(self):
             cdef _memoryviewslice result = memoryview_copy(self)
             transpose_memslice(&result.from_slice)
             return result
 
     property base:
-        @cname('__pyx_memoryview__get__base')
+        @cname('get_base')
         def __get__(self):
             return self
 
+    property format:
+        @cname('get__format')
+        def __get__(self):
+            return self._format
+
     property shape:
-        @cname('__pyx_memoryview_get_shape')
+        @cname('get_shape')
         def __get__(self):
             return tuple([self._shape[i] for i in xrange(self.ndim)])
 
     property strides:
-        @cname('__pyx_memoryview_get_strides')
+        @cname('get_strides')
         def __get__(self):
             return tuple([self._strides[i] for i in xrange(self.ndim)])
 
     property suboffsets:
-        @cname('__pyx_memoryview_get_suboffsets')
+        @cname('get_suboffsets')
         def __get__(self):
             #if self.suboffsets == NULL:
             return [-1] * self.ndim
             #return tuple([self.suboffsets[i] for i in xrange(self.ndim)])
 
     property ndim:
-        @cname('__pyx_memoryview_get_ndim')
+        @cname('get_ndim')
         def __get__(self):
             return self.ndim
 
     property itemsize:
-        @cname('__pyx_memoryview_get_itemsize')
+        @cname('get_itemsize')
         def __get__(self):
             return self.itemsize
 
     property nbytes:
-        @cname('__pyx_memoryview_get_nbytes')
+        @cname('get_nbytes')
         def __get__(self):
             return self.len * self.itemsize
 
     property size:
-        @cname('__pyx_memoryview_get_size')
+        @cname('get_size')
         def __get__(self):
             return self.len
 
@@ -316,8 +324,8 @@ cdef class mdarray:
 
     def __getitem__(mdarray self, object index):
         if index is Ellipsis:
-            return self  #FIXME: c'est ce qu'on veut ?
-        have_slices, indices = _unellipsify(index, self.ndim)
+            return self.copy()
+        have_slices, indices = self._unellipsify(index, self.ndim)
         cdef char *itemp
         if have_slices:
             return memview_slice(self, indices)  #FIXME: c'est ce qu'on veut ?
@@ -336,7 +344,129 @@ cdef class mdarray:
         else:
             self.setitem_indexed(index, value)
 
+    cdef tuple _unellipsify(mdarray self, object index, int ndim):
+        """
+        Replace all ellipses with full slices and fill incomplete indices with
+        full slices.
+        """
+        #TODO: code à optimiser? à tester.
+        if not isinstance(index, tuple):
+            tup = (index,)
+        else:
+            tup = index
 
+        result = []
+        have_slices = False
+        seen_ellipsis = False
+        for idx, item in enumerate(tup):
+            if item is Ellipsis:
+                if not seen_ellipsis:
+                    result.extend([slice(None)] * (ndim - len(tup) + 1))
+                    seen_ellipsis = True
+                else:
+                    result.append(slice(None))
+                have_slices = True
+            else:
+                if not isinstance(item, slice) and not PyIndex_Check(item):
+                    raise TypeError("Cannot index with type '%s'" % type(item))
+                have_slices = have_slices or isinstance(item, slice)
+                result.append(item)
 
+        nslices = ndim - len(result)
+        if nslices:
+            result.extend([slice(None)] * nslices)
+
+        return have_slices or nslices, tuple(result)
+
+    cdef mdarray _slice(mdarray self, object indices):
+        cdef int new_ndim = 0, suboffset_dim = -1, dim
+        cdef bint negative_step
+        cdef {{memviewslice_name}} src, dst
+        cdef {{memviewslice_name}} *p_src
+
+        # dst is copied by value in memoryview_fromslice -- initialize it
+        # src is never copied
+        memset(&dst, 0, sizeof(dst))
+
+        cdef _memoryviewslice memviewsliceobj
+
+        assert memview.view.ndim > 0
+
+        if isinstance(memview, _memoryviewslice):
+            memviewsliceobj = memview
+            p_src = &memviewsliceobj.from_slice
+        else:
+            slice_copy(memview, &src)
+            p_src = &src
+
+        # Note: don't use variable src at this point
+        # SubNote: we should be able to declare variables in blocks...
+
+        # memoryview_fromslice() will inc our dst slice
+        dst.memview = p_src.memview
+        dst.data = p_src.data
+
+        # Put everything in temps to avoid this bloody warning:
+        # "Argument evaluation order in C function call is undefined and
+        #  may not be as expected"
+        cdef {{memviewslice_name}} *p_dst = &dst
+        cdef int *p_suboffset_dim = &suboffset_dim
+        cdef Py_ssize_t start, stop, step
+        cdef bint have_start, have_stop, have_step
+
+        for dim, index in enumerate(indices):
+            if PyIndex_Check(index):
+                slice_memviewslice(
+                    p_dst, p_src.shape[dim], p_src.strides[dim], p_src.suboffsets[dim],
+                    dim, new_ndim, p_suboffset_dim,
+                    index, 0, 0, # start, stop, step
+                    0, 0, 0, # have_{start,stop,step}
+                    False)
+            elif index is None:
+                p_dst.shape[new_ndim] = 1
+                p_dst.strides[new_ndim] = 0
+                p_dst.suboffsets[new_ndim] = -1
+                new_ndim += 1
+            else:
+                start = index.start or 0
+                stop = index.stop or 0
+                step = index.step or 0
+
+                have_start = index.start is not None
+                have_stop = index.stop is not None
+                have_step = index.step is not None
+
+                slice_memviewslice(
+                    p_dst, p_src.shape[dim], p_src.strides[dim], p_src.suboffsets[dim],
+                    dim, new_ndim, p_suboffset_dim,
+                    start, stop, step,
+                    have_start, have_stop, have_step,
+                    True)
+                new_ndim += 1
+
+        if isinstance(memview, _memoryviewslice):
+            return memoryview_fromslice(dst, new_ndim,
+                                        memviewsliceobj.to_object_func,
+                                        memviewsliceobj.to_dtype_func,
+                                        memview.dtype_is_object)
+        else:
+            return memoryview_fromslice(dst, new_ndim, NULL, NULL,
+                                        memview.dtype_is_object)
+
+    def copy(mdarray self):
+        cdef mdarray copy_a
+        cdef char *tp
+        copy_a = mdarray(self.shape, self.itemsize, self.format,
+                         mode=self.mode, allocate_buffer=True)
+        tp = <char*> memcpy(copy_a.data, self.data, self.len)
+        if not tp:
+            raise MemoryError("Unable to copy data.")
+        else:
+            copy_a.data = tp
+        return copy_a
+
+    def copy_fortran(self):
+        ...
+        raise NotImplementedError
 
 
