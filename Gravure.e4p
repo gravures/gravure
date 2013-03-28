@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-03-23, 23:52:31 -->
+<!-- Saved: 2013-03-25, 21:15:23 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -79,7 +79,6 @@
     <Source>gravure/halftone/base.py</Source>
     <Source>gravure/tools/mpl_widgets.py</Source>
     <Source>gravure/array_interface.py</Source>
-    <Source>gravure/fibo_test.pyx</Source>
     <Source>gravure/test_cython.py</Source>
     <Source>gravure/narray.pyx</Source>
   </Sources>

@@ -21,7 +21,10 @@
 
 from cython.view cimport array
 from cython cimport view
+import cython
 
+ctypedef struct {{truc}}:
+    int a, b, c
 
 cdef class n_array
 
@@ -31,13 +34,16 @@ cdef class n_array:
     """
     cdef array _data
     cdef object __weakref__
+    cdef {{truc}} truc_s
 
     def __cinit__(self, shape, itemsize=sizeof(int), format="i",
                   mode="c", *args, **kwargs):
         self._data = array(shape=shape, itemsize=itemsize,
                            format=format, mode=mode, allocate_buffer=True)
-        return self._data
-
+        self.truc_s.a = 1
+        self.truc_s.b = 2
+        self.truc_s.c = 4
+        print self.{{truc}}
 
     def get_mv(self):
         cdef int[:, :] mv = self._data
