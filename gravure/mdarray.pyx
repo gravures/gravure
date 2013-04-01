@@ -20,6 +20,7 @@
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 import cython
+from struct import Struct
 
 cdef extern from "Python.h":
     int PyIndex_Check(object)
@@ -74,19 +75,6 @@ ctypedef struct slice_cache:
     Py_ssize_t strides[MAX_DIMS]
     Py_ssize_t suboffsets[MAX_DIMS]
 
-cdef class test:
-    cdef _a
-
-    def __cinit__(test self, int a):
-        self._a = a
-
-    def copy(test self):
-        cdef test t_copy
-        t_copy = test(self._a)
-        return t_copy
-
-    def __str__(self):
-        return str(id(self)) + " : " + str(self._a)
 
 cdef class mdarray:
 
@@ -104,32 +92,38 @@ cdef class mdarray:
         # cdef object _memview
         bint free_data
         bint dtype_is_object
-        #PyThread_type_lock lock
+        PyThread_type_lock lock
+        object formater
 
 
-    def __cinit__(mdarray self, tuple shape, Py_ssize_t itemsize, format not None,
-                  mode=u"c", bint allocate_buffer=True):
+    def __cinit__(mdarray self, tuple shape, format not None,
+                  mode=u"c", initializer=None, bint allocate_buffer=True):
         cdef int idx
         cdef Py_ssize_t i
         cdef PyObject **p
 
-        #self.lock = PyThread_allocate_lock()
-        #if self.lock == NULL:
-        #    raise MemoryError
-
-        self.ndim = len(shape)
-        self.itemsize = itemsize
-
-        if not self.ndim:
-            raise ValueError("Empty shape tuple for cython.array")
-        if self.itemsize <= 0:
-            raise ValueError("itemsize <= 0 for cython.array")
+        self.lock = PyThread_allocate_lock()
+        if self.lock == NULL:
+            raise MemoryError
 
         encode = getattr(format, 'encode', None)
         if encode:
             format = encode('ASCII')
         self._format = format
         self.format = self._format
+        if format == b'O':
+            self.dtype_is_object = True
+            self.formater = None
+            self.itemsize = sizeof(PyObject*)
+        else:
+            self.formater = Struct(self.format)
+            self.itemsize = self.formater.size
+
+        self.ndim = len(shape)
+        if not self.ndim:
+            raise ValueError("Empty shape tuple for cython.array")
+        #if self.itemsize <= 0:
+        #    raise ValueError("itemsize <= 0 for cython.array")
 
         self._shape = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
         self._strides = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
@@ -155,7 +149,7 @@ cdef class mdarray:
             order = 'C'
 
         self.len = self.fill_contig_strides_array(self._shape, self._strides,
-                                             itemsize, self.ndim, order)
+                                             self.itemsize, self.ndim, order)
 
         decode = getattr(mode, 'decode', None)
         if decode:
@@ -163,7 +157,8 @@ cdef class mdarray:
         self.mode = mode
 
         self.free_data = allocate_buffer
-        self.dtype_is_object = format == b'O'
+        cdef Py_ssize_t it
+        cdef char *ptr
         if allocate_buffer:
             self.data = <char *>malloc(self.len)
             if not self.data:
@@ -171,9 +166,27 @@ cdef class mdarray:
 
             if self.dtype_is_object:
                 p = <PyObject **> self.data
-                for i in range(self.len / itemsize):
+                for i in range(self.len / self.itemsize):
                     p[i] = Py_None
                     Py_INCREF(Py_None)
+
+            elif initializer is not None:
+                if hasattr(initializer, '__iter__'):
+                    itr = initializer.__iter__()
+                    item = None
+                    ptr = self.data
+                    for i in xrange(self.len / self.itemsize):
+                        try:
+                            item = itr.__next__()
+                        except StopIteration:
+                            itr = initializer.__iter__()
+                            item = itr.__next__()
+                        #print "Item ", str(i), " : ", str(item)
+                        self.assign_item_from_object(ptr, item)
+                        ptr += self.itemsize
+                else:
+                    raise TypeError("Initializer is not iterable.")
+
 
     cdef Py_ssize_t fill_contig_strides_array(mdarray self,
                 Py_ssize_t *shape, Py_ssize_t *strides, Py_ssize_t stride,
@@ -228,8 +241,8 @@ cdef class mdarray:
             free(self.data)
         free(self._strides)
         free(self._shape)
-        #if self.lock != NULL:
-        #    PyThread_free_lock(self.lock)
+        if self.lock != NULL:
+            PyThread_free_lock(self.lock)
 
     cdef void refcount_objects_in_slice(mdarray self, char *data, Py_ssize_t *shape,
                                     Py_ssize_t *strides, int ndim, bint inc):
@@ -310,6 +323,26 @@ cdef class mdarray:
         if self.ndim >= 1:
             return self._shape[0]
         return 0
+
+    cdef assign_item_from_object(mdarray self, char *itemp, object value):
+        cdef char c
+        cdef bytes bytesvalue
+        cdef Py_ssize_t i
+        if isinstance(value, tuple):
+            bytesvalue = self.formater.pack(*value)
+        else:
+            bytesvalue = self.formater.pack(value)
+        for i, c in enumerate(bytesvalue):
+            itemp[i] = c
+
+    cdef convert_item_to_object(mdarray self, char *itemp):
+        cdef bytes bytesvalue
+        #TODO: Do a manual and complete check here instead of this easy hack
+        bytesvalue = itemp[:self.itemsize]
+        result = self.formater.unpack(bytesvalue)
+        if len(result) == 1:
+            return result[0]
+        return result
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
         cdef Py_ssize_t dim
@@ -428,12 +461,13 @@ cdef class mdarray:
         src.data = self.data
         memcpy(src.shape, self._shape, self.ndim * sizeof(Py_ssize_t))
         memcpy(src.strides, self._strides, self.ndim * sizeof(Py_ssize_t))
-        for i in range(self.ndim):
-            src.suboffsets[i] = -1
-        p_src = &src
 
         dst.data = self.data
         p_dst = &dst
+        for i in range(self.ndim):
+            src.suboffsets[i] = -1
+            dst.suboffsets[i] = -1
+        p_src = &src
         cdef int *p_suboffset_dim = &suboffset_dim
 
         for dim, index in enumerate(indices):
@@ -465,9 +499,6 @@ cdef class mdarray:
                 new_ndim += 1
 
 
-
-
-
         print "\nNew Slice :"
         print "newdim : " + str(new_ndim)
         st = "shape : "
@@ -487,9 +518,8 @@ cdef class mdarray:
 
         cdef mdarray sliced
         tpl = tuple([dst.shape[i] for i in xrange(new_ndim)])
-        sliced = mdarray(tpl, self.itemsize, self.format, self.mode, True)
+        sliced = mdarray(tpl, self.format, self.mode, allocate_buffer=True)
 
-        print str(sliced.size), " new elmnts"
         cdef char *ptr_dest
         cdef char *ptr_src
         cdef int loop = 1
@@ -501,20 +531,18 @@ cdef class mdarray:
         cdef Py_ssize_t sz = self.itemsize
 
         while loop <= limit:
+            cursor = new_ndim - 1
             for pos in xrange(last_dim_len):
                 offset_src = 0
                 offset_dst = 0
                 for i in xrange(new_ndim):
-                    offset_src += dim_countdown[i] * sliced._strides[i]
-                    offset_dst += dim_countdown[i] * dst.strides[i]
+                    offset_dst += dim_countdown[i] * sliced._strides[i]
+                    offset_src += dim_countdown[i] * dst.strides[i]
                 ptr_src = p_dst.data + offset_src
                 ptr_dest = sliced.data + offset_dst
                 memcpy(ptr_dest, ptr_src, sz)
+                dim_countdown[cursor] -= 1
 
-            print "memcpy iter #", str(loop)
-            print "dim countsown: ", dim_countdown
-
-            cursor = new_ndim - 1
             while cursor > -1:
                 if dim_countdown[cursor] > 0:
                     dim_countdown[cursor] -= 1
@@ -522,21 +550,9 @@ cdef class mdarray:
                 else:
                     dim_countdown[cursor] = dst.shape[cursor] - 1
                     cursor -= 1
-            loop += 1
+            loop += last_dim_len
 
-        print "MEMCPY DONE"
         return sliced
-
-
-        #if isinstance(memview, _memoryviewslice):
-        #    return memoryview_fromslice(dst, new_ndim,
-        #                                memviewsliceobj.to_object_func,
-        #                                memviewsliceobj.to_dtype_func,
-        #                                memview.dtype_is_object)
-        #else:
-        #    return memoryview_fromslice(dst, new_ndim, NULL, NULL,
-        #                                memview.dtype_is_object)
-
 
     cdef int do_slice(mdarray self,
             slice_cache *dst,
@@ -561,10 +577,7 @@ cdef class mdarray:
         if not is_slice:
             # index is a normal integer-like index
             if start < 0:
-                start += shape
-                dst.data += start * stride
-
-
+                start = shape + start
             if not 0 <= start < shape:
                 _err_dim(IndexError, "Index out of bounds (axis %d)", dim)
         else:
@@ -619,16 +632,15 @@ cdef class mdarray:
             # shape/strides/suboffsets
             dst.strides[new_ndim] = stride * step
             dst.shape[new_ndim] = new_shape
-            dst.data += start * stride
 
-
+        dst.data += start * stride
 
         return 0
 
     def copy(mdarray self):
         cdef mdarray copy_a
         cdef char *tp
-        copy_a = mdarray(self.shape, self.itemsize, self.format, allocate_buffer=True)
+        copy_a = mdarray(self.shape, self.format, allocate_buffer=True)
         tp = <char*> memcpy(copy_a.data, self.data, self.len)
         if not tp:
             raise MemoryError("Unable to copy data.")
@@ -638,6 +650,49 @@ cdef class mdarray:
 
     def copy_fortran(self):
         raise NotImplementedError
+
+    def __str__(mdarray self):
+        cdef int max_len = 20
+        cdef char *ptr_datum
+        cdef int loop = 1
+        cdef int limit = self.size
+        cdef int ndim = self.ndim
+        cdef Py_ssize_t *shape = self._shape
+        dim_countdown = [shape[dim] - 1 for dim in xrange(ndim)]
+        cdef int last_dim_len = shape[ndim - 1]
+        cdef int offset, pos = 0
+        cdef Py_ssize_t sz = self.itemsize
+        cdef Py_ssize_t *strides = self._strides
+        cdef object value
+        cdef unicode r_str = u""
+        cdef int ident = ndim
+
+        while loop <= limit:
+            r_str += u" " * (ndim - ident) + "[" * ident
+            cursor = ndim - 1
+            ident = 0
+            for pos in xrange(last_dim_len):
+                offset = 0
+                for i in xrange(ndim):
+                    offset += (shape[i] - 1 - dim_countdown[i]) * strides[i]
+                ptr_datum = self.data + offset
+                value = self.convert_item_to_object(ptr_datum)
+                r_str += str(value) + u", "
+                dim_countdown[cursor] -= 1
+            r_str = r_str[0:-2]
+
+            while cursor > -1:
+                if dim_countdown[cursor] > 0:
+                    dim_countdown[cursor] -= 1
+                    cursor = -1
+                else:
+                    dim_countdown[cursor] = shape[cursor] - 1
+                    cursor -= 1
+                    ident += 1
+            r_str += u"]" * ident + u", " + u"\n" * ident
+            loop += last_dim_len
+        r_str = r_str[0:-1 * ident -2]
+        return r_str
 
 
 # Use 'with gil' functions and avoid 'with gil' blocks, as the code within the blocks

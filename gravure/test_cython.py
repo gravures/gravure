@@ -26,11 +26,11 @@ import timeit
 import pyximport; pyximport.install()
 import mdarray
 
-mv = mdarray.mdarray((6, 6, 15), 2, b'b', )
-print(mv)
-print(dir(mv))
+mv = mdarray.mdarray((10, 10 ), format=b'h', initializer=range(400))
+#print(mv
+#print(dir(mv))
 
-print("base :", mv.base)
+print("base :", "\n" + str(mv.base))
 print("ndim :", mv.ndim)
 print("shape :", mv.shape)
 print("suboffsets", mv.suboffsets)
@@ -44,20 +44,22 @@ print("sizeof :", mv.__sizeof__())
 #print("memview :", mv.memview)
 
 print("\n" + "*" * 50)
-print("[...] :", mv[...])
+print("[...] :\n", mv[...])
 
 print("\n" + "*" * 50)
-print("[:] :", mv[:])
+print("[:] :\n", mv[:])
 
 print("\n" + "*" * 50)
-print("[0:4,1:4] :", mv[0:4,1:4])
+print("[0:4,1:4] :\n", mv[0:4,1:4])
 
 print("\n" + "*" * 50)
-print("[...,2:6] :", mv[...,2:6])
+print("[...,2:6] :\n", mv[...,2:6])
 
 print("\n" + "*" * 50)
-print("[0:4,2] :", mv[0:4, 2])
+print("[0:4,2] :\n", mv[0:4, 2])
 
+print("\n" + "*" * 50)
+print("[0:4,-5] :\n", mv[0:4, -7])
 #print("\n" + "*" * 50)
 #print("[0:4,2:18:2,2:10:-1] :", mv[0:4,2:18:-3,2:10:-1])
 
@@ -67,26 +69,27 @@ print("[0:4,2] :", mv[0:4, 2])
 #print("\n" + "*" * 50)
 #print("[0:4,10:50,None] :", mv[0:4,10:50,None])
 
+
+
 print("\n" + "*" * 50)
-print("END OF TESTS")
-
-
+print("TIME IT TESTS")
 
 def timearray():
-    tests = [["np.ndarray(shape=(100, 100), dtype=np.int8, order='C')", "import numpy as np"],
-             ["md.mdarray((100, 100), 1, 'i')", "import pyximport; pyximport.install()\nimport mdarray as md"],
+    tests = [["np.ndarray(shape=(100, 100), dtype=np.int16, order='C')", "import numpy as np"],
+             ["md.mdarray((100, 100), 'b')", "import pyximport; pyximport.install()\nimport mdarray as md"],
              ["ar.array('b', li)", "import array as ar\nli = [0] * 10000"]]
 
     for t in tests:
         T = timeit.Timer(*t)
         print(T.timeit(100))
         print(T.timeit(1000))
-        print(T.timeit(10000))
+        #print(T.timeit(10000))
         #print(T.timeit(100000))
         print("-" * 50)
 
 #timearray()
 
-
+print("\n" + "*" * 50)
+print("END OF TESTS")
 
 
