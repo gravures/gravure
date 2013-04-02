@@ -105,6 +105,7 @@ cdef class _mdarray_iterator:
 
 
 #TODO: DOCSTRING
+#TODO: testing infrastructures
 cdef class mdarray:
     """Multidimentional array of homogenus type.
     """
@@ -239,6 +240,23 @@ cdef class mdarray:
                 stride = stride * shape[idx]
         return stride
 
+    def __dealloc__(mdarray self):
+        if self.callback_free_data != NULL:
+            self.callback_free_data(self.data)
+        elif self.free_data:
+            if self.dtype_is_object:
+                self.refcount_objects_in_slice(self.data, self._shape,
+                                          self._strides, self.ndim, False)
+            free(self.data)
+        free(self._strides)
+        free(self._shape)
+        if self.lock != NULL:
+            PyThread_free_lock(self.lock)
+
+    #
+    # BUFFER INTERFACE [PEP 3118]
+    #
+
     #@cname('getbuffer')
     def __getbuffer__(self, Py_buffer *info, int flags):
         cdef int bufmode = -1
@@ -261,34 +279,10 @@ cdef class mdarray:
         else:
             info.format = NULL
         info.obj = self
-
     #__pyx_getbuffer = capsule(<void *> &__pyx_array_getbuffer, "getbuffer(obj, view, flags)")
 
-    def __dealloc__(mdarray self):
-        if self.callback_free_data != NULL:
-            self.callback_free_data(self.data)
-        elif self.free_data:
-            if self.dtype_is_object:
-                self.refcount_objects_in_slice(self.data, self._shape,
-                                          self._strides, self.ndim, False)
-            free(self.data)
-        free(self._strides)
-        free(self._shape)
-        if self.lock != NULL:
-            PyThread_free_lock(self.lock)
+    #def __releasebuffer__(self):
 
-    cdef void refcount_objects_in_slice(mdarray self, char *data, Py_ssize_t *shape,
-                                    Py_ssize_t *strides, int ndim, bint inc):
-        cdef Py_ssize_t i
-        for i in range(shape[0]):
-            if ndim == 1:
-                if inc:
-                    Py_INCREF((<PyObject **> data)[0])
-                else:
-                    Py_DECREF((<PyObject **> data)[0])
-            else:
-                self.refcount_objects_in_slice(data, shape + 1, strides + 1, ndim - 1, inc)
-            data += strides[0]
 
     property memview:
         #@cname('get_memview')
@@ -297,13 +291,9 @@ cdef class mdarray:
             flags =  PyBUF_ANY_CONTIGUOUS|PyBUF_FORMAT|PyBUF_WRITABLE
             return  memoryview(self, flags, self.dtype_is_object)
 
-    property T:
-        #@cname('transpose')
-        def __get__(self):
-            raise NotImplementedError
-            #cdef _memoryviewslice result = memoryview_copy(self)
-            #transpose_memslice(&result.from_slice)
-            #return result
+    #
+    # MEMORY LAYOUT - NUMPY-LIKE INTERFACE
+    #
 
     property base:
         #@cname('get_base')
@@ -352,10 +342,41 @@ cdef class mdarray:
         def __get__(self):
             return self.len / self.itemsize
 
+    #
+    # __ARRAY_INTERFACE__
+    #
+
+    #TODO: __array_interface__
+
+    #
+    # MUTABLE SEQUENCE INTERFACE : SIZED + ITERABLE + CONTAINER
+    #
+
+    #
+    # SIZED INTERFACE
+    #
+
     def __len__(self):
         if self.ndim >= 1:
             return self._shape[0]
         return 0
+
+    #
+    # SEQUENCE INTERFACE : __getitem__(), __setitem__(), __delitem()__
+    #
+
+    cdef void refcount_objects_in_slice(mdarray self, char *data, Py_ssize_t *shape,
+                                    Py_ssize_t *strides, int ndim, bint inc):
+        cdef Py_ssize_t i
+        for i in range(shape[0]):
+            if ndim == 1:
+                if inc:
+                    Py_INCREF((<PyObject **> data)[0])
+                else:
+                    Py_DECREF((<PyObject **> data)[0])
+            else:
+                self.refcount_objects_in_slice(data, shape + 1, strides + 1, ndim - 1, inc)
+            data += strides[0]
 
     cdef assign_item_from_object(mdarray self, char *itemp, object value):
         cdef char c
@@ -656,12 +677,76 @@ cdef class mdarray:
 
         return 0
 
+    #
+    # ITERABLE INTERFACE
+    #
+
     def __iter__(mdarray self):
         if not self.iterator:
             self.iterator = _mdarray_iterator(self)
         else:
             self.iterator.__init__(self)
         return self.iterator
+
+    #
+    # CONTAINER INTERFACE
+    #
+
+    def __contains__(mdarray self, object value):
+        raise NotImplementedError
+
+    def index(self):
+        raise NotImplementedError
+
+    def count(self):
+        raise NotImplementedError
+
+    def __reversed__(self):
+        raise NotImplementedError
+
+    #
+    # ITEM SELECTION AND MANIPULATION
+    #
+
+    def sort(self):
+        raise NotImplementedError
+
+    def nonzero(self):
+        raise NotImplementedError
+
+    #
+    # SHAPE MANIPULATION
+    #
+
+    def reshape(self):
+        raise NotImplementedError
+
+    def resize(self):
+        raise NotImplementedError
+
+    def transpose(self):
+        raise NotImplementedError
+
+    property T:
+        #@cname('transpose')
+        def __get__(self):
+            raise NotImplementedError
+            #cdef _memoryviewslice result = memoryview_copy(self)
+            #transpose_memslice(&result.from_slice)
+            #return result
+
+    #def swapaxes(self):
+    #    raise NotImplementedError
+
+    def flatten(self):
+        raise NotImplementedError
+
+    #def squeeze(self):
+    #    raise NotImplementedError
+
+    #
+    # COPY METHOD
+    #
 
     def copy(mdarray self):
         cdef mdarray copy_a
@@ -676,6 +761,38 @@ cdef class mdarray:
 
     def copy_fortran(self):
         raise NotImplementedError
+
+    #
+    # ARRAY CONVERSION
+    #
+
+    def fill(mdarray self, object value):
+        raise NotImplementedError
+
+    def byteswap(self):
+        raise NotImplementedError
+
+    def tolist(self):
+        raise NotImplementedError
+
+    def tobyte(self):
+        raise NotImplementedError
+
+    def tostring(self):
+        raise NotImplementedError
+
+    def tofile(self):
+        raise NotImplementedError
+
+    def tounicode(self):
+        raise NotImplementedError
+
+    #
+    # STRING REPRESENTATIONS
+    #
+
+    def __repr__(self):
+        return self.__str__()
 
     def __str__(mdarray self):
         cdef int max_len = 20
@@ -719,6 +836,18 @@ cdef class mdarray:
             loop += last_dim_len
         r_str = r_str[0:-1 * ident -2]
         return r_str
+
+        #
+        # CALCULATIONS METHOD
+        #
+        # all, any, max, argmax, min, argmin, ptp, clip, sum, cumsum
+        # mean, prod, comprod
+
+        #
+        # ARITHMETIC
+        #
+
+
 
 
 # Use 'with gil' functions and avoid 'with gil' blocks, as the code within the blocks
