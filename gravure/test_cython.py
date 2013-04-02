@@ -26,7 +26,7 @@ import timeit
 import pyximport; pyximport.install()
 import mdarray
 
-mv = mdarray.mdarray((10, 10 ), format=b'h', initializer=range(400))
+mv = mdarray.mdarray((10, 10 ), format=b'b', initializer=range(400))
 #print(mv
 #print(dir(mv))
 
@@ -60,15 +60,40 @@ print("[0:4,2] :\n", mv[0:4, 2])
 
 print("\n" + "*" * 50)
 print("[0:4,-5] :\n", mv[0:4, -7])
-#print("\n" + "*" * 50)
-#print("[0:4,2:18:2,2:10:-1] :", mv[0:4,2:18:-3,2:10:-1])
 
+print("\n" + "*" * 50)
+print("[2:8:2,2:10:-1] :\n", mv[8:2:-2,4:2:-1])
 
+print("\n" + "*" * 50)
+print("[2] :\n", mv[2])
+
+print("\n" + "*" * 50)
+print("[4,4] :\n", mv[4, 4])
+
+print("\n" + "*" * 50)
+print("memoryview(mv):", memoryview(mv))
+print("memoryview(mv).shape:", memoryview(mv).shape)
+print("memoryview(mv).ndim:", memoryview(mv).ndim)
+print("memoryview(mv).format:", memoryview(mv).format)
+
+# buggy
+#print("memoryview(mv)[22]:", memoryview(mv)[22])
+#print("memoryview(mv).tolist():", memoryview(mv).tolist())
 
 # None index
 #print("\n" + "*" * 50)
 #print("[0:4,10:50,None] :", mv[0:4,10:50,None])
 
+# Iterator
+print("\n" + "*" * 50)
+print("for i in mv:\n")
+for i, v in enumerate(mv):
+    print (i, "#", v)
+
+
+
+#print("\n" + "*" * 50)
+#help(mv)
 
 
 print("\n" + "*" * 50)

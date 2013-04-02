@@ -76,8 +76,38 @@ ctypedef struct slice_cache:
     Py_ssize_t suboffsets[MAX_DIMS]
 
 
-cdef class mdarray:
+cdef class mdarray
 
+cdef class _mdarray_iterator:
+    cdef :
+        char *data
+        Py_ssize_t memory_step
+        Py_ssize_t index
+        Py_ssize_t stop_index
+        mdarray md_array
+
+    def __cinit__(_mdarray_iterator self, mdarray md_array):
+        self.data = md_array.data
+        self.stop_index = md_array.size - 1
+        self.memory_step = md_array._strides[md_array.ndim - 1]
+        self.md_array = md_array
+
+    def __init__(_mdarray_iterator self, mdarray md_array):
+        self.index = 0
+
+    def __next__(self):
+        if self.index > self.stop_index:
+            raise StopIteration
+        cdef char *itemp
+        itemp = self.data + self.index * self.memory_step
+        self.index += 1
+        return self.md_array.convert_item_to_object(itemp)
+
+
+#TODO: DOCSTRING
+cdef class mdarray:
+    """Multidimentional array of homogenus type.
+    """
     cdef :
         char *data
         Py_ssize_t len
@@ -89,15 +119,20 @@ cdef class mdarray:
         unicode mode
         bytes _format
         void (*callback_free_data)(void *data)
-        # cdef object _memview
         bint free_data
         bint dtype_is_object
         PyThread_type_lock lock
         object formater
+        _mdarray_iterator iterator
 
+    def __init__(mdarray self, tuple shape, format not None,
+                  mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
+        """Multidimentional constructor.
+        """
+        pass
 
     def __cinit__(mdarray self, tuple shape, format not None,
-                  mode=u"c", initializer=None, bint allocate_buffer=True):
+                  mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
         cdef int idx
         cdef Py_ssize_t i
         cdef PyObject **p
@@ -122,8 +157,6 @@ cdef class mdarray:
         self.ndim = len(shape)
         if not self.ndim:
             raise ValueError("Empty shape tuple for cython.array")
-        #if self.itemsize <= 0:
-        #    raise ValueError("itemsize <= 0 for cython.array")
 
         self._shape = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
         self._strides = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
@@ -313,7 +346,7 @@ cdef class mdarray:
         #@cname('get_nbytes')
         def __get__(self):
             return self.len * self.itemsize
-    #FIXME: size
+
     property size:
         #@cname('get_size')
         def __get__(self):
@@ -346,37 +379,24 @@ cdef class mdarray:
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
         cdef Py_ssize_t dim
-        cdef char *itemp = <char *> self.data
+        cdef char *itemp = self.data
         for dim, idx in enumerate(index):
             itemp = self.pybuffer_index(itemp, idx, dim)
         return itemp
 
-    cdef char *pybuffer_index(mdarray self, char *bufp, Py_ssize_t index,
+    cdef char *pybuffer_index(mdarray self, char *itemp, Py_ssize_t index,
                               int dim) except NULL:
-        cdef Py_ssize_t shape, stride, suboffset = -1
-        cdef Py_ssize_t itemsize = self.itemsize
-        cdef char *resultp
-
-        if self.ndim == 0:
-            shape = self.len / itemsize
-            stride = itemsize
-        else:
-            shape = self.shape[dim]
-            stride = self.strides[dim]
-            #if self.suboffsets != NULL:
-            #    suboffset = self.suboffsets[dim]
-
+        cdef char *result
+        cdef int offset
         if index < 0:
             index += self.shape[dim]
             if index < 0:
-                raise IndexError("Out of bounds on buffer access (axis %d)" % dim)
-        if index >= shape:
-            raise IndexError("Out of bounds on buffer access (axis %d)" % dim)
-
-        resultp = bufp + index * stride
-        #if suboffset >= 0:
-        #    resultp = (<char **> resultp)[0] + suboffset
-        return resultp
+                raise IndexError("Index out of bounds (axis %d)" % dim)
+        if index >= self.shape[dim]:
+            raise IndexError("Index out of bounds (axis %d)" % dim)
+        offset = index * self.strides[dim]
+        result = itemp + offset
+        return result
 
     def __getitem__(mdarray self, object index):
         if index is Ellipsis:
@@ -386,9 +406,8 @@ cdef class mdarray:
         if have_slices:
             return self._slice(indices)
         else:
-            raise NotImplementedError
-            #itemp = self.get_item_pointer(indices)
-            #return self.convert_item_to_object(itemp) #FIXME: c'est ce qu'on veut ?
+            itemp = self.get_item_pointer(indices)
+            return self.convert_item_to_object(itemp)
 
     def __setitem__(mdarray self, object index, object value):
         raise NotImplementedError
@@ -636,6 +655,13 @@ cdef class mdarray:
         dst.data += start * stride
 
         return 0
+
+    def __iter__(mdarray self):
+        if not self.iterator:
+            self.iterator = _mdarray_iterator(self)
+        else:
+            self.iterator.__init__(self)
+        return self.iterator
 
     def copy(mdarray self):
         cdef mdarray copy_a
