@@ -19,11 +19,18 @@
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 import cython
-from struct import Struct
+#from struct import Struct
+
+from _struct cimport *
+
 
 cdef extern from "Python.h":
     int PyIndex_Check(object)
     object PyLong_FromVoidPtr(void *)
+
+cdef extern from "pyport.h":
+    ctypedef Py_ssize_t Py_intptr_t
+    #TODO: Py_uintptr_t
 
 cdef extern from "pythread.h":
     ctypedef void *PyThread_type_lock
@@ -37,7 +44,6 @@ cdef extern from *:
     void __Pyx_ReleaseBuffer(Py_buffer *)
 
     ctypedef struct PyObject
-    ctypedef Py_ssize_t Py_intptr_t
     void Py_INCREF(PyObject *)
     void Py_DECREF(PyObject *)
 
@@ -73,6 +79,38 @@ ctypedef struct slice_cache:
     Py_ssize_t shape[MAX_DIMS]
     Py_ssize_t strides[MAX_DIMS]
     Py_ssize_t suboffsets[MAX_DIMS]
+
+
+# PyArrayInterface
+#
+# The PyArrayInterface structure is defined so that NumPy and other
+# extension modules can use the rapid array interface protocol.
+# The __array_struct__ method of an object that supports the rapid
+# array interface protocol should return a PyCObject that contains
+# a pointer to a PyArrayInterface structure with the relevant details
+# of the array. After the new array is created, the attribute
+# should be DECREF‘d which will free the PyArrayInterface structure.
+# Remember to INCREF the object (whose __array_struct__ attribute
+# was retrieved) and point the base member of the new PyArrayObject
+# to this same object. In this way the memory for the array will
+# be managed correctly.
+
+ctypedef struct PyArrayInterface:
+  int two              # contains the integer 2 -- simple sanity check
+  int nd               # number of dimensions
+  char typekind        # kind in array --- character code of typestr
+  int itemsize         # size of each element
+  int flags            # flags indicating how the data should be interpreted */
+                       #   must set ARR_HAS_DESCR bit to validate descr */
+  Py_intptr_t *shape   # A length-nd array of shape information */
+  Py_intptr_t *strides # A length-nd array of stride information */
+  void *data           # A pointer to the first element of the array */
+  PyObject *descr      # NULL or data-description (same as descr key
+                       #       of __array_interface__) -- must set ARR_HAS_DESCR
+                       #       flag or this will be ignored. */
+
+
+
 
 
 cdef class mdarray
@@ -120,10 +158,13 @@ cdef class mdarray:
         bytes _format
         void (*callback_free_data)(void *data)
         bint free_data
-        bint dtype_is_object
         PyThread_type_lock lock
-        object formater
+        _struct formater # object formater
         _mdarray_iterator iterator
+
+    cdef object __array_interface__
+    #cdef PyCObject __array_struct__
+
 
     def __init__(mdarray self, tuple shape, format not None,
                   mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
@@ -135,7 +176,6 @@ cdef class mdarray:
                   mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
         cdef int idx
         cdef Py_ssize_t i
-        cdef PyObject **p
 
         self.lock = PyThread_allocate_lock()
         if self.lock == NULL:
@@ -146,17 +186,11 @@ cdef class mdarray:
             format = encode('ASCII')
         self._format = format
         self.format = self._format
-        if format == b'O':
-            self.dtype_is_object = True
-            self.formater = None
-            self.itemsize = sizeof(PyObject*)
-        else:
-            self.formater = Struct(self.format)
-            self.itemsize = self.formater.size
-
+        new_struct(&self.formater, self._format)    # self.formater = Struct(self.format)
+        self.itemsize = self.formater.size
         self.ndim = len(shape)
         if not self.ndim:
-            raise ValueError("Empty shape tuple for cython.array")
+            raise ValueError("Empty shape tuple for mdarray")
 
         self._shape = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
         self._strides = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
@@ -197,13 +231,7 @@ cdef class mdarray:
             if not self.data:
                 raise MemoryError("unable to allocate array data.")
 
-            if self.dtype_is_object:
-                p = <PyObject **> self.data
-                for i in range(self.len / self.itemsize):
-                    p[i] = Py_None
-                    Py_INCREF(Py_None)
-
-            elif initializer is not None:
+            if initializer is not None:
                 if hasattr(initializer, '__iter__'):
                     itr = initializer.__iter__()
                     item = None
@@ -214,7 +242,6 @@ cdef class mdarray:
                         except StopIteration:
                             itr = initializer.__iter__()
                             item = itr.__next__()
-                        #print "Item ", str(i), " : ", str(item)
                         self.assign_item_from_object(ptr, item)
                         ptr += self.itemsize
                 else:
@@ -243,12 +270,10 @@ cdef class mdarray:
         if self.callback_free_data != NULL:
             self.callback_free_data(self.data)
         elif self.free_data:
-            if self.dtype_is_object:
-                self.refcount_objects_in_slice(self.data, self._shape,
-                                          self._strides, self.ndim, False)
             free(self.data)
         free(self._strides)
         free(self._shape)
+        del_struct(&self.formater)
         if self.lock != NULL:
             PyThread_free_lock(self.lock)
 
@@ -334,7 +359,7 @@ cdef class mdarray:
     property nbytes:
         #@cname('get_nbytes')
         def __get__(self):
-            return self.len * self.itemsize
+            return self.len
 
     property size:
         #@cname('get_size')
@@ -379,20 +404,26 @@ cdef class mdarray:
 
     cdef assign_item_from_object(mdarray self, char *itemp, object value):
         cdef char c
-        cdef bytes bytesvalue
+        #cdef bytes bytesvalue
         cdef Py_ssize_t i
+        #if isinstance(value, tuple):
+        #    bytesvalue = self.formater.pack(*value)
+        #else:
+        #    bytesvalue = self.formater.pack(value)
+        #for i, c in enumerate(bytesvalue):
+        #    itemp[i] = c
         if isinstance(value, tuple):
-            bytesvalue = self.formater.pack(*value)
+            self.formater.pack(&self.formater, itemp, value)
         else:
-            bytesvalue = self.formater.pack(value)
-        for i, c in enumerate(bytesvalue):
-            itemp[i] = c
+            self.formater.pack(&self.formater, itemp, (value,))
+
 
     cdef convert_item_to_object(mdarray self, char *itemp):
-        cdef bytes bytesvalue
-        #TODO: Do a manual and complete check here instead of this easy hack
-        bytesvalue = itemp[:self.itemsize]
-        result = self.formater.unpack(bytesvalue)
+        #cdef bytes bytesvalue
+        #TODO : Do a manual and complete check here instead of this easy hack
+        #bytesvalue = itemp[:self.itemsize]
+        #result = self.formater.unpack(bytesvalue)
+        result = self.formater.unpack(&self.formater, itemp)
         if len(result) == 1:
             return result[0]
         return result

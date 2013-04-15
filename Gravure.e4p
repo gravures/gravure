@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-04-04, 10:04:41 -->
+<!-- Saved: 2013-04-11, 03:07:17 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -72,32 +72,59 @@
     <Source>gravure/ppdparser.py</Source>
     <Source>distribute_setup.py</Source>
     <Source>setup.py</Source>
-    <Source>gravure/gmath.py</Source>
     <Source>gravure/grvApp.py</Source>
     <Source>gravure/tools/__init__.py</Source>
     <Source>gravure/tools/am_screen_builder.py</Source>
     <Source>gravure/halftone/base.py</Source>
     <Source>gravure/tools/mpl_widgets.py</Source>
-    <Source>gravure/array_interface.py</Source>
-    <Source>gravure/test_cython.py</Source>
-    <Source>gravure/narray.pyx</Source>
+    <Source>gravure/numeric/__init__.py</Source>
+    <Source>gravure/numeric/mdarray.pyx</Source>
+    <Source>gravure/numeric/narray.pyx</Source>
+    <Source>gravure/numeric/gmath.py</Source>
+    <Source>gravure/numeric/test_cython.py</Source>
+    <Source>gravure/numeric/array_interface.py</Source>
+    <Source>gravure/halftone/gen_ordered.c</Source>
+    <Source>gravure/numeric/mdarray.rst</Source>
+    <Source>gravure/numeric/bit_width_type.pxd</Source>
+    <Source>src/natural-cubic-spline-interpolation/sanciyangtiao.c</Source>
+    <Source>src/cinepaint_catmul/cinepaint_curve.c</Source>
+    <Source>src/gimp_curvw_bezier/curve.c</Source>
+    <Source>src/misc_splines/natural_cubic_spline.c</Source>
+    <Source>gravure/numpy/__init__.py</Source>
+    <Source>gravure/numpy/distutils/__init__.py</Source>
+    <Source>gravure/numpy/distutils/exec_command.py</Source>
+    <Source>gravure/numpy/distutils/mingw32ccompiler.py</Source>
+    <Source>gravure/numpy/distutils/compat.py</Source>
+    <Source>gravure/numpy/distutils/log.py</Source>
+    <Source>gravure/numpy/distutils/misc_util.py</Source>
+    <Source>gravure/numpy/distutils/ccompiler.py</Source>
+    <Source>gravure/numpy/compat/__init__.py</Source>
+    <Source>gravure/numpy/compat/py3k.py</Source>
+    <Source>gravure/numpy/distutils/command/__init__.py</Source>
+    <Source>gravure/numpy/distutils/command/config.py</Source>
+    <Source>gravure/numpy/distutils/command/autodist.py</Source>
+    <Source>gravure/numeric/_struct.pyx</Source>
   </Sources>
   <Forms/>
   <Translations/>
   <Resources/>
   <Interfaces/>
   <Others>
-    <Other>gravure/narray.pyx</Other>
-    <Other>gravure/mdarray.pyx</Other>
+    <Other>gravure/numeric/mdarray.rst</Other>
   </Others>
   <MainScript>gravure/tools/am_screen_builder.py</MainScript>
   <Vcs>
     <VcsType>None</VcsType>
   </Vcs>
   <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.c" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.h" type="SOURCES"/>
     <FiletypeAssociation pattern="*.idl" type="INTERFACES"/>
     <FiletypeAssociation pattern="*.ptl" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pxd" type="SOURCES"/>
     <FiletypeAssociation pattern="*.py" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pyx" type="SOURCES"/>
     <FiletypeAssociation pattern="*.rb" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.rst" type="SOURCES"/>
   </FiletypeAssociations>
 </Project>

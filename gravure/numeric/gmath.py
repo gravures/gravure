@@ -50,6 +50,11 @@ setcontext(), localcontext()) and the DefaultContext, BasicContext and
 ExtendedContext facilities.
 
 """
+import math
+import decimal
+from decimal import Decimal
+from fractions import Fraction
+from numbers import Number
 
 
 __all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
@@ -60,11 +65,6 @@ __all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
            'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
 
 
-import math
-import decimal
-from decimal import Decimal
-from fractions import Fraction
-from numbers import Number
 
 
 ANGLE_DEGREE = 1

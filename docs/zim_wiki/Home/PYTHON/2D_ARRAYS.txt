@@ -2,7 +2,7 @@ Content-Type: text/x-zim-wiki
 Wiki-Format: zim 0.4
 Creation-Date: 2013-03-20T10:52:23+01:00
 
-====== 2D ARRAYS ======
+====== 2D ARRAYS AND NUMBERS ======
 Created mercredi 20 mars 2013
 
 
@@ -26,3 +26,20 @@ Cython code, so patches would be appreciated and merged.
 ==== CARRAYS ====
 https://github.com/FrancescAlted/carray
 https://pypi.python.org/pypi/carray/0.5.1
+
+==== CDECIMAL ====
+http://www.bytereef.org/mpdecimal/index.html
+
+store decimal number as bytes in a c buffer.
+value for decimal are store as four variable:
+
+a python string **_int** = string of length context.prec (default = 28)	→  unsigned int with n bytes = int(d._int).bit_length() // 8
+																		or a bytes of same length : a struct format = "n**c**"
+a python int **_exp** = an signed int (-_int.__len__(), int.__len()) 		→ signed int 8 or 16 bits length (prec > 126)
+a python int **_sign **= (0,1)								→ c bool
+a python boolean **_is_special **= (True, Fale)					→ c bool 
+
+
+
+
+

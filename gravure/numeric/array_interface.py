@@ -24,14 +24,15 @@
 #TODO: regarde le module struct
 #TODO: Adapter supplementaires
 #TODO: Cython implementation...
-
-__all__ = ['__array_interface__']
-
 from abc import *
 from functools import reduce
 
 import pyximport; pyximport.install()
 import narray
+
+__all__ = ['__array_interface__']
+
+
 
 class __array_interface__(metaclass=ABCMeta):
     """ABC array interface.

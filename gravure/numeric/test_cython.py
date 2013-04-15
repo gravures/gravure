@@ -17,19 +17,18 @@
 # the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
-
 import numpy as np
 import array
 import timeit
 
 import pyximport; pyximport.install()
-import mdarray
+import numeric.mdarray as mdarray
 
-mv = mdarray.mdarray((10, 10 ), format=b'b', initializer=range(400))
+mv = mdarray.mdarray((10, 10 ), format=b'f4')#, initializer=range(0, 800))
 #print(mv
 #print(dir(mv))
 
-print("base :", "\n" + str(mv.base))
+#print("base :", "\n" + str(mv.base))
 print("ndim :", mv.ndim)
 print("shape :", mv.shape)
 print("suboffsets", mv.suboffsets)
@@ -99,8 +98,8 @@ print("\n" + "*" * 50)
 print("TIME IT TESTS")
 
 def timearray():
-    tests = [["np.ndarray(shape=(100, 100), dtype=np.int16, order='C')", "import numpy as np"],
-             ["md.mdarray((100, 100), 'b')", "import pyximport; pyximport.install()\nimport mdarray as md"],
+    tests = [["np.ndarray(shape=(100, 100), dtype=np.int8, order='C')", "import numpy as np"],
+             ["md.mdarray((100, 100), format=b'i1')", "import pyximport; pyximport.install()\nimport numeric.mdarray as md"],
              ["ar.array('b', li)", "import array as ar\nli = [0] * 10000"]]
 
     for t in tests:
@@ -111,9 +110,11 @@ def timearray():
         #print(T.timeit(100000))
         print("-" * 50)
 
-#timearray()
+timearray()
 
 print("\n" + "*" * 50)
 print("END OF TESTS")
 
+#mv = mdarray.mdarray((10, 10 ), format=b'H2', initializer=range(400, 800))
+#print (mv)
 
