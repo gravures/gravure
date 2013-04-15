@@ -24,11 +24,11 @@ import timeit
 import pyximport; pyximport.install()
 import numeric.mdarray as mdarray
 
-mv = mdarray.mdarray((10, 10 ), format=b'f4')#, initializer=range(0, 800))
+mv = mdarray.mdarray((10, 10 ), format=b'>f8', initializer=range(0, 800))
 #print(mv
 #print(dir(mv))
 
-#print("base :", "\n" + str(mv.base))
+print("base :", "\n" + str(mv.base))
 print("ndim :", mv.ndim)
 print("shape :", mv.shape)
 print("suboffsets", mv.suboffsets)

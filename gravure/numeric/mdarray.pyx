@@ -71,6 +71,9 @@ cdef extern from "stdlib.h":
     void free(void *) nogil
     void *memcpy(void *dest, void *src, size_t n) nogil
 
+cdef extern from "string.h" nogil:
+    void *memset(void *BLOCK, int C, size_t SIZE)
+
 cdef enum:
     MAX_DIMS = 50
 
@@ -246,6 +249,8 @@ cdef class mdarray:
                         ptr += self.itemsize
                 else:
                     raise TypeError("Initializer is not iterable.")
+            else:
+                memset(self.data, 0, self.len)
 
 
     cdef Py_ssize_t fill_contig_strides_array(mdarray self,

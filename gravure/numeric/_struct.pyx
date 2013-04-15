@@ -23,8 +23,8 @@ cimport cython
 
 cdef extern from *:
     ctypedef struct PyObject
-    void Py_INCREF(PyObject *)
-    void Py_DECREF(PyObject *)
+    void Py_INCREF(object)
+    void Py_DECREF(object)
 
 cdef extern from "stdlib.h":
     void *malloc(size_t) nogil
@@ -46,6 +46,10 @@ cdef extern from "Python.h":
     double PyFloat_AsDouble(object pyfloat) except? -1
     # Return a C double representation of the contents of pyfloat.
 
+    object PyFloat_FromDouble(double v)
+    # Return value: New reference.
+    # Create a PyFloatObject object from v, or NULL on failure.
+
     int _PyFloat_Pack4(double x, unsigned char *p, int le) except -1
     int _PyFloat_Pack8(double x, unsigned char *p, int le) except -1
     double _PyFloat_Unpack4(unsigned char *p, int le) except? -1.0
@@ -60,7 +64,7 @@ cdef extern from "Python.h":
     # Return value: New reference.
     # Return a new tuple object of size len, or NULL on failure.
 
-    void PyTuple_SET_ITEM(object  p, Py_ssize_t pos, object  o)
+    void PyTuple_SetItem(object  p, Py_ssize_t pos, object  o)
     # Like PyTuple_SetItem(), but does no error checking, and should
     # only be used to fill in brand new tuples. Note: This function
     # ``steals'' a reference to o.
@@ -132,12 +136,18 @@ cdef nu_uint64(char *p):
 cdef nu_float32(char *p):
     cdef float32 iv
     memcpy(<char *> &iv, p, 4)
-    return iv
+    #FIXME:
+    f = iv
+    Py_INCREF(f)
+    return f
 
 cdef nu_float64(char *p):
     cdef float64 iv
     memcpy(<char *> &iv, p, 8)
-    return iv
+    #FIXME:
+    f = iv
+    Py_INCREF(f)
+    return f
 
 #FIXME:
 #cdef nu_float128(char *p, formatdef *f):
@@ -303,12 +313,18 @@ cdef lu_uint64(char *p):
 cdef lu_float32(char *p):
     cdef float32 fv
     fv = _PyFloat_Unpack4(<unsigned char *> p, 1)
-    return fv
+    #FIXME:
+    f = fv
+    Py_INCREF(f)
+    return f
 
 cdef lu_float64(char *p):
     cdef float64 fv
     fv = _PyFloat_Unpack8(<unsigned char *> p, 1)
-    return fv
+    #FIXME:
+    f = fv
+    Py_INCREF(f)
+    return f
 
 #FIXME:
 #cdef lu_float128(char *p, formatdef *f):
@@ -479,12 +495,18 @@ cdef bu_uint64(char *p):
 cdef bu_float32(char *p):
     cdef float32 fv
     fv = _PyFloat_Unpack4(<unsigned char *> p, 0)
-    return fv
+    #FIXME:
+    f = fv
+    Py_INCREF(f)
+    return f
 
 cdef bu_float64(char *p):
     cdef float64 fv
     fv = _PyFloat_Unpack8(<unsigned char *> p, 0)
-    return fv
+    #FIXME:
+    f = fv
+    Py_INCREF(f)
+    return f
 
 #FIXME:
 #cdef bu_float128(char *p, formatdef *f):
@@ -855,7 +877,7 @@ cdef object struct_unpack_data(_struct *self, char *c):
     for i in xrange(self.length):
         ptr_c = c + self.codes[i].offset
         tmp = self.codes[i].fmtdef.unpack(ptr_c)
-        PyTuple_SET_ITEM(v, i, tmp)
+        PyTuple_SetItem(v, i, tmp)
     return v
 
 cdef int struct_pack_data(_struct *self, char *c, object args) except -1:
