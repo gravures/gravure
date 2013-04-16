@@ -22,6 +22,8 @@ différence avec ndarray
 slicing renvoie un array pas une view
 None pas une valeur possible pour getitem
 pas de shape null : md.shape[n] = 0
+overflow error detection
+basic numeric scalar type only
 
 
 scalar array type

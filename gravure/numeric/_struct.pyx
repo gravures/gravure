@@ -60,15 +60,6 @@ cdef extern from "Python.h":
     # otherwise. This is equivalent to the Python expression "not not
     # o". On failure, return -1.
 
-    tuple PyTuple_New(Py_ssize_t len)
-    # Return value: New reference.
-    # Return a new tuple object of size len, or NULL on failure.
-
-    void PyTuple_SetItem(object  p, Py_ssize_t pos, object  o)
-    # Like PyTuple_SetItem(), but does no error checking, and should
-    # only be used to fill in brand new tuples. Note: This function
-    # ``steals'' a reference to o.
-
 
 DEF MAX_STRUCT_LENGTH = 50
 DEF FORMATS = 11
@@ -94,60 +85,60 @@ cdef object get_pylong(object v):
 #
 # host endian routines.
 #
-cdef nu_bool(char *p):
-    return <bint> p[0]
+cdef int nu_bool(char *p, cnumber *c)except -1:
+    c.val.b = <bint> p[0]
+    c.ctype = BOOL
+    return 0
 
-cdef nu_int8(char *p):
-    return <int8> p[0]
+cdef int nu_int8(char *p, cnumber *c)except -1:
+    c.val.i8 = <int8> p[0]
+    c.ctype = INT8
+    return 0
 
-cdef nu_uint8(char *p):
-    return <uint8> p[0]
+cdef int nu_uint8(char *p, cnumber *c)except -1:
+    c.val.u8 = <uint8> p[0]
+    c.ctype = UINT8
+    return 0
 
-cdef nu_int16(char *p):
-    cdef int16 iv
-    memcpy(<char *> &iv, p, 2)
-    return iv
+cdef int nu_int16(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.i16, p, 2)
+    c.ctype = INT16
+    return 0
 
-cdef nu_uint16(char *p):
-    cdef uint16 iv
-    memcpy(<char *> &iv, p, 2)
-    return iv
+cdef int nu_uint16(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.u16, p, 2)
+    c.ctype = UINT16
+    return 0
 
-cdef nu_int32(char *p):
-    cdef int32 iv
-    memcpy(<char *> &iv, p, 4)
-    return iv
+cdef int nu_int32(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.i32, p, 4)
+    c.ctype = INT32
+    return 0
 
-cdef nu_uint32(char *p):
-    cdef uint32 iv
-    memcpy(<char *> &iv, p, 4)
-    return iv
+cdef int nu_uint32(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.u32, p, 4)
+    c.ctype = UINT32
+    return 0
 
-cdef nu_int64(char *p):
-    cdef int64 iv
-    memcpy(<char *> &iv, p, 8)
-    return iv
+cdef int nu_int64(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.i64, p, 8)
+    c.ctype = INT64
+    return 0
 
-cdef nu_uint64(char *p):
-    cdef uint64 iv
-    memcpy(<char *> &iv, p, 8)
-    return iv
+cdef int nu_uint64(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.u64, p, 8)
+    c.ctype = UINT64
+    return 0
 
-cdef nu_float32(char *p):
-    cdef float32 iv
-    memcpy(<char *> &iv, p, 4)
-    #FIXME:
-    f = iv
-    Py_INCREF(f)
-    return f
+cdef int nu_float32(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.f32, p, 4)
+    c.ctype = FLOAT32
+    return 0
 
-cdef nu_float64(char *p):
-    cdef float64 iv
-    memcpy(<char *> &iv, p, 8)
-    #FIXME:
-    f = iv
-    Py_INCREF(f)
-    return f
+cdef int nu_float64(char *p, cnumber *c)except -1:
+    memcpy(<char *> &c.val.f64, p, 8)
+    c.ctype = FLOAT64
+    return 0
 
 #FIXME:
 #cdef nu_float128(char *p, formatdef *f):
@@ -155,86 +146,38 @@ cdef nu_float64(char *p):
 #    memcpy(<char *> &iv, p, sizeof(float128))
 #    return iv
 
-cdef np_bool(char *p, object v):
-    cdef _bool y
-    cdef bint bv
-    bv = PyObject_IsTrue(v)
-    y = bv
-    memcpy(p, <char *> &y, 1)
+cdef void np_bool(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.b, 1)
 
-cdef np_int8(char *p, object v):
-    cdef int8 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT8 or v > MAX_INT8:
-        raise OverflowError("int8 format requires %i <= number <= %i" % (MIN_INT8, MAX_INT8))
-    iv = py_l  # conversion from PyObject to c type by cython
-    p[0] = <char> iv
+cdef void np_int8(char *p, cnumber *c):
+    p[0] = <char> c.val.i8
 
-cdef np_uint8(char *p, object v):
-    cdef uint8 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT8:
-        raise OverflowError("uint8 format requires 0 <= number <= %i" % MAX_UINT8)
-    iv = py_l  # conversion from PyObject to c type by cython
-    p[0] = <char> iv
+cdef void np_uint8(char *p, cnumber *c):
+    p[0] = <char> c.val.u8
 
-cdef np_int16(char *p, object v):
-    cdef int16 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT16 or v > MAX_INT16:
-        raise OverflowError("int16 format requires %i <= number <= %i" % (MIN_INT16, MAX_INT16))
-    iv = py_l
-    memcpy(p, <char *> &iv, 2)
+cdef void np_int16(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.i16, 2)
 
-cdef np_uint16(char *p, object v):
-    cdef uint16 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT16:
-        raise OverflowError("uint16 format requires 0 <= number <= %i" % MAX_UINT16)
-    iv = py_l
-    memcpy(p, <char *> &iv, 2)
+cdef void np_uint16(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.u16, 2)
 
-cdef np_int32(char *p, object v):
-    cdef int32 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT32 or v > MAX_INT32:
-        raise OverflowError("int32 format requires %i <= number <= %i" % (MIN_INT32, MAX_INT32))
-    iv = py_l
-    memcpy(p, <char *> &iv, 4)
+cdef void np_int32(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.i32, 4)
 
-cdef np_uint32(char *p, object v):
-    cdef uint32 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT32:
-        raise OverflowError("uint32 format requires 0 <= number <= %i" % MAX_UINT32)
-    iv = py_l
-    memcpy(p, <char *> &iv, 4)
+cdef void np_uint32(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.u32, 4)
 
-cdef np_int64(char *p, object v):
-    cdef int64 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT64 or v > MAX_INT64:
-        raise OverflowError("int64 format requires %i <= number <= %i" % (MIN_INT64, MAX_INT64))
-    iv = py_l
-    memcpy(p, <char *> &iv, 8)
+cdef void np_int64(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.i64, 8)
 
-cdef np_uint64(char *p, object v):
-    cdef uint64 iv
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT64:
-        raise OverflowError("uint64 format requires 0 <= number <= %i" % MAX_UINT64)
-    iv = py_l
-    memcpy(p, <char *> &iv, 8)
+cdef void np_uint64(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.u64, 8)
 
-cdef np_float32(char *p, object v):
-    cdef float32 fv
-    fv = PyFloat_AsDouble(v)
-    memcpy(p, <char *> &fv, 4)
+cdef void np_float32(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.f32, 4)
 
-cdef np_float64(char *p, object v):
-    cdef float64 fv
-    fv = PyFloat_AsDouble(v)
-    memcpy(p, <char *> &fv, 8)
+cdef void np_float64(char *p, cnumber *c):
+    memcpy(p, <char *> &c.val.f64, 8)
 
 #FIXME:
 #cdef np_float128(char *p, object v, formatdef *f):
@@ -250,172 +193,132 @@ cdef np_float64(char *p, object v):
 #
 # Little-endian routines.
 #
-cdef lu_int16(char *p):
-    cdef int16 iv = 0
+cdef int lu_int16(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 2
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[i]
+        c.val.i16 = (c.val.i16 << 8) | b[i]
+    c.ctype = INT16
     # Extend the sign bit
     #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return iv
+    return 0
 
-cdef lu_uint16(char *p):
-    cdef uint16 iv = 0
+cdef int lu_uint16(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 2
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[i]
-    return iv
+        c.val.u16 = (c.val.u16 << 8) | b[i]
+    c.ctype = UINT16
+    return 0
 
-cdef lu_int32(char *p):
-    cdef int32 iv = 0
+cdef int lu_int32(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 4
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[i]
+        c.val.i32 = (c.val.i32 << 8) | b[i]
+    c.ctype = INT32
     # Extend the sign bit
     #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return iv
+    return 0
 
-cdef lu_uint32(char *p):
-    cdef uint32 iv = 0
+cdef int lu_uint32(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 4
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[i]
-    return iv
+        c.val.u32 = (c.val.u32 << 8) | b[i]
+    c.ctype = UINT32
+    return 0
 
-cdef lu_int64(char *p):
-    cdef int64 iv = 0
+cdef int lu_int64(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 8
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[i]
+        c.val.i64 = (c.val.i64 << 8) | b[i]
+    c.ctype = INT64
     # Extend the sign bit
     #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return iv
+    return 0
 
-cdef lu_uint64(char *p):
-    cdef uint64 iv = 0
+cdef int lu_uint64(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 8
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[i]
-    return iv
+        c.val.u64 = (c.val.u64 << 8) | b[i]
+    c.ctype = UINT64
+    return 0
 
-cdef lu_float32(char *p):
-    cdef float32 fv
-    fv = _PyFloat_Unpack4(<unsigned char *> p, 1)
-    #FIXME:
-    f = fv
-    Py_INCREF(f)
-    return f
+cdef int lu_float32(char *p, cnumber *c) except -1:
+    c.val.f32 = _PyFloat_Unpack4(<unsigned char *> p, 1)
+    c.ctype = FLOAT32
+    return 0
 
-cdef lu_float64(char *p):
-    cdef float64 fv
-    fv = _PyFloat_Unpack8(<unsigned char *> p, 1)
-    #FIXME:
-    f = fv
-    Py_INCREF(f)
-    return f
+cdef int lu_float64(char *p, cnumber *c) except -1:
+    c.val.f64 = _PyFloat_Unpack8(<unsigned char *> p, 1)
+    c.ctype = FLOAT64
+    return 0
 
 #FIXME:
 #cdef lu_float128(char *p, formatdef *f):
 
-cdef lp_int16(char *p, object v):
-    cdef int16 iv
+cdef void lp_int16(char *p, cnumber *c):
     cdef Py_ssize_t i = 2
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT16 or v > MAX_INT16:
-        raise OverflowError("int16 format requires %i <= number <= %i" % (MIN_INT16, MAX_INT16))
-    iv = py_l
     while i > 0:
-        p[0] = <char> iv
+        p[0] = <char> c.val.i16
         p += 1
-        iv >>= 8
+        c.val.i16 >>= 8
         i -= 1
 
-cdef lp_uint16(char *p, object v):
-    cdef uint16 iv
+cdef void lp_uint16(char *p, cnumber *c):
     cdef Py_ssize_t i = 2
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT16:
-        raise OverflowError("uint16 format requires 0 <= number <= %i" % MAX_UINT16)
-    iv = py_l
     while i > 0:
-        p[0] = <char> iv
+        p[0] = <char> c.val.u16
         p += 1
-        iv >>= 8
+        c.val.u16 >>= 8
         i -= 1
 
-cdef lp_int32(char *p, object v):
-    cdef int32 iv
+cdef void lp_int32(char *p, cnumber *c):
     cdef Py_ssize_t i = 4
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT32 or v > MAX_INT32:
-        raise OverflowError("int32 format requires %i <= number <= %i" % (MIN_INT32, MAX_INT32))
-    iv = py_l
     while i > 0:
-        p[0] = <char> iv
+        p[0] = <char> c.val.i32
         p += 1
-        iv >>= 8
+        c.val.i32 >>= 8
         i -= 1
 
-cdef lp_uint32(char *p, object v):
-    cdef uint32 iv
+cdef void lp_uint32(char *p, cnumber *c):
     cdef Py_ssize_t i = 4
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT32:
-        raise OverflowError("uint32 format requires 0 <= number <= %i" % MAX_UINT32)
-    iv = py_l
     while i > 0:
-        p[0] = <char> iv
+        p[0] = <char> c.val.u32
         p += 1
-        iv >>= 8
+        c.val.u32 >>= 8
         i -= 1
 
-cdef lp_int64(char *p, object v):
-    cdef int64 iv
+cdef void lp_int64(char *p, cnumber *c):
     cdef Py_ssize_t i = 8
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT64 or v > MAX_INT64:
-        raise OverflowError("int64 format requires %i <= number <= %i" % (MIN_INT64, MAX_INT64))
-    iv = py_l
     while i > 0:
-        p[0] = <char> iv
+        p[0] = <char> c.val.i64
         p += 1
-        iv >>= 8
+        c.val.i64 >>= 8
         i -= 1
 
-cdef lp_uint64(char *p, object v):
-    cdef uint64 iv
+cdef void lp_uint64(char *p, cnumber *c):
     cdef Py_ssize_t i = 8
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT64:
-        raise OverflowError("uint64 format requires 0 <= number <= %i" % MAX_UINT64)
-    iv = py_l
     while i > 0:
-        p[0] = <char> iv
+        p[0] = <char> c.val.u64
         p += 1
-        iv >>= 8
+        c.val.u64 >>= 8
         i -= 1
 
-cdef lp_float32(char *p, object v):
-    cdef float32 fv
-    fv = PyFloat_AsDouble(v)
-    _PyFloat_Pack4(fv, <unsigned char *> p, 1)
+cdef void lp_float32(char *p, cnumber *c):
+    _PyFloat_Pack4(c.val.f32, <unsigned char *> p, 1)
 
-cdef lp_float64(char *p, object v):
-    cdef float64 fv
-    fv = PyFloat_AsDouble(v)
-    _PyFloat_Pack8(fv, <unsigned char *> p, 1)
+cdef void lp_float64(char *p, cnumber *c):
+    _PyFloat_Pack8(c.val.f64, <unsigned char *> p, 1)
 
 #FIXME:
 #cdef lp_float128(char *p, object v, formatdef *f):
@@ -426,172 +329,132 @@ cdef lp_float64(char *p, object v):
 #
 # Big-endian routines.
 #
-cdef bu_int16(char *p):
-    cdef int16 iv = 0
+cdef int bu_int16(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 2
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[0]
+        c.val.i16 = (c.val.i16 << 8) | b[0]
         b += 1
+    c.ctype = INT16
     # Extend the sign bit
     #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return iv
+    return 0
 
-cdef bu_uint16(char *p):
-    cdef uint16 iv = 0
+cdef int bu_uint16(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 2
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[0]
+        c.val.u16 = (c.val.u16 << 8) | b[0]
         b += 1
-    return iv
+    c.ctype = UINT16
+    return 0
 
-cdef bu_int32(char *p):
-    cdef int32 iv = 0
+cdef int bu_int32(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 4
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[0]
+        c.val.i32 = (c.val.i32 << 8) | b[0]
         b += 1
+    c.ctype = INT32
     # Extend the sign bit
     #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return iv
+    return 0
 
-cdef bu_uint32(char *p):
-    cdef uint32 iv = 0
+cdef int bu_uint32(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 4
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[0]
+        c.val.u32 = (c.val.u32 << 8) | b[0]
         b += 1
-    return iv
+    c.ctype = UINT32
+    return 0
 
-cdef bu_int64(char *p):
-    cdef int64 iv = 0
+cdef int bu_int64(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 8
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[0]
+        c.val.i64 = (c.val.i64 << 8) | b[0]
         b += 1
+    c.ctype = INT64
     # Extend the sign bit
     #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return iv
+    return 0
 
-cdef bu_uint64(char *p):
-    cdef uint64 iv = 0
+cdef int bu_uint64(char *p, cnumber *c)except -1:
     cdef Py_ssize_t i = 8
     cdef unsigned char *b = <unsigned char *> p
     while i > 0:
         i -= 1
-        iv = (iv << 8) | b[0]
+        c.val.u64 = (c.val.u64 << 8) | b[0]
         b += 1
-    return iv
+    c.ctype = UINT64
+    return 0
 
-cdef bu_float32(char *p):
-    cdef float32 fv
-    fv = _PyFloat_Unpack4(<unsigned char *> p, 0)
-    #FIXME:
-    f = fv
-    Py_INCREF(f)
-    return f
+cdef int bu_float32(char *p, cnumber *c)except -1:
+    c.val.f32 = _PyFloat_Unpack4(<unsigned char *> p, 0)
+    c.ctype = FLOAT32
+    return 0
 
-cdef bu_float64(char *p):
-    cdef float64 fv
-    fv = _PyFloat_Unpack8(<unsigned char *> p, 0)
-    #FIXME:
-    f = fv
-    Py_INCREF(f)
-    return f
+cdef int bu_float64(char *p, cnumber *c)except -1:
+    c.val.f64 = _PyFloat_Unpack8(<unsigned char *> p, 0)
+    c.ctype = FLOAT64
+    return 0
 
 #FIXME:
 #cdef bu_float128(char *p, formatdef *f):
 
-cdef bp_int16(char *p, object v):
-    cdef int16 iv
+cdef void bp_int16(char *p, cnumber *c):
     cdef Py_ssize_t i = 2
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT16 or v > MAX_INT16:
-        raise OverflowError("int16 format requires %i <= number <= %i" % (MIN_INT16, MAX_INT16))
-    iv = py_l
     while i > 0:
         i -= 1
-        p[i] = <char> iv
-        iv >>= 8
+        p[i] = <char> c.val.i16
+        c.val.i16 >>= 8
 
-cdef bp_uint16(char *p, object v):
-    cdef uint16 iv
+cdef void bp_uint16(char *p, cnumber *c):
     cdef Py_ssize_t i = 2
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT16:
-        raise OverflowError("uint16 format requires 0 <= number <= %i" % MAX_UINT16)
-    iv = py_l
     while i > 0:
         i -= 1
-        p[i] = <char> iv
-        iv >>= 8
+        p[i] = <char> c.val.u16
+        c.val.u16 >>= 8
 
-cdef bp_int32(char *p, object v):
-    cdef int32 iv
+cdef void bp_int32(char *p, cnumber *c):
     cdef Py_ssize_t i = 4
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT32 or v > MAX_INT32:
-        raise OverflowError("int32 format requires %i <= number <= %i" % (MIN_INT32, MAX_INT32))
-    iv = py_l
     while i > 0:
         i -= 1
-        p[i] = <char> iv
-        iv >>= 8
+        p[i] = <char> c.val.i32
+        c.val.i32 >>= 8
 
-cdef bp_uint32(char *p, object v):
-    cdef uint32 iv
+cdef void bp_uint32(char *p, cnumber *c):
     cdef Py_ssize_t i = 4
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT32:
-        raise OverflowError("uint32 format requires 0 <= number <= %i" % MAX_UINT32)
-    iv = py_l
     while i > 0:
         i -= 1
-        p[i] = <char> iv
-        iv >>= 8
+        p[i] = <char> c.val.u32
+        c.val.u32 >>= 8
 
-cdef bp_int64(char *p, object v):
-    cdef int64 iv
+cdef void bp_int64(char *p, cnumber *c):
     cdef Py_ssize_t i = 8
-    cdef object py_l = get_pylong(v)
-    if py_l < MIN_INT64 or v > MAX_INT64:
-        raise OverflowError("int64 format requires %i <= number <= %i" % (MIN_INT64, MAX_INT64))
-    iv = py_l
     while i > 0:
         i -= 1
-        p[i] = <char> iv
-        iv >>= 8
+        p[i] = <char> c.val.i64
+        c.val.i64 >>= 8
 
-cdef bp_uint64(char *p, object v):
-    cdef uint64 iv
+cdef void bp_uint64(char *p, cnumber *c):
     cdef Py_ssize_t i = 8
-    cdef object py_l = get_pylong(v)
-    if py_l < 0 or v > MAX_UINT64:
-        raise OverflowError("uint64 format requires 0 <= number <= %i" % MAX_UINT64)
-    iv = py_l
     while i > 0:
         i -= 1
-        p[i] = <char> iv
-        iv >>= 8
+        p[i] = <char> c.val.u64
+        c.val.u64 >>= 8
 
-cdef bp_float32(char *p, object v):
-    cdef float32 fv
-    fv = PyFloat_AsDouble(v)
-    _PyFloat_Pack4(fv, <unsigned char *> p, 0)
+cdef void bp_float32(char *p, cnumber *c):
+    _PyFloat_Pack4(c.val.f32, <unsigned char *> p, 0)
 
-cdef bp_float64(char *p, object v):
-    cdef float64 fv
-    fv = PyFloat_AsDouble(v)
-    _PyFloat_Pack8(fv, <unsigned char *> p, 0)
+cdef void bp_float64(char *p, cnumber *c):
+    _PyFloat_Pack8(c.val.f64, <unsigned char *> p, 0)
 
 #FIXME:
 #cdef bp_float128(char *p, object v, formatdef *f):
@@ -861,41 +724,34 @@ cdef int new_struct(_struct *self, bytes fmt) except*:
     sz = struct_from_formatcode(fmt, &self.codes, &length)
     self.size = sz
     self.length = length
-    self.unpack = struct_unpack_data
-    self.pack = struct_pack_data
+    self.formats = <num_types *> malloc(sizeof(num_types) * length)
+    if not self.formats:
+        free(self.formats)
+        raise MemoryError("Allocation failed in struct compilation")
+    for sz in range(length):
+        self.formats[sz] = self.codes[sz].fmtdef.format
     return 0
 
-cdef void del_struct(_struct *self):
-    if self.codes != NULL:
-        free(self.codes)
+cdef void del_struct(_struct *_self):
+    if _self.codes != NULL:
+        free(_self.codes)
+        free(_self.formats)
 
-cdef object struct_unpack_data(_struct *self, char *c):
-    cdef object v, tmp
+cdef int struct_unpack(_struct *_self, char *c, cnumber **cnums)except -1:
     cdef Py_ssize_t i = 0
     cdef char* ptr_c
-    v = PyTuple_New(self.length)
-    for i in xrange(self.length):
-        ptr_c = c + self.codes[i].offset
-        tmp = self.codes[i].fmtdef.unpack(ptr_c)
-        PyTuple_SetItem(v, i, tmp)
-    return v
+    for i in xrange(_self.length):
+        ptr_c = c + _self.codes[i].offset
+        _self.codes[i].fmtdef.unpack(ptr_c, cnums[i])
+    return 0
 
-cdef int struct_pack_data(_struct *self, char *c, object args) except -1:
-    if not isinstance(args, tuple):
-        raise TypeError("Element(s) to pack should be pass in tuple")
-    if len(args) != self.length:
-        raise TypeError("Wrong number of arguments to pack : \
-        %i in place of %i" % len(args), self.length)
-    cdef object v
-    cdef Py_ssize_t i = 0
+cdef int struct_pack(_struct *_self, char *c, cnumber **cnums) except -1:
+    cdef Py_ssize_t i
     cdef char* ptr_c
-    for v in args:
-        ptr_c = c + self.codes[i].offset
-        self.codes[i].fmtdef.pack(ptr_c, v)
-        i += 1
+    for i in xrange(_self.length):
+        ptr_c = c + _self.codes[i].offset
+        _self.codes[i].fmtdef.pack(ptr_c, cnums[i])
 
-cdef int16 i = 128
-cdef int8 d
-d = 127
-d += 1
-print "OVERFLOW: ",d
+
+
+

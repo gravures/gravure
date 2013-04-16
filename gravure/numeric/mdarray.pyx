@@ -22,11 +22,30 @@ import cython
 #from struct import Struct
 
 from _struct cimport *
-
+from bit_width_type cimport *
 
 cdef extern from "Python.h":
     int PyIndex_Check(object)
     object PyLong_FromVoidPtr(void *)
+
+    bint PyLong_Check(object p)
+    # Return true if its argument is a PyLongObject or a subtype of PyLongObject.
+
+    bint PyIndex_Check(object o)
+    # Returns True if o is an index integer (has the nb_index slot of
+    # the tp_as_number structure filled in).
+
+    object PyNumber_Index(object o)
+    # Returns the o converted to a Python int or long on success or
+    # NULL with a TypeError exception raised on failure.
+
+    double PyFloat_AsDouble(object pyfloat) except? -1
+    # Return a C double representation of the contents of pyfloat.
+
+    bint PyObject_IsTrue(object o) except -1
+    # Returns 1 if the object o is considered to be true, and 0
+    # otherwise. This is equivalent to the Python expression "not not
+    # o". On failure, return -1.
 
 cdef extern from "pyport.h":
     ctypedef Py_ssize_t Py_intptr_t
@@ -65,6 +84,15 @@ cdef extern from *:
     cdef object capsule "__pyx_capsule_create" (void *p, char *sig)
     cdef int __pyx_array_getbuffer(PyObject *obj, Py_buffer view, int flags)
     cdef int __pyx_memoryview_getbuffer(PyObject *obj, Py_buffer view, int flags)
+
+    tuple PyTuple_New(Py_ssize_t len)
+    # Return value: New reference.
+    # Return a new tuple object of size len, or NULL on failure.
+
+    void PyTuple_SetItem(object  p, Py_ssize_t pos, object  o)
+    # Like PyTuple_SetItem(), but does no error checking, and should
+    # only be used to fill in brand new tuples. Note: This function
+    # ``steals'' a reference to o.
 
 cdef extern from "stdlib.h":
     void *malloc(size_t) nogil
@@ -113,7 +141,22 @@ ctypedef struct PyArrayInterface:
                        #       flag or this will be ignored. */
 
 
-
+cdef object get_pylong(object v):
+    if v is None:
+        raise TypeError("required argument should not be None")
+    if not PyLong_Check(v):
+        # Not an integer;
+        # try to use __index__ to convert.
+        if PyIndex_Check(v):
+            v = PyNumber_Index(v)
+            if not v:
+                raise TypeError("required argument is not an integer")
+        else:
+            raise TypeError("required argument is not an integer")
+    #else:
+    #    Py_INCREF(v);
+    assert(PyLong_Check(v))
+    return v
 
 
 cdef class mdarray
@@ -164,6 +207,7 @@ cdef class mdarray:
         PyThread_type_lock lock
         _struct formater
         _mdarray_iterator iterator
+        cnumber *items_cache
 
     cdef object __array_interface__
     #cdef PyCObject __array_struct__
@@ -205,6 +249,11 @@ cdef class mdarray:
             free(self._shape)
             free(self._strides)
             raise MemoryError("unable to allocate shape or strides.")
+
+        self.items_cache = <cnumber *> malloc(sizeof(cnumber) * self.formater.length)
+        if not self.items_cache:
+            free(self.items_cache)
+            raise MemoryError("unable to allocate memory for items_cache")
 
         idx = 0
         for idx, dim in enumerate(shape):
@@ -282,6 +331,7 @@ cdef class mdarray:
             free(self.data)
         free(self._strides)
         free(self._shape)
+        free(self.items_cache)
         del_struct(&self.formater)
         if self.lock != NULL:
             PyThread_free_lock(self.lock)
@@ -414,16 +464,100 @@ cdef class mdarray:
     cdef assign_item_from_object(mdarray self, char *itemp, object value):
         cdef char c
         cdef Py_ssize_t i
+        cdef Py_ssize_t le
+
+        #TODO: optimize type test on tuple, twice here
+        if not isinstance(value, tuple):
+            le = 1
+        else :
+            le = len(value)
+        if le != self.formater.length:
+            raise TypeError("Wrong number of arguments to pack : \
+            %i in place of %i" % le, self.formater.length)
+
         if isinstance(value, tuple):
-            self.formater.pack(&self.formater, itemp, value)
+            for i in xrange(le):
+                self.get_cnumber_from_PyVal(&self.items_cache[i], value[i], self.formater.formats[i])
         else:
-            self.formater.pack(&self.formater, itemp, (value,))
+            self.get_cnumber_from_PyVal(&self.items_cache[0], value, self.formater.formats[0])
+
+        struct_pack(&self.formater, itemp, &self.items_cache)
+
 
     cdef convert_item_to_object(mdarray self, char *itemp):
-        result = self.formater.unpack(&self.formater, itemp)
-        if len(result) == 1:
-            return result[0]
-        return result
+        cdef Py_ssize_t le = self.formater.length
+        cdef object pytuple
+        cdef Py_ssize_t i
+
+        struct_unpack(&self.formater, itemp, &self.items_cache)
+
+        if le == 1:
+            return self.get_PyVal_from_cnumber(&self.items_cache[0])
+
+        pytuple = PyTuple_New(le)
+        for i in xrange(le):
+            PyTuple_SetItem(pytuple, i, self.get_PyVal_from_cnumber(&self.items_cache[i]))
+        return pytuple
+
+    cdef get_PyVal_from_cnumber(mdarray self, cnumber *c):
+        if c.ctype == BOOL:
+            return c.val.b
+        elif c.ctype == INT8:
+            return c.val.i8
+        elif c.ctype == UINT8:
+            return c.val.u8
+        elif c.ctype == INT16:
+            return c.val.i16
+        elif c.ctype == UINT16:
+            return c.val.u16
+        elif c.ctype == INT32:
+            return c.val.i32
+        elif c.ctype == UINT32:
+            return c.val.u32
+        elif c.ctype == INT64:
+            return c.val.i64
+        elif c.ctype == UINT64:
+            return c.val.u64
+        elif c.ctype == FLOAT32:
+            return c.val.f32
+        elif c.ctype == FLOAT64:
+            return c.val.f64
+
+    cdef int get_cnumber_from_PyVal(mdarray self, cnumber *c, object v, num_types n) except -1:
+        if n == BOOL:
+            c.val.b = PyObject_IsTrue(v)
+            c.ctype = BOOL
+        elif n == INT8:
+            c.val.i8 = get_pylong(v)
+            c.ctype = INT8
+        elif n == UINT8:
+            c.val.u8 = get_pylong(v)
+            c.ctype = UINT8
+        elif n == INT16:
+            c.val.i16 = get_pylong(v)
+            c.ctype = INT16
+        elif n == UINT16:
+            c.val.u16 = get_pylong(v)
+            c.ctype = INT16
+        elif n == INT32:
+            c.val.i32 = get_pylong(v)
+            c.ctype = INT32
+        elif n == UINT32:
+            c.val.u32 = get_pylong(v)
+            c.ctype = UINT32
+        elif n == INT64:
+            c.val.i64 = get_pylong(v)
+            c.ctype = INT64
+        elif n == UINT64:
+            c.val.u64 = get_pylong(v)
+            c.ctype = UINT64
+        elif n == FLOAT32:
+            c.val.f32 = PyFloat_AsDouble(v)
+            c.ctype = FLOAT32
+        elif n == FLOAT64:
+            c.val.f64 = PyFloat_AsDouble(v)
+            c.ctype = FLOAT64
+        return 0
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
         cdef Py_ssize_t dim

@@ -24,12 +24,31 @@ ctypedef enum endianess:
     LITTLE_ENDIAN
     BIG_ENDIAN
 
+ctypedef union unumber:
+    _bool       b
+    int8        i8
+    int16       i16
+    int32       i32
+    int64       i64
+    uint8       u8
+    uint16      u16
+    uint32      u32
+    uint64      u64
+    float32     f32
+    float64     f64
+    complex64   c64
+    complex128  c128
+
+ctypedef struct cnumber:
+    num_types ctype
+    unumber val
+
 ctypedef struct formatdef:
     num_types format
     Py_ssize_t size
     Py_ssize_t alignment
-    object unpack(char *p)
-    object pack(char *p, object v)
+    int unpack(char *p, cnumber *)except -1
+    void pack(char *p, cnumber *c)
 
 ctypedef struct formatcode:
     formatdef *fmtdef
@@ -40,11 +59,12 @@ ctypedef struct _struct:
     Py_ssize_t size
     Py_ssize_t length
     formatcode *codes
-    object unpack(_struct *, char *)
-    int pack(_struct *, char *, object) except -1
+    num_types *formats
 
 cdef int new_struct(_struct *, bytes) except*
 cdef void del_struct(_struct *)
+cdef int struct_unpack(_struct *, char *, cnumber **)except -1
+cdef int struct_pack(_struct *, char *, cnumber **) except -1
 
 
 
