@@ -98,8 +98,8 @@ print("\n" + "*" * 50)
 print("TIME IT TESTS")
 
 def timearray():
-    tests = [["np.ndarray(shape=(100, 100), dtype=np.int8, order='C')", "import numpy as np"],
-             ["md.mdarray((100, 100), format=b'i1')", "import pyximport; pyximport.install()\nimport numeric.mdarray as md"],
+    tests = [["np.ndarray(shape=(100, 100), dtype=np.float64, order='C')", "import numpy as np"],
+             ["md.mdarray((100, 100), format=b'f8')", "import pyximport; pyximport.install()\nimport numeric.mdarray as md"],
              ["ar.array('b', li)", "import array as ar\nli = [0] * 10000"]]
 
     for t in tests:

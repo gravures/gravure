@@ -893,3 +893,9 @@ cdef int struct_pack_data(_struct *self, char *c, object args) except -1:
         ptr_c = c + self.codes[i].offset
         self.codes[i].fmtdef.pack(ptr_c, v)
         i += 1
+
+cdef int16 i = 128
+cdef int8 d
+d = 127
+d += 1
+print "OVERFLOW: ",d

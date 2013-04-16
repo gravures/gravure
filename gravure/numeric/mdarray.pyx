@@ -162,7 +162,7 @@ cdef class mdarray:
         void (*callback_free_data)(void *data)
         bint free_data
         PyThread_type_lock lock
-        _struct formater # object formater
+        _struct formater
         _mdarray_iterator iterator
 
     cdef object __array_interface__
@@ -175,6 +175,9 @@ cdef class mdarray:
         """
         pass
 
+    #TODO: check again and fix constructor args
+    #TODO: check pythreadlocks
+    #TODO: check weakref
     def __cinit__(mdarray self, tuple shape, format not None,
                   mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
         cdef int idx
@@ -189,7 +192,8 @@ cdef class mdarray:
             format = encode('ASCII')
         self._format = format
         self.format = self._format
-        new_struct(&self.formater, self._format)    # self.formater = Struct(self.format)
+
+        new_struct(&self.formater, self._format)
         self.itemsize = self.formater.size
         self.ndim = len(shape)
         if not self.ndim:
@@ -409,25 +413,13 @@ cdef class mdarray:
 
     cdef assign_item_from_object(mdarray self, char *itemp, object value):
         cdef char c
-        #cdef bytes bytesvalue
         cdef Py_ssize_t i
-        #if isinstance(value, tuple):
-        #    bytesvalue = self.formater.pack(*value)
-        #else:
-        #    bytesvalue = self.formater.pack(value)
-        #for i, c in enumerate(bytesvalue):
-        #    itemp[i] = c
         if isinstance(value, tuple):
             self.formater.pack(&self.formater, itemp, value)
         else:
             self.formater.pack(&self.formater, itemp, (value,))
 
-
     cdef convert_item_to_object(mdarray self, char *itemp):
-        #cdef bytes bytesvalue
-        #TODO : Do a manual and complete check here instead of this easy hack
-        #bytesvalue = itemp[:self.itemsize]
-        #result = self.formater.unpack(bytesvalue)
         result = self.formater.unpack(&self.formater, itemp)
         if len(result) == 1:
             return result[0]
@@ -510,12 +502,6 @@ cdef class mdarray:
         if nslices:
             result.extend([slice(None)] * nslices)
 
-        print "have slices :", str(have_slices) + ", " + str(nslices)
-        st = "tuple("
-        for i in result:
-            st += str(i) + ", "
-        st += ")"
-        print st
         return have_slices or nslices, tuple(result)
 
     cdef mdarray _slice(mdarray self, object indices):
@@ -572,24 +558,6 @@ cdef class mdarray:
                     have_start, have_stop, have_step,
                     True)
                 new_ndim += 1
-
-
-        print "\nNew Slice :"
-        print "newdim : " + str(new_ndim)
-        st = "shape : "
-        for i in range(new_ndim):
-            st += str(dst.shape[i]) + ", "
-        print st
-        st = "strides : "
-        for i in range(new_ndim):
-            st += str(dst.strides[i]) + ", "
-        print st
-        st = "suboffsets : "
-        for i in range(new_ndim):
-            st += str(dst.suboffsets[i]) + ", "
-        print st
-        print "-" * 10
-
 
         cdef mdarray sliced
         tpl = tuple([dst.shape[i] for i in xrange(new_ndim)])
@@ -715,7 +683,7 @@ cdef class mdarray:
     #
     # ITERABLE INTERFACE
     #
-
+    #TODO: advanced iteration
     def __iter__(mdarray self):
         if not self.iterator:
             self.iterator = _mdarray_iterator(self)
