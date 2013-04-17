@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-04-16, 18:00:39 -->
+<!-- Saved: 2013-04-17, 12:39:04 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -81,7 +81,6 @@
     <Source>gravure/numeric/mdarray.pyx</Source>
     <Source>gravure/numeric/narray.pyx</Source>
     <Source>gravure/numeric/gmath.py</Source>
-    <Source>gravure/numeric/test_cython.py</Source>
     <Source>gravure/numeric/array_interface.py</Source>
     <Source>gravure/halftone/gen_ordered.c</Source>
     <Source>gravure/numeric/mdarray.rst</Source>
@@ -94,6 +93,8 @@
     <Source>gravure/numeric/max_const.pyx</Source>
     <Source>gravure/numeric/max_const.pxd</Source>
     <Source>gravure/numeric/_struct.pxd</Source>
+    <Source>gravure/numeric/test/mdarray_test.py</Source>
+    <Source>gravure/numeric/test/__init__.py</Source>
   </Sources>
   <Forms/>
   <Translations/>

@@ -21,9 +21,27 @@ import numpy as np
 import array
 import timeit
 
-import pyximport; pyximport.install()
-import numeric.mdarray as mdarray
+import nose
+from nose import *
+from nose.tools import *
+from nose.failure import *
 
+import pyximport; pyximport.install()
+import numeric.mdarray as md
+
+
+#------------------------------------------------------------------------------
+
+def test_onedim():
+    mv = md.mdarray(shape=(10, ), format=b'i1')
+    eq_(len(mv), 10)
+
+
+#------------------------------------------------------------------------------
+if __name__ == '__main__':
+    nose.main()
+
+"""
 mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
 #print(mv
 #print(dir(mv))
@@ -167,3 +185,4 @@ print("END OF TESTS")
 #mv = mdarray.mdarray((10, 10 ), format=b'H2', initializer=range(400, 800))
 #print (mv)
 
+"""
