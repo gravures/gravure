@@ -64,7 +64,7 @@ ctypedef struct _struct:
 cdef int new_struct(_struct *, bytes) except*
 cdef void del_struct(_struct *)
 cdef int struct_unpack(_struct *, char *, cnumber **)except -1
-cdef int struct_pack(_struct *, char *, cnumber **) except -1
+cdef int struct_pack(_struct *, char *, cnumber **)
 
 
 

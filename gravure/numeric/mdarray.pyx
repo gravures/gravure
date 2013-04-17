@@ -18,14 +18,16 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
+#cython: overflowcheck=False
+
 import cython
+cimport cython
 #from struct import Struct
 
 from _struct cimport *
 from bit_width_type cimport *
 
 cdef extern from "Python.h":
-    int PyIndex_Check(object)
     object PyLong_FromVoidPtr(void *)
 
     bint PyLong_Check(object p)
@@ -105,11 +107,12 @@ cdef extern from "string.h" nogil:
 cdef enum:
     MAX_DIMS = 50
 
-ctypedef struct slice_cache:
+ctypedef struct slice_view:
     char *data
     Py_ssize_t shape[MAX_DIMS]
     Py_ssize_t strides[MAX_DIMS]
     Py_ssize_t suboffsets[MAX_DIMS]
+    Py_ssize_t ndim
 
 
 # PyArrayInterface
@@ -448,19 +451,6 @@ cdef class mdarray:
     # SEQUENCE INTERFACE : __getitem__(), __setitem__(), __delitem()__
     #
 
-    cdef void refcount_objects_in_slice(mdarray self, char *data, Py_ssize_t *shape,
-                                    Py_ssize_t *strides, int ndim, bint inc):
-        cdef Py_ssize_t i
-        for i in range(shape[0]):
-            if ndim == 1:
-                if inc:
-                    Py_INCREF((<PyObject **> data)[0])
-                else:
-                    Py_DECREF((<PyObject **> data)[0])
-            else:
-                self.refcount_objects_in_slice(data, shape + 1, strides + 1, ndim - 1, inc)
-            data += strides[0]
-
     cdef assign_item_from_object(mdarray self, char *itemp, object value):
         cdef char c
         cdef Py_ssize_t i
@@ -592,16 +582,70 @@ cdef class mdarray:
             return self.convert_item_to_object(itemp)
 
     def __setitem__(mdarray self, object index, object value):
-        raise NotImplementedError
-        #have_slices, index = _unellipsify(index, self.ndim)
-        #if have_slices:
-        #    obj = self.is_slice(value)
-        #    if obj:
-        #        self.setitem_slice_assignment(self[index], obj)
-        #    else:
-        #        self.setitem_slice_assign_scalar(self[index], value)
-        #else:
-        #    self.setitem_indexed(index, value)
+        have_slices, indices = self._unellipsify(index)
+        if have_slices:
+            obj = self.is_slice(value)
+            if obj:
+                self.setitem_slice_assignment(indices, obj)
+            else:
+                self.setitem_slice_assign_scalar(indices, value)
+        else:
+            self.setitem_indexed(indices, value)
+
+    cdef is_slice(mdarray self, obj):
+        if not isinstance(obj, mdarray):
+            return None
+            #try:
+            #    obj = memoryview(obj, self.flags|PyBUF_ANY_CONTIGUOUS, None)
+            #except TypeError:
+            #    return None
+        return obj
+
+    cdef setitem_indexed(mdarray self, index, value):
+        cdef char *itemp = self.get_item_pointer(index)
+        self.assign_item_from_object(itemp, value)
+
+    cdef setitem_slice_assign_scalar(mdarray self, object indices, value):
+        cdef slice_view src, dst
+        cdef char *ptr_src
+        cdef int loop = 1
+        cdef int limit, i
+        cdef int last_dim_len
+        cdef int offset_src, pos = 0
+        cdef Py_ssize_t sz = self.itemsize
+        cdef Py_ssize_t cursor
+
+        self._slice_view(&src)
+        self.get_slice_view(indices, &src, &dst)
+
+        limit = 1
+        for i in xrange(dst.ndim):
+            limit *= dst.shape[i]
+
+        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
+        dim = dst.ndim
+        last_dim_len = dst.shape[dst.ndim - 1]
+
+        while loop <= limit:
+            cursor = dst.ndim - 1
+            for pos in xrange(last_dim_len):
+                offset_src = 0
+                for i in xrange(dst.ndim):
+                    offset_src += dim_countdown[i] * dst.strides[i]
+                ptr_src = dst.data + offset_src
+                #memcpy(ptr_dest, ptr_src, sz)
+                self.assign_item_from_object(ptr_src, value)
+                dim_countdown[cursor] -= 1
+
+            while cursor > -1:
+                if dim_countdown[cursor] > 0:
+                    dim_countdown[cursor] -= 1
+                    cursor = -1
+                else:
+                    dim_countdown[cursor] = dst.shape[cursor] - 1
+                    cursor -= 1
+            loop += last_dim_len
+
 
     cdef tuple _unellipsify(mdarray self, object index):
         """
@@ -635,49 +679,33 @@ cdef class mdarray:
         nslices = ndim - len(result)
         if nslices:
             result.extend([slice(None)] * nslices)
-
         return have_slices or nslices, tuple(result)
 
-    cdef mdarray _slice(mdarray self, object indices):
-        cdef :
-            int new_ndim = 0
-            int suboffset_dim = -1
-            int dim
-            bint negative_step
-        cdef slice_cache src, dst
-        cdef slice_cache *p_src
-        cdef slice_cache *p_dest
+    cdef get_slice_view(mdarray self, object indices, slice_view *s_view, slice_view *d_view):
+        cdef object index
+        cdef int dim
+        cdef int suboffset_dim = -1
         cdef Py_ssize_t start, stop, step
         cdef bint have_start, have_stop, have_step
-        cdef int i
 
-        assert self.ndim > 0
-
-        src.data = self.data
-        memcpy(src.shape, self._shape, self.ndim * sizeof(Py_ssize_t))
-        memcpy(src.strides, self._strides, self.ndim * sizeof(Py_ssize_t))
-
-        dst.data = self.data
-        p_dst = &dst
-        for i in range(self.ndim):
-            src.suboffsets[i] = -1
-            dst.suboffsets[i] = -1
-        p_src = &src
-        cdef int *p_suboffset_dim = &suboffset_dim
+        d_view.data = s_view.data
+        d_view.ndim = 0
+        for i in range(s_view.ndim):
+            d_view.suboffsets[i] = -1
 
         for dim, index in enumerate(indices):
             if PyIndex_Check(index):
                 self.do_slice(
-                    p_dst, p_src.shape[dim], p_src.strides[dim], p_src.suboffsets[dim],
-                    dim, new_ndim, p_suboffset_dim,
+                    d_view, s_view.shape[dim], s_view.strides[dim], s_view.suboffsets[dim],
+                    dim, d_view.ndim, &suboffset_dim,
                     index, 0, 0, # start, stop, step
                     0, 0, 0, # have_{start,stop,step}
                     False)
             elif index is None:
-                p_dst.shape[new_ndim] = 1
-                p_dst.strides[new_ndim] = 0
-                p_dst.suboffsets[new_ndim] = -1
-                new_ndim += 1
+                d_view.shape[d_view.ndim] = 1
+                d_view.strides[d_view.ndim] = 0
+                d_view.suboffsets[d_view.ndim] = -1
+                d_view.ndim += 1
             else: # index is a slice
                 start = index.start or 0
                 stop = index.stop or 0
@@ -686,36 +714,55 @@ cdef class mdarray:
                 have_stop = index.stop is not None
                 have_step = index.step is not None
                 self.do_slice(
-                    p_dst, p_src.shape[dim], p_src.strides[dim], p_src.suboffsets[dim],
-                    dim, new_ndim, p_suboffset_dim,
+                    d_view, s_view.shape[dim], s_view.strides[dim], s_view.suboffsets[dim],
+                    dim, d_view.ndim, &suboffset_dim,
                     start, stop, step,
                     have_start, have_stop, have_step,
                     True)
-                new_ndim += 1
+                d_view.ndim += 1
 
+    cdef _slice_view(mdarray self, slice_view *src):
+        src.ndim = self.ndim
+        src.data = self.data
+        memcpy(src.shape, self._shape, self.ndim * sizeof(Py_ssize_t))
+        memcpy(src.strides, self._strides, self.ndim * sizeof(Py_ssize_t))
+        for i in range(self.ndim):
+            src.suboffsets[i] = -1
+
+    cdef mdarray _slice(mdarray self, object indices):
+        cdef int i, dim, new_ndim = 0
+        cdef slice_view src, dst
         cdef mdarray sliced
-        tpl = tuple([dst.shape[i] for i in xrange(new_ndim)])
+        cdef object tpl
+
+        assert self.ndim > 0
+
+        self._slice_view(&src)
+        self.get_slice_view(indices, &src, &dst)
+
+        tpl = tuple([dst.shape[i] for i in xrange(dst.ndim)])
         sliced = mdarray(tpl, self.format, self.mode, allocate_buffer=True)
 
         cdef char *ptr_dest
         cdef char *ptr_src
         cdef int loop = 1
         cdef int limit = sliced.size
-        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(new_ndim)]
-        dim = new_ndim
-        cdef int last_dim_len = dst.shape[new_ndim - 1]
+        cdef int last_dim_len = dst.shape[dst.ndim - 1]
         cdef int offset_src, offset_dst, pos = 0
         cdef Py_ssize_t sz = self.itemsize
+        cdef Py_ssize_t cursor
+        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
+        dim = dst.ndim
 
         while loop <= limit:
-            cursor = new_ndim - 1
+            cursor = dst.ndim - 1
             for pos in xrange(last_dim_len):
                 offset_src = 0
                 offset_dst = 0
-                for i in xrange(new_ndim):
+                for i in xrange(dst.ndim):
                     offset_dst += dim_countdown[i] * sliced._strides[i]
                     offset_src += dim_countdown[i] * dst.strides[i]
-                ptr_src = p_dst.data + offset_src
+                ptr_src = dst.data + offset_src
                 ptr_dest = sliced.data + offset_dst
                 memcpy(ptr_dest, ptr_src, sz)
                 dim_countdown[cursor] -= 1
@@ -732,22 +779,12 @@ cdef class mdarray:
         return sliced
 
     cdef int do_slice(mdarray self,
-            slice_cache *dst,
+            slice_view *dst,
             Py_ssize_t shape, Py_ssize_t stride, Py_ssize_t suboffset,
             int dim, int new_ndim, int *suboffset_dim,
             Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step,
             int have_start, int have_stop, int have_step,
             bint is_slice) nogil except -1:
-        """
-        Create a new slice dst given slice src.
-
-        dim             - the current src dimension (indexing will make dimensions
-                                                     disappear)
-        new_dim         - the new dst dimension
-        suboffset_dim   - pointer to a single int initialized to -1 to keep track of
-                          where slicing offsets should be added
-        """
-
         cdef Py_ssize_t new_shape
         cdef bint negative_step
 
@@ -760,10 +797,8 @@ cdef class mdarray:
         else:
             # index is a slice
             negative_step = have_step != 0 and step < 0
-
             if have_step and step == 0:
                 _err_dim(ValueError, "Step may not be zero (axis %d)", dim)
-
             # check our bounds and set defaults
             if have_start:
                 if start < 0:
@@ -780,7 +815,6 @@ cdef class mdarray:
                     start = shape - 1
                 else:
                     start = 0
-
             if have_stop:
                 if stop < 0:
                     stop += shape
@@ -793,25 +827,20 @@ cdef class mdarray:
                     stop = -1
                 else:
                     stop = shape
-
             if not have_step:
                 step = 1
-
             # len = ceil( (stop - start) / step )
             with cython.cdivision(True):
                 new_shape = (stop - start) // step
                 if (stop - start) % step:
                     new_shape += 1
-
             if new_shape < 0:
                 new_shape = 0
-
             # shape/strides/suboffsets
             dst.strides[new_ndim] = stride * step
             dst.shape[new_ndim] = new_shape
 
         dst.data += start * stride
-
         return 0
 
     #

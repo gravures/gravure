@@ -32,54 +32,14 @@ cdef extern from "stdlib.h":
     void *memcpy(void *dest, void *src, size_t n) nogil
 
 cdef extern from "Python.h":
-    bint PyLong_Check(object p)
-    # Return true if its argument is a PyLongObject or a subtype of PyLongObject.
-
-    bint PyIndex_Check(object o)
-    # Returns True if o is an index integer (has the nb_index slot of
-    # the tp_as_number structure filled in).
-
-    object PyNumber_Index(object o)
-    # Returns the o converted to a Python int or long on success or
-    # NULL with a TypeError exception raised on failure.
-
-    double PyFloat_AsDouble(object pyfloat) except? -1
-    # Return a C double representation of the contents of pyfloat.
-
-    object PyFloat_FromDouble(double v)
-    # Return value: New reference.
-    # Create a PyFloatObject object from v, or NULL on failure.
-
     int _PyFloat_Pack4(double x, unsigned char *p, int le) except -1
     int _PyFloat_Pack8(double x, unsigned char *p, int le) except -1
     double _PyFloat_Unpack4(unsigned char *p, int le) except? -1.0
     double _PyFloat_Unpack8(unsigned char *p, int le) except? -1.0
 
-    bint PyObject_IsTrue(object o) except -1
-    # Returns 1 if the object o is considered to be true, and 0
-    # otherwise. This is equivalent to the Python expression "not not
-    # o". On failure, return -1.
-
 
 DEF MAX_STRUCT_LENGTH = 50
 DEF FORMATS = 11
-
-cdef object get_pylong(object v):
-    if v is None:
-        raise TypeError("required argument should not be None")
-    if not PyLong_Check(v):
-        # Not an integer;
-        # try to use __index__ to convert.
-        if PyIndex_Check(v):
-            v = PyNumber_Index(v)
-            if not v:
-                raise TypeError("required argument is not an integer")
-        else:
-            raise TypeError("required argument is not an integer")
-    #else:
-    #    Py_INCREF(v);
-    assert(PyLong_Check(v))
-    return v
 
 
 #
@@ -745,7 +705,7 @@ cdef int struct_unpack(_struct *_self, char *c, cnumber **cnums)except -1:
         _self.codes[i].fmtdef.unpack(ptr_c, cnums[i])
     return 0
 
-cdef int struct_pack(_struct *_self, char *c, cnumber **cnums) except -1:
+cdef int struct_pack(_struct *_self, char *c, cnumber **cnums):
     cdef Py_ssize_t i
     cdef char* ptr_c
     for i in xrange(_self.length):

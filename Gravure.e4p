@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-04-11, 03:07:17 -->
+<!-- Saved: 2013-04-16, 18:00:39 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -90,20 +90,10 @@
     <Source>src/cinepaint_catmul/cinepaint_curve.c</Source>
     <Source>src/gimp_curvw_bezier/curve.c</Source>
     <Source>src/misc_splines/natural_cubic_spline.c</Source>
-    <Source>gravure/numpy/__init__.py</Source>
-    <Source>gravure/numpy/distutils/__init__.py</Source>
-    <Source>gravure/numpy/distutils/exec_command.py</Source>
-    <Source>gravure/numpy/distutils/mingw32ccompiler.py</Source>
-    <Source>gravure/numpy/distutils/compat.py</Source>
-    <Source>gravure/numpy/distutils/log.py</Source>
-    <Source>gravure/numpy/distutils/misc_util.py</Source>
-    <Source>gravure/numpy/distutils/ccompiler.py</Source>
-    <Source>gravure/numpy/compat/__init__.py</Source>
-    <Source>gravure/numpy/compat/py3k.py</Source>
-    <Source>gravure/numpy/distutils/command/__init__.py</Source>
-    <Source>gravure/numpy/distutils/command/config.py</Source>
-    <Source>gravure/numpy/distutils/command/autodist.py</Source>
     <Source>gravure/numeric/_struct.pyx</Source>
+    <Source>gravure/numeric/max_const.pyx</Source>
+    <Source>gravure/numeric/max_const.pxd</Source>
+    <Source>gravure/numeric/_struct.pxd</Source>
   </Sources>
   <Forms/>
   <Translations/>

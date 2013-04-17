@@ -24,7 +24,7 @@ import timeit
 import pyximport; pyximport.install()
 import numeric.mdarray as mdarray
 
-mv = mdarray.mdarray((10, 10 ), format=b'>f8', initializer=range(0, 800))
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
 #print(mv
 #print(dir(mv))
 
@@ -41,7 +41,9 @@ print("len(): ",  len(mv))
 print("sizeof :", mv.__sizeof__())
 #print("memview :", mv.memview)
 
-print("\n" + "*" * 50)
+
+print("\n" + "GET_ITEM")
+print("*" * 50)
 print("[...] :\n", mv[...])
 
 print("\n" + "*" * 50)
@@ -67,6 +69,53 @@ print("[2] :\n", mv[2])
 
 print("\n" + "*" * 50)
 print("[4,4] :\n", mv[4, 4])
+
+
+
+print("\n" + "SET_ITEM")
+print("*" * 50)
+mv[...] = 4
+print("[...] = 4 :\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[:] = 4
+print("[:] = 4 :\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[0:4,1:4] = 4
+print("[0:4,1:4] = 4 :\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[...,2:6] = 4
+print("[...,2:6] = 4 :\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[0:4, 2] = 4
+print("[0:4,2] = 4 :\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[0:4, -5] = 4
+print("[0:4,-5] = 4:\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[8:2:-2,4:2:-1] = 4
+print("[8:2:-2,4:2:-1] = 4 :\n", mv )
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[2] = 4
+print("[2] = 4 :\n", mv)
+
+mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+print("\n" + "*" * 50)
+mv[4, 4] = 9
+print("[4,4] = 9:\n", mv)
 
 print("\n" + "*" * 50)
 print("memoryview(mv):", memoryview(mv))
