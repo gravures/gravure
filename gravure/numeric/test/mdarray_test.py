@@ -17,6 +17,10 @@
 # the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
+
+import sys
+import time
+
 import numpy as np
 import array
 import timeit
@@ -31,13 +35,169 @@ import numeric.mdarray as md
 
 
 #------------------------------------------------------------------------------
+# Constructor
 
 def test_onedim():
     mv = md.mdarray(shape=(10, ), format=b'i1')
     eq_(len(mv), 10)
 
+def test_new():
+    #
+    # TEST SIMPLE FORMATS
+    #
+    shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
+    formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
+                      (b'i4', 4), (b'i8', 8), (b'u1', 1), (b'u2', 2),
+                      (b'u4', 4), (b'u8', 8), (b'f4', 4), (b'f8', 8),
+                      (b'f4', 4), (b'f8', 8), (b'c8', 8), (b'c16', 16)]
+    for s in shapes:
+        for f, i in formats_simple:
+            yield _new, s, f, i
+
+    #
+    # TEST COMPLEX FORMATS
+    #
+    formats_complex = [(b'ii', 2, 2), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
+                       (b'u4f4f4', 16, 3), (b'ii<i=i1<f4=fff', 20, 8)]
+    for s in shapes:
+        for f, i, n in formats_complex:
+            yield _new_c, s, f, i, n
+
+    #
+    #TODO: TEST WRONG FORMATS
+    # b'u4f4f48'
+
+    #
+    #TODO: TEST DECIMAL NUMBER b'D'
+    #
+
+    #
+    # TEST BIG MEMORY USAGE
+    # TODO: TEST MEMORY PLATEFORM TO KNOW WHERE IT COULD BREAKS
+    #
+    # 1Go
+    mv = md.mdarray(shape=(1024, 1000, 1000), format=b'i1')
+    #time.sleep(3)
+    ok_(isinstance(mv, md.mdarray))
+    eq_(mv.base, mv)
+
+    # 2Go
+    mv = md.mdarray(shape=(1024, 1000, 1000, 2), format=b'i1')
+    #time.sleep(3)
+    ok_(isinstance(mv, md.mdarray))
+    eq_(mv.base, mv)
+
+    # 4Go
+    mv = md.mdarray(shape=(1024, 1000, 1000, 4), format=b'i1')
+    #time.sleep(3)
+    ok_(isinstance(mv, md.mdarray))
+    eq_(mv.base, mv)
+
+    #FIXME: Crash the OS, have to restart
+    # 12Go
+#    mv = md.mdarray(shape=(1024, 1000, 1000, 12), format=b'i1')
+#    time.sleep(3)
+#    ok_(isinstance(mv, md.mdarray))
+#    eq_(mv.base, mv)
+
+    #
+    #TODO: TEST C AND F MODE
+    #
+
+    #
+    #TEST INITIALIZER
+    #
+    formats_simple = formats_simple[1:] # remove b'b' for this test
+    init=range(0, 800)
+    for s in shapes:
+        for f, i in formats_simple:
+            yield _new, s, f, i, init
+
+    init=range(0, 5)
+    for s in shapes:
+        for f, i in formats_simple:
+            yield _new, s, f, i, init
+
+    #TODO: INITIALISER YELDING TUPLE FOR COMPLEX FORMATS
+
+def _new_c(shape, format, itemsize, tuplelen):
+    mv = md.mdarray(shape, format)
+    ok_(isinstance(mv, md.mdarray))
+    eq_(mv.base, mv)
+    le = 1
+    for d in shape:
+        le *= d
+    eq_(mv.size, le)
+    eq_(mv.ndim, len(shape))
+    eq_(mv.shape, shape)
+    eq_(mv.itemsize, itemsize)
+    eq_(mv.format, format)
+    eq_(mv.nbytes, itemsize * mv.size)
+    eq_(len(mv), shape[0])
+
+    #FIXME: freeze code
+    #ok_(isinstance(mv[0], tuple))
+
+    #FIXME: freeze code
+#    for e in mv:
+#        eq_(e, 0)
+#        i += 1
+#    eq_(mv.size, i)
+
+def _new(shape, format, itemsize, init=None):
+    mv = md.mdarray(shape, format, initializer = init)
+
+    ok_(isinstance(mv, md.mdarray))
+    eq_(mv.base, mv)
+    le = 1
+    for d in shape:
+        le *= d
+    eq_(mv.size, le)
+    eq_(mv.ndim, len(shape))
+    eq_(mv.shape, shape)
+    eq_(mv.itemsize, itemsize)
+    eq_(mv.format, format)
+    eq_(mv.nbytes, itemsize * mv.size)
+    eq_(len(mv), shape[0])
+
+    if init is None:
+        # Test zero value init
+        i = 0
+        for e in mv:
+            eq_(e, 0)
+            i += 1
+        eq_(mv.size, i)
+    else:
+        stop = init[-1]
+        i = 0
+        for e in mv:
+            eq_(e, i)
+            i += 1
+            if i > stop:
+                i = 0
+
+
+
 
 #------------------------------------------------------------------------------
+# Endiannes
+
+#------------------------------------------------------------------------------
+# Overflow
+
+# with overflow
+
+# without overflow
+
+# with clamped overflow
+
+#------------------------------------------------------------------------------
+
+
+
+#------------------------------------------------------------------------------
+# Main
+
 if __name__ == '__main__':
     nose.main()
 
