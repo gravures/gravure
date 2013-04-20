@@ -18,14 +18,14 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-#cython: overflowcheck=False
 
 import cython
 cimport cython
-#from struct import Struct
 
 from _struct cimport *
+from enum cimport *
 from bit_width_type cimport *
+cimport bit_width_type as _b
 
 cdef extern from "Python.h":
     object PyLong_FromVoidPtr(void *)
@@ -104,16 +104,6 @@ cdef extern from "stdlib.h":
 cdef extern from "string.h" nogil:
     void *memset(void *BLOCK, int C, size_t SIZE)
 
-cdef enum:
-    MAX_DIMS = 50
-
-ctypedef struct slice_view:
-    char *data
-    Py_ssize_t shape[MAX_DIMS]
-    Py_ssize_t strides[MAX_DIMS]
-    Py_ssize_t suboffsets[MAX_DIMS]
-    Py_ssize_t ndim
-
 
 # PyArrayInterface
 #
@@ -143,6 +133,17 @@ ctypedef struct PyArrayInterface:
                        #       of __array_interface__) -- must set ARR_HAS_DESCR
                        #       flag or this will be ignored. */
 
+cdef enum:
+    MAX_DIMS = 50
+
+#TODO: faire sans MAX_DIMS
+ctypedef struct slice_view:
+    char *data
+    Py_ssize_t shape[MAX_DIMS]
+    Py_ssize_t strides[MAX_DIMS]
+    Py_ssize_t suboffsets[MAX_DIMS]
+    Py_ssize_t ndim
+
 
 cdef object get_pylong(object v):
     if v is None:
@@ -161,6 +162,64 @@ cdef object get_pylong(object v):
     assert(PyLong_Check(v))
     return v
 
+include "TYPE_DEF.pxi"
+
+#
+# PYTHON EXPORT OF ENUMERATION
+#
+cdef class BitWidthType(Enum):
+    __enum_values__ = {}
+    BOOL        = BitWidthType(_b.BOOL)
+    INT8        = BitWidthType(_b.INT8)
+    INT16       = BitWidthType(_b.INT16)
+    INT32       = BitWidthType(_b.INT32)
+    if HAVE_INT64:
+        INT64 = BitWidthType(_b.INT64)
+    if HAVE_INT128:
+        INT128      = BitWidthType(_b.INT128)
+    UINT8       = BitWidthType(_b.UINT8)
+    UINT16      = BitWidthType(_b.UINT16)
+    UINT32      = BitWidthType(_b.UINT32)
+    if HAVE_UINT64:
+        UINT64      = BitWidthType(_b.UINT64)
+    if HAVE_UINT128:
+        UINT128     = BitWidthType(_b.UINT128)
+    FLOAT32     = BitWidthType(_b.FLOAT32)
+    FLOAT64     = BitWidthType(_b.FLOAT64)
+    if HAVE_FLOAT80:
+        FLOAT80     = BitWidthType(_b.FLOAT80)
+    if HAVE_FLOAT128:
+        FLOAT128    = BitWidthType(_b.FLOAT128)
+    COMPLEX64   = BitWidthType(_b.COMPLEX64)
+    COMPLEX128  = BitWidthType(_b.COMPLEX128)
+
+cdef class MinMaxType(Enum):
+    __enum_values__ = {}
+    MAX_INT8    = MinMaxType(_b.MAX_INT8)
+    MIN_INT8    = MinMaxType(_b.MIN_INT8)
+    MAX_UINT8   = MinMaxType(_b.MAX_UINT8)
+    MAX_INT16   = MinMaxType(_b.MAX_INT16)
+    MIN_INT16   = MinMaxType(_b.MIN_INT16)
+    MAX_UINT16  = MinMaxType(_b.MAX_UINT16)
+    MAX_INT32   = MinMaxType(_b.MAX_INT32)
+    MIN_INT32   = MinMaxType(_b.MIN_INT32)
+    MAX_UINT32  = MinMaxType(_b.MAX_UINT32)
+    if HAVE_INT64:
+        MAX_INT64   = MinMaxType(_b.MAX_INT64)
+        MIN_INT64   = MinMaxType(_b.MIN_INT64)
+    if HAVE_UINT64:
+        MAX_UINT64  = MinMaxType(_b.MAX_UINT64)
+    if HAVE_INT128:
+        MAX_INT128  = MinMaxType(_b.MAX_INT128)
+        MIN_INT128  = MinMaxType(_b.MIN_INT128)
+    if HAVE_UINT128:
+        MAX_UINT128 = MinMaxType(_b.MAX_UINT128)
+    if HAVE_INT256:
+        MAX_INT256  = MinMaxType(_b.MAX_INT256)
+        MIN_INT256  = MinMaxType(_b.MIN_INT256)
+    if HAVE_UINT256:
+        MAX_UINT256 = MinMaxType(_b.MAX_UINT256)
+
 
 cdef class mdarray
 
@@ -175,6 +234,7 @@ cdef class _mdarray_iterator:
     def __cinit__(_mdarray_iterator self, mdarray md_array):
         self.data = md_array.data
         self.stop_index = md_array.size - 1
+        #FIXME: vraix pour mode = "C", pour "F" incorrect
         self.memory_step = md_array._strides[md_array.ndim - 1]
         self.md_array = md_array
 
@@ -200,6 +260,7 @@ cdef class mdarray:
         Py_ssize_t len
         char *format
         int ndim
+        #TODO: put properties in a strucut array_view
         Py_ssize_t *_shape
         Py_ssize_t *_strides
         Py_ssize_t itemsize
@@ -265,11 +326,11 @@ cdef class mdarray:
             self._shape[idx] = dim
             idx += 1
 
-        if mode not in ("fortran", "c"):
-            raise ValueError("Invalid mode, expected 'c' or 'fortran', got %s" % mode)
-
+        #TODO: optimize all this conversion around mode
+        if mode not in ("f", "F", "c", "C"):
+            raise ValueError("Invalid mode, expected 'c' or 'f', got %s" % mode)
         cdef char order
-        if mode == 'fortran':
+        if mode == 'F' or mode == 'f':
             order = 'F'
         else:
             order = 'C'
@@ -287,7 +348,9 @@ cdef class mdarray:
         cdef char *ptr
         if allocate_buffer:
             self.data = <char *>malloc(self.len)
+            #TODO: CALLOC
             if not self.data:
+                free(self.data)
                 raise MemoryError("unable to allocate array data.")
 
             if initializer is not None:
@@ -508,6 +571,7 @@ cdef class mdarray:
         elif c.ctype == FLOAT64:
             return c.val.f64
 
+    #TODO: overflow options
     cdef int get_cnumber_from_PyVal(mdarray self, cnumber *c, object v, num_types n) except -1:
         if n == BOOL:
             c.val.b = PyObject_IsTrue(v)

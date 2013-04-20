@@ -54,89 +54,67 @@ cdef extern from "numpy/npy_common.h":
     ctypedef long double  npy_float96
     ctypedef long double  npy_float128
 
-cdef extern from "numpy/npy_common.h":
-    cdef enum:
-        NPY_INT8
-        NPY_INT16
-        NPY_INT32
-        NPY_INT64
-        NPY_INT128
-        NPY_INT256
-        NPY_UINT8
-        NPY_UINT16
-        NPY_UINT32
-        NPY_UINT64
-        NPY_UINT128
-        NPY_UINT256
-        NPY_FLOAT16
-        NPY_FLOAT32
-        NPY_FLOAT64
-        NPY_FLOAT80
-        NPY_FLOAT96
-        NPY_FLOAT128
-        NPY_FLOAT256
-        NPY_COMPLEX32
-        NPY_COMPLEX64
-        NPY_COMPLEX128
-        NPY_COMPLEX160
-        NPY_COMPLEX192
-        NPY_COMPLEX256
-        NPY_COMPLEX512
-
 
 # SIZED TYPE DEFINITION
-ctypedef npy_bool       _bool
+include "TYPE_DEF.pxi"
 
+ctypedef npy_bool       _bool
 ctypedef npy_int8       int8
 ctypedef npy_int16      int16
 ctypedef npy_int32      int32
-ctypedef npy_int64      int64
-#IF NPY_INT128:
-#   ctypedef npy_int128    int128
-#   DEF HAVE_INT128 = 1
-DEF HAVE_INT128 = 0
-
+IF HAVE_INT64:
+    ctypedef npy_int64      int64
+IF HAVE_INT128:
+    ctypedef npy_int128    int128
+IF HAVE_INT256:
+    ctypedef npy_int256    int256
 ctypedef npy_uint8      uint8
 ctypedef npy_uint16     uint16
 ctypedef npy_uint32     uint32
-ctypedef npy_uint64     uint64
-#IF NPY_UINT128:
-#    ctypedef npy_uint128    uint128
-#    DEF HAVE_UINT128 = 1
-DEF HAVE_UINT128 = 0
-
+IF HAVE_UINT64:
+    ctypedef npy_uint64     uint64
+IF HAVE_UINT128:
+    ctypedef npy_uint128    uint128
+IF HAVE_UINT256:
+    ctypedef npy_uint256    uint256
+IF HAVE_FLOAT16:
+    ctypedef npy_float16    float16
 ctypedef npy_float32    float32
 ctypedef npy_float64    float64
-#IF NPY_FLOAT80:
-#    ctypedef npy_float80    float80
-#    DEF HAVE_FLOAT80 = 1
-DEF HAVE_FLOAT80 = 0
-#IF NPY_FLOAT128:
-ctypedef npy_float128   float128
-#    DEF HAVE_FLOAT128 = 1
-DEF HAVE_FLOAT128 = 0
-
+IF HAVE_FLOAT80:
+    ctypedef npy_float80    float80
+IF HAVE_FLOAT96:
+    ctypedef npy_float96    float96
+IF HAVE_FLOAT128:
+    ctypedef npy_float128   float128
+IF HAVE_FLOAT256:
+    ctypedef npy_float256   float256
 ctypedef float complex  complex64
 ctypedef double complex complex128
 
 from max_const cimport *
 
 ctypedef enum num_types:
-    BOOL,
-    INT8,
-    INT16,
-    INT32,
-    INT64,
-    INT128,
-    UINT8,
-    UINT16,
-    UINT32,
-    UINT64,
-    UINT128,
-    FLOAT32,
-    FLOAT64,
-    FLOAT80,
-    FLOAT128,
-    COMPLEX64,
+    BOOL
+    INT8
+    INT16
+    INT32
+    INT64
+    INT128
+    INT256
+    UINT8
+    UINT16
+    UINT32
+    UINT64
+    UINT128
+    UINT256
+    FLOAT16
+    FLOAT32
+    FLOAT64
+    FLOAT80
+    FLOAT96
+    FLOAT128
+    FLOAT256
+    COMPLEX64
     COMPLEX128
 

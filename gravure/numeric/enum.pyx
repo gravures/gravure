@@ -19,27 +19,30 @@
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-cdef :
-    char MAX_INT8
-    char MIN_INT8
-    unsigned char MAX_UINT8
-    short MAX_INT16
-    short MIN_INT16
-    unsigned short MAX_UINT16
-    int MAX_INT32
-    int MIN_INT32
-    unsigned int MAX_UINT32
-    long MAX_INT64
-    long MIN_INT64
-    unsigned long MAX_UINT64
-    object MAX_INT128
-    object MIN_INT128
-    object MAX_UINT128
-    object MAX_INT256
-    object MIN_INT256
-    object MAX_UINT256
+def fill_enum_dict(cls):
+    for vi in cls.__dict__.items():
+        k, v = vi
+        if isinstance(v, Enum):
+            cls.__enum_values__[v.__index__()] = k
 
-    #sunsigned long long MAX_UINT128 = 170141183460469231731687303715884105728ULL
-    #MAX_INT256 = 57896044618658097711785492504343953926634992332820282019728792003956564819967
-    #MIN_INT256 = - MAX_INT256 - 1
-    #MAX_UINT256 = 115792089237316195423570985008687907853269984665640564039457584007913129639935
+
+cdef class Enum(int):
+    class_method = fill_enum_dict
+
+    def __cinit__(self, *a, **k):
+        Enum.class_method(self.__class__)
+
+    def __repr__(self):
+        s = str(self.__class__).rfind(".") + 1
+        name = "\'" + str(self.__class__)[s:-1]
+        return "<enum %s of type %s>" % (self._get_name_from_val(self.__index__()), name)
+
+    def __str__(self):
+        return self.__repr__()
+
+    cdef _get_name_from_val(self, val):
+        for vi in self.__class__.__dict__.items():
+            k, v = vi
+            if isinstance(v, Enum):
+                if v.__index__() == val:
+                    return k

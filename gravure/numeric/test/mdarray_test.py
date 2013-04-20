@@ -30,99 +30,180 @@ from nose import *
 from nose.tools import *
 from nose.failure import *
 
+import psutil
+
 import pyximport; pyximport.install()
 import numeric.mdarray as md
 
-
-#------------------------------------------------------------------------------
-# Constructor
-
-def test_onedim():
-    mv = md.mdarray(shape=(10, ), format=b'i1')
-    eq_(len(mv), 10)
-
-def test_new():
-    #
-    # TEST SIMPLE FORMATS
-    #
-    shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
-    formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
+shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
+formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
                       (b'i4', 4), (b'i8', 8), (b'u1', 1), (b'u2', 2),
                       (b'u4', 4), (b'u8', 8), (b'f4', 4), (b'f8', 8),
                       (b'f4', 4), (b'f8', 8), (b'c8', 8), (b'c16', 16)]
+formats_complex = [(b'ii', 2, 2), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
+                       (b'u4f4f4', 16, 3), (b'ii<i=i1<f4=fff', 20, 8)]
+
+
+
+#---------------------------------------------------------------------------#
+# TESTS CONSTRUTOR                                                          #
+#                                                                           #
+def test_new_1():
+    #                                                                       #
+    # TEST SIMPLE FORMATS                                                   #
+    #                                                                       #
     for s in shapes:
         for f, i in formats_simple:
             yield _new, s, f, i
 
-    #
-    # TEST COMPLEX FORMATS
-    #
-    formats_complex = [(b'ii', 2, 2), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
-                       (b'u4f4f4', 16, 3), (b'ii<i=i1<f4=fff', 20, 8)]
+    #                                                                       #
+    # TEST COMPLEX FORMATS                                                  #
+    #                                                                       #
     for s in shapes:
         for f, i, n in formats_complex:
-            yield _new_c, s, f, i, n
+            yield _new_complex, s, f, i, n
 
-    #
-    #TODO: TEST WRONG FORMATS
-    # b'u4f4f48'
+    #                                                                       #
+    # TEST WRONG FORMATS                                                    #
+    # b'u4f4f48'                                                            #
+    assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'u4f4f48')
+    assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'u4f4rf2')
+    assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'i5')
 
-    #
-    #TODO: TEST DECIMAL NUMBER b'D'
-    #
 
-    #
-    # TEST BIG MEMORY USAGE
-    # TODO: TEST MEMORY PLATEFORM TO KNOW WHERE IT COULD BREAKS
-    #
-    # 1Go
-    mv = md.mdarray(shape=(1024, 1000, 1000), format=b'i1')
-    #time.sleep(3)
-    ok_(isinstance(mv, md.mdarray))
-    eq_(mv.base, mv)
+def test_new_2():
+    #                                                                       #
+    # TEST EMPTY SHAPE                                                      #
+    #                                                                       #
+    assert_raises(ValueError, md.mdarray, shape=(10, 0, 5), format=b'i')
+    assert_raises(ValueError, md.mdarray, shape=(), format=b'i')
 
-    # 2Go
-    mv = md.mdarray(shape=(1024, 1000, 1000, 2), format=b'i1')
-    #time.sleep(3)
-    ok_(isinstance(mv, md.mdarray))
-    eq_(mv.base, mv)
+    #                                                                       #
+    # TEST DECIMAL NUMBER b'D'                                              #
+    #                                                                       #
+    mv = md.mdarray(shape=(50, 50), format=b'D')
+    assert_is_instance(mv, md.mdarray)
+    mv = md.mdarray(shape=(50, 50), format=b'fDf')
+    assert_is_instance(mv, md.mdarray)
+    mv = md.mdarray(shape=(50, 50), format=b'>D')
+    assert_is_instance(mv, md.mdarray)
+    assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'D4')
 
-    # 4Go
-    mv = md.mdarray(shape=(1024, 1000, 1000, 4), format=b'i1')
-    #time.sleep(3)
-    ok_(isinstance(mv, md.mdarray))
-    eq_(mv.base, mv)
+def test_new_3():
+    #                                                                       #
+    # TEST BIG MEMORY USAGE                                                 #
+    #                                                                       #
+    free_mo = psutil.virtual_memory().free / 1024 // 1000
+    memory_test = [ int(free_mo * e) for e in [0.5, 0.75, .9, 2]]
+
+    # 50% of free mem
+    mv = md.mdarray(shape=(1024, 1000, memory_test[0]), format=b'i1')
+    time.sleep(.5)
+    assert_is_instance(mv, md.mdarray)
+
+    # 75% of free mem
+    mv = md.mdarray(shape=(1024, 1000, memory_test[1]), format=b'i1')
+    time.sleep(.5)
+    assert_is_instance(mv, md.mdarray)
+
+    # 90% of free mem
+    assert_warns(ResourceWarning, md.mdarray,
+                  shape=(1024, 1000, 1000, memory_test[2]), format=b'i1')
+    time.sleep(.5)
+    assert_is_instance(mv, md.mdarray)
 
     #FIXME: Crash the OS, have to restart
-    # 12Go
-#    mv = md.mdarray(shape=(1024, 1000, 1000, 12), format=b'i1')
-#    time.sleep(3)
-#    ok_(isinstance(mv, md.mdarray))
-#    eq_(mv.base, mv)
+    # 200% of free mem
+    #assert_raises(MemoryError, md.mdarray,
+    #              shape=(1024, 1000, 1000, memory_test[3]), format=b'i1')
+    time.sleep(.5)
 
-    #
-    #TODO: TEST C AND F MODE
-    #
 
-    #
-    #TEST INITIALIZER
-    #
-    formats_simple = formats_simple[1:] # remove b'b' for this test
-    init=range(0, 800)
+def test_new_4():
+    #                                                                       #
+    # TEST C AND F MODE                                                     #
+    #                                                                       #
+    mv = md.mdarray(shape=(10, 10, 10), format=b'i', order="C")
+    assert_is_instance(mv, md.mdarray)
+    c_stride = [e for e in mv.strides]
+    c_stride.reverse()
+    mv = md.mdarray(shape=(10, 10, 10), format=b'i', order="F")
+    assert_is_instance(mv, md.mdarray)
+    f_stride = [e for e in mv.strides]
+    eq_(c_stride, f_stride)
+
+    assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'i', order='g')
+
+    #                                                                       #
+    # TEST RANGE INITIALIZER                                                #
+    #                                                                       #
+    formats_simpleb = formats_simple[1:] # remove b'b' for this test
+    init=range(0, 126)
     for s in shapes:
-        for f, i in formats_simple:
+        for f, i in formats_simpleb:
             yield _new, s, f, i, init
 
     init=range(0, 5)
     for s in shapes:
-        for f, i in formats_simple:
+        for f, i in formats_simpleb:
             yield _new, s, f, i, init
 
-    #TODO: INITIALISER YELDING TUPLE FOR COMPLEX FORMATS
+    #                                                                       #
+    # INITIALISER YELDING TUPLE FOR COMPLEX FORMATS                         #
+    #                                                                       #
+    x, y, z = 1, 2, 4
+    def iter_tuple():
+        x += x
+        y += y
+        z += z
+        if x == 126 : x = 0
+        if y == 126 : y = 0
+        if z == 126 : z = 0
+        yield (x, y, z)
 
-def _new_c(shape, format, itemsize, tuplelen):
-    mv = md.mdarray(shape, format)
-    ok_(isinstance(mv, md.mdarray))
+    formats_complex = [(b'iii', 3, 3), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
+                       (b'u4f4f4', 16, 3)]
+    for s in shapes:
+        for f, i, n in formats_complex:
+            yield _new_complex, s, f, i, n, iter_tuple
+
+
+    #                                                                       #
+    # TEST LIST INITIALIZER                                                 #
+    #                                                                       #
+    i = [10, 9, 3, 2, 4, 5, 8]
+    mv = md.mdarray(shape=(10, 10, 10), format=b'i', order="C", initializer=i)
+    assert_is_instance(mv, md.mdarray)
+
+    #                                                                       #
+    # TEST BUFFER INTERFACE INITIALIZER                                     #
+    #                                                                       #
+    # buffer.size * itemsize >= array.size * itemsize                       #
+    from array import array
+    ar = array('b', range(100))
+    mv = md.mdarray(shape=(10, 10), format=b'i', initializer=ar)
+    assert_is_instance(mv, md.mdarray)
+
+    ar = array('<h', range(100))
+    mv = md.mdarray(shape=(10, 20), format=b'<i', initializer=ar)
+    assert_is_instance(mv, md.mdarray)
+    eq_(mv.base, ar)
+    ar[1] = 9
+    eq_(ar[1], mv[0, 2])
+    ar = None
+    eq_(mv.base, None)
+    assert_raises(MemoryError, md.__getitem, (0, 2))
+
+    ar = array('b', range(100))
+    assert_raises(TypeError, md.mdarray, shape=(10, 20), format=b'i2',
+                  initializer=ar)
+    assert_raises(TypeError, md.mdarray, shape=(100, ), format=b'i',
+                  initializer=ar, offset=50)
+
+
+def _new_complex(shape, format, itemsize, tuplelen, init = None):
+    mv = md.mdarray(shape, format, initializer = init)
+    assert_is_instance(mv, md.mdarray)
     eq_(mv.base, mv)
     le = 1
     for d in shape:
@@ -146,8 +227,7 @@ def _new_c(shape, format, itemsize, tuplelen):
 
 def _new(shape, format, itemsize, init=None):
     mv = md.mdarray(shape, format, initializer = init)
-
-    ok_(isinstance(mv, md.mdarray))
+    assert_is_instance(mv, md.mdarray)
     eq_(mv.base, mv)
     le = 1
     for d in shape:
@@ -176,22 +256,34 @@ def _new(shape, format, itemsize, init=None):
             if i > stop:
                 i = 0
 
+#----------------------------------------------------------------------------
+# ENDIANESS                                                                 #
+#                                                                           #
+
+#----------------------------------------------------------------------------
+# OVERFLOW                                                                  #
+#                                                                           #
+
+    #                                                                       #
+    # with overflow                                                         #
+    #                                                                       #
+def test():
+
+    print(md.BitWidthType.INT8)
+    print(md.MinMaxType.MAX_INT16)
+    print(md.BitWidthType.__enum_values__)
+    print(md.MinMaxType.__enum_values__)
+
+    #                                                                       #
+    # without overflow                                                      #
+    #                                                                       #
+
+    #                                                                       #
+    # with clamped overflow                                                 #
+    #                                                                       #
 
 
-
-#------------------------------------------------------------------------------
-# Endiannes
-
-#------------------------------------------------------------------------------
-# Overflow
-
-# with overflow
-
-# without overflow
-
-# with clamped overflow
-
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------
 
 
 
@@ -199,7 +291,8 @@ def _new(shape, format, itemsize, init=None):
 # Main
 
 if __name__ == '__main__':
-    nose.main()
+    #nose.main()
+    test()
 
 """
 mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))

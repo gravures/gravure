@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-04-17, 12:39:04 -->
+<!-- Saved: 2013-04-18, 20:31:20 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -94,7 +94,6 @@
     <Source>gravure/numeric/max_const.pxd</Source>
     <Source>gravure/numeric/_struct.pxd</Source>
     <Source>gravure/numeric/test/mdarray_test.py</Source>
-    <Source>gravure/numeric/test/__init__.py</Source>
   </Sources>
   <Forms/>
   <Translations/>
@@ -115,6 +114,7 @@
     <FiletypeAssociation pattern="*.pxd" type="SOURCES"/>
     <FiletypeAssociation pattern="*.py" type="SOURCES"/>
     <FiletypeAssociation pattern="*.pyx" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pxi" type="SOURCES"/>
     <FiletypeAssociation pattern="*.rb" type="SOURCES"/>
     <FiletypeAssociation pattern="*.rst" type="SOURCES"/>
   </FiletypeAssociations>
