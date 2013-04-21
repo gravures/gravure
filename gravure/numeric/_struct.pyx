@@ -20,6 +20,34 @@
 
 cimport cython
 
+include "TYPE_DEF.pxi"
+
+#
+# Whatever TYPE_DEF.pxi define, we don't have yet routines for the types below.
+#
+DEF HAVE_INT128 = 0
+DEF HAVE_INT256 = 0
+DEF HAVE_UINT128 = 0
+DEF HAVE_UINT256 = 0
+DEF HAVE_FLOAT16 = 0
+DEF HAVE_FLOAT80 = 0
+DEF HAVE_FLOAT96 = 0
+DEF HAVE_FLOAT128 = 0
+DEF HAVE_FLOAT256 = 0
+DEF HAVE_COMPLEX32 = 0
+DEF HAVE_COMPLEX64 = 0
+DEF HAVE_COMPLEX128 = 0
+DEF HAVE_COMPLEX160 = 0
+DEF HAVE_COMPLEX192 = 0
+DEF HAVE_COMPLEX256 = 0
+DEF HAVE_COMPLEX512 = 0
+
+DEF MAX_STRUCT_LENGTH = 50
+DEF BASE_FORMATS = 9
+DEF FORMATS = BASE_FORMATS + HAVE_INT64 + HAVE_UINT64 + HAVE_INT128 + HAVE_UINT128 + \
+              HAVE_INT256 + HAVE_UINT256 + HAVE_FLOAT16 + HAVE_FLOAT80 + HAVE_FLOAT96 + \
+              HAVE_FLOAT128 + HAVE_FLOAT256 + HAVE_COMPLEX64 +HAVE_COMPLEX128 + \
+              HAVE_COMPLEX160 + HAVE_COMPLEX192 + HAVE_COMPLEX256 + HAVE_COMPLEX512
 
 cdef extern from *:
     ctypedef struct PyObject
@@ -36,11 +64,6 @@ cdef extern from "Python.h":
     int _PyFloat_Pack8(double x, unsigned char *p, int le) except -1
     double _PyFloat_Unpack4(unsigned char *p, int le) except? -1.0
     double _PyFloat_Unpack8(unsigned char *p, int le) except? -1.0
-
-
-DEF MAX_STRUCT_LENGTH = 50
-DEF FORMATS = 11
-
 
 #
 # host endian routines.
@@ -80,15 +103,17 @@ cdef int nu_uint32(char *p, cnumber *c)except -1:
     c.ctype = UINT32
     return 0
 
-cdef int nu_int64(char *p, cnumber *c)except -1:
-    memcpy(<char *> &c.val.i64, p, 8)
-    c.ctype = INT64
-    return 0
+IF HAVE_INT64:
+    cdef int nu_int64(char *p, cnumber *c)except -1:
+        memcpy(<char *> &c.val.i64, p, 8)
+        c.ctype = INT64
+        return 0
 
-cdef int nu_uint64(char *p, cnumber *c)except -1:
-    memcpy(<char *> &c.val.u64, p, 8)
-    c.ctype = UINT64
-    return 0
+IF HAVE_UINT64:
+    cdef int nu_uint64(char *p, cnumber *c)except -1:
+        memcpy(<char *> &c.val.u64, p, 8)
+        c.ctype = UINT64
+        return 0
 
 cdef int nu_float32(char *p, cnumber *c)except -1:
     memcpy(<char *> &c.val.f32, p, 4)
@@ -127,11 +152,13 @@ cdef void np_int32(char *p, cnumber *c):
 cdef void np_uint32(char *p, cnumber *c):
     memcpy(p, <char *> &c.val.u32, 4)
 
-cdef void np_int64(char *p, cnumber *c):
-    memcpy(p, <char *> &c.val.i64, 8)
+IF HAVE_INT64:
+    cdef void np_int64(char *p, cnumber *c):
+        memcpy(p, <char *> &c.val.i64, 8)
 
-cdef void np_uint64(char *p, cnumber *c):
-    memcpy(p, <char *> &c.val.u64, 8)
+IF HAVE_UINT64:
+    cdef void np_uint64(char *p, cnumber *c):
+        memcpy(p, <char *> &c.val.u64, 8)
 
 cdef void np_float32(char *p, cnumber *c):
     memcpy(p, <char *> &c.val.f32, 4)
@@ -193,25 +220,27 @@ cdef int lu_uint32(char *p, cnumber *c)except -1:
     c.ctype = UINT32
     return 0
 
-cdef int lu_int64(char *p, cnumber *c)except -1:
-    cdef Py_ssize_t i = 8
-    cdef unsigned char *b = <unsigned char *> p
-    while i > 0:
-        i -= 1
-        c.val.i64 = (c.val.i64 << 8) | b[i]
-    c.ctype = INT64
-    # Extend the sign bit
-    #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return 0
+IF HAVE_INT64:
+    cdef int lu_int64(char *p, cnumber *c)except -1:
+        cdef Py_ssize_t i = 8
+        cdef unsigned char *b = <unsigned char *> p
+        while i > 0:
+            i -= 1
+            c.val.i64 = (c.val.i64 << 8) | b[i]
+        c.ctype = INT64
+        # Extend the sign bit
+        #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
+        return 0
 
-cdef int lu_uint64(char *p, cnumber *c)except -1:
-    cdef Py_ssize_t i = 8
-    cdef unsigned char *b = <unsigned char *> p
-    while i > 0:
-        i -= 1
-        c.val.u64 = (c.val.u64 << 8) | b[i]
-    c.ctype = UINT64
-    return 0
+IF HAVE_UINT64:
+    cdef int lu_uint64(char *p, cnumber *c)except -1:
+        cdef Py_ssize_t i = 8
+        cdef unsigned char *b = <unsigned char *> p
+        while i > 0:
+            i -= 1
+            c.val.u64 = (c.val.u64 << 8) | b[i]
+        c.ctype = UINT64
+        return 0
 
 cdef int lu_float32(char *p, cnumber *c) except -1:
     c.val.f32 = _PyFloat_Unpack4(<unsigned char *> p, 1)
@@ -258,21 +287,23 @@ cdef void lp_uint32(char *p, cnumber *c):
         c.val.u32 >>= 8
         i -= 1
 
-cdef void lp_int64(char *p, cnumber *c):
-    cdef Py_ssize_t i = 8
-    while i > 0:
-        p[0] = <char> c.val.i64
-        p += 1
-        c.val.i64 >>= 8
-        i -= 1
+IF HAVE_INT64:
+    cdef void lp_int64(char *p, cnumber *c):
+        cdef Py_ssize_t i = 8
+        while i > 0:
+            p[0] = <char> c.val.i64
+            p += 1
+            c.val.i64 >>= 8
+            i -= 1
 
-cdef void lp_uint64(char *p, cnumber *c):
-    cdef Py_ssize_t i = 8
-    while i > 0:
-        p[0] = <char> c.val.u64
-        p += 1
-        c.val.u64 >>= 8
-        i -= 1
+IF HAVE_UINT64:
+    cdef void lp_uint64(char *p, cnumber *c):
+        cdef Py_ssize_t i = 8
+        while i > 0:
+            p[0] = <char> c.val.u64
+            p += 1
+            c.val.u64 >>= 8
+            i -= 1
 
 cdef void lp_float32(char *p, cnumber *c):
     _PyFloat_Pack4(c.val.f32, <unsigned char *> p, 1)
@@ -333,27 +364,29 @@ cdef int bu_uint32(char *p, cnumber *c)except -1:
     c.ctype = UINT32
     return 0
 
-cdef int bu_int64(char *p, cnumber *c)except -1:
-    cdef Py_ssize_t i = 8
-    cdef unsigned char *b = <unsigned char *> p
-    while i > 0:
-        i -= 1
-        c.val.i64 = (c.val.i64 << 8) | b[0]
-        b += 1
-    c.ctype = INT64
-    # Extend the sign bit
-    #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
-    return 0
+IF HAVE_INT64:
+    cdef int bu_int64(char *p, cnumber *c)except -1:
+        cdef Py_ssize_t i = 8
+        cdef unsigned char *b = <unsigned char *> p
+        while i > 0:
+            i -= 1
+            c.val.i64 = (c.val.i64 << 8) | b[0]
+            b += 1
+        c.ctype = INT64
+        # Extend the sign bit
+        #iv |= -(iv & (1 << ((8 * sizeof(int16)) - 1)))
+        return 0
 
-cdef int bu_uint64(char *p, cnumber *c)except -1:
-    cdef Py_ssize_t i = 8
-    cdef unsigned char *b = <unsigned char *> p
-    while i > 0:
-        i -= 1
-        c.val.u64 = (c.val.u64 << 8) | b[0]
-        b += 1
-    c.ctype = UINT64
-    return 0
+IF HAVE_UINT64:
+    cdef int bu_uint64(char *p, cnumber *c)except -1:
+        cdef Py_ssize_t i = 8
+        cdef unsigned char *b = <unsigned char *> p
+        while i > 0:
+            i -= 1
+            c.val.u64 = (c.val.u64 << 8) | b[0]
+            b += 1
+        c.ctype = UINT64
+        return 0
 
 cdef int bu_float32(char *p, cnumber *c)except -1:
     c.val.f32 = _PyFloat_Unpack4(<unsigned char *> p, 0)
@@ -396,19 +429,21 @@ cdef void bp_uint32(char *p, cnumber *c):
         p[i] = <char> c.val.u32
         c.val.u32 >>= 8
 
-cdef void bp_int64(char *p, cnumber *c):
-    cdef Py_ssize_t i = 8
-    while i > 0:
-        i -= 1
-        p[i] = <char> c.val.i64
-        c.val.i64 >>= 8
+IF HAVE_INT64:
+    cdef void bp_int64(char *p, cnumber *c):
+        cdef Py_ssize_t i = 8
+        while i > 0:
+            i -= 1
+            p[i] = <char> c.val.i64
+            c.val.i64 >>= 8
 
-cdef void bp_uint64(char *p, cnumber *c):
-    cdef Py_ssize_t i = 8
-    while i > 0:
-        i -= 1
-        p[i] = <char> c.val.u64
-        c.val.u64 >>= 8
+IF HAVE_UINT64:
+    cdef void bp_uint64(char *p, cnumber *c):
+        cdef Py_ssize_t i = 8
+        while i > 0:
+            i -= 1
+            p[i] = <char> c.val.u64
+            c.val.u64 >>= 8
 
 cdef void bp_float32(char *p, cnumber *c):
     _PyFloat_Pack4(c.val.f32, <unsigned char *> p, 0)
@@ -423,73 +458,139 @@ cdef void bp_float64(char *p, cnumber *c):
 #    #_PyFloat_Pack8(fv, <unsigned char *> p, b)
 
 
-
-
+cdef I = 0
 cdef formatdef host_endian_table [FORMATS]
-host_endian_table[:]  = [
-    formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool),
-    formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8),
-    formatdef(format=INT16,      size=2,  alignment=0,  unpack=nu_int16,      pack=np_int16),
-    formatdef(format=INT32,      size=4,  alignment=0,  unpack=nu_int32,      pack=np_int32),
-    formatdef(format=INT64,      size=8,  alignment=0,  unpack=nu_int64,      pack=np_int64),
-    #formatdef(format=INT128,    size=16, alignment=0,  unpack=nu_int128,     pack=np_int128),
-    formatdef(format=UINT8,      size=1,  alignment=0,  unpack=nu_uint8,      pack=np_uint8),
-    formatdef(format=UINT16,     size=2,  alignment=0,  unpack=nu_uint16,     pack=np_uint16),
-    formatdef(format=UINT32,     size=4,  alignment=0,  unpack=nu_uint32,     pack=np_uint32),
-    formatdef(format=UINT64,     size=8,  alignment=0,  unpack=nu_uint64,     pack=np_uint64),
-    #formatdef(format=UINT128,   size=16, alignment=0,  unpack=nu_uint128,    pack=np_uint128),
-    formatdef(format=FLOAT32,    size=4,  alignment=0,  unpack=nu_float32,    pack=np_float32),
-    formatdef(format=FLOAT64,    size=8,  alignment=0,  unpack=nu_float64,    pack=np_float64),
-    #formatdef(format=FLOAT80,   size=10, alignment=0,  unpack=nu_float80,    pack=np_float80),
-    #FIXME: float128
-    #formatdef(format=FLOAT128,  size=16, alignment=0,  unpack=nu_float128,   pack=np_float128),
-    #formatdef(format=COMPLEX64, size=8,  alignment=0,  unpack=nu_complex64,  pack=np_complex64),
-    #formatdef(format=COMPLEX128,size=16, alignment=0,  unpack=nu_complex128, pack=np_complex128)
-    ]
+host_endian_table[I]     = formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool)
+I += 1
+host_endian_table[I]     = formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8)
+I += 1
+host_endian_table[I]     = formatdef(format=INT16,      size=2,  alignment=0,  unpack=nu_int16,      pack=np_int16)
+I += 1
+host_endian_table[I]     = formatdef(format=INT32,      size=4,  alignment=0,  unpack=nu_int32,      pack=np_int32)
+I += 1
+IF HAVE_INT64:
+    host_endian_table[I] = formatdef(format=INT64,      size=8,  alignment=0,  unpack=nu_int64,      pack=np_int64)
+    I += 1
+IF HAVE_INT128:
+    host_endian_table[I] = formatdef(format=INT128,     size=16, alignment=0,  unpack=nu_int128,     pack=np_int128)
+    I += 1
+host_endian_table[I]     = formatdef(format=UINT8,      size=1,  alignment=0,  unpack=nu_uint8,      pack=np_uint8)
+I += 1
+host_endian_table[I]     = formatdef(format=UINT16,     size=2,  alignment=0,  unpack=nu_uint16,     pack=np_uint16)
+I += 1
+host_endian_table[I]     = formatdef(format=UINT32,     size=4,  alignment=0,  unpack=nu_uint32,     pack=np_uint32)
+I += 1
+IF HAVE_UINT64:
+    host_endian_table[I] = formatdef(format=UINT64,     size=8,  alignment=0,  unpack=nu_uint64,     pack=np_uint64)
+    I += 1
+IF HAVE_UINT128:
+    host_endian_table[I] = formatdef(format=UINT128,    size=16, alignment=0,  unpack=nu_uint128,    pack=np_uint128)
+    I += 1
+host_endian_table[I]     = formatdef(format=FLOAT32,    size=4,  alignment=0,  unpack=nu_float32,    pack=np_float32)
+I += 1
+host_endian_table[I]     = formatdef(format=FLOAT64,    size=8,  alignment=0,  unpack=nu_float64,    pack=np_float64)
+I += 1
+IF HAVE_FLOAT80:
+    host_endian_table[I] = formatdef(format=FLOAT80,    size=10, alignment=0,  unpack=nu_float80,    pack=np_float80)
+    I += 1
+IF HAVE_INT128:
+    host_endian_table[I] = formatdef(format=FLOAT128,   size=16, alignment=0,  unpack=nu_float128,   pack=np_float128)
+    I += 1
+IF HAVE_COMPLEX64:
+    host_endian_table[I] = formatdef(format=COMPLEX64,  size=8,  alignment=0,  unpack=nu_complex64,  pack=np_complex64)
+    I += 1
+IF HAVE_COMPLEX128:
+    host_endian_table[I] = formatdef(format=COMPLEX128, size=16, alignment=0,  unpack=nu_complex128, pack=np_complex128)
 
+I = 0
 cdef formatdef big_endian_table [FORMATS]
-big_endian_table[:]  = [
-    formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool),
-    formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8),
-    formatdef(format=INT16,      size=2,  alignment=0,  unpack=bu_int16,      pack=bp_int16),
-    formatdef(format=INT32,      size=4,  alignment=0,  unpack=bu_int32,      pack=bp_int32),
-    formatdef(format=INT64,      size=8,  alignment=0,  unpack=bu_int64,      pack=bp_int64),
-    #formatdef(format=INT128,    size=16, alignment=0,  unpack=bu_int128,     pack=bp_int128),
-    formatdef(format=UINT8,      size=1,  alignment=0,  unpack=nu_uint8,      pack=np_uint8),
-    formatdef(format=UINT16,     size=2,  alignment=0,  unpack=bu_uint16,     pack=bp_uint16),
-    formatdef(format=UINT32,     size=4,  alignment=0,  unpack=bu_uint32,     pack=bp_uint32),
-    formatdef(format=UINT64,     size=8,  alignment=0,  unpack=bu_uint64,     pack=bp_uint64),
-    #formatdef(format=UINT128,   size=16, alignment=0,  unpack=bu_uint128,    pack=bp_uint128),
-    formatdef(format=FLOAT32,    size=4,  alignment=0,  unpack=bu_float32,    pack=bp_float32),
-    formatdef(format=FLOAT64,    size=8,  alignment=0,  unpack=bu_float64,    pack=bp_float64),
-    #formatdef(format=FLOAT80,   size=10, alignment=0,  unpack=bu_float80,    pack=bp_float80),
-    #FIXME: float128
-    #formatdef(format=FLOAT128,  size=16, alignment=0,  unpack=bu_float128,   pack=bp_float128),
-    #formatdef(format=COMPLEX64, size=8,  alignment=0,  unpack=bu_complex64,  pack=bp_complex64),
-    #formatdef(format=COMPLEX128,size=16, alignment=0,  unpack=bu_complex128, pack=bp_complex128)
-    ]
+big_endian_table[I]     = formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool)
+I += 1
+big_endian_table[I]     = formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8)
+I += 1
+big_endian_table[I]     = formatdef(format=INT16,      size=2,  alignment=0,  unpack=bu_int16,      pack=bp_int16)
+I += 1
+big_endian_table[I]     = formatdef(format=INT32,      size=4,  alignment=0,  unpack=bu_int32,      pack=bp_int32)
+I += 1
+IF HAVE_INT64:
+    big_endian_table[I] = formatdef(format=INT64,      size=8,  alignment=0,  unpack=bu_int64,      pack=bp_int64)
+    I += 1
+IF HAVE_INT128:
+    big_endian_table[I] = formatdef(format=INT128,     size=16, alignment=0,  unpack=bu_int128,     pack=bp_int128)
+    I += 1
+big_endian_table[I]     = formatdef(format=UINT8,      size=1,  alignment=0,  unpack=nu_uint8,      pack=np_uint8)
+I += 1
+big_endian_table[I]     = formatdef(format=UINT16,     size=2,  alignment=0,  unpack=bu_uint16,     pack=bp_uint16)
+I += 1
+big_endian_table[I]     = formatdef(format=UINT32,     size=4,  alignment=0,  unpack=bu_uint32,     pack=bp_uint32)
+I += 1
+IF HAVE_UINT64:
+    big_endian_table[I] = formatdef(format=UINT64,     size=8,  alignment=0,  unpack=bu_uint64,     pack=bp_uint64)
+    I += 1
+IF HAVE_UINT128:
+    big_endian_table[I] = formatdef(format=UINT128,    size=16, alignment=0,  unpack=bu_uint128,    pack=bp_uint128)
+    I += 1
+big_endian_table[I]     = formatdef(format=FLOAT32,    size=4,  alignment=0,  unpack=bu_float32,    pack=bp_float32)
+I += 1
+big_endian_table[I]     = formatdef(format=FLOAT64,    size=8,  alignment=0,  unpack=bu_float64,    pack=bp_float64)
+I += 1
+IF HAVE_FLOAT80:
+    big_endian_table[I] = formatdef(format=FLOAT80,    size=10, alignment=0,  unpack=bu_float80,    pack=bp_float80)
+    I += 1
+IF HAVE_FLOAT128:
+    big_endian_table[I] = formatdef(format=FLOAT128,   size=16, alignment=0,  unpack=bu_float128,   pack=bp_float128)
+    I += 1
+IF HAVE_COMPLEX64:
+    big_endian_table[I] = formatdef(format=COMPLEX64,  size=8,  alignment=0,  unpack=bu_complex64,  pack=bp_complex64)
+    I += 1
+IF HAVE_INT128:
+    big_endian_table[I] = formatdef(format=COMPLEX128, size=16, alignment=0,  unpack=bu_complex128, pack=bp_complex128)
 
+I = 0
 cdef formatdef little_endian_table [FORMATS]
-little_endian_table[:]  = [
-    formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool),
-    formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8),
-    formatdef(format=INT16,      size=2,  alignment=0,  unpack=lu_int16,      pack=lp_int16),
-    formatdef(format=INT32,      size=4,  alignment=0,  unpack=lu_int32,      pack=lp_int32),
-    formatdef(format=INT64,      size=8,  alignment=0,  unpack=lu_int64,      pack=lp_int64),
-    #formatdef(format=INT128,    size=16, alignment=0,  unpack=lu_int128,     pack=lp_int128),
-    formatdef(format=UINT8,      size=1,  alignment=0,  unpack=nu_uint8,      pack=np_uint8),
-    formatdef(format=UINT16,     size=2,  alignment=0,  unpack=lu_uint16,     pack=lp_uint16),
-    formatdef(format=UINT32,     size=4,  alignment=0,  unpack=lu_uint32,     pack=lp_uint32),
-    formatdef(format=UINT64,     size=8,  alignment=0,  unpack=lu_uint64,     pack=lp_uint64),
-    #formatdef(format=UINT128,   size=16, alignment=0,  unpack=lu_uint128,    pack=lp_uint128),
-    formatdef(format=FLOAT32,    size=4,  alignment=0,  unpack=lu_float32,    pack=lp_float32),
-    formatdef(format=FLOAT64,    size=8,  alignment=0,  unpack=lu_float64,    pack=lp_float64)
-    #formatdef(format=FLOAT80,   size=10, alignment=0,  unpack=lu_float80,    pack=lp_float80),
-    #FIXME: float128
-    #formatdef(format=FLOAT128,  size=16, alignment=0,  unpack=lu_float128,   pack=lp_float128),
-    #formatdef(format=COMPLEX64, size=8,  alignment=0,  unpack=lu_complex64,  pack=lp_complex64),
-    #formatdef(format=COMPLEX128,size=16, alignment=0,  unpack=lu_complex128, pack=lp_complex128)
-    ]
+little_endian_table[I] = formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool)
+I += 1
+little_endian_table[I] = formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8)
+I += 1
+little_endian_table[I] = formatdef(format=INT16,      size=2,  alignment=0,  unpack=lu_int16,      pack=lp_int16)
+I += 1
+little_endian_table[I] = formatdef(format=INT32,      size=4,  alignment=0,  unpack=lu_int32,      pack=lp_int32)
+I += 1
+IF HAVE_INT64:
+    little_endian_table[I] = formatdef(format=INT64,      size=8,  alignment=0,  unpack=lu_int64,      pack=lp_int64)
+    I += 1
+IF HAVE_INT128:
+    little_endian_table[I] = formatdef(format=INT128,    size=16, alignment=0,  unpack=lu_int128,     pack=lp_int128)
+    I += 1
+little_endian_table[I] = formatdef(format=UINT8,      size=1,  alignment=0,  unpack=nu_uint8,      pack=np_uint8)
+I += 1
+little_endian_table[I] = formatdef(format=UINT16,     size=2,  alignment=0,  unpack=lu_uint16,     pack=lp_uint16)
+I += 1
+little_endian_table[I] = formatdef(format=UINT32,     size=4,  alignment=0,  unpack=lu_uint32,     pack=lp_uint32)
+I += 1
+IF HAVE_UINT64:
+    little_endian_table[I] = formatdef(format=UINT64,     size=8,  alignment=0,  unpack=lu_uint64,     pack=lp_uint64)
+    I += 1
+IF HAVE_INT128:
+    little_endian_table[I] = formatdef(format=UINT128,   size=16, alignment=0,  unpack=lu_uint128,    pack=lp_uint128)
+    I += 1
+little_endian_table[I] = formatdef(format=FLOAT32,    size=4,  alignment=0,  unpack=lu_float32,    pack=lp_float32)
+I += 1
+little_endian_table[I] = formatdef(format=FLOAT64,    size=8,  alignment=0,  unpack=lu_float64,    pack=lp_float64)
+I += 1
+IF HAVE_FLOAT80:
+    little_endian_table[I] = formatdef(format=FLOAT80,   size=10, alignment=0,  unpack=lu_float80,    pack=lp_float80)
+    I += 1
+IF HAVE_INT128:
+    little_endian_table[I] = formatdef(format=FLOAT128,  size=16, alignment=0,  unpack=lu_float128,   pack=lp_float128)
+    I += 1
+IF HAVE_COMPLEX64:
+    little_endian_table[I] = formatdef(format=COMPLEX64, size=8,  alignment=0,  unpack=lu_complex64,  pack=lp_complex64)
+    I += 1
+IF HAVE_COMPLEX128:
+    little_endian_table[I] = formatdef(format=COMPLEX128,size=16, alignment=0,  unpack=lu_complex128, pack=lp_complex128)
+    I += 1
+
 
 cdef inline endianess sys_endian() nogil:
     cdef int one = 1
@@ -567,7 +668,7 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = INT32
                 struct_len += 1
-            elif nb == 8:
+            elif nb == 8 and HAVE_INT64:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = INT64
                 struct_len += 1
@@ -588,7 +689,7 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = UINT32
                 struct_len += 1
-            elif nb == 8:
+            elif nb == 8 and HAVE_UINT64:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = UINT64
                 struct_len += 1

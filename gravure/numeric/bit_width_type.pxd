@@ -89,8 +89,53 @@ IF HAVE_FLOAT128:
     ctypedef npy_float128   float128
 IF HAVE_FLOAT256:
     ctypedef npy_float256   float256
-ctypedef float complex  complex64
-ctypedef double complex complex128
+IF HAVE_COMPLEX64:
+    ctypedef float complex  complex64
+IF HAVE_COMPLEX128:
+    ctypedef double complex complex128
+
+#
+# Little tricks below if for part of code
+# who can't accommodate with missing typedef
+# cause you can't cut definition like struct
+# or union with cython #IF #ELSE.
+#
+IF HAVE_INT64 == 0:
+    ctypedef bint int64
+IF HAVE_UINT64 == 0:
+    ctypedef bint uint64
+IF HAVE_INT128 == 0:
+    ctypedef bint int128
+IF HAVE_UINT128 == 0:
+    ctypedef bint uint128
+IF HAVE_INT256 == 0:
+    ctypedef bint int256
+IF HAVE_UINT256 == 0:
+    ctypedef bint uint256
+IF HAVE_FLOAT16 == 0:
+    ctypedef bint float16
+IF HAVE_FLOAT80 == 0:
+    ctypedef bint float80
+IF HAVE_FLOAT96 == 0:
+    ctypedef bint float96
+IF HAVE_FLOAT128 == 0:
+    ctypedef bint float128
+IF HAVE_FLOAT256 == 0:
+    ctypedef bint float256
+IF HAVE_COMPLEX32 == 0:
+    ctypedef bint complex32
+IF HAVE_COMPLEX64 == 0:
+    ctypedef bint complex64
+IF HAVE_COMPLEX128 == 0:
+    ctypedef bint complex128
+IF HAVE_COMPLEX160 == 0:
+    ctypedef bint complex160
+IF HAVE_COMPLEX192 == 0:
+    ctypedef bint complex192
+IF HAVE_COMPLEX256 == 0:
+    ctypedef bint complex256
+IF HAVE_COMPLEX512 == 0:
+    ctypedef bint complex512
 
 from max_const cimport *
 
@@ -115,6 +160,9 @@ ctypedef enum num_types:
     FLOAT96
     FLOAT128
     FLOAT256
+    COMPLEX32
     COMPLEX64
-    COMPLEX128
-
+    COMPLEX160
+    COMPLEX192
+    COMPLEX256
+    COMPLEX512

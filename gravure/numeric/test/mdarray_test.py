@@ -96,21 +96,21 @@ def test_new_3():
     free_mo = psutil.virtual_memory().free / 1024 // 1000
     memory_test = [ int(free_mo * e) for e in [0.5, 0.75, .9, 2]]
 
-    # 50% of free mem
-    mv = md.mdarray(shape=(1024, 1000, memory_test[0]), format=b'i1')
-    time.sleep(.5)
-    assert_is_instance(mv, md.mdarray)
-
-    # 75% of free mem
-    mv = md.mdarray(shape=(1024, 1000, memory_test[1]), format=b'i1')
-    time.sleep(.5)
-    assert_is_instance(mv, md.mdarray)
-
-    # 90% of free mem
-    assert_warns(ResourceWarning, md.mdarray,
-                  shape=(1024, 1000, 1000, memory_test[2]), format=b'i1')
-    time.sleep(.5)
-    assert_is_instance(mv, md.mdarray)
+#    # 50% of free mem
+#    mv = md.mdarray(shape=(1024, 1000, memory_test[0]), format=b'i1')
+#    time.sleep(.5)
+#    assert_is_instance(mv, md.mdarray)
+#
+#    # 75% of free mem
+#    mv = md.mdarray(shape=(1024, 1000, memory_test[1]), format=b'i1')
+#    time.sleep(.5)
+#    assert_is_instance(mv, md.mdarray)
+#
+#    # 90% of free mem
+#    assert_warns(ResourceWarning, md.mdarray,
+#                  shape=(1024, 1000, 1000, memory_test[2]), format=b'i1')
+#    time.sleep(.5)
+#    assert_is_instance(mv, md.mdarray)
 
     #FIXME: Crash the OS, have to restart
     # 200% of free mem
@@ -273,7 +273,6 @@ def test():
     print(md.MinMaxType.MAX_INT16)
     print(md.BitWidthType.__enum_values__)
     print(md.MinMaxType.__enum_values__)
-
     #                                                                       #
     # without overflow                                                      #
     #                                                                       #
@@ -291,8 +290,8 @@ def test():
 # Main
 
 if __name__ == '__main__':
-    #nose.main()
-    test()
+    nose.main()
+    #test()
 
 """
 mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))

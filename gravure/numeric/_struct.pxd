@@ -20,6 +20,7 @@
 
 from bit_width_type cimport *
 
+
 ctypedef enum endianess:
     LITTLE_ENDIAN
     BIG_ENDIAN
@@ -30,14 +31,28 @@ ctypedef union unumber:
     int16       i16
     int32       i32
     int64       i64
+    int128      i128
+    int256      i256
     uint8       u8
     uint16      u16
     uint32      u32
     uint64      u64
+    uint128     u128
+    uint256     u256
+    float16     f16
     float32     f32
     float64     f64
+    float80     f80
+    float96     f96
+    float128    f128
+    float256    f256
+    complex32   c32
     complex64   c64
     complex128  c128
+    complex160  c160
+    complex192  c192
+    complex256  c256
+    complex512  c512
 
 ctypedef struct cnumber:
     num_types ctype

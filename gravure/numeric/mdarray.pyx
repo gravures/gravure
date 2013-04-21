@@ -162,11 +162,12 @@ cdef object get_pylong(object v):
     assert(PyLong_Check(v))
     return v
 
-include "TYPE_DEF.pxi"
 
 #
 # PYTHON EXPORT OF ENUMERATION
 #
+include "TYPE_DEF.pxi"
+
 cdef class BitWidthType(Enum):
     __enum_values__ = {}
     BOOL        = BitWidthType(_b.BOOL)
@@ -177,6 +178,8 @@ cdef class BitWidthType(Enum):
         INT64 = BitWidthType(_b.INT64)
     if HAVE_INT128:
         INT128      = BitWidthType(_b.INT128)
+    if HAVE_INT256:
+        INT256      = BitWidthType(_b.INT256)
     UINT8       = BitWidthType(_b.UINT8)
     UINT16      = BitWidthType(_b.UINT16)
     UINT32      = BitWidthType(_b.UINT32)
@@ -184,14 +187,36 @@ cdef class BitWidthType(Enum):
         UINT64      = BitWidthType(_b.UINT64)
     if HAVE_UINT128:
         UINT128     = BitWidthType(_b.UINT128)
+    if HAVE_UINT256:
+        UINT256     = BitWidthType(_b.UINT256)
+    if HAVE_FLOAT16:
+        FLOAT16     = BitWidthType(_b.FLOAT16)
     FLOAT32     = BitWidthType(_b.FLOAT32)
     FLOAT64     = BitWidthType(_b.FLOAT64)
     if HAVE_FLOAT80:
         FLOAT80     = BitWidthType(_b.FLOAT80)
+    if HAVE_FLOAT96:
+        FLOAT96     = BitWidthType(_b.FLOAT96)
     if HAVE_FLOAT128:
         FLOAT128    = BitWidthType(_b.FLOAT128)
-    COMPLEX64   = BitWidthType(_b.COMPLEX64)
-    COMPLEX128  = BitWidthType(_b.COMPLEX128)
+    if HAVE_FLOAT256:
+        FLOAT256     = BitWidthType(_b.FLOAT256)
+    if HAVE_COMPLEX32:
+        COPLEX32     = BitWidthType(_b.COMPLEX32)
+    if HAVE_COMPLEX64:
+        COMPLEX64   = BitWidthType(_b.COMPLEX64)
+    if HAVE_COMPLEX128:
+        COMPLEX128  = BitWidthType(_b.COMPLEX128)
+    if HAVE_COMPLEX160:
+        COMPLEX160  = BitWidthType(_b.COMPLEX160)
+    if HAVE_COMPLEX192:
+        COMPLEX192  = BitWidthType(_b.COMPLEX192)
+    if HAVE_COMPLEX256:
+        COMPLEX256  = BitWidthType(_b.COMPLEX256)
+    if HAVE_COMPLEX512:
+        COMPLEX512  = BitWidthType(_b.COMPLEX512)
+    BitWidthType.register()
+
 
 cdef class MinMaxType(Enum):
     __enum_values__ = {}
@@ -219,10 +244,12 @@ cdef class MinMaxType(Enum):
         MIN_INT256  = MinMaxType(_b.MIN_INT256)
     if HAVE_UINT256:
         MAX_UINT256 = MinMaxType(_b.MAX_UINT256)
+    MinMaxType.register()
 
 
-cdef class mdarray
-
+#
+# ARRAY ITERATOR
+#
 cdef class _mdarray_iterator:
     cdef :
         char *data
@@ -249,29 +276,164 @@ cdef class _mdarray_iterator:
         self.index += 1
         return self.md_array.convert_item_to_object(itemp)
 
+#
+# CType to Python convertion routines
+#
+ctypedef object (*co_ptr)(cnumber *)
+ctypedef int (*oc_ptr) (cnumber *, object) except -1
+
+cdef int py_to_b(cnumber *c, object v) except -1:
+    c.val.b = PyObject_IsTrue(v)
+    c.ctype = BOOL
+
+cdef int py_to_i8(cnumber *c, object v) except -1:
+    c.val.i8 = get_pylong(v)
+    c.ctype = INT8
+
+cdef int py_to_u8(cnumber *c, object v) except -1:
+    c.val.u8 = get_pylong(v)
+    c.ctype = UINT8
+
+cdef int py_to_i16(cnumber *c, object v) except -1:
+    c.val.i16 = get_pylong(v)
+    c.ctype = INT16
+
+cdef int py_to_u16(cnumber *c, object v) except -1:
+    c.val.u16 = get_pylong(v)
+    c.ctype = UINT16
+
+cdef int py_to_i32(cnumber *c, object v) except -1:
+    c.val.i32 = get_pylong(v)
+    c.ctype = INT32
+
+cdef int py_to_u32(cnumber *c, object v) except -1:
+    c.val.u32 = get_pylong(v)
+    c.ctype = UINT32
+
+cdef int py_to_i64(cnumber *c, object v) except -1:
+    c.val.i64 = get_pylong(v)
+    c.ctype = INT64
+
+cdef int py_to_u64(cnumber *c, object v) except -1:
+    c.val.u64 = get_pylong(v)
+    c.ctype = UINT64
+
+cdef int py_to_f32(cnumber *c, object v) except -1:
+    c.val.f32 = PyFloat_AsDouble(v)
+    c.ctype = FLOAT32
+
+cdef int py_to_f64(cnumber *c, object v) except -1:
+    c.val.f64 = PyFloat_AsDouble(v)
+    c.ctype = FLOAT64
+
+# i128 i256 u128 u256 f16 f80 f96 f128 f256
+#c32 c64 c128 c160 c192 c256 c512
+
+cdef oc_ptr py_to_c_functions [27]
+py_to_c_functions[<Py_ssize_t> BOOL] = py_to_b
+
+py_to_c_functions[<Py_ssize_t> INT8] = py_to_i8
+py_to_c_functions[<Py_ssize_t> INT16] = py_to_i16
+py_to_c_functions[<Py_ssize_t> INT32] = py_to_i32
+py_to_c_functions[<Py_ssize_t> INT64] = py_to_i64
+
+py_to_c_functions[<Py_ssize_t> UINT8] = py_to_u8
+py_to_c_functions[<Py_ssize_t> UINT16] = py_to_u16
+py_to_c_functions[<Py_ssize_t> UINT32] = py_to_u32
+py_to_c_functions[<Py_ssize_t> UINT64] = py_to_u64
+
+py_to_c_functions[<Py_ssize_t> FLOAT32] = py_to_f32
+py_to_c_functions[<Py_ssize_t> FLOAT64] = py_to_f64
+
+#
+# CType to Python convertion routines
+#
+cdef b_to_py(cnumber *c):
+    return c.val.b
+
+cdef i8_to_py(cnumber *c):
+    return c.val.i8
+
+cdef u8_to_py(cnumber *c):
+    return c.val.u8
+
+cdef i16_to_py(cnumber *c):
+    return c.val.i16
+
+cdef u16_to_py(cnumber *c):
+    return c.val.u16
+
+cdef i32_to_py(cnumber *c):
+    return c.val.i32
+
+cdef u32_to_py(cnumber *c):
+    return c.val.u32
+
+cdef i64_to_py(cnumber *c):
+    return c.val.i64
+
+cdef u64_to_py(cnumber *c):
+    return c.val.u64
+
+cdef f32_to_py(cnumber *c):
+    return c.val.f32
+
+cdef f64_to_py(cnumber *c):
+    return c.val.f64
+
+cdef co_ptr c_to_py_functions [27]
+c_to_py_functions[<Py_ssize_t> BOOL] = b_to_py
+
+c_to_py_functions[<Py_ssize_t> INT8] = i8_to_py
+c_to_py_functions[<Py_ssize_t> INT16] = i16_to_py
+c_to_py_functions[<Py_ssize_t> INT32] = i32_to_py
+c_to_py_functions[<Py_ssize_t> INT64] = i64_to_py
+
+c_to_py_functions[<Py_ssize_t> UINT8] = u8_to_py
+c_to_py_functions[<Py_ssize_t> UINT16] = u16_to_py
+c_to_py_functions[<Py_ssize_t> UINT32] = u32_to_py
+c_to_py_functions[<Py_ssize_t> UINT64] = u64_to_py
+
+c_to_py_functions[<Py_ssize_t> FLOAT32] = f32_to_py
+c_to_py_functions[<Py_ssize_t> FLOAT64] = f64_to_py
+
+
 
 #TODO: DOCSTRING
-#TODO: testing infrastructures
 cdef class mdarray:
     """Multidimentional array of homogenus type.
     """
     cdef :
+        char *format
+
+        #TODO: put attributes below in a strucut array_view
         char *data
         Py_ssize_t len
-        char *format
         int ndim
-        #TODO: put properties in a strucut array_view
         Py_ssize_t *_shape
         Py_ssize_t *_strides
         Py_ssize_t itemsize
+
         unicode mode
         bytes _format
+
+        #TODO : dont's sure we nedd it ar all
         void (*callback_free_data)(void *data)
         bint free_data
+
+        #TODO: check pythreadlocks
         PyThread_type_lock lock
+
         _struct formater
         _mdarray_iterator iterator
+
+        # cache for data exchange between array and _struct
         cnumber *items_cache
+
+        # Tables of routines conversion from ctype to python numbers
+        co_ptr *c_to_py
+        oc_ptr *py_to_c
+
 
     cdef object __array_interface__
     #cdef PyCObject __array_struct__
@@ -284,7 +446,7 @@ cdef class mdarray:
         pass
 
     #TODO: check again and fix constructor args
-    #TODO: check pythreadlocks
+
     #TODO: check weakref
     def __cinit__(mdarray self, tuple shape, format not None,
                   mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
@@ -342,6 +504,9 @@ cdef class mdarray:
         if decode:
             mode = decode('ASCII')
         self.mode = mode
+
+        self.c_to_py = c_to_py_functions
+        self.py_to_c = py_to_c_functions
 
         self.free_data = allocate_buffer
         cdef Py_ssize_t it
@@ -547,7 +712,8 @@ cdef class mdarray:
             PyTuple_SetItem(pytuple, i, self.get_PyVal_from_cnumber(&self.items_cache[i]))
         return pytuple
 
-    cdef get_PyVal_from_cnumber(mdarray self, cnumber *c):
+    cdef object get_PyVal_from_cnumber(mdarray self, cnumber *c):
+        """
         if c.ctype == BOOL:
             return c.val.b
         elif c.ctype == INT8:
@@ -570,9 +736,12 @@ cdef class mdarray:
             return c.val.f32
         elif c.ctype == FLOAT64:
             return c.val.f64
+        """
+        return self.c_to_py[<Py_ssize_t> c.ctype](c)
 
     #TODO: overflow options
     cdef int get_cnumber_from_PyVal(mdarray self, cnumber *c, object v, num_types n) except -1:
+        """
         if n == BOOL:
             c.val.b = PyObject_IsTrue(v)
             c.ctype = BOOL
@@ -606,7 +775,8 @@ cdef class mdarray:
         elif n == FLOAT64:
             c.val.f64 = PyFloat_AsDouble(v)
             c.ctype = FLOAT64
-        return 0
+        """
+        return self.py_to_c[<Py_ssize_t> n](c, v)
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
         cdef Py_ssize_t dim

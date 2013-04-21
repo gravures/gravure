@@ -18,8 +18,8 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-
-def fill_enum_dict(cls):
+@classmethod
+def fill_enum_dict_2(cls):
     for vi in cls.__dict__.items():
         k, v = vi
         if isinstance(v, Enum):
@@ -27,14 +27,10 @@ def fill_enum_dict(cls):
 
 
 cdef class Enum(int):
-    class_method = fill_enum_dict
-
-    def __cinit__(self, *a, **k):
-        Enum.class_method(self.__class__)
+    register = fill_enum_dict_2
 
     def __repr__(self):
-        s = str(self.__class__).rfind(".") + 1
-        name = "\'" + str(self.__class__)[s:-1]
+        name = "\'" + self.__class__.__name__ + "\'"
         return "<enum %s of type %s>" % (self._get_name_from_val(self.__index__()), name)
 
     def __str__(self):
