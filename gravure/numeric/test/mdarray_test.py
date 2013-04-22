@@ -262,6 +262,10 @@ def _new(shape, format, itemsize, init=None):
 
 #----------------------------------------------------------------------------
 # OVERFLOW                                                                  #
+#test min max int, there should be trouble                                  #
+
+#----------------------------------------------------------------------------
+# OVERFLOW                                                                  #
 #                                                                           #
 
     #                                                                       #
@@ -271,19 +275,19 @@ def pest():
 
 #    print(md.BitWidthType.INT8)
 #    print(md.MinMaxType.MAX_INT16)
-#    print(md.BitWidthType.__enum_values__)
+    print(md.BitWidthType.__enum_values__)
     print(md.MinMaxType.__enum_values__)
     #                                                                       #
     # without overflow                                                      #
     #                                                                       #
-    ar = range(-200, 300)
-    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False)
-    print(mv)
+#    ar = range(-200, 300)
+#    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=True)
+#    print(mv)
 
-    print(md.MinMaxType.MAX_UINT64 * 1)
+    print(md.MinMaxType.MAX_INT64 * 1)
     print(pow(2, 64))
-    ar = range(md.MinMaxType.MAX_UINT64, md.MinMaxType.MAX_UINT64+100)
-    mv = md.mdarray(shape=(10, 10), format=b'>u8', initializer=ar, overflow=False)
+    ar = range(md.MinMaxType.MAX_INT64, md.MinMaxType.MAX_UINT64+100)
+    mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False)
     print(mv)
     #                                                                       #
     # with clamped overflow                                                 #
