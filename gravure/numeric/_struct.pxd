@@ -53,6 +53,8 @@ ctypedef union unumber:
     complex192  c192
     complex256  c256
     complex512  c512
+    wide        w
+    uwide       uw
 
 ctypedef struct cnumber:
     num_types ctype

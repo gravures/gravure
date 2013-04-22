@@ -267,16 +267,24 @@ def _new(shape, format, itemsize, init=None):
     #                                                                       #
     # with overflow                                                         #
     #                                                                       #
-def test():
+def pest():
 
-    print(md.BitWidthType.INT8)
-    print(md.MinMaxType.MAX_INT16)
-    print(md.BitWidthType.__enum_values__)
+#    print(md.BitWidthType.INT8)
+#    print(md.MinMaxType.MAX_INT16)
+#    print(md.BitWidthType.__enum_values__)
     print(md.MinMaxType.__enum_values__)
     #                                                                       #
     # without overflow                                                      #
     #                                                                       #
+    ar = range(-200, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False)
+    print(mv)
 
+    print(md.MinMaxType.MAX_UINT64 * 1)
+    print(pow(2, 64))
+    ar = range(md.MinMaxType.MAX_UINT64, md.MinMaxType.MAX_UINT64+100)
+    mv = md.mdarray(shape=(10, 10), format=b'>u8', initializer=ar, overflow=False)
+    print(mv)
     #                                                                       #
     # with clamped overflow                                                 #
     #                                                                       #
@@ -290,8 +298,8 @@ def test():
 # Main
 
 if __name__ == '__main__':
-    nose.main()
-    #test()
+    #nose.main()
+    pest()
 
 """
 mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))

@@ -94,6 +94,21 @@ IF HAVE_COMPLEX64:
 IF HAVE_COMPLEX128:
     ctypedef double complex complex128
 
+
+IF HAVE_INT256:
+    ctypedef int256 wide
+    ctypedef uint256 uwide
+ELIF HAVE_INT128:
+    ctypedef int128 wide
+    ctypedef uint128 uwide
+ELIF HAVE_INT64:
+    ctypedef int64 wide
+    ctypedef uint64 uwide
+ELSE:
+    ctypedef int32 wide
+    ctypedef uint32 uwide
+
+
 #
 # Little tricks below if for part of code
 # who can't accommodate with missing typedef

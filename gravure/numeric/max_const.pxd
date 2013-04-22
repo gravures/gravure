@@ -18,28 +18,42 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
+from bit_width_type cimport *
+include "TYPE_DEF.pxi"
 
 cdef :
-    char MAX_INT8
-    char MIN_INT8
-    unsigned char MAX_UINT8
-    short MAX_INT16
-    short MIN_INT16
-    unsigned short MAX_UINT16
-    int MAX_INT32
-    int MIN_INT32
-    unsigned int MAX_UINT32
-    long MAX_INT64
-    long MIN_INT64
-    unsigned long MAX_UINT64
-    object MAX_INT128
-    object MIN_INT128
-    object MAX_UINT128
-    object MAX_INT256
-    object MIN_INT256
-    object MAX_UINT256
+    int8    MAX_INT8
+    int8    MIN_INT8
+    uint8   MAX_UINT8
+    int16   MAX_INT16
+    int16   MIN_INT16
+    uint16  MAX_UINT16
+    int32   MAX_INT32
+    int32   MIN_INT32
+    uint32  MAX_UINT32
 
-    #sunsigned long long MAX_UINT128 = 170141183460469231731687303715884105728ULL
-    #MAX_INT256 = 57896044618658097711785492504343953926634992332820282019728792003956564819967
-    #MIN_INT256 = - MAX_INT256 - 1
-    #MAX_UINT256 = 115792089237316195423570985008687907853269984665640564039457584007913129639935
+IF HAVE_INT64:
+    cdef :
+        int64   MAX_INT64
+        int64   MIN_INT64
+IF HAVE_UINT64:
+    cdef :
+        uint64  MAX_UINT64
+
+IF HAVE_INT128:
+    cdef :
+        int128  MAX_INT128
+        int128  MIN_INT128
+
+IF HAVE_UINT128:
+    cdef :
+        uint128 MAX_UINT128
+
+IF HAVE_INT256:
+    cdef :
+        int256  MAX_INT256
+        int256  MIN_INT256
+
+IF HAVE_UINT256:
+    cdef :
+        uint256 MAX_UINT256

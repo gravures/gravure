@@ -33,6 +33,10 @@ cdef extern from "Python.h":
     bint PyLong_Check(object p)
     # Return true if its argument is a PyLongObject or a subtype of PyLongObject.
 
+    unsigned long PyLong_AsUnsignedLongMask(object io) except? -1
+    # Return a C unsigned long from a Python long integer, without
+    # checking for overflow.
+
     bint PyIndex_Check(object o)
     # Returns True if o is an index integer (has the nb_index slot of
     # the tp_as_number structure filled in).
@@ -282,6 +286,21 @@ cdef class _mdarray_iterator:
 ctypedef object (*co_ptr)(cnumber *)
 ctypedef int (*oc_ptr) (cnumber *, object) except -1
 
+cdef int py_to_wide(cnumber *c, object v) except -1:
+    cdef wide w
+    cdef uwide uw
+    cdef object num
+    num = get_pylong(v)
+
+    if num < 0:
+        #w = <wide> num
+        w = PyLong_AsUnsignedLongMask(num)
+        memcpy(<char *> &c.val.w, <char *> &w, sizeof(w))
+    else:
+        #uw = <uwide> num
+        uw = PyLong_AsUnsignedLongMask(num)
+        memcpy(<char *> &c.val.uw, <char *> &uw, sizeof(uw))
+
 cdef int py_to_b(cnumber *c, object v) except -1:
     c.val.b = PyObject_IsTrue(v)
     c.ctype = BOOL
@@ -433,6 +452,7 @@ cdef class mdarray:
         # Tables of routines conversion from ctype to python numbers
         co_ptr *c_to_py
         oc_ptr *py_to_c
+        bint overflow
 
 
     cdef object __array_interface__
@@ -440,7 +460,8 @@ cdef class mdarray:
 
 
     def __init__(mdarray self, tuple shape, format not None,
-                  mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
+                  mode=u"c", initializer=None, bint allocate_buffer=True,
+                  overflow=True, *args, **kwargs):
         """Multidimentional constructor.
         """
         pass
@@ -449,7 +470,8 @@ cdef class mdarray:
 
     #TODO: check weakref
     def __cinit__(mdarray self, tuple shape, format not None,
-                  mode=u"c", initializer=None, bint allocate_buffer=True, *args, **kwargs):
+                  mode=u"c", initializer=None, bint allocate_buffer=True,
+                  overflow=True, *args, **kwargs):
         cdef int idx
         cdef Py_ssize_t i
 
@@ -505,9 +527,21 @@ cdef class mdarray:
             mode = decode('ASCII')
         self.mode = mode
 
+        # convertion functions
+        self.overflow = overflow
         self.c_to_py = c_to_py_functions
         self.py_to_c = py_to_c_functions
+        if not overflow:
+            self.py_to_c[<Py_ssize_t> INT8] = py_to_wide
+            self.py_to_c[<Py_ssize_t> UINT8] = py_to_wide
+            self.py_to_c[<Py_ssize_t> INT16] = py_to_wide
+            self.py_to_c[<Py_ssize_t> UINT16] = py_to_wide
+            self.py_to_c[<Py_ssize_t> INT32] = py_to_wide
+            self.py_to_c[<Py_ssize_t> UINT32] = py_to_wide
+            self.py_to_c[<Py_ssize_t> INT64] = py_to_wide
+            self.py_to_c[<Py_ssize_t> UINT64] = py_to_wide
 
+        # buffer allocation
         self.free_data = allocate_buffer
         cdef Py_ssize_t it
         cdef char *ptr
@@ -713,69 +747,10 @@ cdef class mdarray:
         return pytuple
 
     cdef object get_PyVal_from_cnumber(mdarray self, cnumber *c):
-        """
-        if c.ctype == BOOL:
-            return c.val.b
-        elif c.ctype == INT8:
-            return c.val.i8
-        elif c.ctype == UINT8:
-            return c.val.u8
-        elif c.ctype == INT16:
-            return c.val.i16
-        elif c.ctype == UINT16:
-            return c.val.u16
-        elif c.ctype == INT32:
-            return c.val.i32
-        elif c.ctype == UINT32:
-            return c.val.u32
-        elif c.ctype == INT64:
-            return c.val.i64
-        elif c.ctype == UINT64:
-            return c.val.u64
-        elif c.ctype == FLOAT32:
-            return c.val.f32
-        elif c.ctype == FLOAT64:
-            return c.val.f64
-        """
         return self.c_to_py[<Py_ssize_t> c.ctype](c)
 
     #TODO: overflow options
     cdef int get_cnumber_from_PyVal(mdarray self, cnumber *c, object v, num_types n) except -1:
-        """
-        if n == BOOL:
-            c.val.b = PyObject_IsTrue(v)
-            c.ctype = BOOL
-        elif n == INT8:
-            c.val.i8 = get_pylong(v)
-            c.ctype = INT8
-        elif n == UINT8:
-            c.val.u8 = get_pylong(v)
-            c.ctype = UINT8
-        elif n == INT16:
-            c.val.i16 = get_pylong(v)
-            c.ctype = INT16
-        elif n == UINT16:
-            c.val.u16 = get_pylong(v)
-            c.ctype = INT16
-        elif n == INT32:
-            c.val.i32 = get_pylong(v)
-            c.ctype = INT32
-        elif n == UINT32:
-            c.val.u32 = get_pylong(v)
-            c.ctype = UINT32
-        elif n == INT64:
-            c.val.i64 = get_pylong(v)
-            c.ctype = INT64
-        elif n == UINT64:
-            c.val.u64 = get_pylong(v)
-            c.ctype = UINT64
-        elif n == FLOAT32:
-            c.val.f32 = PyFloat_AsDouble(v)
-            c.ctype = FLOAT32
-        elif n == FLOAT64:
-            c.val.f64 = PyFloat_AsDouble(v)
-            c.ctype = FLOAT64
-        """
         return self.py_to_c[<Py_ssize_t> n](c, v)
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
