@@ -38,7 +38,7 @@ IF HAVE_INT64:
         int64   MIN_INT64   = - MAX_INT64 - 1#L
 IF HAVE_UINT64:
     cdef :
-        uint64  MAX_UINT64  = 18446744073709551615#UL
+        uint64  MAX_UINT64  = pow(2, 64) - 1  # 18446744073709551615#UL
 
 IF HAVE_INT128:
     cdef :

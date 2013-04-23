@@ -224,6 +224,7 @@ cdef class BitWidthType(Enum):
 
 cdef class MinMaxType(Enum):
     __enum_values__ = {}
+
     MAX_INT8    = MinMaxType(_b.MAX_INT8)
     MIN_INT8    = MinMaxType(_b.MIN_INT8)
     MAX_UINT8   = MinMaxType(_b.MAX_UINT8)

@@ -18,6 +18,9 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
+cimport cython
+import cython
 
 cdef class Enum(int):
     cdef _get_name_from_val(Enum, object)
+    cdef readonly object real

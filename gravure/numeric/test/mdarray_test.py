@@ -271,24 +271,58 @@ def _new(shape, format, itemsize, init=None):
     #                                                                       #
     # with overflow                                                         #
     #                                                                       #
+from numbers import *
 def pest():
 
 #    print(md.BitWidthType.INT8)
 #    print(md.MinMaxType.MAX_INT16)
     print(md.BitWidthType.__enum_values__)
     print(md.MinMaxType.__enum_values__)
+    print()
+    help(md.MinMaxType.MAX_UINT64)
     #                                                                       #
     # without overflow                                                      #
     #                                                                       #
 #    ar = range(-200, 300)
 #    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=True)
 #    print(mv)
+    print(md.MinMaxType.MAX_UINT64)
+    print(pow(2, 64)-1)
 
-    print(md.MinMaxType.MAX_INT64 * 1)
-    print(pow(2, 64))
-    ar = range(md.MinMaxType.MAX_INT64, md.MinMaxType.MAX_UINT64+100)
-    mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False)
-    print(mv)
+    print(isinstance(md.MinMaxType.MAX_UINT64, Integral))
+    print(isinstance(md.MinMaxType.MAX_UINT64, int))
+    print(issubclass(md.MinMaxType.MAX_UINT64.__class__, int))
+
+    print(md.MinMaxType.MAX_UINT64)
+    print("R", md.MinMaxType.MAX_UINT64.real)
+    print("R", md.MinMaxType.MAX_UINT64.__index__())
+
+    print("T", md.MinMaxType.MAX_UINT64 + 1)
+    print("T", md.MinMaxType.MAX_UINT64 * 1)
+    print("T", 1 * md.MinMaxType.MAX_UINT64)
+
+    print("T", 1 + md.MinMaxType.MAX_UINT64)
+    print("T", md.MinMaxType.MAX_UINT64 / 1)
+
+    print("T", md.MinMaxType.MAX_UINT64 + md.MinMaxType.MAX_UINT64)
+    print("T", md.MinMaxType.MAX_UINT64.__index__())
+    print("E", int(md.MinMaxType.MAX_UINT64))
+    print("E", float(md.MinMaxType.MAX_UINT64))
+    print("T", md.MinMaxType.MAX_UINT64.__int__())
+    print("T1", abs(md.MinMaxType.MAX_UINT64))
+
+    print("T", md.MinMaxType.MAX_UINT64 == 18446744073709551615)
+    print("T", 18446744073709551615 == md.MinMaxType.MAX_UINT64)
+    print("W", md.MinMaxType.MAX_UINT64 > 18446744073709551615)
+    print("W", md.MinMaxType.MAX_UINT64 > 1)
+    print("W", 1 < md.MinMaxType.MAX_UINT64)
+    print("W", md.MinMaxType.MAX_UINT32 > md.MinMaxType.MAX_UINT64)
+    #help(md.MinMaxType)
+
+
+    #ar = range(md.MinMaxType.MAX_INT64, md.MinMaxType.MAX_UINT64+100)
+    #mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False)
+    #print(mv)
     #                                                                       #
     # with clamped overflow                                                 #
     #                                                                       #
