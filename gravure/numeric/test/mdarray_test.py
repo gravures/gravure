@@ -35,6 +35,41 @@ import psutil
 import pyximport; pyximport.install()
 import numeric.mdarray as md
 
+
+#---------------------------------------------------------------------------#
+# TEST  numric.Enum                                                         #
+#                                                                           #
+from numbers import *
+def test_Enum():
+    assert_is_instance(md.MinMaxType.__enum_values__, dict)
+    ref_64 = pow(2, 64)-1
+    ok_(md.MinMaxType.__enum_values__[str(ref_64)] == 'mAX_UINT64')
+    assert_is_instance(md.MinMaxType.MAX_UINT64, Integral)
+    assert_is_instance(md.MinMaxType.MAX_UINT64, int)
+    ok_(issubclass(md.MinMaxType.MAX_UINT64.__class__, int))
+    eq_(md.MinMaxType.MAX_UINT64.real, ref_64)
+    eq_(md.MinMaxType.MAX_UINT64.__index__(), ref_64)
+    eq_(md.MinMaxType.MAX_UINT64 + 1, ref_64 +1)
+    eq_(md.MinMaxType.MAX_UINT64 * 1, ref_64)
+    eq_(1 * md.MinMaxType.MAX_UINT64, ref_64)
+    eq_(1 + md.MinMaxType.MAX_UINT64, ref_64)
+    eq_(md.MinMaxType.MAX_UINT64 / 1, ref_64 / 1)
+    eq_(md.MinMaxType.MAX_UINT64 + md.MinMaxType.MAX_UINT64, ref_64 + ref_64)
+    eq_(int(md.MinMaxType.MAX_UINT64), ref_64)
+    eq_(float(md.MinMaxType.MAX_UINT64), float(ref_64))
+    eq_(md.MinMaxType.MAX_UINT64.__int__(), ref_64)
+
+    assert_raises(NotImplementedError, abs(md.MinMaxType.MAX_UINT64))
+
+    eq_(md.MinMaxType.MAX_UINT64.numerator, ref_64)
+    ok_(md.MinMaxType.MAX_UINT64 == 18446744073709551615)
+    ok_(18446744073709551615 == md.MinMaxType.MAX_UINT64)
+    ok_(not (md.MinMaxType.MAX_UINT64 > 18446744073709551615))
+    ok_(md.MinMaxType.MAX_UINT64 > 1)
+    ok(1 < md.MinMaxType.MAX_UINT64)
+    ok(not (md.MinMaxType.MAX_UINT32 > md.MinMaxType.MAX_UINT64))
+
+
 shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
 formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
                       (b'i4', 4), (b'i8', 8), (b'u1', 1), (b'u2', 2),
@@ -271,53 +306,15 @@ def _new(shape, format, itemsize, init=None):
     #                                                                       #
     # with overflow                                                         #
     #                                                                       #
-from numbers import *
 def pest():
 
-#    print(md.BitWidthType.INT8)
-#    print(md.MinMaxType.MAX_INT16)
-    print(md.BitWidthType.__enum_values__)
-    print(md.MinMaxType.__enum_values__)
-    print()
-    help(md.MinMaxType.MAX_UINT64)
+
     #                                                                       #
     # without overflow                                                      #
     #                                                                       #
-#    ar = range(-200, 300)
-#    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=True)
-#    print(mv)
-    print(md.MinMaxType.MAX_UINT64)
-    print(pow(2, 64)-1)
-
-    print(isinstance(md.MinMaxType.MAX_UINT64, Integral))
-    print(isinstance(md.MinMaxType.MAX_UINT64, int))
-    print(issubclass(md.MinMaxType.MAX_UINT64.__class__, int))
-
-    print(md.MinMaxType.MAX_UINT64)
-    print("R", md.MinMaxType.MAX_UINT64.real)
-    print("R", md.MinMaxType.MAX_UINT64.__index__())
-
-    print("T", md.MinMaxType.MAX_UINT64 + 1)
-    print("T", md.MinMaxType.MAX_UINT64 * 1)
-    print("T", 1 * md.MinMaxType.MAX_UINT64)
-
-    print("T", 1 + md.MinMaxType.MAX_UINT64)
-    print("T", md.MinMaxType.MAX_UINT64 / 1)
-
-    print("T", md.MinMaxType.MAX_UINT64 + md.MinMaxType.MAX_UINT64)
-    print("T", md.MinMaxType.MAX_UINT64.__index__())
-    print("E", int(md.MinMaxType.MAX_UINT64))
-    print("E", float(md.MinMaxType.MAX_UINT64))
-    print("T", md.MinMaxType.MAX_UINT64.__int__())
-    print("T1", abs(md.MinMaxType.MAX_UINT64))
-
-    print("T", md.MinMaxType.MAX_UINT64 == 18446744073709551615)
-    print("T", 18446744073709551615 == md.MinMaxType.MAX_UINT64)
-    print("W", md.MinMaxType.MAX_UINT64 > 18446744073709551615)
-    print("W", md.MinMaxType.MAX_UINT64 > 1)
-    print("W", 1 < md.MinMaxType.MAX_UINT64)
-    print("W", md.MinMaxType.MAX_UINT32 > md.MinMaxType.MAX_UINT64)
-    #help(md.MinMaxType)
+    ar = range(-200, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False)
+    print(mv)
 
 
     #ar = range(md.MinMaxType.MAX_INT64, md.MinMaxType.MAX_UINT64+100)
@@ -484,3 +481,4 @@ print("END OF TESTS")
 #print (mv)
 
 """
+

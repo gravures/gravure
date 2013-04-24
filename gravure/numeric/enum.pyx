@@ -27,6 +27,7 @@ def fill_enum_dict(cls):
             e = <Enum> v
             cls.__enum_values__[e.real] = k
 
+
 #NOTE:  BUG quand le type est initialisé avec un int de 64bit
 #       la valeur du type devient alors imprevisible !!!
 #       et toujours bcp plus grandes, env. 100 millions de X plus.
@@ -34,7 +35,7 @@ def fill_enum_dict(cls):
 cdef class Enum(int):
     register = fill_enum_dict
 
-    def __cinit__(Enum self, v, base=10, *a, **k):
+    def __cinit__(self, v, base=10, *a, **k):
         self.real = v
 
     def __getattribute__(self, name):
@@ -156,6 +157,33 @@ cdef class Enum(int):
     __ior__ 	    = _notimp
     __ixor__     = _notimp
 
+    def __abs__(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def __trunc__(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def __round__(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def __florr__(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def __ceil__(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def to_bytes(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def from_bytes(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def conjugate(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
+    def bit_length(s):
+        raise NotImplementedError("Enumeration do not support this.")
+
     def __richcmp__(x, y, op):
         if op == 0: # x < y
             if isinstance(x, Enum):
@@ -221,3 +249,5 @@ cdef class Enum(int):
             k, v = vi
             if k == val:
                 return v
+
+
