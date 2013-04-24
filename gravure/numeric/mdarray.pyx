@@ -284,15 +284,20 @@ cdef class _mdarray_iterator:
 #
 # CType to Python convertion routines
 #
-ctypedef object (*co_ptr)(cnumber *)
-ctypedef int (*oc_ptr) (cnumber *, object) except -1
+cdef inline object clamp_c(object v, wide mini, uwide maxi):
+    cdef object num
+    num = get_pylong(v)
+    if v < mini:
+        v = mini
+    elif v > maxi:
+        v = maxi
+    return v
 
-cdef int py_to_wide(cnumber *c, object v) except -1:
+cdef int py_to_wide(cnumber *c, object v, bint clmp) except -1:
     cdef wide w
     cdef uwide uw
     cdef object num
     num = get_pylong(v)
-
     if num < 0:
         #w = <wide> num
         w = PyLong_AsUnsignedLongMask(num)
@@ -302,52 +307,79 @@ cdef int py_to_wide(cnumber *c, object v) except -1:
         uw = PyLong_AsUnsignedLongMask(num)
         memcpy(<char *> &c.val.uw, <char *> &uw, sizeof(uw))
 
-cdef int py_to_b(cnumber *c, object v) except -1:
+cdef int py_to_b(cnumber *c, object v, bint clmp) except -1:
     c.val.b = PyObject_IsTrue(v)
     c.ctype = BOOL
 
-cdef int py_to_i8(cnumber *c, object v) except -1:
-    c.val.i8 = get_pylong(v)
+cdef int py_to_i8(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.i8 = clamp_c(v, <wide> MIN_INT8, <uwide> MAX_INT8)
+    else:
+        c.val.i8 = get_pylong(v)
     c.ctype = INT8
 
-cdef int py_to_u8(cnumber *c, object v) except -1:
-    c.val.u8 = get_pylong(v)
+cdef int py_to_u8(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.u8 = clamp_c(v, 0, <uwide> MAX_UINT8)
+    else:
+        c.val.u8 = get_pylong(v)
     c.ctype = UINT8
 
-cdef int py_to_i16(cnumber *c, object v) except -1:
-    c.val.i16 = get_pylong(v)
+cdef int py_to_i16(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.i16 = clamp_c(v, <wide> MIN_INT16, <uwide> MAX_INT16)
+    else:
+        c.val.i16 = get_pylong(v)
     c.ctype = INT16
 
-cdef int py_to_u16(cnumber *c, object v) except -1:
-    c.val.u16 = get_pylong(v)
+cdef int py_to_u16(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.u16 = clamp_c(v, 0, <uwide> MAX_UINT16)
+    else:
+        c.val.u16 = get_pylong(v)
     c.ctype = UINT16
 
-cdef int py_to_i32(cnumber *c, object v) except -1:
-    c.val.i32 = get_pylong(v)
+cdef int py_to_i32(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.i32 = clamp_c(v, <wide> MIN_INT32, <uwide> MAX_INT32)
+    else:
+        c.val.i32 = get_pylong(v)
     c.ctype = INT32
 
-cdef int py_to_u32(cnumber *c, object v) except -1:
-    c.val.u32 = get_pylong(v)
+cdef int py_to_u32(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.u32 = clamp_c(v, 0, <uwide> MAX_UINT32)
+    else:
+        c.val.u32 = get_pylong(v)
     c.ctype = UINT32
 
-cdef int py_to_i64(cnumber *c, object v) except -1:
-    c.val.i64 = get_pylong(v)
+cdef int py_to_i64(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.i64 = clamp_c(v, <wide> MIN_INT64, <uwide> MAX_INT64)
+    else:
+        c.val.i64 = get_pylong(v)
     c.ctype = INT64
 
-cdef int py_to_u64(cnumber *c, object v) except -1:
-    c.val.u64 = get_pylong(v)
+cdef int py_to_u64(cnumber *c, object v, bint clmp) except -1:
+    if clmp:
+        c.val.u64 = clamp_c(v, 0, <uwide> MAX_UINT64)
+    else:
+        c.val.u64 = get_pylong(v)
     c.ctype = UINT64
 
-cdef int py_to_f32(cnumber *c, object v) except -1:
+cdef int py_to_f32(cnumber *c, object v, bint clmp) except -1:
     c.val.f32 = PyFloat_AsDouble(v)
     c.ctype = FLOAT32
 
-cdef int py_to_f64(cnumber *c, object v) except -1:
+cdef int py_to_f64(cnumber *c, object v, bint clmp) except -1:
     c.val.f64 = PyFloat_AsDouble(v)
     c.ctype = FLOAT64
 
 # i128 i256 u128 u256 f16 f80 f96 f128 f256
 #c32 c64 c128 c160 c192 c256 c512
+
+ctypedef object (*co_ptr)(cnumber *)
+ctypedef int (*oc_ptr) (cnumber *, object, bint) except -1
 
 cdef oc_ptr py_to_c_functions [27]
 py_to_c_functions[<Py_ssize_t> BOOL] = py_to_b
@@ -451,9 +483,10 @@ cdef class mdarray:
         cnumber *items_cache
 
         # Tables of routines conversion from ctype to python numbers
-        co_ptr *c_to_py
-        oc_ptr *py_to_c
+        co_ptr c_to_py [27]
+        oc_ptr py_to_c [27]
         bint overflow
+        bint clamp
 
 
     cdef object __array_interface__
@@ -462,7 +495,7 @@ cdef class mdarray:
 
     def __init__(mdarray self, tuple shape, format not None,
                   mode=u"c", initializer=None, bint allocate_buffer=True,
-                  overflow=True, *args, **kwargs):
+                  overflow=True, clamp=False, *args, **kwargs):
         """Multidimentional constructor.
         """
         pass
@@ -472,7 +505,7 @@ cdef class mdarray:
     #TODO: check weakref
     def __cinit__(mdarray self, tuple shape, format not None,
                   mode=u"c", initializer=None, bint allocate_buffer=True,
-                  overflow=True, *args, **kwargs):
+                  overflow=True, clamp=False, *args, **kwargs):
         cdef int idx
         cdef Py_ssize_t i
 
@@ -530,9 +563,10 @@ cdef class mdarray:
 
         # convertion functions
         self.overflow = overflow
-        self.c_to_py = c_to_py_functions
-        self.py_to_c = py_to_c_functions
-        if not overflow:
+        self.clamp = clamp
+        memcpy(self.c_to_py, c_to_py_functions, sizeof(co_ptr) * 27)
+        memcpy(self.py_to_c, py_to_c_functions, sizeof(co_ptr) * 27)
+        if not overflow and not clamp:
             self.py_to_c[<Py_ssize_t> INT8] = py_to_wide
             self.py_to_c[<Py_ssize_t> UINT8] = py_to_wide
             self.py_to_c[<Py_ssize_t> INT16] = py_to_wide
@@ -752,7 +786,7 @@ cdef class mdarray:
 
     #TODO: overflow options
     cdef int get_cnumber_from_PyVal(mdarray self, cnumber *c, object v, num_types n) except -1:
-        return self.py_to_c[<Py_ssize_t> n](c, v)
+        return self.py_to_c[<Py_ssize_t> n](c, v, self.clamp)
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
         cdef Py_ssize_t dim

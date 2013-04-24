@@ -25,13 +25,15 @@ import numpy as np
 import array
 import timeit
 
+from numbers import *
+import psutil
+
 import nose
 from nose import *
 from nose.tools import *
 from nose.failure import *
 
-import psutil
-
+#TODO: change to normal import in futur
 import pyximport; pyximport.install()
 import numeric.mdarray as md
 
@@ -39,7 +41,6 @@ import numeric.mdarray as md
 #---------------------------------------------------------------------------#
 # TEST  numric.Enum                                                         #
 #                                                                           #
-from numbers import *
 def test_Enum():
     assert_is_instance(md.MinMaxType.__enum_values__, dict)
     ref_64 = pow(2, 64)-1
@@ -69,6 +70,11 @@ def test_Enum():
     ok(1 < md.MinMaxType.MAX_UINT64)
     ok(not (md.MinMaxType.MAX_UINT32 > md.MinMaxType.MAX_UINT64))
 
+    #FIXME: freeze python
+    #ar = range(int(md.MinMaxType.MAX_INT64), int(md.MinMaxType.MAX_UINT64)+100)
+    #for i in ar:
+    #    print (i)
+
 
 shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
 formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
@@ -77,7 +83,6 @@ formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
                       (b'f4', 4), (b'f8', 8), (b'c8', 8), (b'c16', 16)]
 formats_complex = [(b'ii', 2, 2), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
                        (b'u4f4f4', 16, 3), (b'ii<i=i1<f4=fff', 20, 8)]
-
 
 
 #---------------------------------------------------------------------------#
@@ -302,28 +307,95 @@ def _new(shape, format, itemsize, init=None):
 #----------------------------------------------------------------------------
 # OVERFLOW                                                                  #
 #                                                                           #
-
+def test_overflow():
     #                                                                       #
     # with overflow                                                         #
     #                                                                       #
-def pest():
 
+    ar = range(-200, 300)
+    assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'>i',
+                  initializer=ar)
+    ar = range(-600, 300)
+    assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'>i',
+                  initializer=ar)
+    ar = range(100, 300)
+    assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'>i',
+                  initializer=ar)
+    ar = range(-10, 300)
+    assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'>u',
+                  initializer=ar)
+    ar = range(18446744073709551615, 18446744073709551715)
+    assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'u8',
+                  initializer=ar)
+    ar = range(-10, 18446744073709551715)
+    assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'u8',
+                  initializer=ar)
 
     #                                                                       #
     # without overflow                                                      #
     #                                                                       #
     ar = range(-200, 300)
     mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False)
-    print(mv)
+    eq_(mv[0, 0], 56)
+    eq_(mv[9, 9], -101)
+    ar = range(-600, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False)
+    eq_(mv[0, 0], -88)
+    eq_(mv[9, 9], 11)
+    ar = range(100, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False)
+    eq_(mv[0, 0], 100)
+    eq_(mv[9, 9], -57)
+    ar = range(-10, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>u', initializer=ar, overflow=False)
+    eq_(mv[0, 0], 246)
+    eq_(mv[9, 9], 89)
+    ar = range(18446744073709551615, 18446744073709551715)
+    mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False)
+    eq_(mv[0, 0], 18446744073709551615)
+    eq_(mv[9, 9], 98)
+    ar = range(-10, 18446744073709551715)
+    mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False)
+    eq_(mv[0, 0], 18446744073709551606)
+    eq_(mv[9, 9], 89)
 
-
-    #ar = range(md.MinMaxType.MAX_INT64, md.MinMaxType.MAX_UINT64+100)
-    #mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False)
-    #print(mv)
     #                                                                       #
     # with clamped overflow                                                 #
     #                                                                       #
-
+    ar = range(-200, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False,
+                    clamp=True)
+    eq_(mv[0, 0], -128)
+    eq_(mv[1, 7], -128)
+    eq_(mv[9, 9], -101)
+    ar = range(-600, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False,
+                    clamp=True)
+    eq_(mv[0, 0], -128)
+    eq_(mv[1, 7], -128)
+    eq_(mv[9, 9], -128)
+    ar = range(100, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>i', initializer=ar, overflow=False,
+                    clamp=True)
+    eq_(mv[0, 0], 100)
+    eq_(mv[9, 3], 127)
+    eq_(mv[9, 9], 127)
+    ar = range(-10, 300)
+    mv = md.mdarray(shape=(10, 10), format=b'>u', initializer=ar, overflow=False,
+                    clamp=True)
+    eq_(mv[0, 0], 0)
+    eq_(mv[0, 9], 0)
+    eq_(mv[9, 9], 89)
+    ar = range(18446744073709551615, 18446744073709551715)
+    mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False,
+                    clamp=True)
+    eq_(mv[0, 0], 18446744073709551615)
+    eq_(mv[9, 9], 18446744073709551615)
+    ar = range(-10, 18446744073709551715)
+    mv = md.mdarray(shape=(10, 10), format=b'u8', initializer=ar, overflow=False,
+                    clamp=True)
+    eq_(mv[0, 0], 0)
+    eq_(mv[9, 9], 89)
 
 #----------------------------------------------------------------------------
 
@@ -334,7 +406,7 @@ def pest():
 
 if __name__ == '__main__':
     #nose.main()
-    pest()
+    pass
 
 """
 mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
