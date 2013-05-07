@@ -469,7 +469,7 @@ cdef class mdarray:
         unicode mode
         bytes _format
 
-        #TODO : dont's sure we nedd it ar all
+        #TODO : dont's sure we nedd it at all
         void (*callback_free_data)(void *data)
         bint free_data
 

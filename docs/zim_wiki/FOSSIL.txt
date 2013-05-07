@@ -20,6 +20,12 @@ chown www-data:www-data -R infokDB
 chown www-data:www-data infokDB.fossil
 chmod 754 infokDB
 chmod +x infokDB.fossil
+_____________________________________________________
+local clone
+clone -A gilles http://192.168.30.1:81/fossil/repo/infokDB infokdb.fossil
+project-id: ae73ecb96e544b0f34188773c8f352ed1bfa928b
+server-id:  e5d979351d68ce63064ec7c7476f480caabcd991
+admin-user: gilles (password is "97c9b2")
 
 ==== nemo ====
 root@blackcat:/srv/apache/srv/FOSSIL# fossil new -A gilles nemo.fossil

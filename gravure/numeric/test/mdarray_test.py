@@ -297,12 +297,10 @@ def _new(shape, format, itemsize, init=None):
                 i = 0
 
 #----------------------------------------------------------------------------
-# ENDIANESS                                                                 #
+#TODO: ENDIANESS                                                                 #
 #                                                                           #
 
-#----------------------------------------------------------------------------
-# OVERFLOW                                                                  #
-#test min max int, there should be trouble                                  #
+
 
 #----------------------------------------------------------------------------
 # OVERFLOW                                                                  #
@@ -311,7 +309,6 @@ def test_overflow():
     #                                                                       #
     # with overflow                                                         #
     #                                                                       #
-
     ar = range(-200, 300)
     assert_raises(OverflowError, md.mdarray, shape=(10, 10), format=b'>i',
                   initializer=ar)
@@ -398,115 +395,207 @@ def test_overflow():
     eq_(mv[9, 9], 89)
 
 #----------------------------------------------------------------------------
+#TODO: ARRAY_INTERFACE                                                                 #
+#                                                                           #
 
 
 
-#------------------------------------------------------------------------------
-# Main
+#----------------------------------------------------------------------------
+# __GET_ITEM__                                                              #
+#                                                                           #
+shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
 
-if __name__ == '__main__':
-    #nose.main()
-    pass
+formats = [(b'b'), (b'i1'), (b'i2'), (b'i4'), (b'i8'), (b'u1'), (b'u2'),
+                  (b'u4'), (b'u8'), (b'f4'), (b'f8'),(b'f4'), (b'f8'), (b'c8'),
+                  (b'c16'), (b'ii'), (b'>i2i1i4'), (b'fff'),
+                  (b'u4f4f4'), (b'ii<i=i1<f4=fff')]
 
-"""
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-#print(mv
-#print(dir(mv))
+def array_eq(a, b):
+    r = False
+    if a.shape == b.shape:
+        d = []
+        e = []
+        for f in a:
+            d.append(f)
+        for f in b:
+            e.append(f)
+        r = d == e
+    return r
 
-print("base :", "\n" + str(mv.base))
-print("ndim :", mv.ndim)
-print("shape :", mv.shape)
-print("suboffsets", mv.suboffsets)
-print("strides:", mv.strides)
-print("itemsize :", mv.itemsize)
-print("format :", mv.format, type(mv.format))
-print("size :", mv.size)
-print("nbytes :", mv.nbytes)
-print("len(): ",  len(mv))
-print("sizeof :", mv.__sizeof__())
+def get_item_a(shape, format):
+    mv = md.mdarray(shape, format, initializer=range(0, 127))
+    # ellipsis
+    ok_(array_eq(mv, mv[...]))
+    ok_(array_eq(mv, mv[:]))
+
+def test_get_item():
+    for s in shapes:
+        for f in formats:
+            yield get_item_a, s, f
+
+    mv = md.mdarray((10, 10), format='i1', initializer=range(0, 127))
+
+    res = mv[0:4,1:4]
+    l_res = [1, 2, 3, 11, 12, 13, 21, 22, 23, 31, 32, 33]
+    eq_(res.ndim, 2)
+    for i, e in enumerate(res):
+        eq_(e, l_res[i])
+
+    res = mv[...,2:6]
+    l_res = [2, 3, 4, 5, 12, 13, 14, 15, 22, 23, 24, 25, 32, 33, 34, 35,
+             42, 43, 44, 45, 52, 53, 54, 55, 62, 63, 64, 65, 72, 73, 74, 75,
+             82, 83, 84, 85, 92, 93, 94, 95]
+    eq_(res.ndim, 2)
+    for i, e in enumerate(res):
+        eq_(e, l_res[i])
+
+    res = mv[0:4, 2]
+    l_res = [2, 12, 22, 32]
+    eq_(res.ndim, 1)
+    for i, e in enumerate(res):
+        eq_(e, l_res[i])
+
+    res = mv[0:4, -7]
+    l_res = [3, 13, 23, 33]
+    eq_(res.ndim, 1)
+    for i, e in enumerate(res):
+        eq_(e, l_res[i])
+
+    res = mv[8:2:-2,4:2:-1]
+    l_res = [84, 83, 64, 63, 44, 43]
+    eq_(res.ndim, 2)
+    for i, e in enumerate(res):
+        eq_(e, l_res[i])
+
+    res = mv[2]
+    l_res = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+    eq_(res.ndim, 1)
+    for i, e in enumerate(res):
+        eq_(e, l_res[i])
+
+    eq_(mv[4,4], 44)
+
+#----------------------------------------------------------------------------
+#TODO: __SET_ITEM__                                                                 #
+#                                                                           #
+def test_set_item():
+    mv = md.mdarray((10, 10), format='i1', initializer=range(0, 127))
+    mv[...] = 4
+    for e in mv:
+        eq_(e, 4)
+
+    mv = md.mdarray((10, 10), format='i1', initializer=range(0, 127))
+    mv[:] = 4
+    for e in mv:
+        eq_(e, 4)
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[0:4,1:4] = 4
+    for e in range(4):
+        for f in range(1, 4):
+            eq_(mv[e, f], 4)
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[...,2:6] = 4
+    for e in range(10):
+        for f in range(2, 6):
+            eq_(mv[e, f], 4)
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[0:4, 2] = 4
+    res = [0, 1, 4, 3, 4, 5, 6, 7, 8, 9,
+           10, 11, 4, 13, 14, 15, 16, 17, 18, 19,
+           20, 21, 4, 23, 24, 25, 26, 27, 28, 29,
+           30, 31, 4, 33, 34, 35, 36, 37, 38, 39,
+           40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+           60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+           80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    for i, e in enumerate(mv):
+        eq_(e, res[i])
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[0:4, -5] = 4
+    res = [0,  1,  2,  3,  4,  4,  6,  7,  8,  9,
+           10, 11, 12, 13, 14, 4, 16, 17, 18, 19,
+           20, 21, 22, 23, 24, 4, 26, 27, 28, 29,
+           30, 31, 32, 33, 34, 4, 36, 37, 38, 39,
+           40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+           60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+           80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    for i, e in enumerate(mv):
+        eq_(e, res[i])
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[8:2:-2,4:2:-1] = 4
+    res = [0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+           10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+           20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+           30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+           40, 41, 42, 4, 4, 45, 46, 47, 48, 49,
+           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+           60, 61, 62, 4, 4, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+           80, 81, 82, 4, 4, 85, 86, 87, 88, 89,
+           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    for i, e in enumerate(mv):
+        eq_(e, res[i])
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[2] = 4
+    res = [0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+           10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+           4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+           30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+           40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+           60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+           80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    for i, e in enumerate(mv):
+        eq_(e, res[i])
+
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[4, 4] = 9
+    res = [0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+           10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+           20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+           30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+           40, 41, 42, 43, 9, 45, 46, 47, 48, 49,
+           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+           60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+           80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    for i, e in enumerate(mv):
+        eq_(e, res[i])
+
+#----------------------------------------------------------------------------
+#TODO: ITERATOR                                                                 #
+#                                                                           #
+def iterator():
+    # Iterator
+    print("\n" + "*" * 50)
+    print("for i in mv:\n")
+    for i, v in enumerate(mv):
+        print (i, "#", v)
+
+#----------------------------------------------------------------------------
+#TODO: MEMORY VIEW                                                                 #
+#                                                                           #
+#----------------------------------------------------------------------------
+#print("\n" + "*" * 50)
 #print("memview :", mv.memview)
-
-
-print("\n" + "GET_ITEM")
-print("*" * 50)
-print("[...] :\n", mv[...])
-
-print("\n" + "*" * 50)
-print("[:] :\n", mv[:])
-
-print("\n" + "*" * 50)
-print("[0:4,1:4] :\n", mv[0:4,1:4])
-
-print("\n" + "*" * 50)
-print("[...,2:6] :\n", mv[...,2:6])
-
-print("\n" + "*" * 50)
-print("[0:4,2] :\n", mv[0:4, 2])
-
-print("\n" + "*" * 50)
-print("[0:4,-5] :\n", mv[0:4, -7])
-
-print("\n" + "*" * 50)
-print("[2:8:2,2:10:-1] :\n", mv[8:2:-2,4:2:-1])
-
-print("\n" + "*" * 50)
-print("[2] :\n", mv[2])
-
-print("\n" + "*" * 50)
-print("[4,4] :\n", mv[4, 4])
-
-
-
-print("\n" + "SET_ITEM")
-print("*" * 50)
-mv[...] = 4
-print("[...] = 4 :\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[:] = 4
-print("[:] = 4 :\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[0:4,1:4] = 4
-print("[0:4,1:4] = 4 :\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[...,2:6] = 4
-print("[...,2:6] = 4 :\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[0:4, 2] = 4
-print("[0:4,2] = 4 :\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[0:4, -5] = 4
-print("[0:4,-5] = 4:\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[8:2:-2,4:2:-1] = 4
-print("[8:2:-2,4:2:-1] = 4 :\n", mv )
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[2] = 4
-print("[2] = 4 :\n", mv)
-
-mv = mdarray.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-print("\n" + "*" * 50)
-mv[4, 4] = 9
-print("[4,4] = 9:\n", mv)
-
-print("\n" + "*" * 50)
-print("memoryview(mv):", memoryview(mv))
-print("memoryview(mv).shape:", memoryview(mv).shape)
-print("memoryview(mv).ndim:", memoryview(mv).ndim)
-print("memoryview(mv).format:", memoryview(mv).format)
+#print("memoryview(mv):", memoryview(mv))
+#print("memoryview(mv).shape:", memoryview(mv).shape)
+#print("memoryview(mv).ndim:", memoryview(mv).ndim)
+#print("memoryview(mv).format:", memoryview(mv).format)
 
 # buggy
 #print("memoryview(mv)[22]:", memoryview(mv)[22])
@@ -516,41 +605,40 @@ print("memoryview(mv).format:", memoryview(mv).format)
 #print("\n" + "*" * 50)
 #print("[0:4,10:50,None] :", mv[0:4,10:50,None])
 
-# Iterator
-print("\n" + "*" * 50)
-print("for i in mv:\n")
-for i, v in enumerate(mv):
-    print (i, "#", v)
+
+#------------------------------------------------------------------------------
+# Main
+
+if __name__ == '__main__':
+    nose.main()
+    #set_item()
 
 
 
-#print("\n" + "*" * 50)
-#help(mv)
+#----------------------------------------------------------------------------
+# BENCHMARK                                                                 #
+#                                                                           #
+#----------------------------------------------------------------------------
+def benchmark():
+    print("\n" + "*" * 50)
+    print("TIME IT TESTS")
+
+    def timearray():
+        tests = [["np.ndarray(shape=(100, 100), dtype=np.int8, order='C')", "import numpy as np"],
+                 ["md.mdarray((100, 100), format=b'i1')", "import pyximport; pyximport.install()\nimport numeric.mdarray as md"],
+                 ["ar.array('b', li)", "import array as ar\nli = [0] * 10000"]]
+
+        for t in tests:
+            T = timeit.Timer(*t)
+            print(T.timeit(100))
+            print(T.timeit(1000))
+            #print(T.timeit(10000))
+            #print(T.timeit(100000))
+            print("-" * 50)
+
+    timearray()
 
 
-print("\n" + "*" * 50)
-print("TIME IT TESTS")
 
-def timearray():
-    tests = [["np.ndarray(shape=(100, 100), dtype=np.int8, order='C')", "import numpy as np"],
-             ["md.mdarray((100, 100), format=b'i1')", "import pyximport; pyximport.install()\nimport numeric.mdarray as md"],
-             ["ar.array('b', li)", "import array as ar\nli = [0] * 10000"]]
 
-    for t in tests:
-        T = timeit.Timer(*t)
-        print(T.timeit(100))
-        print(T.timeit(1000))
-        #print(T.timeit(10000))
-        #print(T.timeit(100000))
-        print("-" * 50)
-
-timearray()
-
-print("\n" + "*" * 50)
-print("END OF TESTS")
-
-#mv = mdarray.mdarray((10, 10 ), format=b'H2', initializer=range(400, 800))
-#print (mv)
-
-"""
 
