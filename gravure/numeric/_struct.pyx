@@ -622,12 +622,16 @@ cdef inline int test_byte(char *t, Py_ssize_t *pi, int dflt):
             return 8
     return dflt
 
-cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize_t *length) except -1:
+cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes,
+                                       Py_ssize_t *length, char **buffer_format) except -1:
     cdef Py_ssize_t blen, i, struct_len
     cdef int nb
     cdef endianess local_end, sys_end
     cdef num_types list_codes [MAX_STRUCT_LENGTH]
     cdef endianess list_endian [MAX_STRUCT_LENGTH]
+    cdef bytes buffer_endian
+    cdef bytes buffer_fmt = b''
+    cdef bint buffer_error = 0
 
     blen = len(fmt)
     cdef char *fmt_c
@@ -642,35 +646,49 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
     struct_len = 0
     sys_end = sys_endian()
     local_end = sys_end
+    if sys_end == LITTLE_ENDIAN:
+        buffer_endian = b'<'
+    else:
+        buffer_endian = b'>'
 
     while i < blen:
         if fmt_c[i] == '>':
             i += 1
             local_endian = BIG_ENDIAN
+            buffer_endian = b'>'
         elif fmt_c[i] == '<':
             i += 1
             local_endian = LITTLE_ENDIAN
+            buffer_endian = b'<'
         elif fmt_c[i] == '=' or fmt_c[i] == '|':
             i += 1
             local_endian = sys_end
+            if sys_end == LITTLE_ENDIAN:
+                buffer_endian = b'<'
+            else:
+                buffer_endian = b'>'
 
         if fmt_c[i] == 'i':
             nb = test_byte(fmt_c, &i, 1)
             if nb == 1:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = INT8
+                buffer_fmt += buffer_endian + b'b'
                 struct_len += 1
             elif nb == 2:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = INT16
+                buffer_fmt += buffer_endian + b'h'
                 struct_len += 1
             elif nb == 4:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = INT32
+                buffer_fmt += buffer_endian + b'i'
                 struct_len += 1
             elif nb == 8 and HAVE_INT64:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = INT64
+                buffer_fmt += buffer_endian + b'q'
                 struct_len += 1
             else:
                 raise AttributeError("NotImplemented byte width type : \'INT%i\'" % (nb * 8))
@@ -680,18 +698,22 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
             if nb == 1:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = UINT8
+                buffer_fmt += buffer_endian + b'B'
                 struct_len += 1
             elif nb == 2:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = UINT16
+                buffer_fmt += buffer_endian + b'H'
                 struct_len += 1
             elif nb == 4:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = UINT32
+                buffer_fmt += buffer_endian + b'I'
                 struct_len += 1
             elif nb == 8 and HAVE_UINT64:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = UINT64
+                buffer_fmt += buffer_endian + b'Q'
                 struct_len += 1
             else:
                 raise AttributeError("NotImplemented byte width type : \'UINT%i\'" % (nb * 8))
@@ -701,10 +723,12 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
             if nb == 4:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = FLOAT32
+                buffer_fmt += buffer_endian + b'f'
                 struct_len += 1
             elif nb == 8:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = FLOAT64
+                buffer_fmt += buffer_endian + b'd'
                 struct_len += 1
             else:
                 raise AttributeError("NotImplemented byte width type : \'FLOAT%i\'" % (nb * 8))
@@ -715,10 +739,12 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
             #if nb == 8:
             #    list_endian[struct_len] = local_end
             #    list_codes[struct_len] = COMPLEX64
+            #    buffer_error = 1
             #    struct_len += 1
             #elif nb == 16:
             #    list_endian[struct_len] = local_end
             #    list_codes[struct_len] = COMPLEX128
+            #    buffer_error = 1
             #    struct_len += 1
             #else:
             #    raise AttributeError("NotImplemented byte width type : \'COMPLEX%i\'" % (nb * 8))
@@ -728,6 +754,7 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
             if nb == 1:
                 list_endian[struct_len] = local_end
                 list_codes[struct_len] = BOOL
+                buffer_fmt += buffer_endian + b'?'
                 struct_len += 1
             else:
                 raise AttributeError("bool type is always 1 byte length")
@@ -735,6 +762,7 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
         elif fmt_c[i] == 'D':
             #snb = test_byte(fmt, &i)
             raise NotImplementedError("Decimal type not yet implemented")
+            #buffer_error = 1
             #struct_len += 1
 
         else:
@@ -764,6 +792,18 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes, Py_ssize
         sz += f_ptr.size
 
     length[0] = struct_len
+
+    cdef Py_ssize_t buf_len
+    if buffer_error:
+        buffer_format[0] = NULL
+    else:
+        buf_len = struct_len * 2
+        buffer_format[0] = <char *> malloc(buf_len + 1)
+        if not buffer_format[0]:
+            free(buffer_format[0])
+            raise MemoryError("unable to allocate memory for buffer format code")
+        memcpy(buffer_format[0], <char *> buffer_fmt, buf_len)
+        buffer_format[0][buf_len] = 0
     return sz
 
 cdef inline formatdef* formatdef_from_code(num_types nt, formatdef *table):
@@ -782,7 +822,7 @@ cdef int new_struct(_struct *self, bytes fmt) except*:
     cdef Py_ssize_t sz = 0
     cdef Py_ssize_t length = 0
 
-    sz = struct_from_formatcode(fmt, &self.codes, &length)
+    sz = struct_from_formatcode(fmt, &self.codes, &length, &self.buffer_format)
     self.size = sz
     self.length = length
     self.formats = <num_types *> malloc(sizeof(num_types) * length)

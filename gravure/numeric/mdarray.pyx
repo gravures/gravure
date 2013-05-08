@@ -78,6 +78,8 @@ cdef extern from *:
     PyObject *Py_None
 
     cdef enum:
+        PyBUF_SIMPLE
+        PyBUF_ND
         PyBUF_C_CONTIGUOUS,
         PyBUF_F_CONTIGUOUS,
         PyBUF_ANY_CONTIGUOUS
@@ -86,6 +88,13 @@ cdef extern from *:
         PyBUF_STRIDES
         PyBUF_INDIRECT
         PyBUF_RECORDS
+        PyBUF_RECORDS_RO
+        PyBUF_STRIDED
+        PyBUF_STRIDED_RO
+        PyBUF_FULL
+        PyBUF_FULL_RO
+        PyBUF_CONTIG
+        PyBUF_CONTIG_RO
 
     cdef object capsule "__pyx_capsule_create" (void *p, char *sig)
     cdef int __pyx_array_getbuffer(PyObject *obj, Py_buffer view, int flags)
@@ -458,7 +467,7 @@ cdef class mdarray:
     cdef :
         char *format
 
-        #TODO: put attributes below in a strucut array_view
+        #TODO: put attributes below in a struct array_view
         char *data
         Py_ssize_t len
         int ndim
@@ -488,13 +497,16 @@ cdef class mdarray:
         bint overflow
         bint clamp
 
+        #NOTE:
+        cdef object __weakref__
+
 
     cdef object __array_interface__
     #cdef PyCObject __array_struct__
 
 
     def __init__(mdarray self, tuple shape, format not None,
-                  mode=u"c", initializer=None, bint allocate_buffer=True,
+                  order=u"C", initializer=None, bint allocate_buffer=True,
                   overflow=True, clamp=False, *args, **kwargs):
         """Multidimentional constructor.
         """
@@ -504,7 +516,7 @@ cdef class mdarray:
 
     #TODO: check weakref
     def __cinit__(mdarray self, tuple shape, format not None,
-                  mode=u"c", initializer=None, bint allocate_buffer=True,
+                  order=u"C", initializer=None, bint allocate_buffer=True,
                   overflow=True, clamp=False, *args, **kwargs):
         cdef int idx
         cdef Py_ssize_t i
@@ -544,22 +556,14 @@ cdef class mdarray:
             self._shape[idx] = dim
             idx += 1
 
-        #TODO: optimize all this conversion around mode
-        if mode not in ("f", "F", "c", "C"):
-            raise ValueError("Invalid mode, expected 'c' or 'f', got %s" % mode)
-        cdef char order
-        if mode == 'F' or mode == 'f':
-            order = 'F'
+        if order not in ("f", "F", "c", "C"):
+            raise ValueError("Invalid mode, expected 'c' or 'f', got %s" % order)
+        if order == 'F' or order == 'f':
+            self.mode = u'F'
         else:
-            order = 'C'
-
+            self.mode = u'C'
         self.len = self.fill_contig_strides_array(self._shape, self._strides,
-                                             self.itemsize, self.ndim, order)
-
-        decode = getattr(mode, 'decode', None)
-        if decode:
-            mode = decode('ASCII')
-        self.mode = mode
+                                             self.itemsize, self.ndim)
 
         # convertion functions
         self.overflow = overflow
@@ -607,16 +611,20 @@ cdef class mdarray:
 
     cdef Py_ssize_t fill_contig_strides_array(mdarray self,
                 Py_ssize_t *shape, Py_ssize_t *strides, Py_ssize_t stride,
-                int ndim, char order) nogil:
+                int ndim)except -1:
+        cdef char *order
         cdef int idx
-        if order == 'F':
-            for idx in range(ndim):
-                strides[idx] = stride
-                stride = stride * shape[idx]
-        else:
-            for idx in range(ndim - 1, -1, -1):
-                strides[idx] = stride
-                stride = stride * shape[idx]
+        py_byte_string = self.mode.encode('UTF-8')
+        order = py_byte_string
+        with nogil:
+            if order[0] == 'F':
+                for idx in range(ndim):
+                    strides[idx] = stride
+                    stride = stride * shape[idx]
+            else:
+                for idx in range(ndim - 1, -1, -1):
+                    strides[idx] = stride
+                    stride = stride * shape[idx]
         return stride
 
     def __dealloc__(mdarray self):
@@ -634,40 +642,77 @@ cdef class mdarray:
     #
     # BUFFER INTERFACE [PEP 3118]
     #
+    cdef char* _get_buffer_format(self):
+        if self.formater.buffer_format == NULL:
+            raise BufferError("Buffer value(s) cant't be expose.")
+        else:
+            return self.formater.buffer_format
 
     #@cname('getbuffer')
-    def __getbuffer__(self, Py_buffer *info, int flags):
-        cdef int bufmode = -1
-        if self.mode == b"c":
-            bufmode = PyBUF_C_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
-        elif self.mode == b"fortran":
-            bufmode = PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
-        if not (flags & bufmode):
-            raise ValueError("Can only create a buffer that is contiguous in memory.")
-        info.buf = self.data
+    def __getbuffer__(mdarray self, Py_buffer *info, int flags):
+        info.buf = <void*> self.data
         info.len = self.len
+        info.suboffsets = NULL  # we are always direct memory buffer
+        info.readonly = 0
+        info.obj = self #TODO: fix this when implements initializer=buffer_object
+        info.internal = NULL
+
+
+        if flags & PyBUF_WRITABLE:
+            info.readonly = 1
+
+        if flags & PyBUF_SIMPLE:
+            # The format of data is assumed to be
+            # raw unsigned bytes, without any particular structure,
+            # interpreted as one dimentional array (strides=NULL)
+            # The buffer exposes a read-only memory area.
+            # Data is always contigous.
+            info.ndim = 1
+            info.shape = NULL
+            info.strides = NULL
+            info.format = NULL  # mean 'B', unsigned byte
+            info.itemsize = self.itemsize  # The 'itemsize' field may be wrong
+            return
+
         info.ndim = self.ndim
         info.shape = self._shape
         info.strides = self._strides
-        info.suboffsets = NULL
         info.itemsize = self.itemsize
-        info.readonly = 0
+
+        if not (flags & PyBUF_ND):
+            if self.ndim > 1:
+                raise BufferError("Buffer cant't be expose as one dimentional array.")
+            else:
+                info.shape = NULL
+
+        if not (flags & PyBUF_STRIDES):
+            if self.ndim > 1 and self.mode == b"F":
+                raise BufferError("Buffer cant't be expose without strides info.")
+            else:
+                info.strides = NULL
+
+        cdef int bufmode = -1
+        if self.mode == b"C":
+            bufmode = PyBUF_C_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
+        elif self.mode == b"F":
+            bufmode = PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
+        if not (flags & bufmode):
+            raise BufferError("Can only create a buffer that is contiguous in memory.")
+
         if flags & PyBUF_FORMAT:
-            info.format = self.format
+            info.format = self._get_buffer_format()
         else:
             info.format = NULL
-        info.obj = self
-    #__pyx_getbuffer = capsule(<void *> &__pyx_array_getbuffer, "getbuffer(obj, view, flags)")
 
+    #__pyx_getbuffer = capsule(<void *> &__pyx_array_getbuffer, "getbuffer(obj, view, flags)")
     #def __releasebuffer__(self):
 
-
-    property memview:
-        #@cname('get_memview')
-        def __get__(self):
-            # Make this a property as 'self.data' may be set after instantiation
-            flags =  PyBUF_ANY_CONTIGUOUS|PyBUF_FORMAT|PyBUF_WRITABLE
-            return  memoryview(self, flags, self.dtype_is_object)
+    #property memview:
+    #    #@cname('get_memview')
+    #    def __get__(self):
+    #        # Make this a property as 'self.data' may be set after instantiation
+    #        flags =  PyBUF_ANY_CONTIGUOUS|PyBUF_FORMAT|PyBUF_WRITABLE
+    #        return cython.view.memoryview(self, flags, False)
 
     #
     # MEMORY LAYOUT - NUMPY-LIKE INTERFACE

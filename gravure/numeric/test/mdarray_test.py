@@ -398,6 +398,35 @@ def test_overflow():
 #TODO: ARRAY_INTERFACE                                                                 #
 #                                                                           #
 
+#----------------------------------------------------------------------------
+# BUFFER_PROTOCOL                                                           #
+#                                                                           #
+def test_buffer_protocol():
+    ar = range(1, 101)
+    mv = md.mdarray(shape=(100, ), format=b'<i1', initializer=ar)
+    mem = memoryview(mv)
+
+    eq_((100, ), mem.shape)
+    eq_(1, mem.ndim)
+    eq_(1, mem.itemsize)
+    eq_((1, ), mem.strides)
+    eq_(False, mem.readonly)
+    eq_("<b", mem.format)
+    eq_(b'\x08', mem[7])
+    res = b"""\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcd"""
+    eq_(mem.tobytes(), res)
+    mem[0] = b'\x08'
+    eq_(mv[0], 8)
+
+#----------------------------------------------------------------------------
+#FIXME: MEMORY VIEW                                                         #
+#                                                                           #
+#----------------------------------------------------------------------------
+#def test_memview():
+#    ar = range(1, 101)
+#    mv = md.mdarray(shape=(10, 10), format=b'<i1', initializer=ar)
+#    print("\n" + "*" * 50)
+#    print("memview :", mv.memview)
 
 
 #----------------------------------------------------------------------------
@@ -586,24 +615,6 @@ def iterator():
     for i, v in enumerate(mv):
         print (i, "#", v)
 
-#----------------------------------------------------------------------------
-#TODO: MEMORY VIEW                                                                 #
-#                                                                           #
-#----------------------------------------------------------------------------
-#print("\n" + "*" * 50)
-#print("memview :", mv.memview)
-#print("memoryview(mv):", memoryview(mv))
-#print("memoryview(mv).shape:", memoryview(mv).shape)
-#print("memoryview(mv).ndim:", memoryview(mv).ndim)
-#print("memoryview(mv).format:", memoryview(mv).format)
-
-# buggy
-#print("memoryview(mv)[22]:", memoryview(mv)[22])
-#print("memoryview(mv).tolist():", memoryview(mv).tolist())
-
-# None index
-#print("\n" + "*" * 50)
-#print("[0:4,10:50,None] :", mv[0:4,10:50,None])
 
 
 #------------------------------------------------------------------------------
@@ -611,7 +622,6 @@ def iterator():
 
 if __name__ == '__main__':
     nose.main()
-    #set_item()
 
 
 

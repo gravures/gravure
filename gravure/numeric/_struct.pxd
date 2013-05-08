@@ -77,6 +77,7 @@ ctypedef struct _struct:
     Py_ssize_t length
     formatcode *codes
     num_types *formats
+    char *buffer_format
 
 cdef int new_struct(_struct *, bytes) except*
 cdef void del_struct(_struct *)
