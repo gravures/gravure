@@ -37,6 +37,7 @@ from nose.failure import *
 import pyximport; pyximport.install()
 import numeric.mdarray as md
 
+TEST_COMPLEX_NUMBER = False
 
 #---------------------------------------------------------------------------#
 # TEST  numric.Enum                                                         #
@@ -44,7 +45,7 @@ import numeric.mdarray as md
 def test_Enum():
     assert_is_instance(md.MinMaxType.__enum_values__, dict)
     ref_64 = pow(2, 64)-1
-    ok_(md.MinMaxType.__enum_values__[str(ref_64)] == 'mAX_UINT64')
+    ok_(md.MinMaxType.__enum_values__[ref_64] == 'MAX_UINT64')
     assert_is_instance(md.MinMaxType.MAX_UINT64, Integral)
     assert_is_instance(md.MinMaxType.MAX_UINT64, int)
     ok_(issubclass(md.MinMaxType.MAX_UINT64.__class__, int))
@@ -53,22 +54,22 @@ def test_Enum():
     eq_(md.MinMaxType.MAX_UINT64 + 1, ref_64 +1)
     eq_(md.MinMaxType.MAX_UINT64 * 1, ref_64)
     eq_(1 * md.MinMaxType.MAX_UINT64, ref_64)
-    eq_(1 + md.MinMaxType.MAX_UINT64, ref_64)
+    eq_(1 + md.MinMaxType.MAX_UINT64, ref_64 + 1)
     eq_(md.MinMaxType.MAX_UINT64 / 1, ref_64 / 1)
     eq_(md.MinMaxType.MAX_UINT64 + md.MinMaxType.MAX_UINT64, ref_64 + ref_64)
     eq_(int(md.MinMaxType.MAX_UINT64), ref_64)
     eq_(float(md.MinMaxType.MAX_UINT64), float(ref_64))
     eq_(md.MinMaxType.MAX_UINT64.__int__(), ref_64)
 
-    assert_raises(NotImplementedError, abs(md.MinMaxType.MAX_UINT64))
+    assert_raises(NotImplementedError, abs, md.MinMaxType.MAX_UINT64)
 
     eq_(md.MinMaxType.MAX_UINT64.numerator, ref_64)
     ok_(md.MinMaxType.MAX_UINT64 == 18446744073709551615)
     ok_(18446744073709551615 == md.MinMaxType.MAX_UINT64)
     ok_(not (md.MinMaxType.MAX_UINT64 > 18446744073709551615))
     ok_(md.MinMaxType.MAX_UINT64 > 1)
-    ok(1 < md.MinMaxType.MAX_UINT64)
-    ok(not (md.MinMaxType.MAX_UINT32 > md.MinMaxType.MAX_UINT64))
+    ok_(1 < md.MinMaxType.MAX_UINT64)
+    ok_(not (md.MinMaxType.MAX_UINT32 > md.MinMaxType.MAX_UINT64))
 
     #FIXME: freeze python
     #ar = range(int(md.MinMaxType.MAX_INT64), int(md.MinMaxType.MAX_UINT64)+100)
@@ -80,15 +81,18 @@ shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
 formats_simple = [(b'b', 1), (b'i', 1), (b'i1', 1), (b'i2', 2),
                       (b'i4', 4), (b'i8', 8), (b'u1', 1), (b'u2', 2),
                       (b'u4', 4), (b'u8', 8), (b'f4', 4), (b'f8', 8),
-                      (b'f4', 4), (b'f8', 8), (b'c8', 8), (b'c16', 16)]
+                      (b'f4', 4), (b'f8', 8)]
+if TEST_COMPLEX_NUMBER:
+    formats_simple.append((b'c8', 8))
+    formats_simple.append((b'c16', 16))
 formats_complex = [(b'ii', 2, 2), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
-                       (b'u4f4f4', 16, 3), (b'ii<i=i1<f4=fff', 20, 8)]
+                       (b'u4f4f4', 12, 3), (b'ii<i=i1<f4=fff', 20, 8)]
 
 
 #---------------------------------------------------------------------------#
 # TESTS CONSTRUTOR                                                          #
 #                                                                           #
-def test_new_1():
+def test_new():
     #                                                                       #
     # TEST SIMPLE FORMATS                                                   #
     #                                                                       #
@@ -110,14 +114,14 @@ def test_new_1():
     assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'u4f4rf2')
     assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'i5')
 
-
-def test_new_2():
+def test_empty_shape():
     #                                                                       #
     # TEST EMPTY SHAPE                                                      #
     #                                                                       #
     assert_raises(ValueError, md.mdarray, shape=(10, 0, 5), format=b'i')
     assert_raises(ValueError, md.mdarray, shape=(), format=b'i')
 
+def test_decimal():
     #                                                                       #
     # TEST DECIMAL NUMBER b'D'                                              #
     #                                                                       #
@@ -129,7 +133,7 @@ def test_new_2():
     assert_is_instance(mv, md.mdarray)
     assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'D4')
 
-def test_new_3():
+def test_memory():
     #                                                                       #
     # TEST BIG MEMORY USAGE                                                 #
     #                                                                       #
@@ -159,7 +163,7 @@ def test_new_3():
     time.sleep(.5)
 
 
-def test_new_4():
+def test_mode():
     #                                                                       #
     # TEST C AND F MODE                                                     #
     #                                                                       #
@@ -174,6 +178,7 @@ def test_new_4():
 
     assert_raises(ValueError, md.mdarray, shape=(10, 10), format=b'i', order='g')
 
+def test_range_initializer():
     #                                                                       #
     # TEST RANGE INITIALIZER                                                #
     #                                                                       #
@@ -188,6 +193,7 @@ def test_new_4():
         for f, i in formats_simpleb:
             yield _new, s, f, i, init
 
+def test_range_tuple_initializer():
     #                                                                       #
     # INITIALISER YELDING TUPLE FOR COMPLEX FORMATS                         #
     #                                                                       #
@@ -207,7 +213,7 @@ def test_new_4():
         for f, i, n in formats_complex:
             yield _new_complex, s, f, i, n, iter_tuple
 
-
+def test_list_initializer():
     #                                                                       #
     # TEST LIST INITIALIZER                                                 #
     #                                                                       #
@@ -215,6 +221,7 @@ def test_new_4():
     mv = md.mdarray(shape=(10, 10, 10), format=b'i', order="C", initializer=i)
     assert_is_instance(mv, md.mdarray)
 
+def test_buffer_initializer():
     #                                                                       #
     # TEST BUFFER INTERFACE INITIALIZER                                     #
     #                                                                       #
@@ -397,6 +404,9 @@ def test_overflow():
 #----------------------------------------------------------------------------
 #TODO: ARRAY_INTERFACE                                                                 #
 #                                                                           #
+def test_array_interface():
+    pass
+
 
 #----------------------------------------------------------------------------
 # BUFFER_PROTOCOL                                                           #
@@ -619,9 +629,14 @@ def iterator():
 
 #------------------------------------------------------------------------------
 # Main
+from nose.plugins.testid import TestId
+from nose.config import Config
 
 if __name__ == '__main__':
-    nose.main()
+    test_Enum()
+    nose.run()
+
+    #test_array_interface()
 
 
 

@@ -118,46 +118,6 @@ cdef extern from "string.h" nogil:
     void *memset(void *BLOCK, int C, size_t SIZE)
 
 
-# PyArrayInterface
-#
-# The PyArrayInterface structure is defined so that NumPy and other
-# extension modules can use the rapid array interface protocol.
-# The __array_struct__ method of an object that supports the rapid
-# array interface protocol should return a PyCObject that contains
-# a pointer to a PyArrayInterface structure with the relevant details
-# of the array. After the new array is created, the attribute
-# should be DECREF‘d which will free the PyArrayInterface structure.
-# Remember to INCREF the object (whose __array_struct__ attribute
-# was retrieved) and point the base member of the new PyArrayObject
-# to this same object. In this way the memory for the array will
-# be managed correctly.
-
-ctypedef struct PyArrayInterface:
-  int two              # contains the integer 2 -- simple sanity check
-  int nd               # number of dimensions
-  char typekind        # kind in array --- character code of typestr
-  int itemsize         # size of each element
-  int flags            # flags indicating how the data should be interpreted */
-                       #   must set ARR_HAS_DESCR bit to validate descr */
-  Py_intptr_t *shape   # A length-nd array of shape information */
-  Py_intptr_t *strides # A length-nd array of stride information */
-  void *data           # A pointer to the first element of the array */
-  PyObject *descr      # NULL or data-description (same as descr key
-                       #       of __array_interface__) -- must set ARR_HAS_DESCR
-                       #       flag or this will be ignored. */
-
-cdef enum:
-    MAX_DIMS = 50
-
-#TODO: faire sans MAX_DIMS
-ctypedef struct slice_view:
-    char *data
-    Py_ssize_t shape[MAX_DIMS]
-    Py_ssize_t strides[MAX_DIMS]
-    Py_ssize_t suboffsets[MAX_DIMS]
-    Py_ssize_t ndim
-
-
 cdef object get_pylong(object v):
     if v is None:
         raise TypeError("required argument should not be None")
@@ -273,10 +233,10 @@ cdef class _mdarray_iterator:
         mdarray md_array
 
     def __cinit__(_mdarray_iterator self, mdarray md_array):
-        self.data = md_array.data
+        self.data = md_array._interface.data
         self.stop_index = md_array.size - 1
         #FIXME: vraix pour mode = "C", pour "F" incorrect
-        self.memory_step = md_array._strides[md_array.ndim - 1]
+        self.memory_step = md_array._interface.strides[md_array._interface.ndim - 1]
         self.md_array = md_array
 
     def __init__(_mdarray_iterator self, mdarray md_array):
@@ -458,6 +418,44 @@ c_to_py_functions[<Py_ssize_t> UINT64] = u64_to_py
 c_to_py_functions[<Py_ssize_t> FLOAT32] = f32_to_py
 c_to_py_functions[<Py_ssize_t> FLOAT64] = f64_to_py
 
+# PyArrayInterface
+#
+# The PyArrayInterface structure is defined so that NumPy and other
+# extension modules can use the rapid array interface protocol.
+# The __array_struct__ method of an object that supports the rapid
+# array interface protocol should return a PyCObject that contains
+# a pointer to a PyArrayInterface structure with the relevant details
+# of the array. After the new array is created, the attribute
+# should be DECREF‘d which will free the PyArrayInterface structure.
+# Remember to INCREF the object (whose __array_struct__ attribute
+# was retrieved) and point the base member of the new PyArrayObject
+# to this same object. In this way the memory for the array will
+# be managed correctly.
+
+ctypedef struct PyArrayInterface:
+  int two              # contains the integer 2 -- simple sanity check
+  int nd               # number of dimensions
+  char typekind        # kind in array --- character code of typestr
+  int itemsize         # size of each element
+  int flags            # flags indicating how the data should be interpreted */
+                       #   must set ARR_HAS_DESCR bit to validate descr */
+  Py_intptr_t *shape   # A length-nd array of shape information */
+  Py_intptr_t *strides # A length-nd array of stride information */
+  void *data           # A pointer to the first element of the array */
+  PyObject *descr      # NULL or data-description (same as descr key
+                       #       of __array_interface__) -- must set ARR_HAS_DESCR
+                       #       flag or this will be ignored. */
+
+DEF MAX_ARRAY_DIM = 50
+
+ctypedef struct array_view:
+    char *data
+    int ndim
+    int itemsize
+    Py_ssize_t len
+    Py_ssize_t shape [MAX_ARRAY_DIM]
+    Py_ssize_t strides [MAX_ARRAY_DIM]
+    Py_ssize_t suboffsets [MAX_ARRAY_DIM]
 
 
 #TODO: DOCSTRING
@@ -465,18 +463,11 @@ cdef class mdarray:
     """Multidimentional array of homogenus type.
     """
     cdef :
-        char *format
-
-        #TODO: put attributes below in a struct array_view
-        char *data
-        Py_ssize_t len
-        int ndim
-        Py_ssize_t *_shape
-        Py_ssize_t *_strides
-        Py_ssize_t itemsize
+        array_view _interface
 
         unicode mode
         bytes _format
+        char *format
 
         #TODO : dont's sure we nedd it at all
         void (*callback_free_data)(void *data)
@@ -497,10 +488,8 @@ cdef class mdarray:
         bint overflow
         bint clamp
 
-        #NOTE:
-        cdef object __weakref__
-
-
+    #NOTE:
+    cdef object __weakref__
     cdef object __array_interface__
     #cdef PyCObject __array_struct__
 
@@ -514,7 +503,6 @@ cdef class mdarray:
 
     #TODO: check again and fix constructor args
 
-    #TODO: check weakref
     def __cinit__(mdarray self, tuple shape, format not None,
                   order=u"C", initializer=None, bint allocate_buffer=True,
                   overflow=True, clamp=False, *args, **kwargs):
@@ -532,17 +520,15 @@ cdef class mdarray:
         self.format = self._format
 
         new_struct(&self.formater, self._format)
-        self.itemsize = self.formater.size
-        self.ndim = len(shape)
-        if not self.ndim:
+        self._interface.itemsize = self.formater.size
+        self._interface.ndim = len(shape)
+        if not self._interface.ndim:
             raise ValueError("Empty shape tuple for mdarray")
-
-        self._shape = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
-        self._strides = <Py_ssize_t *> malloc(sizeof(Py_ssize_t)*self.ndim)
-        if not self._shape or not self._strides:
-            free(self._shape)
-            free(self._strides)
-            raise MemoryError("unable to allocate shape or strides.")
+        elif self._interface.ndim > MAX_ARRAY_DIM:
+            raise ValueError("Array is limited to %i dimensions:\
+                              ask for %i dimension" %(MAX_ARRAY_DIM, self._interface.ndim))
+        for i in xrange(self._interface.ndim):
+            self._interface.suboffsets[i] = -1
 
         self.items_cache = <cnumber *> malloc(sizeof(cnumber) * self.formater.length)
         if not self.items_cache:
@@ -553,7 +539,7 @@ cdef class mdarray:
         for idx, dim in enumerate(shape):
             if dim <= 0:
                 raise ValueError("Invalid shape in axis %d: %d." % (idx, dim))
-            self._shape[idx] = dim
+            self._interface.shape[idx] = dim
             idx += 1
 
         if order not in ("f", "F", "c", "C"):
@@ -562,8 +548,8 @@ cdef class mdarray:
             self.mode = u'F'
         else:
             self.mode = u'C'
-        self.len = self.fill_contig_strides_array(self._shape, self._strides,
-                                             self.itemsize, self.ndim)
+        self._interface.len = self.fill_contig_strides_array(self._interface.shape, self._interface.strides,
+                                             self._interface.itemsize, self._interface.ndim)
 
         # convertion functions
         self.overflow = overflow
@@ -585,29 +571,29 @@ cdef class mdarray:
         cdef Py_ssize_t it
         cdef char *ptr
         if allocate_buffer:
-            self.data = <char *>malloc(self.len)
+            self._interface.data = <char *>malloc(self._interface.len)
             #TODO: CALLOC
-            if not self.data:
-                free(self.data)
+            if not self._interface.data:
+                free(self._interface.data)
                 raise MemoryError("unable to allocate array data.")
 
             if initializer is not None:
                 if hasattr(initializer, '__iter__'):
                     itr = initializer.__iter__()
                     item = None
-                    ptr = self.data
-                    for i in xrange(self.len / self.itemsize):
+                    ptr = self._interface.data
+                    for i in xrange(self._interface.len / self._interface.itemsize):
                         try:
                             item = itr.__next__()
                         except StopIteration:
                             itr = initializer.__iter__()
                             item = itr.__next__()
                         self.assign_item_from_object(ptr, item)
-                        ptr += self.itemsize
+                        ptr += self._interface.itemsize
                 else:
                     raise TypeError("Initializer is not iterable.")
             else:
-                memset(self.data, 0, self.len)
+                memset(self._interface.data, 0, self._interface.len)
 
     cdef Py_ssize_t fill_contig_strides_array(mdarray self,
                 Py_ssize_t *shape, Py_ssize_t *strides, Py_ssize_t stride,
@@ -629,11 +615,11 @@ cdef class mdarray:
 
     def __dealloc__(mdarray self):
         if self.callback_free_data != NULL:
-            self.callback_free_data(self.data)
+            self.callback_free_data(self._interface.data)
         elif self.free_data:
-            free(self.data)
-        free(self._strides)
-        free(self._shape)
+            free(self._interface.data)
+        #free(self._interface.strides)
+        #free(self._interface.shape)
         free(self.items_cache)
         del_struct(&self.formater)
         if self.lock != NULL:
@@ -650,13 +636,12 @@ cdef class mdarray:
 
     #@cname('getbuffer')
     def __getbuffer__(mdarray self, Py_buffer *info, int flags):
-        info.buf = <void*> self.data
-        info.len = self.len
+        info.buf = <void*> self._interface.data
+        info.len = self._interface.len
         info.suboffsets = NULL  # we are always direct memory buffer
         info.readonly = 0
         info.obj = self #TODO: fix this when implements initializer=buffer_object
         info.internal = NULL
-
 
         if flags & PyBUF_WRITABLE:
             info.readonly = 1
@@ -671,22 +656,22 @@ cdef class mdarray:
             info.shape = NULL
             info.strides = NULL
             info.format = NULL  # mean 'B', unsigned byte
-            info.itemsize = self.itemsize  # The 'itemsize' field may be wrong
+            info.itemsize = self._interface.itemsize  # The 'itemsize' field may be wrong
             return
 
-        info.ndim = self.ndim
-        info.shape = self._shape
-        info.strides = self._strides
-        info.itemsize = self.itemsize
+        info.ndim = self._interface.ndim
+        info.shape = self._interface.shape
+        info.strides = self._interface.strides
+        info.itemsize = self._interface.itemsize
 
         if not (flags & PyBUF_ND):
-            if self.ndim > 1:
+            if self._interface.ndim > 1:
                 raise BufferError("Buffer cant't be expose as one dimentional array.")
             else:
                 info.shape = NULL
 
         if not (flags & PyBUF_STRIDES):
-            if self.ndim > 1 and self.mode == b"F":
+            if self._interface.ndim > 1 and self.mode == b"F":
                 raise BufferError("Buffer cant't be expose without strides info.")
             else:
                 info.strides = NULL
@@ -717,7 +702,6 @@ cdef class mdarray:
     #
     # MEMORY LAYOUT - NUMPY-LIKE INTERFACE
     #
-
     property base:
         #@cname('get_base')
         def __get__(self):
@@ -731,44 +715,43 @@ cdef class mdarray:
     property shape:
         #@cname('get_shape')
         def __get__(self):
-            return tuple([self._shape[i] for i in xrange(self.ndim)])
+            return tuple([self._interface.shape[i] for i in xrange(self._interface.ndim)])
 
     property strides:
         #@cname('get_strides')
         def __get__(self):
-            return tuple([self._strides[i] for i in xrange(self.ndim)])
+            return tuple([self._interface.strides[i] for i in xrange(self._interface.ndim)])
 
     property suboffsets:
         #@cname('get_suboffsets')
         def __get__(self):
             #if self.suboffsets == NULL:
-            return [-1] * self.ndim
+            return [-1] * self._interface.ndim
             #return tuple([self.suboffsets[i] for i in xrange(self.ndim)])
 
     property ndim:
         #@cname('get_ndim')
         def __get__(self):
-            return self.ndim
+            return self._interface.ndim
 
     property itemsize:
         #@cname('get_itemsize')
         def __get__(self):
-            return self.itemsize
+            return self._interface.itemsize
 
     property nbytes:
         #@cname('get_nbytes')
         def __get__(self):
-            return self.len
+            return self._interface.len
 
     property size:
         #@cname('get_size')
         def __get__(self):
-            return self.len / self.itemsize
+            return self._interface.len / self._interface.itemsize
 
     #
     # __ARRAY_INTERFACE__
     #
-
     #TODO: __array_interface__
 
     #
@@ -778,16 +761,14 @@ cdef class mdarray:
     #
     # SIZED INTERFACE
     #
-
     def __len__(self):
-        if self.ndim >= 1:
-            return self._shape[0]
+        if self._interface.ndim >= 1:
+            return self._interface.shape[0]
         return 0
 
     #
     # SEQUENCE INTERFACE : __getitem__(), __setitem__(), __delitem()__
     #
-
     cdef assign_item_from_object(mdarray self, char *itemp, object value):
         cdef char c
         cdef Py_ssize_t i
@@ -835,7 +816,7 @@ cdef class mdarray:
 
     cdef char *get_item_pointer(mdarray self, object index) except NULL:
         cdef Py_ssize_t dim
-        cdef char *itemp = self.data
+        cdef char *itemp = self._interface.data
         for dim, idx in enumerate(index):
             itemp = self.pybuffer_index(itemp, idx, dim)
         return itemp
@@ -845,12 +826,12 @@ cdef class mdarray:
         cdef char *result
         cdef int offset
         if index < 0:
-            index += self.shape[dim]
+            index += self._interface.shape[dim]
             if index < 0:
                 raise IndexError("Index out of bounds (axis %d)" % dim)
-        if index >= self.shape[dim]:
+        if index >= self._interface.shape[dim]:
             raise IndexError("Index out of bounds (axis %d)" % dim)
-        offset = index * self.strides[dim]
+        offset = index * self._interface.strides[dim]
         result = itemp + offset
         return result
 
@@ -890,16 +871,16 @@ cdef class mdarray:
         self.assign_item_from_object(itemp, value)
 
     cdef setitem_slice_assign_scalar(mdarray self, object indices, value):
-        cdef slice_view src, dst
+        cdef array_view src, dst
         cdef char *ptr_src
         cdef int loop = 1
         cdef int limit, i
         cdef int last_dim_len
         cdef int offset_src, pos = 0
-        cdef Py_ssize_t sz = self.itemsize
+        cdef Py_ssize_t sz = self._interface.itemsize
         cdef Py_ssize_t cursor
 
-        self._slice_view(&src)
+        src = self._interface
         self.get_slice_view(indices, &src, &dst)
 
         limit = 1
@@ -965,7 +946,7 @@ cdef class mdarray:
             result.extend([slice(None)] * nslices)
         return have_slices or nslices, tuple(result)
 
-    cdef get_slice_view(mdarray self, object indices, slice_view *s_view, slice_view *d_view):
+    cdef get_slice_view(mdarray self, object indices, array_view *s_view, array_view *d_view):
         cdef object index
         cdef int dim
         cdef int suboffset_dim = -1
@@ -974,8 +955,6 @@ cdef class mdarray:
 
         d_view.data = s_view.data
         d_view.ndim = 0
-        for i in range(s_view.ndim):
-            d_view.suboffsets[i] = -1
 
         for dim, index in enumerate(indices):
             if PyIndex_Check(index):
@@ -1005,27 +984,18 @@ cdef class mdarray:
                     True)
                 d_view.ndim += 1
 
-    cdef _slice_view(mdarray self, slice_view *src):
-        src.ndim = self.ndim
-        src.data = self.data
-        memcpy(src.shape, self._shape, self.ndim * sizeof(Py_ssize_t))
-        memcpy(src.strides, self._strides, self.ndim * sizeof(Py_ssize_t))
-        for i in range(self.ndim):
-            src.suboffsets[i] = -1
-
     cdef mdarray _slice(mdarray self, object indices):
         cdef int i, dim, new_ndim = 0
-        cdef slice_view src, dst
+        cdef array_view src, dst
         cdef mdarray sliced
         cdef object tpl
 
-        assert self.ndim > 0
+        assert self._interface.ndim > 0
 
-        self._slice_view(&src)
+        src = self._interface
         self.get_slice_view(indices, &src, &dst)
-
         tpl = tuple([dst.shape[i] for i in xrange(dst.ndim)])
-        sliced = mdarray(tpl, self.format, self.mode, allocate_buffer=True)
+        sliced = mdarray(tpl, self.format, self.mode)
 
         cdef char *ptr_dest
         cdef char *ptr_src
@@ -1033,7 +1003,7 @@ cdef class mdarray:
         cdef int limit = sliced.size
         cdef int last_dim_len = dst.shape[dst.ndim - 1]
         cdef int offset_src, offset_dst, pos = 0
-        cdef Py_ssize_t sz = self.itemsize
+        cdef Py_ssize_t sz = self._interface.itemsize
         cdef Py_ssize_t cursor
         dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
         dim = dst.ndim
@@ -1047,7 +1017,7 @@ cdef class mdarray:
                     offset_dst += dim_countdown[i] * sliced._strides[i]
                     offset_src += dim_countdown[i] * dst.strides[i]
                 ptr_src = dst.data + offset_src
-                ptr_dest = sliced.data + offset_dst
+                ptr_dest = sliced._interface.data + offset_dst
                 memcpy(ptr_dest, ptr_src, sz)
                 dim_countdown[cursor] -= 1
 
@@ -1063,7 +1033,7 @@ cdef class mdarray:
         return sliced
 
     cdef int do_slice(mdarray self,
-            slice_view *dst,
+            array_view *dst,
             Py_ssize_t shape, Py_ssize_t stride, Py_ssize_t suboffset,
             int dim, int new_ndim, int *suboffset_dim,
             Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step,
@@ -1201,12 +1171,12 @@ cdef class mdarray:
     def copy(mdarray self):
         cdef mdarray copy_a
         cdef char *tp
-        copy_a = mdarray(self.shape, self.format, allocate_buffer=True)
-        tp = <char*> memcpy(copy_a.data, self.data, self.len)
+        copy_a = mdarray(self.shape, self.format, self.mode)
+        tp = <char*> memcpy(copy_a._interface.data, self._interface.data, self._interface.len)
         if not tp:
             raise MemoryError("Unable to copy data.")
         else:
-            copy_a.data = tp
+            copy_a._interface.data = tp
         return copy_a
 
     def copy_fortran(self):
@@ -1249,13 +1219,13 @@ cdef class mdarray:
         cdef char *ptr_datum
         cdef int loop = 1
         cdef int limit = self.size
-        cdef int ndim = self.ndim
-        cdef Py_ssize_t *shape = self._shape
+        cdef int ndim = self._interface.ndim
+        cdef Py_ssize_t *shape = self._interface.shape
         dim_countdown = [shape[dim] - 1 for dim in xrange(ndim)]
         cdef int last_dim_len = shape[ndim - 1]
         cdef int offset, pos = 0
-        cdef Py_ssize_t sz = self.itemsize
-        cdef Py_ssize_t *strides = self._strides
+        cdef Py_ssize_t sz = self._interface.itemsize
+        cdef Py_ssize_t *strides = self._interface.strides
         cdef object value
         cdef unicode r_str = u""
         cdef int ident = ndim
@@ -1268,7 +1238,7 @@ cdef class mdarray:
                 offset = 0
                 for i in xrange(ndim):
                     offset += (shape[i] - 1 - dim_countdown[i]) * strides[i]
-                ptr_datum = self.data + offset
+                ptr_datum = self._interface.data + offset
                 value = self.convert_item_to_object(ptr_datum)
                 r_str += str(value) + u", "
                 dim_countdown[cursor] -= 1

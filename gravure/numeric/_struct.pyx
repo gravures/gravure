@@ -766,7 +766,7 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes,
             #struct_len += 1
 
         else:
-            raise AttributeError("Malformed string code, \'%c\' not a valid type code" % fmt[i])
+            raise ValueError("Malformed string code, \'%c\' not a valid type code" % fmt[i])
 
         if struct_len > MAX_STRUCT_LENGTH:
             raise MemoryError("Format string code should have a maximum of %i elements" % MAX_STRUCT_LENGTH)
