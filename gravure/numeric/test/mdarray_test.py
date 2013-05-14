@@ -197,59 +197,33 @@ def test_range_tuple_initializer():
     #                                                                       #
     # INITIALISER YELDING TUPLE FOR COMPLEX FORMATS                         #
     #                                                                       #
-    x, y, z = 1, 2, 4
-    def iter_tuple():
-        x += x
-        y += y
-        z += z
-        if x == 126 : x = 0
-        if y == 126 : y = 0
-        if z == 126 : z = 0
-        yield (x, y, z)
+    class IterTuple:
+
+        def __init__(self):
+            self.x = 1
+            self.y = 2
+            self.z = 4
+
+        def __next__(self):
+            self.x += self.x
+            self.y += self.y
+            self.z += self.z
+            if self.x >= 126 : self.x = 0
+            if self.y >= 126 : self.y = 0
+            if self.z >= 126 : self.z = 0
+            return (self.x, self.y, self.z)
+
+        def __iter__(self):
+            return self
 
     formats_complex = [(b'iii', 3, 3), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
-                       (b'u4f4f4', 16, 3)]
+                       (b'u4f4f4', 12, 3)]
     for s in shapes:
         for f, i, n in formats_complex:
-            yield _new_complex, s, f, i, n, iter_tuple
-
-def test_list_initializer():
-    #                                                                       #
-    # TEST LIST INITIALIZER                                                 #
-    #                                                                       #
-    i = [10, 9, 3, 2, 4, 5, 8]
-    mv = md.mdarray(shape=(10, 10, 10), format=b'i', order="C", initializer=i)
-    assert_is_instance(mv, md.mdarray)
-
-def test_buffer_initializer():
-    #                                                                       #
-    # TEST BUFFER INTERFACE INITIALIZER                                     #
-    #                                                                       #
-    # buffer.size * itemsize >= array.size * itemsize                       #
-    from array import array
-    ar = array('b', range(100))
-    mv = md.mdarray(shape=(10, 10), format=b'i', initializer=ar)
-    assert_is_instance(mv, md.mdarray)
-
-    ar = array('<h', range(100))
-    mv = md.mdarray(shape=(10, 20), format=b'<i', initializer=ar)
-    assert_is_instance(mv, md.mdarray)
-    eq_(mv.base, ar)
-    ar[1] = 9
-    eq_(ar[1], mv[0, 2])
-    ar = None
-    eq_(mv.base, None)
-    assert_raises(MemoryError, md.__getitem, (0, 2))
-
-    ar = array('b', range(100))
-    assert_raises(TypeError, md.mdarray, shape=(10, 20), format=b'i2',
-                  initializer=ar)
-    assert_raises(TypeError, md.mdarray, shape=(100, ), format=b'i',
-                  initializer=ar, offset=50)
-
+            yield _new_complex, s, f, i, n, IterTuple()
 
 def _new_complex(shape, format, itemsize, tuplelen, init = None):
-    mv = md.mdarray(shape, format, initializer = init)
+    mv = md.mdarray(shape, format, initializer = init, overflow=None)
     assert_is_instance(mv, md.mdarray)
     eq_(mv.base, mv)
     le = 1
@@ -271,6 +245,41 @@ def _new_complex(shape, format, itemsize, tuplelen, init = None):
 #        eq_(e, 0)
 #        i += 1
 #    eq_(mv.size, i)
+
+def test_list_initializer():
+    #                                                                       #
+    # TEST LIST INITIALIZER                                                 #
+    #                                                                       #
+    i = [10, 9, 3, 2, 4, 5, 8]
+    mv = md.mdarray(shape=(10, 10, 10), format=b'i', order="C", initializer=i)
+    assert_is_instance(mv, md.mdarray)
+
+def test_buffer_initializer():
+    #                                                                       #
+    # TEST BUFFER INTERFACE INITIALIZER                                     #
+    #                                                                       #
+    # buffer.size * itemsize >= array.size * itemsize                       #
+    from array import array
+    ar = array('b', range(100))
+    mv = md.mdarray(shape=(10, 10), format=b'i', initializer=ar)
+    assert_is_instance(mv, md.mdarray)
+
+    ar = array("h", range(100))
+    mv = md.mdarray(shape=(10, 20), format=b'<i', initializer=ar)
+    assert_is_instance(mv, md.mdarray)
+    eq_(mv.base, ar)
+    ar[1] = 9
+    id_ar = id(ar)
+    eq_(ar[1], mv[0, 2])
+    ar = None
+    eq_(id(mv.base), id_ar)
+    eq_(9, mv[0, 2])
+
+    ar = array('b', range(100))
+    assert_raises(TypeError, md.mdarray, shape=(10, 20), format=b'i2',
+                  initializer=ar)
+    assert_raises(TypeError, md.mdarray, shape=(100, ), format=b'i',
+                  initializer=ar, offset=50)
 
 def _new(shape, format, itemsize, init=None):
     mv = md.mdarray(shape, format, initializer = init)
@@ -428,15 +437,43 @@ def test_buffer_protocol():
     mem[0] = b'\x08'
     eq_(mv[0], 8)
 
+    mv = md.mdarray(shape=(100, ), format=b'ii')
+    mem = memoryview(mv)
+    print("memview :", mem)
+    print("ndim :", mem.ndim)
+    print("itemsize :", mem.itemsize)
+    print("shape :", mem.shape)
+    print("strides :", mem.strides)
+    print("suboffsets :", mem.suboffsets)
+    print("mem[44]", mem[44])
+
 #----------------------------------------------------------------------------
-#FIXME: MEMORY VIEW                                                         #
+#FIXME: CYTHON MEMORYVIEW                                                   #
 #                                                                           #
 #----------------------------------------------------------------------------
-#def test_memview():
-#    ar = range(1, 101)
-#    mv = md.mdarray(shape=(10, 10), format=b'<i1', initializer=ar)
-#    print("\n" + "*" * 50)
-#    print("memview :", mv.memview)
+def test_memview():
+    ar = range(0, 100)
+    mv = md.mdarray(shape=(10, 10), format=b'<i1', initializer=ar)
+    print("\n" + "*" * 50)
+    mem = mv.memview
+    print("memview :", mem)
+    print("ndim :", mem.ndim)
+    print("itemsize :", mem.itemsize)
+    print("shape :", mem.shape)
+    print("strides :", mem.strides)
+    print("suboffsets :", mem.suboffsets)
+    print("size :", mem.size)
+    print("nbytes :", mem.nbytes)
+    print("base :", mem.base)
+    print("base.format :", mem.base.format)
+    print("mem[4,4]", mem[4, 4])
+    print("mem[4]", mem[4])
+    print("mem[4].shape", mem[4].shape)
+
+    mv = md.mdarray(shape=(10, 10), format=b'ii')
+    mem = mv.memview
+    print("base.format :", mem.base.format)
+    #print("mem[4,4]", mem[4, 4])
 
 
 #----------------------------------------------------------------------------
@@ -445,9 +482,10 @@ def test_buffer_protocol():
 shapes = [(10, ), (10, 10), (100, 1000), (6, 7, 9), (9, 8, 12, 3, 1, 11)]
 
 formats = [(b'b'), (b'i1'), (b'i2'), (b'i4'), (b'i8'), (b'u1'), (b'u2'),
-                  (b'u4'), (b'u8'), (b'f4'), (b'f8'),(b'f4'), (b'f8'), (b'c8'),
-                  (b'c16'), (b'ii'), (b'>i2i1i4'), (b'fff'),
-                  (b'u4f4f4'), (b'ii<i=i1<f4=fff')]
+                  (b'u4'), (b'u8'), (b'f4'), (b'f8'),(b'f4'), (b'f8')]
+if TEST_COMPLEX_NUMBER:
+    formats.append((b'c8'))
+    formats.append((b'c16'))
 
 def array_eq(a, b):
     r = False
@@ -517,7 +555,23 @@ def test_get_item():
 #----------------------------------------------------------------------------
 #TODO: __SET_ITEM__                                                                 #
 #                                                                           #
-def test_set_item():
+def test_set_item_by_index():
+    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
+    mv[4, 4] = 9
+    res = [0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+           10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+           20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+           30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+           40, 41, 42, 43, 9, 45, 46, 47, 48, 49,
+           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+           60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+           80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    for i, e in enumerate(mv):
+        eq_(e, res[i])
+
+def test_set_item_scalar_by_slice():
     mv = md.mdarray((10, 10), format='i1', initializer=range(0, 127))
     mv[...] = 4
     for e in mv:
@@ -600,20 +654,9 @@ def test_set_item():
     for i, e in enumerate(mv):
         eq_(e, res[i])
 
-    mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
-    mv[4, 4] = 9
-    res = [0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-           10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-           20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-           30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-           40, 41, 42, 43, 9, 45, 46, 47, 48, 49,
-           50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-           60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
-           70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-           80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
-           90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
-    for i, e in enumerate(mv):
-        eq_(e, res[i])
+def test_set_item_slice_by_slice():
+    pass
+
 
 #----------------------------------------------------------------------------
 #TODO: ITERATOR                                                                 #
@@ -633,9 +676,9 @@ from nose.plugins.testid import TestId
 from nose.config import Config
 
 if __name__ == '__main__':
-    test_Enum()
-    nose.run()
-
+#    nose.run()
+    test_memview()
+    test_buffer_protocol()
     #test_array_interface()
 
 

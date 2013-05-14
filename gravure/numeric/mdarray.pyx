@@ -53,9 +53,18 @@ cdef extern from "Python.h":
     # otherwise. This is equivalent to the Python expression "not not
     # o". On failure, return -1.
 
+    bint PyObject_CheckBuffer(object obj)
+    # Return 1 if obj supports the buffer interface otherwise 0.
+
+    int PyObject_GetBuffer(object obj, Py_buffer *view, int flags) except -1
+
+    bint PyBuffer_IsContiguous(Py_buffer *view, char fort)
+    # Return 1 if the memory defined by the view is C-style (fortran
+    # is 'C') or Fortran-style (fortran is 'F') contiguous or either
+    # one (fortran is 'A'). Return 0 otherwise.
+
 cdef extern from "pyport.h":
     ctypedef Py_ssize_t Py_intptr_t
-    #TODO: Py_uintptr_t
 
 cdef extern from "pythread.h":
     ctypedef void *PyThread_type_lock
@@ -336,6 +345,7 @@ cdef int py_to_u64(cnumber *c, object v, bint clmp) except -1:
         c.val.u64 = get_pylong(v)
     c.ctype = UINT64
 
+#NOTE: overflow should occurs on float
 cdef int py_to_f32(cnumber *c, object v, bint clmp) except -1:
     c.val.f32 = PyFloat_AsDouble(v)
     c.ctype = FLOAT32
@@ -488,24 +498,25 @@ cdef class mdarray:
         bint overflow
         bint clamp
 
-    #NOTE:
+        object obj
+
     cdef object __weakref__
     cdef object __array_interface__
     #cdef PyCObject __array_struct__
 
 
-    def __init__(mdarray self, tuple shape, format not None,
-                  order=u"C", initializer=None, bint allocate_buffer=True,
-                  overflow=True, clamp=False, *args, **kwargs):
+    def __init__(mdarray self, tuple shape not None, format="=i1",
+                  order=u"C", initializer=None,
+                  int offset=0, overflow=True, clamp=False,
+                  *args, **kwargs):
         """Multidimentional constructor.
         """
         pass
 
-    #TODO: check again and fix constructor args
-
-    def __cinit__(mdarray self, tuple shape, format not None,
-                  order=u"C", initializer=None, bint allocate_buffer=True,
-                  overflow=True, clamp=False, *args, **kwargs):
+    def __cinit__(mdarray self, tuple shape not None, format="=i1",
+                  order=u"C", initializer=None,
+                  int offset=0, overflow=True, clamp=False,
+                  *args, **kwargs):
         cdef int idx
         cdef Py_ssize_t i
 
@@ -567,16 +578,18 @@ cdef class mdarray:
             self.py_to_c[<Py_ssize_t> UINT64] = py_to_wide
 
         # buffer allocation
-        self.free_data = allocate_buffer
         cdef Py_ssize_t it
         cdef char *ptr
-        if allocate_buffer:
+        cdef Py_buffer info
+        self.free_data = not PyObject_CheckBuffer(initializer)
+
+        if self.free_data:
             self._interface.data = <char *>malloc(self._interface.len)
+            self.obj = self
             #TODO: CALLOC
             if not self._interface.data:
                 free(self._interface.data)
                 raise MemoryError("unable to allocate array data.")
-
             if initializer is not None:
                 if hasattr(initializer, '__iter__'):
                     itr = initializer.__iter__()
@@ -594,6 +607,22 @@ cdef class mdarray:
                     raise TypeError("Initializer is not iterable.")
             else:
                 memset(self._interface.data, 0, self._interface.len)
+        else:
+            # Test Buffer validity
+            # shape could be different, format too
+            # the rule is the array beeing created should
+            # not emit memory access over the data buffer,
+            # buffer.len - offset >= _interface.len
+            PyObject_GetBuffer(initializer, &info, PyBUF_WRITABLE)
+            if not PyBuffer_IsContiguous(&info, 'A'):
+                raise TypeError("Buffer should have contiguous memory block.")
+
+            if info.len - offset >= self._interface.len:
+                self._interface.data = <char *> info.buf + offset
+                self.obj = info.obj
+            else:
+                raise TypeError("buffer is too small for requested array.")
+
 
     cdef Py_ssize_t fill_contig_strides_array(mdarray self,
                 Py_ssize_t *shape, Py_ssize_t *strides, Py_ssize_t stride,
@@ -618,8 +647,6 @@ cdef class mdarray:
             self.callback_free_data(self._interface.data)
         elif self.free_data:
             free(self._interface.data)
-        #free(self._interface.strides)
-        #free(self._interface.shape)
         free(self.items_cache)
         del_struct(&self.formater)
         if self.lock != NULL:
@@ -640,7 +667,7 @@ cdef class mdarray:
         info.len = self._interface.len
         info.suboffsets = NULL  # we are always direct memory buffer
         info.readonly = 0
-        info.obj = self #TODO: fix this when implements initializer=buffer_object
+        info.obj = self.obj
         info.internal = NULL
 
         if flags & PyBUF_WRITABLE:
@@ -692,12 +719,13 @@ cdef class mdarray:
     #__pyx_getbuffer = capsule(<void *> &__pyx_array_getbuffer, "getbuffer(obj, view, flags)")
     #def __releasebuffer__(self):
 
-    #property memview:
-    #    #@cname('get_memview')
-    #    def __get__(self):
-    #        # Make this a property as 'self.data' may be set after instantiation
-    #        flags =  PyBUF_ANY_CONTIGUOUS|PyBUF_FORMAT|PyBUF_WRITABLE
-    #        return cython.view.memoryview(self, flags, False)
+    property memview:
+        #@cname('get_memview')
+        def __get__(self):
+            # Make this a property as 'self.data' may be set after instantiation
+            flags =  PyBUF_ANY_CONTIGUOUS|PyBUF_FORMAT|PyBUF_WRITABLE
+            cdef cython.view.memoryview mv = cython.view.memoryview(self, flags, False)
+            return mv
 
     #
     # MEMORY LAYOUT - NUMPY-LIKE INTERFACE
@@ -705,7 +733,7 @@ cdef class mdarray:
     property base:
         #@cname('get_base')
         def __get__(self):
-            return self
+            return self.obj
 
     property format:
         #@cname('get__format')
@@ -757,7 +785,6 @@ cdef class mdarray:
     #
     # MUTABLE SEQUENCE INTERFACE : SIZED + ITERABLE + CONTAINER
     #
-
     #
     # SIZED INTERFACE
     #
@@ -781,7 +808,7 @@ cdef class mdarray:
             le = len(value)
         if le != self.formater.length:
             raise TypeError("Wrong number of arguments to pack : \
-            %i in place of %i" % le, self.formater.length)
+%i in place of %i" % (le, self.formater.length))
 
         if isinstance(value, tuple):
             for i in xrange(le):
@@ -841,7 +868,7 @@ cdef class mdarray:
         have_slices, indices = self._unellipsify(index)
         cdef char *itemp
         if have_slices:
-            return self._slice(indices)
+            return self.get_sliced_array(indices)
         else:
             itemp = self.get_item_pointer(indices)
             return self.convert_item_to_object(itemp)
@@ -857,6 +884,7 @@ cdef class mdarray:
         else:
             self.setitem_indexed(indices, value)
 
+    #TODO: fix this
     cdef is_slice(mdarray self, obj):
         if not isinstance(obj, mdarray):
             return None
@@ -870,6 +898,67 @@ cdef class mdarray:
         cdef char *itemp = self.get_item_pointer(index)
         self.assign_item_from_object(itemp, value)
 
+    cdef setitem_slice_assignment(mdarray self, object indices, object obj):
+        cdef array_view src, dst
+        cdef int ndim, i
+        cdef bint broadcasting
+
+        # obj coulb be mdarray or buffer obj
+        self.get_slice_view_from_object(obj, &dst)
+        if &dst == NULL:
+            raise ValueError("Invalid object assignement.")
+
+        # first slice me
+        self.get_slice_view(indices, &self._interface, &src)
+
+        # compare ndim src & dst : broadcast or not
+        ndim = src.ndim
+        if src.ndim < dst.ndim:
+            self.broadcast_leading(&src, src.ndim, dst.ndim)
+            ndim = dst.ndim
+        elif dst.ndim < src.ndim:
+            self.broadcast_leading(&dst, dst.ndim, src.ndim)
+
+        for i in range(ndim):
+            if src.shape[i] != dst.shape[i]:
+                if src.shape[i] == 1:
+                    broadcasting = True
+                    src.strides[i] = 0
+                else:
+                    raise ValueError("got differing extents in dimension %d (got %d and %d)" %
+                                                            (i, dst.shape[i], src.shape[i]))
+            if src.suboffsets[i] >= 0:
+                raise ValueError("Dimension %d is not direct", i)
+
+        #if slices overlap, copy to temp, copy temp to dst ?
+
+        # if no broadcast and both slice are memory contigus
+        # and boths format fit and slice don't overlap
+        #--> optimize with direct memcopy
+        if src.itemsize == dst.itemsize and not broadcasting:
+            pass
+
+
+        # see if both slices have Fortran order, transpose them to match our
+        # C-style indexing order
+
+        # go by assign_item_from_object()
+
+    cdef void broadcast_leading(mdarray self, array_view *aview,
+                                int ndim, int ndim_other) nogil:
+        cdef int i
+        cdef int offset = ndim_other - ndim
+
+        for i in range(ndim - 1, -1, -1):
+            aview.shape[i + offset] = aview.shape[i]
+            aview.strides[i + offset] = aview.strides[i]
+            aview.suboffsets[i + offset] = aview.suboffsets[i]
+
+        for i in range(offset):
+            aview.shape[i] = 1
+            aview.strides[i] = aview.strides[0]
+            aview.suboffsets[i] = -1
+
     cdef setitem_slice_assign_scalar(mdarray self, object indices, value):
         cdef array_view src, dst
         cdef char *ptr_src
@@ -880,8 +969,8 @@ cdef class mdarray:
         cdef Py_ssize_t sz = self._interface.itemsize
         cdef Py_ssize_t cursor
 
-        src = self._interface
-        self.get_slice_view(indices, &src, &dst)
+        #src = self._interface
+        self.get_slice_view(indices, &self._interface, &dst)
 
         limit = 1
         for i in xrange(dst.ndim):
@@ -911,6 +1000,52 @@ cdef class mdarray:
                     cursor -= 1
             loop += last_dim_len
 
+    cdef mdarray get_sliced_array(mdarray self, object indices):
+        cdef int i, dim, new_ndim = 0
+        cdef array_view src, dst
+        cdef mdarray sliced
+        cdef object tpl
+
+        assert self._interface.ndim > 0
+
+        #src = self._interface
+        self.get_slice_view(indices, &self._interface, &dst)
+        tpl = tuple([dst.shape[i] for i in xrange(dst.ndim)])
+        sliced = mdarray(tpl, self.format, self.mode,
+                         overflow=self.overflow, clamp=self.clamp)
+
+        cdef char *ptr_dest
+        cdef char *ptr_src
+        cdef int loop = 1
+        cdef int limit = sliced.size
+        cdef int last_dim_len = dst.shape[dst.ndim - 1]
+        cdef int offset_src, offset_dst, pos = 0
+        cdef Py_ssize_t sz = self._interface.itemsize
+        cdef Py_ssize_t cursor
+        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
+        dim = dst.ndim
+
+        while loop <= limit:
+            cursor = dst.ndim - 1
+            for pos in xrange(last_dim_len):
+                offset_src = 0
+                offset_dst = 0
+                for i in xrange(dst.ndim):
+                    offset_dst += dim_countdown[i] * sliced._interface.strides[i]
+                    offset_src += dim_countdown[i] * dst.strides[i]
+                ptr_src = dst.data + offset_src
+                ptr_dest = sliced._interface.data + offset_dst
+                memcpy(ptr_dest, ptr_src, sz)
+                dim_countdown[cursor] -= 1
+            while cursor > -1:
+                if dim_countdown[cursor] > 0:
+                    dim_countdown[cursor] -= 1
+                    cursor = -1
+                else:
+                    dim_countdown[cursor] = dst.shape[cursor] - 1
+                    cursor -= 1
+            loop += last_dim_len
+        return sliced
 
     cdef tuple _unellipsify(mdarray self, object index):
         """
@@ -945,6 +1080,32 @@ cdef class mdarray:
         if nslices:
             result.extend([slice(None)] * nslices)
         return have_slices or nslices, tuple(result)
+
+    cdef int get_slice_view_from_object(mdarray self, object obj, array_view *aview) except -1:
+        cdef Py_buffer buf
+
+        if isinstance(mdarray, obj):
+            aview[0] = self._interface
+
+        elif PyObject_CheckBuffer(obj):
+            PyObject_GetBuffer(obj, &buf, PyBUF_INDIRECT| PyBUF_FORMAT)
+            aview.data = <char *> buf.buf
+            aview.ndim = buf.ndim
+            aview.itemsize = buf.itemsize
+            aview.len = buf.len
+            for i in xrange(buf.ndim):
+                aview.shape[i] = buf.shape[i]
+                aview.strides[i] = buf.strides[i]
+            if buf.suboffsets == NULL:
+                for i in xrange(buf.ndim):
+                    aview.suboffsets[i] = -1
+            else:
+                for i in xrange(buf.ndim):
+                    aview.suboffsets[i] = buf.suboffsets[i]
+
+        else:
+            aview = NULL
+
 
     cdef get_slice_view(mdarray self, object indices, array_view *s_view, array_view *d_view):
         cdef object index
@@ -984,54 +1145,6 @@ cdef class mdarray:
                     True)
                 d_view.ndim += 1
 
-    cdef mdarray _slice(mdarray self, object indices):
-        cdef int i, dim, new_ndim = 0
-        cdef array_view src, dst
-        cdef mdarray sliced
-        cdef object tpl
-
-        assert self._interface.ndim > 0
-
-        src = self._interface
-        self.get_slice_view(indices, &src, &dst)
-        tpl = tuple([dst.shape[i] for i in xrange(dst.ndim)])
-        sliced = mdarray(tpl, self.format, self.mode)
-
-        cdef char *ptr_dest
-        cdef char *ptr_src
-        cdef int loop = 1
-        cdef int limit = sliced.size
-        cdef int last_dim_len = dst.shape[dst.ndim - 1]
-        cdef int offset_src, offset_dst, pos = 0
-        cdef Py_ssize_t sz = self._interface.itemsize
-        cdef Py_ssize_t cursor
-        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
-        dim = dst.ndim
-
-        while loop <= limit:
-            cursor = dst.ndim - 1
-            for pos in xrange(last_dim_len):
-                offset_src = 0
-                offset_dst = 0
-                for i in xrange(dst.ndim):
-                    offset_dst += dim_countdown[i] * sliced._strides[i]
-                    offset_src += dim_countdown[i] * dst.strides[i]
-                ptr_src = dst.data + offset_src
-                ptr_dest = sliced._interface.data + offset_dst
-                memcpy(ptr_dest, ptr_src, sz)
-                dim_countdown[cursor] -= 1
-
-            while cursor > -1:
-                if dim_countdown[cursor] > 0:
-                    dim_countdown[cursor] -= 1
-                    cursor = -1
-                else:
-                    dim_countdown[cursor] = dst.shape[cursor] - 1
-                    cursor -= 1
-            loop += last_dim_len
-
-        return sliced
-
     cdef int do_slice(mdarray self,
             array_view *dst,
             Py_ssize_t shape, Py_ssize_t stride, Py_ssize_t suboffset,
@@ -1047,12 +1160,12 @@ cdef class mdarray:
             if start < 0:
                 start = shape + start
             if not 0 <= start < shape:
-                _err_dim(IndexError, "Index out of bounds (axis %d)", dim)
+                raise_err_dim(IndexError, "Index out of bounds (axis %d)", dim)
         else:
             # index is a slice
             negative_step = have_step != 0 and step < 0
             if have_step and step == 0:
-                _err_dim(ValueError, "Step may not be zero (axis %d)", dim)
+                raise_err_dim(ValueError, "Step may not be zero (axis %d)", dim)
             # check our bounds and set defaults
             if have_start:
                 if start < 0:
@@ -1171,7 +1284,8 @@ cdef class mdarray:
     def copy(mdarray self):
         cdef mdarray copy_a
         cdef char *tp
-        copy_a = mdarray(self.shape, self.format, self.mode)
+        copy_a = mdarray(self.shape, self.format, self.mode,
+                         overflow=self.overflow, clamp=self.clamp)
         tp = <char*> memcpy(copy_a._interface.data, self._interface.data, self._interface.len)
         if not tp:
             raise MemoryError("Unable to copy data.")
@@ -1279,7 +1393,7 @@ cdef class mdarray:
 #                                                        (i, extent1, extent2))
 
 #@cname('__pyx_memoryview_err_dim')
-cdef int _err_dim(object error, char *msg, int dim) except -1 with gil:
+cdef int raise_err_dim(object error, char *msg, int dim) except -1 with gil:
     raise error(msg.decode('ascii') % dim)
 
 #@cname('__pyx_memoryview_err')
