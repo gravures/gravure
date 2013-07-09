@@ -238,14 +238,9 @@ def _new_complex(shape, format, itemsize, tuplelen, init = None):
     eq_(mv.nbytes, itemsize * mv.size)
     eq_(len(mv), shape[0])
 
-    #FIXME: freeze code
-    #ok_(isinstance(mv[0], tuple))
-
-    #FIXME: freeze code
-#    for e in mv:
-#        eq_(e, 0)
-#        i += 1
-#    eq_(mv.size, i)
+    item = mv.__getitem__(tuple([0] * len(shape)))
+    eq_(tuplelen, len(item))
+    ok_(isinstance(item, tuple))
 
 def test_list_initializer():
     #                                                                       #
@@ -542,7 +537,7 @@ def test_get_item():
     eq_(mv[4,4], 44)
 
 #----------------------------------------------------------------------------
-#TODO: __SET_ITEM__                                                                 #
+# __SET_ITEM__                                                              #
 #                                                                           #
 def test_set_item_by_index():
     mv = md.mdarray((10, 10 ), format=b'i1', initializer=range(0, 800))
@@ -681,24 +676,74 @@ class TupleRange:
 def test_set_item_slice_by_slice():
     mva = md.mdarray((10, 10), format=b'i1', initializer=[0])
     mvb = md.mdarray((10, 10), format=b'i1', initializer=range(0, 100))
-    print(mva, '\n')
-    print(mvb, '\n')
     mva[:] = mvb
-    print(mva, '\n')
+    res = [50, 51, 52, 53, 54, 55, 56, 57, 58, 59]
+    cmp = mva[5, :]
+    for i in range(10):
+        eq_(res[i], cmp[i])
 
     mva = md.mdarray((10, 10), format=b'i1', initializer=[0])
     mvb = md.mdarray((1, 10), format=b'i1', initializer=range(0, 100))
-    print(mva, '\n')
-    print(mvb, '\n')
     mva[:] = mvb
-    print(mva, '\n')
+    res = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    cmp = mva[0, :]
+    for i in range(10):
+        eq_(res[i], cmp[i])
+    cmp = mva[5, :]
+    for i in range(10):
+        eq_(res[i], cmp[i])
 
     mva = md.mdarray((10, 10), format=b'ii')
     mvb = md.mdarray((1, 10), format='i2i2', initializer=TupleRange(2))
-    print(mva, '\n')
-    print(mvb, '\n')
     mva[:] = mvb[:]
-    print(mva, '\n')
+    res = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10)]
+    cmp = mva[0, :]
+    for i in range(10):
+        eq_(res[i], cmp[i])
+    cmp = mva[6, :]
+    for i in range(10):
+        eq_(res[i], cmp[i])
+
+    mva = md.mdarray((3, 3, 3), format=b'i1', initializer=[0])
+    mvb = md.mdarray((1, 3), format=b'i1', initializer=range(0, 100))
+    mva[:] = mvb
+    res = [0, 1, 2]
+    cmp = mva[0, 0, :]
+    for i in range(3):
+        eq_(res[i], cmp[i])
+    cmp = mva[2, 2, :]
+    for i in range(3):
+        eq_(res[i], cmp[i])
+
+    mva = md.mdarray((3, 3, 3), format=b'i1', initializer=[0])
+    mvb = md.mdarray((1, 6), format=b'i1', initializer=range(0, 100))
+    mva[:] = mvb[0,::2]
+    res = [0, 2, 4]
+    cmp = mva[0, 0, :]
+    for i in range(3):
+        eq_(res[i], cmp[i])
+    cmp = mva[2, 2, :]
+    for i in range(3):
+        eq_(res[i], cmp[i])
+
+    mva = md.mdarray((3, 3, 6), format=b'i1', initializer=[1])
+    mvb = md.mdarray((1, 6), format=b'i1', initializer=range(0, 100))
+    mva[..., ::2] = mvb[0,::2]
+    res = [0, 1, 2, 1, 4, 1]
+    cmp = mva[0, 0, :]
+    for i in range(6):
+        eq_(res[i], cmp[i])
+    cmp = mva[2, 2, :]
+    for i in range(6):
+        eq_(res[i], cmp[i])
+
+    mva = md.mdarray((3, 3, 6), format=b'i1', initializer=[1])
+    mvb = md.mdarray((1, 6), format=b'i1', initializer=range(0, 100))
+    mva[..., ::-1] = mvb[:]
+    res = [5, 4, 3, 2, 1, 0]
+    cmp = mva[0, 0, :]
+    for i in range(6):
+        eq_(res[i], cmp[i])
 
 #----------------------------------------------------------------------------
 #TODO: __STR__                                                                 #
@@ -728,7 +773,7 @@ from nose.plugins.testid import TestId
 from nose.config import Config
 
 if __name__ == '__main__':
-    test_set_item_slice_by_slice()
+    #test_str()
     nose.run()
 
 
