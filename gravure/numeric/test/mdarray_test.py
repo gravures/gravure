@@ -86,7 +86,7 @@ if TEST_COMPLEX_NUMBER:
     formats_simple.append((b'c8', 8))
     formats_simple.append((b'c16', 16))
 formats_complex = [(b'ii', 2, 2), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
-                       (b'u4f4f4', 12, 3), (b'ii<i=i1<f4=fff', 20, 8)]
+                       (b'=u4f4f4', 12, 3), (b'<iiii1f4fff', 20, 8)]
 
 
 #---------------------------------------------------------------------------#
@@ -216,8 +216,9 @@ def test_range_tuple_initializer():
         def __iter__(self):
             return self
 
-    formats_complex = [(b'iii', 3, 3), (b'>i2i1i4', 7, 3), (b'fff', 12, 3),
+    formats_complex = [(b'iii', 3, 3), (b'fff', 12, 3), (b'>i2i1i4', 7, 3),
                        (b'u4f4f4', 12, 3)]
+
     for s in shapes:
         for f, i, n in formats_complex:
             yield _new_complex, s, f, i, n, IterTuple()
@@ -439,41 +440,29 @@ def test_buffer_protocol():
 
     mv = md.mdarray(shape=(100, ), format=b'ii')
     mem = memoryview(mv)
-    print("memview :", mem)
-    print("ndim :", mem.ndim)
-    print("itemsize :", mem.itemsize)
-    print("shape :", mem.shape)
-    print("strides :", mem.strides)
-    print("suboffsets :", mem.suboffsets)
-    print("mem[44]", mem[44])
 
 #----------------------------------------------------------------------------
-#FIXME: CYTHON MEMORYVIEW                                                   #
+# CYTHON MEMORYVIEW                                                         #
 #                                                                           #
 #----------------------------------------------------------------------------
 def test_memview():
     ar = range(0, 100)
     mv = md.mdarray(shape=(10, 10), format=b'<i1', initializer=ar)
-    print("\n" + "*" * 50)
     mem = mv.memview
-    print("memview :", mem)
-    print("ndim :", mem.ndim)
-    print("itemsize :", mem.itemsize)
-    print("shape :", mem.shape)
-    print("strides :", mem.strides)
-    print("suboffsets :", mem.suboffsets)
-    print("size :", mem.size)
-    print("nbytes :", mem.nbytes)
-    print("base :", mem.base)
-    print("base.format :", mem.base.format)
-    print("mem[4,4]", mem[4, 4])
-    print("mem[4]", mem[4])
-    print("mem[4].shape", mem[4].shape)
 
-    mv = md.mdarray(shape=(10, 10), format=b'ii')
+    eq_(2, mem.ndim)
+    eq_(1, mem.itemsize)
+    eq_((10, 10), mem.shape)
+    eq_((10, 1), mem.strides)
+    eq_([-1, -1], mem.suboffsets)
+    eq_(100, mem.nbytes)
+    eq_(mv, mem.base)
+    eq_((44, ), mem[4, 4])
+    eq_((10, ), mem[4].shape)
+
+    mv = md.mdarray(shape=(10, 10), format=b'iif')
     mem = mv.memview
-    print("base.format :", mem.base.format)
-    #print("mem[4,4]", mem[4, 4])
+    eq_((0, 0, 0.0), mem[4, 4])
 
 
 #----------------------------------------------------------------------------
@@ -654,9 +643,72 @@ def test_set_item_scalar_by_slice():
     for i, e in enumerate(mv):
         eq_(e, res[i])
 
-def test_set_item_slice_by_slice():
-    pass
+class TupleRange:
 
+    def __init__(self, count=1, starts=None, stops=None, steps=None, loop=True):
+        self.count = count
+        if starts==None:
+            starts = [0] * count
+        if stops==None:
+            stops = [126] * count
+        if steps==None:
+            steps = [1] * count
+        if len(starts)!=count or len(stops)!=count or len(steps)!=count:
+            raise AttributeError("length of arrgs starts, stops, steps should be %i" %count)
+        self._vars = self._starts = starts
+        self._stops = stops
+        self._steps = steps
+        self.loop = loop
+
+    def __next__(self):
+        stop_iter = 0
+        for i in range(self.count):
+            if self._vars[i]==self._stops[i]:
+                if self.loop:
+                    self._vars[i] = self._starts[i]
+                else:
+                    stop_iter += 1
+            else:
+                self._vars[i] += self._steps[i]
+        if stop_iter == self.count:
+            raise StopIteration()
+        return tuple(self._vars)
+
+    def __iter__(self):
+        return self
+
+
+def test_set_item_slice_by_slice():
+    mva = md.mdarray((10, 10), format=b'i1', initializer=[0])
+    mvb = md.mdarray((10, 10), format=b'i1', initializer=range(0, 100))
+    print(mva, '\n')
+    print(mvb, '\n')
+    mva[:] = mvb
+    print(mva, '\n')
+
+    mva = md.mdarray((10, 10), format=b'i1', initializer=[0])
+    mvb = md.mdarray((1, 10), format=b'i1', initializer=range(0, 100))
+    print(mva, '\n')
+    print(mvb, '\n')
+    mva[:] = mvb
+    print(mva, '\n')
+
+    mva = md.mdarray((10, 10), format=b'ii')
+    mvb = md.mdarray((1, 10), format='i2i2', initializer=TupleRange(2))
+    print(mva, '\n')
+    print(mvb, '\n')
+    mva[:] = mvb[:]
+    print(mva, '\n')
+
+#----------------------------------------------------------------------------
+#TODO: __STR__                                                                 #
+#                                                                           #
+def test_str():
+    mva = md.mdarray((10, 10), format=b'i', initializer=range(100))
+    print(mva, '\n')
+
+    mva = md.mdarray((10, 10), format=b'ii', initializer=TupleRange(2))
+    print(mva, '\n')
 
 #----------------------------------------------------------------------------
 #TODO: ITERATOR                                                                 #
@@ -676,10 +728,9 @@ from nose.plugins.testid import TestId
 from nose.config import Config
 
 if __name__ == '__main__':
-#    nose.run()
-    test_memview()
-    test_buffer_protocol()
-    #test_array_interface()
+    test_set_item_slice_by_slice()
+    nose.run()
+
 
 
 

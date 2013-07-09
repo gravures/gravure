@@ -491,6 +491,7 @@ cdef class mdarray:
 
         # cache for data exchange between array and _struct
         cnumber *items_cache
+        #cnumber items_cache [MAX_ARRAY_TUPLE]
 
         # Tables of routines conversion from ctype to python numbers
         co_ptr c_to_py [27]
@@ -825,7 +826,6 @@ cdef class mdarray:
         cdef Py_ssize_t i
 
         struct_unpack(&self.formater, itemp, &self.items_cache)
-
         if le == 1:
             return self.get_PyVal_from_cnumber(&self.items_cache[0])
 
@@ -886,30 +886,31 @@ cdef class mdarray:
 
     #TODO: fix this
     cdef is_slice(mdarray self, obj):
-        if not isinstance(obj, mdarray):
+        cdef cython.view.memoryview mv
+        try:
+            flags = PyBUF_ANY_CONTIGUOUS|PyBUF_FORMAT
+            mv = cython.view.memoryview(obj, flags, False)
+            obj = mv
+        except TypeError:
             return None
-            #try:
-            #    obj = memoryview(obj, self.flags|PyBUF_ANY_CONTIGUOUS, None)
-            #except TypeError:
-            #    return None
         return obj
 
     cdef setitem_indexed(mdarray self, index, value):
         cdef char *itemp = self.get_item_pointer(index)
         self.assign_item_from_object(itemp, value)
 
-    cdef setitem_slice_assignment(mdarray self, object indices, object obj):
+    cdef setitem_slice_assignment(mdarray self, object indices, cython.view.memoryview obj):
         cdef array_view src, dst
-        cdef int ndim, i
+        cdef int ndim, i, dim
         cdef bint broadcasting
 
         # obj coulb be mdarray or buffer obj
-        self.get_slice_view_from_object(obj, &dst)
-        if &dst == NULL:
-            raise ValueError("Invalid object assignement.")
+        #if self.get_slice_view_from_object(obj, &src) == -1:
+        #    raise ValueError("Invalid object assignement.")
+        self.get_slice_view_from_memview(obj, &src)
 
         # first slice me
-        self.get_slice_view(indices, &self._interface, &src)
+        self.get_slice_view(indices, &self._interface, &dst)
 
         # compare ndim src & dst : broadcast or not
         ndim = src.ndim
@@ -930,19 +931,55 @@ cdef class mdarray:
             if src.suboffsets[i] >= 0:
                 raise ValueError("Dimension %d is not direct", i)
 
-        #if slices overlap, copy to temp, copy temp to dst ?
-
-        # if no broadcast and both slice are memory contigus
-        # and boths format fit and slice don't overlap
-        #--> optimize with direct memcopy
-        if src.itemsize == dst.itemsize and not broadcasting:
-            pass
-
-
-        # see if both slices have Fortran order, transpose them to match our
-        # C-style indexing order
-
+        #
         # go by assign_item_from_object()
+        cdef int limit = 1
+        cdef int loop = 1
+        cdef int offset_dst = 0
+        cdef int offset_src = 0
+        cdef int pos = 0
+        cdef int last_dim_len
+        cdef char *ptr_dst
+        cdef char *ptr_src
+        cdef object value
+
+        for i in xrange(ndim):
+            limit *= dst.shape[i]
+
+        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(ndim)]
+        src_indices = [dim_countdown[dim] % src.shape[dim] for dim in xrange(ndim)]
+        last_dim_len = dst.shape[ndim - 1]
+
+        while loop <= limit:
+            cursor = ndim - 1
+            for pos in xrange(last_dim_len):
+                offset_dst = 0
+                offset_src = 0
+                for i in xrange(ndim):
+                    offset_dst += dim_countdown[i] * dst.strides[i]
+                    offset_src += src_indices[i] * src.strides[i]
+                ptr_dst = dst.data + offset_dst
+                ptr_src = src.data + offset_src
+
+                #
+                # assigneent
+                # value = obj.__getitem__(tuple(src_indices))
+                value = obj.convert_item_to_object(ptr_src)
+                self.assign_item_from_object(ptr_dst, value)
+                dim_countdown[cursor] -= 1
+                src_indices[cursor] = dim_countdown[cursor] % src.shape[cursor]
+
+            while cursor > -1:
+                if dim_countdown[cursor] > 0:
+                    dim_countdown[cursor] -= 1
+                    src_indices[cursor] = dim_countdown[cursor] % src.shape[cursor]
+                    cursor = -1
+                else:
+                    dim_countdown[cursor] = dst.shape[cursor] - 1
+                    src_indices[cursor] = dim_countdown[cursor] % src.shape[cursor]
+                    cursor -= 1
+            loop += last_dim_len
+
 
     cdef void broadcast_leading(mdarray self, array_view *aview,
                                 int ndim, int ndim_other) nogil:
@@ -1081,10 +1118,25 @@ cdef class mdarray:
             result.extend([slice(None)] * nslices)
         return have_slices or nslices, tuple(result)
 
+    cdef int get_slice_view_from_memview(mdarray self, cython.view.memoryview obj, array_view *aview) except -1:
+        cdef Py_buffer buf
+
+        PyObject_GetBuffer(obj, &buf, PyBUF_INDIRECT| PyBUF_FORMAT)
+        aview.data = <char *> buf.buf
+        aview.ndim = buf.ndim
+        aview.itemsize = buf.itemsize
+        aview.len = buf.len
+        for i in xrange(buf.ndim):
+            aview.shape[i] = buf.shape[i]
+            aview.strides[i] = buf.strides[i]
+            #FIXME:
+            aview.suboffsets[i] = -1#buf.suboffsets[i]
+
+
     cdef int get_slice_view_from_object(mdarray self, object obj, array_view *aview) except -1:
         cdef Py_buffer buf
 
-        if isinstance(mdarray, obj):
+        if isinstance(obj, mdarray):
             aview[0] = self._interface
 
         elif PyObject_CheckBuffer(obj):
@@ -1102,9 +1154,8 @@ cdef class mdarray:
             else:
                 for i in xrange(buf.ndim):
                     aview.suboffsets[i] = buf.suboffsets[i]
-
         else:
-            aview = NULL
+            return -1
 
 
     cdef get_slice_view(mdarray self, object indices, array_view *s_view, array_view *d_view):
