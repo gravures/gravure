@@ -244,8 +244,11 @@ cdef class _mdarray_iterator:
     def __cinit__(_mdarray_iterator self, mdarray md_array):
         self.data = md_array._interface.data
         self.stop_index = md_array.size - 1
-        #FIXME: vraix pour mode = "C", pour "F" incorrect
-        self.memory_step = md_array._interface.strides[md_array._interface.ndim - 1]
+        #NOTE: ok if we're sure we stay contigous
+        if md_array.mode == u'C':
+            self.memory_step = md_array._interface.strides[md_array._interface.ndim - 1]
+        else:
+            self.memory_step = md_array._interface.strides[0]
         self.md_array = md_array
 
     def __init__(_mdarray_iterator self, mdarray md_array):
@@ -491,7 +494,6 @@ cdef class mdarray:
 
         # cache for data exchange between array and _struct
         cnumber *items_cache
-        #cnumber items_cache [MAX_ARRAY_TUPLE]
 
         # Tables of routines conversion from ctype to python numbers
         co_ptr c_to_py [27]
@@ -837,7 +839,6 @@ cdef class mdarray:
     cdef object get_PyVal_from_cnumber(mdarray self, cnumber *c):
         return self.c_to_py[<Py_ssize_t> c.ctype](c)
 
-    #TODO: overflow options
     cdef int get_cnumber_from_PyVal(mdarray self, cnumber *c, object v, num_types n) except -1:
         return self.py_to_c[<Py_ssize_t> n](c, v, self.clamp)
 
@@ -884,7 +885,6 @@ cdef class mdarray:
         else:
             self.setitem_indexed(indices, value)
 
-    #TODO: fix this
     cdef is_slice(mdarray self, obj):
         cdef cython.view.memoryview mv
         try:
@@ -904,9 +904,6 @@ cdef class mdarray:
         cdef int ndim, i, dim
         cdef bint broadcasting
 
-        # obj coulb be mdarray or buffer obj
-        #if self.get_slice_view_from_object(obj, &src) == -1:
-        #    raise ValueError("Invalid object assignement.")
         self.get_slice_view_from_memview(obj, &src)
 
         # first slice me
@@ -942,12 +939,13 @@ cdef class mdarray:
         cdef char *ptr_dst
         cdef char *ptr_src
         cdef object value
+        cdef int dim_countdown [MAX_ARRAY_DIM]
+        cdef int src_indices [MAX_ARRAY_DIM]
 
         for i in xrange(ndim):
             limit *= dst.shape[i]
-
-        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(ndim)]
-        src_indices = [dim_countdown[dim] % src.shape[dim] for dim in xrange(ndim)]
+            dim_countdown[i] = dst.shape[i] - 1
+            src_indices[i] = dim_countdown[i] % src.shape[i]
         last_dim_len = dst.shape[ndim - 1]
 
         while loop <= limit:
@@ -963,7 +961,6 @@ cdef class mdarray:
 
                 #
                 # assigneent
-                # value = obj.__getitem__(tuple(src_indices))
                 value = obj.convert_item_to_object(ptr_src)
                 self.assign_item_from_object(ptr_dst, value)
                 dim_countdown[cursor] -= 1
@@ -1005,15 +1002,14 @@ cdef class mdarray:
         cdef int offset_src, pos = 0
         cdef Py_ssize_t sz = self._interface.itemsize
         cdef Py_ssize_t cursor
+        cdef int dim_countdown [MAX_ARRAY_DIM]
 
-        #src = self._interface
         self.get_slice_view(indices, &self._interface, &dst)
 
         limit = 1
         for i in xrange(dst.ndim):
             limit *= dst.shape[i]
-
-        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
+            dim_countdown[i] = dst.shape[i] - 1
         dim = dst.ndim
         last_dim_len = dst.shape[dst.ndim - 1]
 
@@ -1024,7 +1020,6 @@ cdef class mdarray:
                 for i in xrange(dst.ndim):
                     offset_src += dim_countdown[i] * dst.strides[i]
                 ptr_src = dst.data + offset_src
-                #memcpy(ptr_dest, ptr_src, sz)
                 self.assign_item_from_object(ptr_src, value)
                 dim_countdown[cursor] -= 1
 
@@ -1045,7 +1040,6 @@ cdef class mdarray:
 
         assert self._interface.ndim > 0
 
-        #src = self._interface
         self.get_slice_view(indices, &self._interface, &dst)
         tpl = tuple([dst.shape[i] for i in xrange(dst.ndim)])
         sliced = mdarray(tpl, self.format, self.mode,
@@ -1059,7 +1053,10 @@ cdef class mdarray:
         cdef int offset_src, offset_dst, pos = 0
         cdef Py_ssize_t sz = self._interface.itemsize
         cdef Py_ssize_t cursor
-        dim_countdown = [dst.shape[dim] - 1 for dim in xrange(dst.ndim)]
+        cdef int dim_countdown [MAX_ARRAY_DIM]
+
+        for i in xrange(dst.ndim):
+            dim_countdown[i] = dst.shape[i] - 1
         dim = dst.ndim
 
         while loop <= limit:
@@ -1302,28 +1299,71 @@ cdef class mdarray:
     # SHAPE MANIPULATION
     #
 
-    def reshape(self):
-        raise NotImplementedError
+    def reshape(self, shape, order=u'A'):
+        cdef int size = 1
+        cdef int newdim
+        cdef Py_ssize_t i
+        if not isinstance(shape, (tuple, int)):
+            raise TypeError("new shape should be a tuple or an integer")
+
+        if isinstance(shape, int):
+            size = shape
+            newdim = 1
+            shape = (shape,)
+        else:
+            for e in shape:
+                size *= e
+            newdim = len(shape)
+        if size != self.size:
+            raise AttributeError("total size of new array must be unchanged")
+        if newdim > MAX_ARRAY_DIM:
+            raise ValueError("Array is limited to %i dimensions:\
+                              ask for %i dimension" %(MAX_ARRAY_DIM, newdim))
+
+        if order not in ("f", "F", "c", "C", "a", "A"):
+            raise ValueError("Invalid mode, expected 'c', 'f' or 'a', got %s" % order)
+        if order == 'F' or order == 'f':
+            self.mode = u'F'
+        else:
+            self.mode = u'C'
+
+        self._interface.ndim = newdim
+        for i in xrange(self._interface.ndim):
+            self._interface.shape[i] = shape[i]
+            self._interface.suboffsets[i] = -1
+        self.fill_contig_strides_array(self._interface.shape, self._interface.strides,
+                                             self._interface.itemsize, self._interface.ndim)
+
 
     def resize(self):
         raise NotImplementedError
 
     def transpose(self):
-        raise NotImplementedError
+        cdef array_view src
+
+        src = self._interface
+        for i in xrange(src.ndim):
+            if src.suboffsets[i] >= 0:
+                raise ValueError("Cannot transpose memoryview with indirect dimensions")
+        for i in xrange(src.ndim):
+            self._interface.shape[src.ndim - i - 1] = src.shape[i]
+            self._interface.strides[src.ndim - i - 1] = src.strides[i]
+        if self.mode == u'C':
+            self.mode = u'F'
+        else:
+            self.mode = u'C'
 
     property T:
         #@cname('transpose')
         def __get__(self):
-            raise NotImplementedError
-            #cdef _memoryviewslice result = memoryview_copy(self)
-            #transpose_memslice(&result.from_slice)
-            #return result
+            self.transpose()
+
 
     #def swapaxes(self):
     #    raise NotImplementedError
 
-    def flatten(self):
-        raise NotImplementedError
+    def flatten(self, order=u'A'):
+        self.reshape(self.size, order)
 
     #def squeeze(self):
     #    raise NotImplementedError
@@ -1386,7 +1426,11 @@ cdef class mdarray:
         cdef int limit = self.size
         cdef int ndim = self._interface.ndim
         cdef Py_ssize_t *shape = self._interface.shape
-        dim_countdown = [shape[dim] - 1 for dim in xrange(ndim)]
+        cdef int dim_countdown [MAX_ARRAY_DIM]
+
+        for i in xrange(ndim):
+            dim_countdown[i] = shape[i] - 1
+
         cdef int last_dim_len = shape[ndim - 1]
         cdef int offset, pos = 0
         cdef Py_ssize_t sz = self._interface.itemsize

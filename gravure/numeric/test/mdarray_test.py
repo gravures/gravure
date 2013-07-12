@@ -745,6 +745,44 @@ def test_set_item_slice_by_slice():
     for i in range(6):
         eq_(res[i], cmp[i])
 
+    #TODO: numpy
+
+#----------------------------------------------------------------------------
+# TRANSPOSE                                                                 #
+#                                                                           #
+def test_transpose():
+    mva = md.mdarray((10, 5), format=b'i', order='c', initializer=range(100))
+    shape = list(mva.shape)
+    shape.reverse()
+    strides = list(mva.strides)
+    strides.reverse()
+    a = mva[1, 4]
+    mva.transpose()
+    eq_(shape, list(mva.shape))
+    eq_(strides, list(mva.strides))
+    eq_(a, mva[4, 1])
+
+#----------------------------------------------------------------------------
+# RESHAPE                                                                   #
+#                                                                           #
+def test_reshape():
+    mva = md.mdarray((10, 5), format=b'i', order='c', initializer=range(100))
+    mva.reshape((50, ))
+    eq_(1, mva.ndim)
+    eq_((50, ), mva.shape)
+    mva.reshape((1, 5, 10))
+    eq_(3, mva.ndim)
+    eq_((1, 5, 10), mva.shape)
+
+#----------------------------------------------------------------------------
+# FLATTEN                                                                   #
+#                                                                           #
+def test_flatten():
+    mva = md.mdarray((10, 5), format=b'i', order='c', initializer=range(100))
+    mva.flatten()
+    eq_(1, mva.ndim)
+    eq_((50, ), mva.shape)
+
 #----------------------------------------------------------------------------
 #TODO: __STR__                                                                 #
 #                                                                           #
@@ -773,7 +811,6 @@ from nose.plugins.testid import TestId
 from nose.config import Config
 
 if __name__ == '__main__':
-    #test_str()
     nose.run()
 
 
