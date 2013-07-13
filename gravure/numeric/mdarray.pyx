@@ -121,6 +121,7 @@ cdef extern from *:
 cdef extern from "stdlib.h":
     void *malloc(size_t) nogil
     void free(void *) nogil
+    void realloc(void *, size_t) nogil
     void *memcpy(void *dest, void *src, size_t n) nogil
 
 cdef extern from "string.h" nogil:
@@ -502,6 +503,7 @@ cdef class mdarray:
         bint clamp
 
         object obj
+        bint readonly
 
     cdef object __weakref__
     cdef object __array_interface__
@@ -589,6 +591,7 @@ cdef class mdarray:
         if self.free_data:
             self._interface.data = <char *>malloc(self._interface.len)
             self.obj = self
+            self.readonly = 0
             #TODO: CALLOC
             if not self._interface.data:
                 free(self._interface.data)
@@ -623,6 +626,7 @@ cdef class mdarray:
             if info.len - offset >= self._interface.len:
                 self._interface.data = <char *> info.buf + offset
                 self.obj = info.obj
+                self.readonly = info.readonly
             else:
                 raise TypeError("buffer is too small for requested array.")
 
@@ -673,7 +677,9 @@ cdef class mdarray:
         info.obj = self.obj
         info.internal = NULL
 
-        if flags & PyBUF_WRITABLE:
+        if flags & PyBUF_WRITABLE or not self.readonly:
+            info.readonly = 0
+        else:
             info.readonly = 1
 
         if flags & PyBUF_SIMPLE:
@@ -875,6 +881,8 @@ cdef class mdarray:
             return self.convert_item_to_object(itemp)
 
     def __setitem__(mdarray self, object index, object value):
+        if self.readonly:
+            raise AttributeError("Memory buffer is readonly")
         have_slices, indices = self._unellipsify(index)
         if have_slices:
             obj = self.is_slice(value)
@@ -1301,7 +1309,7 @@ cdef class mdarray:
 
     def reshape(self, shape, order=u'A'):
         cdef int size = 1
-        cdef int newdim
+        cdef int dim, newdim
         cdef Py_ssize_t i
         if not isinstance(shape, (tuple, int)):
             raise TypeError("new shape should be a tuple or an integer")
@@ -1315,10 +1323,13 @@ cdef class mdarray:
                 size *= e
             newdim = len(shape)
         if size != self.size:
-            raise AttributeError("total size of new array must be unchanged")
+            raise ValueError("total size of new array must be unchanged")
         if newdim > MAX_ARRAY_DIM:
             raise ValueError("Array is limited to %i dimensions:\
                               ask for %i dimension" %(MAX_ARRAY_DIM, newdim))
+        for dim in shape:
+            if dim <= 0:
+                raise ValueError("Invalid shape dimension %d." % (dim,))
 
         if order not in ("f", "F", "c", "C", "a", "A"):
             raise ValueError("Invalid mode, expected 'c', 'f' or 'a', got %s" % order)
@@ -1335,8 +1346,53 @@ cdef class mdarray:
                                              self._interface.itemsize, self._interface.ndim)
 
 
-    def resize(self):
-        raise NotImplementedError
+    def resize(self, shape):
+        cdef int size = 1
+        cdef int dim, newdim
+        cdef Py_ssize_t i, new_len, old_len
+        cdef char *new_ptr
+
+        if self.obj != self:
+            raise ValueError("Mdarray could not be reshape cause it don't own its buffer.")
+
+        if not isinstance(shape, (tuple, int)):
+            raise TypeError("new shape should be a tuple or an integer")
+
+        if isinstance(shape, int):
+            size = shape
+            newdim = 1
+            shape = (shape,)
+        else:
+            for e in shape:
+                size *= e
+            newdim = len(shape)
+
+        for dim in shape:
+            if dim <= 0:
+                raise ValueError("Invalid shape dimension %d." % (dim,))
+
+        if newdim > MAX_ARRAY_DIM:
+            raise ValueError("Array is limited to %i dimensions:\
+                              ask for %i dimension" %(MAX_ARRAY_DIM, newdim))
+
+        new_len = size * self._interface.itemsize
+        if new_len != self._interface.len:
+            new_ptr = <char *> realloc(self._interface.data, new_len)
+            if not new_ptr:
+                raise RuntimeWarning("unable to reallocate array buffer.")
+            self._interface.data = new_ptr
+
+        old_len = self._interface.len
+        self._interface.ndim = newdim
+
+        for i in xrange(newdim):
+            self._interface.shape[i] = shape[i]
+            self._interface.suboffsets[i] = -1
+        self._interface.len = self.fill_contig_strides_array(self._interface.shape, self._interface.strides,
+                                             self._interface.itemsize, self._interface.ndim)
+        if self._interface.len > old_len:
+            memset(self._interface.data + old_len, 0, self._interface.len - old_len)
+
 
     def transpose(self):
         cdef array_view src
@@ -1344,7 +1400,7 @@ cdef class mdarray:
         src = self._interface
         for i in xrange(src.ndim):
             if src.suboffsets[i] >= 0:
-                raise ValueError("Cannot transpose memoryview with indirect dimensions")
+                raise ValueError("Cannot transpose array with indirect dimensions")
         for i in xrange(src.ndim):
             self._interface.shape[src.ndim - i - 1] = src.shape[i]
             self._interface.strides[src.ndim - i - 1] = src.strides[i]
@@ -1357,7 +1413,6 @@ cdef class mdarray:
         #@cname('transpose')
         def __get__(self):
             self.transpose()
-
 
     #def swapaxes(self):
     #    raise NotImplementedError

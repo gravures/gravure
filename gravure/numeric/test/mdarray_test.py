@@ -773,6 +773,24 @@ def test_reshape():
     mva.reshape((1, 5, 10))
     eq_(3, mva.ndim)
     eq_((1, 5, 10), mva.shape)
+    assert_raises(ValueError, mva.reshape, (10, 10))
+
+#----------------------------------------------------------------------------
+# RESIZE                                                                    #
+#                                                                           #
+def test_resize():
+    mva = md.mdarray((10, 5), format=b'i', order='c', initializer=range(100))
+    mva.resize((10, 10))
+    eq_(2, mva.ndim)
+    eq_((10, 10), mva.shape)
+    eq_(100, mva.nbytes)
+    mva.resize((10, 2))
+    eq_(2, mva.ndim)
+    eq_((10, 2), mva.shape)
+    eq_(20, mva.nbytes)
+    ar = array.array('b', range(100))
+    mv = md.mdarray(shape=(10, 10), format=b'i', initializer=ar)
+    assert_raises(ValueError, mva.reshape, (10, 20))
 
 #----------------------------------------------------------------------------
 # FLATTEN                                                                   #
