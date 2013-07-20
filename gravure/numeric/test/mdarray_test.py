@@ -33,6 +33,7 @@ from nose import *
 from nose.tools import *
 from nose.failure import *
 
+import cython
 #TODO: change to normal import in futur
 import pyximport; pyximport.install()
 import numeric.mdarray as md
@@ -793,6 +794,14 @@ def test_resize():
     assert_raises(ValueError, mva.reshape, (10, 20))
 
 #----------------------------------------------------------------------------
+# SWAPAXES                                                                  #
+#                                                                           #
+def test_swapaxes():
+    mva = md.mdarray((2, 5, 10), format=b'i', order='c', initializer=range(100))
+    mva.swapaxes(0, 2)
+    eq_((10, 5, 2), mva.shape)
+
+#----------------------------------------------------------------------------
 # FLATTEN                                                                   #
 #                                                                           #
 def test_flatten():
@@ -821,6 +830,23 @@ def iterator():
     for i, v in enumerate(mv):
         print (i, "#", v)
 
+#----------------------------------------------------------------------------
+# ARITMHETIC                                                                #
+#                                                                           #
+def test_arithmetic():
+    mva = md.mdarray((10, 10), format=b'i', initializer=range(100))
+    mvb = md.mdarray((10, 10), format=b'i', initializer=[10])
+    mvc = mva + mvb
+    print(mva)
+    print(mvb)
+    print(mvc)
+
+    mva = md.mdarray((5, 5, 5), format=b'i2', initializer=range(125))
+    mvb = md.mdarray((1, 5), format=b'i2', initializer=[10])
+    mvc = mvb + mva
+    print(mva)
+    print(mvb)
+    print(mvc)
 
 
 #------------------------------------------------------------------------------
@@ -829,7 +855,9 @@ from nose.plugins.testid import TestId
 from nose.config import Config
 
 if __name__ == '__main__':
-    nose.run()
+    #test_swapaxes()
+    test_arithmetic()
+    #nose.run()
 
 
 

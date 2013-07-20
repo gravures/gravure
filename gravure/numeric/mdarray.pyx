@@ -30,6 +30,10 @@ cimport bit_width_type as _b
 cdef extern from "Python.h":
     object PyLong_FromVoidPtr(void *)
 
+    bint PyNumber_Check(object o)
+    # Returns 1 if the object o provides numeric protocols, and false
+    # otherwise. This function always succeeds.
+
     bint PyLong_Check(object p)
     # Return true if its argument is a PyLongObject or a subtype of PyLongObject.
 
@@ -127,6 +131,8 @@ cdef extern from "stdlib.h":
 cdef extern from "string.h" nogil:
     void *memset(void *BLOCK, int C, size_t SIZE)
 
+#cdef void broadcast(array_view*, array_view*, bint*, int*)
+#cdef void broadcast_leading(array_view*, int, int) nogil
 
 cdef object get_pylong(object v):
     if v is None:
@@ -913,28 +919,10 @@ cdef class mdarray:
         cdef bint broadcasting
 
         self.get_slice_view_from_memview(obj, &src)
-
         # first slice me
         self.get_slice_view(indices, &self._interface, &dst)
-
         # compare ndim src & dst : broadcast or not
-        ndim = src.ndim
-        if src.ndim < dst.ndim:
-            self.broadcast_leading(&src, src.ndim, dst.ndim)
-            ndim = dst.ndim
-        elif dst.ndim < src.ndim:
-            self.broadcast_leading(&dst, dst.ndim, src.ndim)
-
-        for i in range(ndim):
-            if src.shape[i] != dst.shape[i]:
-                if src.shape[i] == 1:
-                    broadcasting = True
-                    src.strides[i] = 0
-                else:
-                    raise ValueError("got differing extents in dimension %d (got %d and %d)" %
-                                                            (i, dst.shape[i], src.shape[i]))
-            if src.suboffsets[i] >= 0:
-                raise ValueError("Dimension %d is not direct", i)
+        broadcast(&src, &dst, &broadcasting, &ndim)
 
         #
         # go by assign_item_from_object()
@@ -985,21 +973,6 @@ cdef class mdarray:
                     cursor -= 1
             loop += last_dim_len
 
-
-    cdef void broadcast_leading(mdarray self, array_view *aview,
-                                int ndim, int ndim_other) nogil:
-        cdef int i
-        cdef int offset = ndim_other - ndim
-
-        for i in range(ndim - 1, -1, -1):
-            aview.shape[i + offset] = aview.shape[i]
-            aview.strides[i + offset] = aview.strides[i]
-            aview.suboffsets[i + offset] = aview.suboffsets[i]
-
-        for i in range(offset):
-            aview.shape[i] = 1
-            aview.strides[i] = aview.strides[0]
-            aview.suboffsets[i] = -1
 
     cdef setitem_slice_assign_scalar(mdarray self, object indices, value):
         cdef array_view src, dst
@@ -1280,7 +1253,6 @@ cdef class mdarray:
     #
     # CONTAINER INTERFACE
     #
-
     def __contains__(mdarray self, object value):
         raise NotImplementedError
 
@@ -1296,7 +1268,6 @@ cdef class mdarray:
     #
     # ITEM SELECTION AND MANIPULATION
     #
-
     def sort(self):
         raise NotImplementedError
 
@@ -1306,7 +1277,6 @@ cdef class mdarray:
     #
     # SHAPE MANIPULATION
     #
-
     def reshape(self, shape, order=u'A'):
         cdef int size = 1
         cdef int dim, newdim
@@ -1343,8 +1313,7 @@ cdef class mdarray:
             self._interface.shape[i] = shape[i]
             self._interface.suboffsets[i] = -1
         self.fill_contig_strides_array(self._interface.shape, self._interface.strides,
-                                             self._interface.itemsize, self._interface.ndim)
-
+                                       self._interface.itemsize, self._interface.ndim)
 
     def resize(self, shape):
         cdef int size = 1
@@ -1389,10 +1358,9 @@ cdef class mdarray:
             self._interface.shape[i] = shape[i]
             self._interface.suboffsets[i] = -1
         self._interface.len = self.fill_contig_strides_array(self._interface.shape, self._interface.strides,
-                                             self._interface.itemsize, self._interface.ndim)
+                                                            self._interface.itemsize, self._interface.ndim)
         if self._interface.len > old_len:
             memset(self._interface.data + old_len, 0, self._interface.len - old_len)
-
 
     def transpose(self):
         cdef array_view src
@@ -1414,8 +1382,23 @@ cdef class mdarray:
         def __get__(self):
             self.transpose()
 
-    #def swapaxes(self):
-    #    raise NotImplementedError
+    def swapaxes(self, axis1, axis2):
+        if not isinstance(axis1, int) or \
+           not isinstance(axis2, int):
+            raise ValueError("axes should be integer value.")
+        if self._interface.ndim == 1:
+            raise ValueError("Can't swap one dimensionnal array.")
+        if axis1 < 0 or axis1 >= self._interface.ndim or \
+           axis2 < 0 or axis2 >= self._interface.ndim:
+            raise ValueError("Incorrect value for axe index.")
+        cdef Py_ssize_t dim_save
+        dim_save = self._interface.shape[axis1]
+        self._interface.shape[axis1] = self._interface.shape[axis2]
+        self._interface.shape[axis2] = dim_save
+        dim_save = self._interface.strides[axis1]
+        self._interface.strides[axis1] = self._interface.strides[axis2]
+        self._interface.strides[axis2] = dim_save
+        #FIXME: we can loose c or f contiguity
 
     def flatten(self, order=u'A'):
         self.reshape(self.size, order)
@@ -1426,7 +1409,6 @@ cdef class mdarray:
     #
     # COPY METHOD
     #
-
     def copy(mdarray self):
         cdef mdarray copy_a
         cdef char *tp
@@ -1445,7 +1427,6 @@ cdef class mdarray:
     #
     # ARRAY CONVERSION
     #
-
     def fill(mdarray self, object value):
         raise NotImplementedError
 
@@ -1470,7 +1451,6 @@ cdef class mdarray:
     #
     # STRING REPRESENTATIONS
     #
-
     def __repr__(self):
         return self.__str__()
 
@@ -1521,26 +1501,201 @@ cdef class mdarray:
         r_str = r_str[0:-1 * ident -2]
         return r_str
 
-        #
-        # CALCULATIONS METHOD
-        #
-        # all, any, max, argmax, min, argmin, ptp, clip, sum, cumsum
-        # mean, prod, comprod
+    #
+    # CALCULATIONS METHOD
+    #
+    # all, any, max, argmax, min, argmin, ptp, clip, sum, cumsum
+    # mean, prod, comprod
 
-        #
-        # ARITHMETIC
-        #
+    #
+    # ARITHMETIC
+    #
+    def __add__(x, y):
+        return _compute(x, y, &c_add)
 
 
+
+
+
+    #
+    # RICH COMPARAISON
+    #
+
+#
+# GENERAL ARITHMETIC C ROUTINE
+#
+ctypedef object (*c_arithmetic)(object, object)
+ctypedef fused c_type:
+    int
+    float
+
+cdef object c_add(object x, object y):
+    return x + y
+
+
+cdef object _compute(object x, object y, c_arithmetic operator):
+    cdef bint reverse_op = 0
+    cdef bint have_arr = 0
+    cdef bint broadcasting
+    cdef mdarray cx, cy, arr_res = None
+    cdef int format_len, ndim
+    cdef object scalar = None
+    cdef array_view src_x, src_y, dst
+
+    # test operand validity
+    if isinstance(x, mdarray):
+        cx = <mdarray> x
+        have_arr = 1
+        src_x = cx._interface
+    else:
+        scalar = x
+        reverse_op = 1
+    if isinstance(y, mdarray):
+        cy = <mdarray> y
+        src_y = cy._interface
+    else:
+        if not have_arr:
+            return NotImplemented
+        scalar = y
+
+    # we have one scalar and a array
+    # test scalar validity
+    if scalar is not None:
+        if scalar == x:
+            format_len = cy.formater.length
+            ndim = src_y.ndim
+        else:
+            format_len = cx.formater.length
+            ndim = src_x.ndim
+        if format_len == 1:
+            if not PyNumber_Check(scalar):
+                return NotImplemented
+        elif isinstance(scalar, tuple) and len(scalar) == format_len:
+                for e in scalar:
+                    if not PyNumber_Check(e):
+                        return NotImplemented
+
+    # we have 2 arrays
+    # BROADCASTING TEST
+    else:
+        if cx.formater.length != cy.formater.length:
+            return NotImplemented
+        broadcast(&src_x, &src_y, &broadcasting, &ndim)
+
+    #
+    # GO TO MATH
+    #
+    if reverse_op:  # so, we have 1 scalar
+        cx = cy
+        cy = None
+        src_x = src_y
+
+    # return array
+    #FIXME: format should be compute.
+    # shape, mode, overflow and clamp inherited
+    shape = tuple([src_x.shape[i] for i in xrange(ndim)])
+    arr_res = mdarray(shape, cx.format, cx.mode,
+                     overflow=cx.overflow, clamp=cx.clamp)
+    dst = arr_res._interface
+
+    # LOOP
+    cdef int limit = 1, loop = 1
+    cdef int offset_src_y = 0, offset_src_x = 0, offset_dst=0, pos = 0
+    cdef int last_dim_len, cursor
+    cdef char *ptr_src_x, *ptr_src_y, *ptr_dst
+    cdef int src_x_indices [MAX_ARRAY_DIM]
+    cdef int src_y_indices [MAX_ARRAY_DIM]
+    cdef object val_x, val_y, val_dst
+
+    for i in xrange(ndim):
+        limit *= src_x.shape[i]
+        src_x_indices[i] = src_x.shape[i] - 1
+        if scalar is None:
+            src_y_indices[i] = src_x_indices[i] % src_y.shape[i]
+    last_dim_len = src_x.shape[ndim - 1]
+
+    while loop <= limit:
+        cursor = ndim - 1
+        for pos in xrange(last_dim_len):
+            offset_src_x = 0
+            offset_dst = 0
+            offset_src_y = 0
+            for i in xrange(ndim):
+                offset_src_x += src_x_indices[i] * src_x.strides[i]
+                offset_dst += src_x_indices[i] * dst.strides[i]
+                offset_src_y += src_y_indices[i] * src_y.strides[i]
+            ptr_src_x = src_x.data + offset_src_x
+            ptr_dst = dst.data + offset_dst
+            ptr_src_y = src_y.data + offset_src_y
+
+            val_x = cx.convert_item_to_object(ptr_src_x)
+            val_y = cy.convert_item_to_object(ptr_src_y)
+            val_dst = operator(val_x, val_y)
+
+            arr_res.assign_item_from_object(ptr_dst, val_dst)
+            src_x_indices[cursor] -= 1
+            src_y_indices[cursor] = src_x_indices[cursor] % src_y.shape[cursor]
+
+        while cursor > -1:
+            if src_x_indices[cursor] > 0:
+                src_x_indices[cursor] -= 1
+                src_y_indices[cursor] = src_x_indices[cursor] % src_y.shape[cursor]
+                cursor = -1
+            else:
+                src_x_indices[cursor] = src_x.shape[cursor] - 1
+                src_y_indices[cursor] = src_x_indices[cursor] % src_x.shape[cursor]
+                cursor -= 1
+        loop += last_dim_len
+
+    return arr_res
+
+
+cdef int broadcast(array_view *src, array_view *dst, bint *broadcasting, int *ndim) except -1:
+    with nogil:
+        # compare ndim src & dst : broadcast or not
+        ndim[0] = src.ndim
+        if src.ndim < dst.ndim:
+            broadcast_lead(src, src.ndim, dst.ndim)
+            ndim[0] = dst.ndim
+        elif dst.ndim < src.ndim:
+            broadcast_lead(dst, dst.ndim, src.ndim)
+
+        for i in range(ndim[0]):
+            if src.shape[i] != dst.shape[i]:
+                if src.shape[i] == 1:
+                    broadcasting[0] = True
+                    src.strides[i] = 0
+                else:
+                    raise_err_extents(i, dst.shape[i], src.shape[i])
+                    #raise ValueError("got differing extents in dimension %d (got %d and %d)" %
+                    #                                        (i, dst.shape[i], src.shape[i]))
+            if src.suboffsets[i] >= 0:
+                raise_err_dim(ValueError, "Dimension %d is not direct", i)
+                #raise ValueError("Dimension %d is not direct", i)
+
+cdef void broadcast_lead(array_view *aview, int ndim, int ndim_other) nogil:
+    cdef int i
+    cdef int offset = ndim_other - ndim
+
+    for i in range(ndim - 1, -1, -1):
+        aview.shape[i + offset] = aview.shape[i]
+        aview.strides[i + offset] = aview.strides[i]
+        aview.suboffsets[i + offset] = aview.suboffsets[i]
+
+    for i in range(offset):
+        aview.shape[i] = 1
+        aview.strides[i] = aview.strides[0]
+        aview.suboffsets[i] = -1
 
 
 # Use 'with gil' functions and avoid 'with gil' blocks, as the code within the blocks
 # has temporaries that need the GIL to clean up
+#
 #@cname('__pyx_memoryview_err_extents')
-#cdef int _err_extents(int i, Py_ssize_t extent1,
-#                             Py_ssize_t extent2) except -1 with gil:
-#    raise ValueError("got differing extents in dimension %d (got %d and %d)" %
-#                                                        (i, extent1, extent2))
+cdef int raise_err_extents(int i, Py_ssize_t extent1,
+                             Py_ssize_t extent2) except -1 with gil:
+    raise ValueError("got differing extents in dimension %d (got %d and %d)" %
+                                                        (i, extent1, extent2))
 
 #@cname('__pyx_memoryview_err_dim')
 cdef int raise_err_dim(object error, char *msg, int dim) except -1 with gil:
