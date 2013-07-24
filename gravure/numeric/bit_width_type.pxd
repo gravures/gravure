@@ -156,18 +156,18 @@ from max_const cimport *
 
 ctypedef enum num_types:
     BOOL
-    INT8
-    INT16
-    INT32
-    INT64
-    INT128
-    INT256
     UINT8
     UINT16
     UINT32
     UINT64
     UINT128
     UINT256
+    INT8
+    INT16
+    INT32
+    INT64
+    INT128
+    INT256
     FLOAT16
     FLOAT32
     FLOAT64
@@ -177,7 +177,11 @@ ctypedef enum num_types:
     FLOAT256
     COMPLEX32
     COMPLEX64
+    COMPLEX128
     COMPLEX160
     COMPLEX192
     COMPLEX256
     COMPLEX512
+
+
+

@@ -20,6 +20,7 @@
 
 cimport cython
 
+# SIZED TYPE DEFINITION
 include "TYPE_DEF.pxi"
 
 #
@@ -42,12 +43,12 @@ DEF HAVE_COMPLEX192 = 0
 DEF HAVE_COMPLEX256 = 0
 DEF HAVE_COMPLEX512 = 0
 
+DEF SUPPORTED_FORMATS = BASE_FORMATS + HAVE_INT64 + HAVE_UINT64 + HAVE_INT128 + HAVE_UINT128 + \
+                        HAVE_INT256 + HAVE_UINT256 + HAVE_FLOAT16 + HAVE_FLOAT80 + HAVE_FLOAT96 + \
+                        HAVE_FLOAT128 + HAVE_FLOAT256 + HAVE_COMPLEX64 +HAVE_COMPLEX128 + \
+                        HAVE_COMPLEX160 + HAVE_COMPLEX192 + HAVE_COMPLEX256 + HAVE_COMPLEX512
+#DEF ALL_FORMATS       = BASE_FORMATS + SUPPORTED_FORMATS
 DEF MAX_STRUCT_LENGTH = 50
-DEF BASE_FORMATS = 9
-DEF FORMATS = BASE_FORMATS + HAVE_INT64 + HAVE_UINT64 + HAVE_INT128 + HAVE_UINT128 + \
-              HAVE_INT256 + HAVE_UINT256 + HAVE_FLOAT16 + HAVE_FLOAT80 + HAVE_FLOAT96 + \
-              HAVE_FLOAT128 + HAVE_FLOAT256 + HAVE_COMPLEX64 +HAVE_COMPLEX128 + \
-              HAVE_COMPLEX160 + HAVE_COMPLEX192 + HAVE_COMPLEX256 + HAVE_COMPLEX512
 
 cdef extern from *:
     ctypedef struct PyObject
@@ -459,7 +460,7 @@ cdef void bp_float64(char *p, cnumber *c):
 
 
 cdef I = 0
-cdef formatdef host_endian_table [FORMATS]
+cdef formatdef host_endian_table [SUPPORTED_FORMATS]
 host_endian_table[I]     = formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool)
 I += 1
 host_endian_table[I]     = formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8)
@@ -503,7 +504,7 @@ IF HAVE_COMPLEX128:
     host_endian_table[I] = formatdef(format=COMPLEX128, size=16, alignment=0,  unpack=nu_complex128, pack=np_complex128)
 
 I = 0
-cdef formatdef big_endian_table [FORMATS]
+cdef formatdef big_endian_table [SUPPORTED_FORMATS]
 big_endian_table[I]     = formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool)
 I += 1
 big_endian_table[I]     = formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8)
@@ -547,7 +548,7 @@ IF HAVE_INT128:
     big_endian_table[I] = formatdef(format=COMPLEX128, size=16, alignment=0,  unpack=bu_complex128, pack=bp_complex128)
 
 I = 0
-cdef formatdef little_endian_table [FORMATS]
+cdef formatdef little_endian_table [SUPPORTED_FORMATS]
 little_endian_table[I] = formatdef(format=BOOL,       size=1,  alignment=0,  unpack=nu_bool,       pack=np_bool)
 I += 1
 little_endian_table[I] = formatdef(format=INT8,       size=1,  alignment=0,  unpack=nu_int8,       pack=np_int8)
@@ -791,7 +792,7 @@ cdef Py_ssize_t struct_from_formatcode(bytes fmt, formatcode **s_codes,
 
 cdef inline formatdef* formatdef_from_code(num_types nt, formatdef *table):
     cdef int i = 0
-    while i < FORMATS:
+    while i < SUPPORTED_FORMATS:
         if table[i].format == nt:
             return &table[i]
         i += 1
@@ -837,5 +838,21 @@ cdef int struct_pack(_struct *_self, char *c, cnumber **cnums):
         _self.codes[i].fmtdef.pack(ptr_c, &cnums[0][i])
 
 
-
+cdef void init_cnumber(cnumber* cn):
+    cn.val_p[<int> BOOL] = &cn.val.b
+    cn.val_p[<int> INT8] = &cn.val.i8
+    cn.val_p[<int> INT16] = &cn.val.i16
+    cn.val_p[<int> INT32] = &cn.val.i32
+    cn.val_p[<int> INT64] = &cn.val.i64
+    cn.val_p[<int> INT128] = &cn.val.i128
+    cn.val_p[<int> INT256] = &cn.val.i256
+    cn.val_p[<int> UINT8] = &cn.val.u8
+    cn.val_p[<int> UINT16] = &cn.val.u16
+    cn.val_p[<int> UINT32] = &cn.val.u32
+    cn.val_p[<int> UINT64] = &cn.val.u64
+    cn.val_p[<int> UINT128] = &cn.val.u128
+    cn.val_p[<int> UINT256] = &cn.val.u256
+    cn.val_p[<int> FLOAT16] = &cn.val.f16
+    cn.val_p[<int> FLOAT32] = &cn.val.f32
+    cn.val_p[<int> FLOAT64] = &cn.val.f64
 

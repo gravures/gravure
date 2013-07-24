@@ -20,6 +20,8 @@
 
 from bit_width_type cimport *
 
+# SIZED TYPE DEFINITION
+include "TYPE_DEF.pxi"
 
 ctypedef enum endianess:
     LITTLE_ENDIAN
@@ -56,9 +58,101 @@ ctypedef union unumber:
     wide        w
     uwide       uw
 
+ctypedef fused fused_number_1:
+    _bool
+    int8
+    int16
+    int32
+    int64
+    int128
+    int256
+    uint8
+    uint16
+    uint32
+    uint64
+    uint128
+    uint256
+    float16
+    float32
+    float64
+    float80
+    float96
+    float128
+    float256
+    complex32
+    complex64
+    complex128
+    complex160
+    complex192
+    complex256
+    complex512
+
+ctypedef fused fused_number_2:
+    _bool
+    int8
+    int16
+    int32
+    int64
+    int128
+    int256
+    uint8
+    uint16
+    uint32
+    uint64
+    uint128
+    uint256
+    float16
+    float32
+    float64
+    float80
+    float96
+    float128
+    float256
+    complex32
+    complex64
+    complex128
+    complex160
+    complex192
+    complex256
+    complex512
+
+ctypedef fused fused_number_3:
+    _bool
+    int8
+    int16
+    int32
+    int64
+    int128
+    int256
+    uint8
+    uint16
+    uint32
+    uint64
+    uint128
+    uint256
+    float16
+    float32
+    float64
+    float80
+    float96
+    float128
+    float256
+    complex32
+    complex64
+    complex128
+    complex160
+    complex192
+    complex256
+    complex512
+
+
 ctypedef struct cnumber:
     num_types ctype
     unumber val
+    void *val_p[ALL_FORMATS]
+
+cdef void init_cnumber(cnumber*)
+
 
 ctypedef struct formatdef:
     num_types format

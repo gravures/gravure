@@ -26,6 +26,10 @@ from _struct cimport *
 from enum cimport *
 from bit_width_type cimport *
 cimport bit_width_type as _b
+from type_promotion cimport *
+
+# SIZED TYPE DEFINITION
+include "TYPE_DEF.pxi"
 
 cdef extern from "Python.h":
     object PyLong_FromVoidPtr(void *)
@@ -155,7 +159,6 @@ cdef object get_pylong(object v):
 #
 # PYTHON EXPORT OF ENUMERATION
 #
-include "TYPE_DEF.pxi"
 
 cdef class BitWidthType(Enum):
     __enum_values__ = {}
@@ -370,7 +373,7 @@ cdef int py_to_f64(cnumber *c, object v, bint clmp) except -1:
 ctypedef object (*co_ptr)(cnumber *)
 ctypedef int (*oc_ptr) (cnumber *, object, bint) except -1
 
-cdef oc_ptr py_to_c_functions [27]
+cdef oc_ptr py_to_c_functions [ALL_FORMATS]
 py_to_c_functions[<Py_ssize_t> BOOL] = py_to_b
 
 py_to_c_functions[<Py_ssize_t> INT8] = py_to_i8
@@ -422,7 +425,7 @@ cdef f32_to_py(cnumber *c):
 cdef f64_to_py(cnumber *c):
     return c.val.f64
 
-cdef co_ptr c_to_py_functions [27]
+cdef co_ptr c_to_py_functions [ALL_FORMATS]
 c_to_py_functions[<Py_ssize_t> BOOL] = b_to_py
 
 c_to_py_functions[<Py_ssize_t> INT8] = i8_to_py
@@ -503,8 +506,8 @@ cdef class mdarray:
         cnumber *items_cache
 
         # Tables of routines conversion from ctype to python numbers
-        co_ptr c_to_py [27]
-        oc_ptr py_to_c [27]
+        co_ptr c_to_py [ALL_FORMATS]
+        oc_ptr py_to_c [ALL_FORMATS]
         bint overflow
         bint clamp
 
@@ -576,8 +579,8 @@ cdef class mdarray:
         # convertion functions
         self.overflow = overflow
         self.clamp = clamp
-        memcpy(self.c_to_py, c_to_py_functions, sizeof(co_ptr) * 27)
-        memcpy(self.py_to_c, py_to_c_functions, sizeof(co_ptr) * 27)
+        memcpy(self.c_to_py, c_to_py_functions, sizeof(co_ptr) * ALL_FORMATS)
+        memcpy(self.py_to_c, py_to_c_functions, sizeof(co_ptr) * ALL_FORMATS)
         if not overflow and not clamp:
             self.py_to_c[<Py_ssize_t> INT8] = py_to_wide
             self.py_to_c[<Py_ssize_t> UINT8] = py_to_wide
@@ -834,7 +837,7 @@ cdef class mdarray:
         struct_pack(&self.formater, itemp, &self.items_cache)
 
 
-    cdef convert_item_to_object(mdarray self, char *itemp):
+    cdef object convert_item_to_object(mdarray self, char *itemp):
         cdef Py_ssize_t le = self.formater.length
         cdef object pytuple
         cdef Py_ssize_t i
@@ -1514,9 +1517,6 @@ cdef class mdarray:
         return _compute(x, y, &c_add)
 
 
-
-
-
     #
     # RICH COMPARAISON
     #
@@ -1525,12 +1525,42 @@ cdef class mdarray:
 # GENERAL ARITHMETIC C ROUTINE
 #
 ctypedef object (*c_arithmetic)(object, object)
-ctypedef fused c_type:
-    int
-    float
 
-cdef object c_add(object x, object y):
+cdef object c_add(x, y):
     return x + y
+
+cdef fused_number_1 fuse_add(fused_number_1 x, fused_number_1 y) nogil:
+    return x + y
+
+cdef void test():
+    cdef int8 a,b,c
+    cdef int8 *ap
+    cdef cnumber cn, cb, cres
+    cdef float32 *fp
+    cdef fused_number_1 fnum
+
+    init_cnumber(&cn)
+
+    cn.val.i8 = 8
+    cn.ctype = INT8
+    cb.val.f32 = 3.33
+    cb.ctype = FLOAT32
+
+
+    with nogil:
+        cres.val.w = <wide> fuse_add( (cn.val.i8 if cn.ctype == INT8 else \
+                                (cn.val.i16 if cn.ctype == INT16 else \
+                                (cn.val.f32 if cn.ctype == FLOAT32 else cn.val.f64))),\
+
+                                (cb.val.i8 if cb.ctype == INT8 else \
+                                (cb.val.i16 if cb.ctype == INT16 else \
+                                (cb.val.f32 if cb.ctype == FLOAT32 else cb.val.f64)))   )
+
+    print "ternaire", cres.val.i8
+
+
+
+
 
 
 cdef object _compute(object x, object y, c_arithmetic operator):
@@ -1541,6 +1571,7 @@ cdef object _compute(object x, object y, c_arithmetic operator):
     cdef int format_len, ndim
     cdef object scalar = None
     cdef array_view src_x, src_y, dst
+
 
     # test operand validity
     if isinstance(x, mdarray):
@@ -1593,6 +1624,8 @@ cdef object _compute(object x, object y, c_arithmetic operator):
     # return array
     #FIXME: format should be compute.
     # shape, mode, overflow and clamp inherited
+
+
     shape = tuple([src_x.shape[i] for i in xrange(ndim)])
     arr_res = mdarray(shape, cx.format, cx.mode,
                      overflow=cx.overflow, clamp=cx.clamp)
@@ -1628,11 +1661,18 @@ cdef object _compute(object x, object y, c_arithmetic operator):
             ptr_dst = dst.data + offset_dst
             ptr_src_y = src_y.data + offset_src_y
 
-            val_x = cx.convert_item_to_object(ptr_src_x)
-            val_y = cy.convert_item_to_object(ptr_src_y)
-            val_dst = operator(val_x, val_y)
+            #val_x = cx.convert_item_to_object(ptr_src_x)
+            struct_unpack(&cx.formater, ptr_src_x, &cx.items_cache)
 
-            arr_res.assign_item_from_object(ptr_dst, val_dst)
+            #val_y = cy.convert_item_to_object(ptr_src_y)
+            struct_unpack(&cy.formater, ptr_src_y, &cy.items_cache)
+
+            #cn_add(&cx.items_cache[0], &cy.items_cache[0], &arr_res.items_cache[0])
+            #struct_pack(&arr_res.formater, ptr_dst, &arr_res.items_cache)
+
+            #val_dst = operator(val_x, val_y)
+            #arr_res.assign_item_from_object(ptr_dst, val_dst)
+
             src_x_indices[cursor] -= 1
             src_y_indices[cursor] = src_x_indices[cursor] % src_y.shape[cursor]
 

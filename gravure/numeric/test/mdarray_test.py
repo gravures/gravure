@@ -833,21 +833,71 @@ def iterator():
 #----------------------------------------------------------------------------
 # ARITMHETIC                                                                #
 #                                                                           #
+"""
+cdef test_promo():
+    cdef num_types na, nb
+    na = UINT8
+    nb = INT8
+    print "PROMOTION UINT8 INT8: 8", get_promotion(na, nb) # INT16
+    na = INT8
+    nb = INT8
+    print "PROMOTION INT8 INT8: 7", get_promotion(na, nb) # INT8
+    na = UINT8
+    nb = UINT8
+    print "PROMOTION UINT8 UINT8: 1", get_promotion(na, nb) # UINT8
+    na = INT8
+    nb = INT64
+    print "PROMOTION INT8 INT64: 10", get_promotion(na, nb) # INT64
+    na = UINT64
+    nb = UINT128
+    print "PROMOTION UINT64 UINT128: 5", get_promotion(na, nb) # UINT64
+    na = UINT16
+    nb = INT8
+    print "PROMOTION UINT16 INT8: 9", get_promotion(na, nb) # INT32
+    na = UINT8
+    nb = INT16
+    print "PROMOTION UINT8 INT16: 8", get_promotion(na, nb) # INT16
+    na = UINT64
+    nb = INT64
+    print "PROMOTION UINT64 INT64: 15", get_promotion(na, nb) # FLOAT64
+    na = INT64
+    nb = INT64
+    print "PROMOTION INT64 INT64: 10", get_promotion(na, nb) # INT64
+    na = UINT32
+    nb = FLOAT32
+    print "PROMOTION UINT32 FLOAT32: 15", get_promotion(na, nb) # FLOAT64
+    na = INT32
+    nb = FLOAT32
+    print "PROMOTION INT32 FLOAT32: 15", get_promotion(na, nb) # FLOAT64
+
+
+    na = INT64
+    nb = FLOAT32
+    print "PROMOTION INT64 FLOAT32: 15", get_promotion(na, nb) # FLOAT64-----F32
+    na = UINT64
+    nb = FLOAT32
+    print "PROMOTION UINT64 FLOAT32: 15", get_promotion(na, nb) # FLOAT64
+    na = FLOAT32
+    nb = FLOAT64
+    print "PROMOTION FLOAT32 FLOAT64: 15", get_promotion(na, nb) # FLOAT64
+"""
+
 def test_arithmetic():
-    mva = md.mdarray((10, 10), format=b'i', initializer=range(100))
+    mva = md.mdarray((10, 10), format=b'f', initializer=range(100))
     mvb = md.mdarray((10, 10), format=b'i', initializer=[10])
     mvc = mva + mvb
     print(mva)
     print(mvb)
     print(mvc)
 
+    """
     mva = md.mdarray((5, 5, 5), format=b'i2', initializer=range(125))
     mvb = md.mdarray((1, 5), format=b'i2', initializer=[10])
     mvc = mvb + mva
     print(mva)
     print(mvb)
     print(mvc)
-
+    """
 
 #------------------------------------------------------------------------------
 # Main
