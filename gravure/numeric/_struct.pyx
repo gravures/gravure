@@ -837,22 +837,421 @@ cdef int struct_pack(_struct *_self, char *c, cnumber **cnums):
         ptr_c = c + _self.codes[i].offset
         _self.codes[i].fmtdef.pack(ptr_c, &cnums[0][i])
 
+#
+# CHUNKS ROUTINE
+#
+cdef int init_chunk(chunk* c, Py_ssize_t nbytes, num_types ctype)except -1:
+    with nogil:
+        c.val = <unumber*> malloc(nbytes)
+        if not c.val:
+            free(c.val)
+            raise_err_mem("unable to allocate array data.")
+        c.nbytes = nbytes
+        c.item_size = sizeof(unumber)
+        c.max_size = nbytes / c.item_size
+        c.size = 0
+        c.ctype = ctype
 
-cdef void init_cnumber(cnumber* cn):
-    cn.val_p[<int> BOOL] = &cn.val.b
-    cn.val_p[<int> INT8] = &cn.val.i8
-    cn.val_p[<int> INT16] = &cn.val.i16
-    cn.val_p[<int> INT32] = &cn.val.i32
-    cn.val_p[<int> INT64] = &cn.val.i64
-    cn.val_p[<int> INT128] = &cn.val.i128
-    cn.val_p[<int> INT256] = &cn.val.i256
-    cn.val_p[<int> UINT8] = &cn.val.u8
-    cn.val_p[<int> UINT16] = &cn.val.u16
-    cn.val_p[<int> UINT32] = &cn.val.u32
-    cn.val_p[<int> UINT64] = &cn.val.u64
-    cn.val_p[<int> UINT128] = &cn.val.u128
-    cn.val_p[<int> UINT256] = &cn.val.u256
-    cn.val_p[<int> FLOAT16] = &cn.val.f16
-    cn.val_p[<int> FLOAT32] = &cn.val.f32
-    cn.val_p[<int> FLOAT64] = &cn.val.f64
 
+cdef int unpack_in_chunk_(_struct *_self, chunk *ch, char *c, Py_ssize_t mem_step)except -1:
+    cdef Py_ssize_t i
+    cdef char* ptr_c
+    cdef cnumber cn
+
+    # unpacking data in chunk
+    ptr_c = c
+    for i in xrange(ch.size):
+        ptr_c += mem_step
+        #FIXME: dirty tricks beetween cnumber and unumber
+        cn.val = ch.val[i]
+        _self.codes[0].fmtdef.unpack(ptr_c, &cn)
+        ch.val[i] = cn.val
+
+    # convertion if needed
+    if ch.ctype != _self.formats[0]:
+        for i in xrange(ch.size):
+            convert_unumber[<int> _self.formats[0]][<int> ch.ctype](&ch.val[i])
+
+
+
+cdef int raise_err_mem(char *msg) except -1 with gil:
+    raise MemoryError(msg.decode('ascii'))
+
+
+#
+#
+# TYPE CONVERTION ROUTINE
+#
+ctypedef void (*conv_f)(unumber*) nogil
+cdef conv_f convert_unumber[ALL_FORMATS][ALL_FORMATS]
+
+# BOOL
+cdef void _b_i8(unumber* u) nogil: u.i8 = <int8> u.b
+convert_unumber[<int> BOOL][<int> INT8] = &_b_i8
+
+cdef void _b_i16(unumber* u) nogil: u.i16 = <int16> u.b
+convert_unumber[<int> BOOL][<int> INT16] = &_b_i16
+
+cdef void _b_i32(unumber* u) nogil: u.i32 = <int32> u.b
+convert_unumber[<int> BOOL][<int> INT32] = &_b_i32
+
+cdef void _b_i64(unumber* u) nogil: u.i64 = <int64> u.b
+convert_unumber[<int> BOOL][<int> INT64] = &_b_i64
+
+cdef void _b_u8(unumber* u) nogil: u.u8 = <uint8> u.b
+convert_unumber[<int> BOOL][<int> UINT8] = &_b_u8
+
+cdef void _b_u16(unumber* u) nogil: u.u16 = <uint16> u.b
+convert_unumber[<int> BOOL][<int> UINT16] = &_b_u16
+
+cdef void _b_u32(unumber* u) nogil: u.u32 = <uint32> u.b
+convert_unumber[<int> BOOL][<int> UINT32] = &_b_u32
+
+cdef void _b_u64(unumber* u) nogil: u.u64 = <uint64> u.b
+convert_unumber[<int> BOOL][<int> UINT64] = &_b_u64
+
+cdef void _b_f32(unumber* u) nogil: u.f32 = <float32> u.b
+convert_unumber[<int> BOOL][<int> FLOAT32] = &_b_f32
+
+cdef void _b_f64(unumber* u) nogil: u.f64 = <float64> u.b
+convert_unumber[<int> BOOL][<int> FLOAT64] = &_b_f64
+
+# UINT8
+cdef void _u8_b(unumber* u) nogil: u.b = <bint> u.u8
+convert_unumber[<int> UINT8][<int> BOOL] = &_u8_b
+
+cdef void _u8_i8(unumber* u) nogil: u.i8 = <int8> u.u8
+convert_unumber[<int> UINT8][<int> INT8] = &_u8_i8
+
+cdef void _u8_i16(unumber* u) nogil: u.i16 = <int16> u.u8
+convert_unumber[<int> UINT8][<int> INT16] = &_u8_i16
+
+cdef void _u8_i32(unumber* u) nogil: u.i32 = <int32> u.u8
+convert_unumber[<int> UINT8][<int> INT32] = &_u8_i32
+
+cdef void _u8_i64(unumber* u) nogil: u.i64 = <int64> u.u8
+convert_unumber[<int> UINT8][<int> INT64] = &_u8_i64
+
+cdef void _u8_u8(unumber* u) nogil: u.u8 = <uint8> u.u8
+convert_unumber[<int> UINT8][<int> UINT8] = &_u8_u8
+
+cdef void _u8_u16(unumber* u) nogil: u.u16 = <uint16> u.u8
+convert_unumber[<int> UINT8][<int> UINT16] = &_u8_u16
+
+cdef void _u8_u32(unumber* u) nogil: u.u32 = <uint32> u.u8
+convert_unumber[<int> UINT8][<int> UINT32] = &_u8_u32
+
+cdef void _u8_u64(unumber* u) nogil: u.u64 = <uint64> u.u8
+convert_unumber[<int> UINT8][<int> UINT64] = &_u8_u64
+
+cdef void _u8_f32(unumber* u) nogil: u.f32 = <float32> u.u8
+convert_unumber[<int> UINT8][<int> FLOAT32] = &_u8_f32
+
+cdef void _u8_f64(unumber* u) nogil: u.f64 = <float64> u.u8
+convert_unumber[<int> UINT8][<int> FLOAT64] = &_u8_f64
+
+# UINT16
+cdef void _u16_b(unumber* u) nogil: u.b = <bint> u.u16
+convert_unumber[<int> UINT16][<int> BOOL] = &_u16_b
+
+cdef void _u16_i8(unumber* u) nogil: u.i8 = <int8> u.u16
+convert_unumber[<int> UINT16][<int> INT8] = &_u16_i8
+
+cdef void _u16_i16(unumber* u) nogil: u.i16 = <int16> u.u16
+convert_unumber[<int> UINT16][<int> INT16] = &_u16_i16
+
+cdef void _u16_i32(unumber* u) nogil: u.i32 = <int32> u.u16
+convert_unumber[<int> UINT16][<int> INT32] = &_u16_i32
+
+cdef void _u16_i64(unumber* u) nogil: u.i64 = <int64> u.u16
+convert_unumber[<int> UINT16][<int> INT64] = &_u16_i64
+
+cdef void _u16_u8(unumber* u) nogil: u.u8 = <uint8> u.u16
+convert_unumber[<int> UINT16][<int> UINT8] = &_u16_u8
+
+cdef void _u16_u16(unumber* u) nogil: u.u16 = <uint16> u.u16
+convert_unumber[<int> UINT16][<int> UINT16] = &_u16_u16
+
+cdef void _u16_u32(unumber* u) nogil: u.u32 = <uint32> u.u16
+convert_unumber[<int> UINT16][<int> UINT32] = &_u16_u32
+
+cdef void _u16_u64(unumber* u) nogil: u.u64 = <uint64> u.u16
+convert_unumber[<int> UINT16][<int> UINT64] = &_u16_u64
+
+cdef void _u16_f32(unumber* u) nogil: u.f32 = <float32> u.u16
+convert_unumber[<int> UINT16][<int> FLOAT32] = &_u16_f32
+
+cdef void _u16_f64(unumber* u) nogil: u.f64 = <float64> u.u16
+convert_unumber[<int> UINT16][<int> FLOAT64] = &_u16_f64
+
+# UINT32
+cdef void _u32_b(unumber* u) nogil: u.b = <bint> u.u32
+convert_unumber[<int> UINT32][<int> BOOL] = &_u32_b
+
+cdef void _u32_i8(unumber* u) nogil: u.i8 = <int8> u.u32
+convert_unumber[<int> UINT32][<int> INT8] = &_u32_i8
+
+cdef void _u32_i16(unumber* u) nogil: u.i16 = <int16> u.u32
+convert_unumber[<int> UINT32][<int> INT16] = &_u32_i16
+
+cdef void _u32_i32(unumber* u) nogil: u.i32 = <int32> u.u32
+convert_unumber[<int> UINT32][<int> INT32] = &_u32_i32
+
+cdef void _u32_i64(unumber* u) nogil: u.i64 = <int64> u.u32
+convert_unumber[<int> UINT32][<int> INT64] = &_u32_i64
+
+cdef void _u32_u8(unumber* u) nogil: u.u8 = <uint8> u.u32
+convert_unumber[<int> UINT32][<int> UINT8] = &_u32_u8
+
+cdef void _u32_u16(unumber* u) nogil: u.u16 = <uint16> u.u32
+convert_unumber[<int> UINT32][<int> UINT16] = &_u32_u16
+
+cdef void _u32_u32(unumber* u) nogil: u.u32 = <uint32> u.u32
+convert_unumber[<int> UINT32][<int> UINT32] = &_u32_u32
+
+cdef void _u32_u64(unumber* u) nogil: u.u64 = <uint64> u.u32
+convert_unumber[<int> UINT32][<int> UINT64] = &_u32_u64
+
+cdef void _u32_f32(unumber* u) nogil: u.f32 = <float32> u.u32
+convert_unumber[<int> UINT32][<int> FLOAT32] = &_u32_f32
+
+cdef void _u32_f64(unumber* u) nogil: u.f64 = <float64> u.u32
+convert_unumber[<int> UINT32][<int> FLOAT64] = &_u32_f64
+
+# UINT64
+cdef void _u64_b(unumber* u) nogil: u.b = <bint> u.u64
+convert_unumber[<int> UINT64][<int> BOOL] = &_u64_b
+
+cdef void _u64_i8(unumber* u) nogil: u.i8 = <int8> u.u64
+convert_unumber[<int> UINT64][<int> INT8] = &_u64_i8
+
+cdef void _u64_i16(unumber* u) nogil: u.i16 = <int16> u.u64
+convert_unumber[<int> UINT64][<int> INT16] = &_u64_i16
+
+cdef void _u64_i32(unumber* u) nogil: u.i32 = <int32> u.u64
+convert_unumber[<int> UINT64][<int> INT32] = &_u64_i32
+
+cdef void _u64_i64(unumber* u) nogil: u.i64 = <int64> u.u64
+convert_unumber[<int> UINT64][<int> INT64] = &_u64_i64
+
+cdef void _u64_u8(unumber* u) nogil: u.u8 = <uint8> u.u64
+convert_unumber[<int> UINT64][<int> UINT8] = &_u64_u8
+
+cdef void _u64_u16(unumber* u) nogil: u.u16 = <uint16> u.u64
+convert_unumber[<int> UINT64][<int> UINT16] = &_u64_u16
+
+cdef void _u64_u32(unumber* u) nogil: u.u32 = <uint32> u.u64
+convert_unumber[<int> UINT64][<int> UINT32] = &_u64_u32
+
+cdef void _u64_u64(unumber* u) nogil: u.u64 = <uint64> u.u64
+convert_unumber[<int> UINT64][<int> UINT64] = &_u64_u64
+
+cdef void _u64_f32(unumber* u) nogil: u.f32 = <float32> u.u64
+convert_unumber[<int> UINT64][<int> FLOAT32] = &_u64_f32
+
+cdef void _u64_f64(unumber* u) nogil: u.f64 = <float64> u.u64
+convert_unumber[<int> UINT64][<int> FLOAT64] = &_u64_f64
+
+# INT8
+cdef void _i8_b(unumber* u) nogil: u.b = <bint> u.i8
+convert_unumber[<int> INT8][<int> BOOL] = &_i8_b
+
+cdef void _i8_i8(unumber* u) nogil: u.i8 = <int8> u.i8
+convert_unumber[<int> INT8][<int> INT8] = &_i8_i8
+
+cdef void _i8_i16(unumber* u) nogil: u.i16 = <int16> u.i8
+convert_unumber[<int> INT8][<int> INT16] = &_i8_i16
+
+cdef void _i8_i32(unumber* u) nogil: u.i32 = <int32> u.i8
+convert_unumber[<int> INT8][<int> INT32] = &_i8_i32
+
+cdef void _i8_i64(unumber* u) nogil: u.i64 = <int64> u.i8
+convert_unumber[<int> INT8][<int> INT64] = &_i8_i64
+
+cdef void _i8_u8(unumber* u) nogil: u.u8 = <uint8> u.i8
+convert_unumber[<int> INT8][<int> UINT8] = &_i8_u8
+
+cdef void _i8_u16(unumber* u) nogil: u.u16 = <uint16> u.i8
+convert_unumber[<int> INT8][<int> UINT16] = &_i8_u16
+
+cdef void _i8_u32(unumber* u) nogil: u.u32 = <uint32> u.i8
+convert_unumber[<int> INT8][<int> UINT32] = &_i8_u32
+
+cdef void _i8_u64(unumber* u) nogil: u.u64 = <uint64> u.i8
+convert_unumber[<int> INT8][<int> UINT64] = &_i8_u64
+
+cdef void _i8_f32(unumber* u) nogil: u.f32 = <float32> u.i8
+convert_unumber[<int> INT8][<int> FLOAT32] = &_i8_f32
+
+cdef void _i8_f64(unumber* u) nogil: u.f64 = <float64> u.i8
+convert_unumber[<int> INT8][<int> FLOAT64] = &_i8_f64
+
+# INT16
+cdef void _i16_b(unumber* u) nogil: u.b = <bint> u.i16
+convert_unumber[<int> INT16][<int> BOOL] = &_i16_b
+
+cdef void _i16_i8(unumber* u) nogil: u.i8 = <int8> u.i16
+convert_unumber[<int> INT16][<int> INT8] = &_i16_i8
+
+cdef void _i16_i16(unumber* u) nogil: u.i16 = <int16> u.i16
+convert_unumber[<int> INT16][<int> INT16] = &_i16_i16
+
+cdef void _i16_i32(unumber* u) nogil: u.i32 = <int32> u.i16
+convert_unumber[<int> INT16][<int> INT32] = &_i16_i32
+
+cdef void _i16_i64(unumber* u) nogil: u.i64 = <int64> u.i16
+convert_unumber[<int> INT16][<int> INT64] = &_i16_i64
+
+cdef void _i16_u8(unumber* u) nogil: u.u8 = <uint8> u.i16
+convert_unumber[<int> INT16][<int> UINT8] = &_i16_u8
+
+cdef void _i16_u16(unumber* u) nogil: u.u16 = <uint16> u.i16
+convert_unumber[<int> INT16][<int> UINT16] = &_i16_u16
+
+cdef void _i16_u32(unumber* u) nogil: u.u32 = <uint32> u.i16
+convert_unumber[<int> INT16][<int> UINT32] = &_i16_u32
+
+cdef void _i16_u64(unumber* u) nogil: u.u64 = <uint64> u.i16
+convert_unumber[<int> INT16][<int> UINT64] = &_i16_u64
+
+cdef void _i16_f32(unumber* u) nogil: u.f32 = <float32> u.i16
+convert_unumber[<int> INT16][<int> FLOAT32] = &_i16_f32
+
+cdef void _i16_f64(unumber* u) nogil: u.f64 = <float64> u.i16
+convert_unumber[<int> INT16][<int> FLOAT64] = &_i16_f64
+
+# INT32
+cdef void _i32_b(unumber* u) nogil: u.b = <bint> u.i32
+convert_unumber[<int> INT32][<int> BOOL] = &_i32_b
+
+cdef void _i32_i8(unumber* u) nogil: u.i8 = <int8> u.i32
+convert_unumber[<int> INT32][<int> INT8] = &_i32_i8
+
+cdef void _i32_i16(unumber* u) nogil: u.i16 = <int16> u.i32
+convert_unumber[<int> INT32][<int> INT16] = &_i32_i16
+
+cdef void _i32_i32(unumber* u) nogil: u.i32 = <int32> u.i32
+convert_unumber[<int> INT32][<int> INT32] = &_i32_i32
+
+cdef void _i32_i64(unumber* u) nogil: u.i64 = <int64> u.i32
+convert_unumber[<int> INT32][<int> INT64] = &_i32_i64
+
+cdef void _i32_u8(unumber* u) nogil: u.u8 = <uint8> u.i32
+convert_unumber[<int> INT32][<int> UINT8] = &_i32_u8
+
+cdef void _i32_u16(unumber* u) nogil: u.u16 = <uint16> u.i32
+convert_unumber[<int> INT32][<int> UINT16] = &_i32_u16
+
+cdef void _i32_u32(unumber* u) nogil: u.u32 = <uint32> u.i32
+convert_unumber[<int> INT32][<int> UINT32] = &_i32_u32
+
+cdef void _i32_u64(unumber* u) nogil: u.u64 = <uint64> u.i32
+convert_unumber[<int> INT32][<int> UINT64] = &_i32_u64
+
+cdef void _i32_f32(unumber* u) nogil: u.f32 = <float32> u.i32
+convert_unumber[<int> INT32][<int> FLOAT32] = &_i32_f32
+
+cdef void _i32_f64(unumber* u) nogil: u.f64 = <float64> u.i32
+convert_unumber[<int> INT32][<int> FLOAT64] = &_i32_f64
+
+# INT64
+cdef void _i64_b(unumber* u) nogil: u.b = <bint> u.i64
+convert_unumber[<int> INT64][<int> BOOL] = &_i64_b
+
+cdef void _i64_i8(unumber* u) nogil: u.i8 = <int8> u.i64
+convert_unumber[<int> INT64][<int> INT8] = &_i64_i8
+
+cdef void _i64_i16(unumber* u) nogil: u.i16 = <int16> u.i64
+convert_unumber[<int> INT64][<int> INT16] = &_i64_i16
+
+cdef void _i64_i32(unumber* u) nogil: u.i32 = <int32> u.i64
+convert_unumber[<int> INT64][<int> INT32] = &_i64_i32
+
+cdef void _i64_i64(unumber* u) nogil: u.i64 = <int64> u.i64
+convert_unumber[<int> INT64][<int> INT64] = &_i64_i64
+
+cdef void _i64_u8(unumber* u) nogil: u.u8 = <uint8> u.i64
+convert_unumber[<int> INT64][<int> UINT8] = &_i64_u8
+
+cdef void _i64_u16(unumber* u) nogil: u.u16 = <uint16> u.i64
+convert_unumber[<int> INT64][<int> UINT16] = &_i64_u16
+
+cdef void _i64_u32(unumber* u) nogil: u.u32 = <uint32> u.i64
+convert_unumber[<int> INT64][<int> UINT32] = &_i64_u32
+
+cdef void _i64_u64(unumber* u) nogil: u.u64 = <uint64> u.i64
+convert_unumber[<int> INT64][<int> UINT64] = &_i64_u64
+
+cdef void _i64_f32(unumber* u) nogil: u.f32 = <float32> u.i64
+convert_unumber[<int> INT64][<int> FLOAT32] = &_i64_f32
+
+cdef void _i64_f64(unumber* u) nogil: u.f64 = <float64> u.i64
+convert_unumber[<int> INT64][<int> FLOAT64] = &_i64_f64
+
+# FLOAT32
+cdef void _f32_b(unumber* u) nogil: u.b = <bint> u.f32
+convert_unumber[<int> FLOAT32][<int> BOOL] = &_f32_b
+
+cdef void _f32_i8(unumber* u) nogil: u.i8 = <int8> u.f32
+convert_unumber[<int> FLOAT32][<int> INT8] = &_f32_i8
+
+cdef void _f32_i16(unumber* u) nogil: u.i16 = <int16> u.f32
+convert_unumber[<int> FLOAT32][<int> INT16] = &_f32_i16
+
+cdef void _f32_i32(unumber* u) nogil: u.i32 = <int32> u.f32
+convert_unumber[<int> FLOAT32][<int> INT32] = &_f32_i32
+
+cdef void _f32_i64(unumber* u) nogil: u.i64 = <int64> u.f32
+convert_unumber[<int> FLOAT32][<int> INT64] = &_f32_i64
+
+cdef void _f32_u8(unumber* u) nogil: u.u8 = <uint8> u.f32
+convert_unumber[<int> FLOAT32][<int> UINT8] = &_f32_u8
+
+cdef void _f32_u16(unumber* u) nogil: u.u16 = <uint16> u.f32
+convert_unumber[<int> FLOAT32][<int> UINT16] = &_f32_u16
+
+cdef void _f32_u32(unumber* u) nogil: u.u32 = <uint32> u.f32
+convert_unumber[<int> FLOAT32][<int> UINT32] = &_f32_u32
+
+cdef void _f32_u64(unumber* u) nogil: u.u64 = <uint64> u.f32
+convert_unumber[<int> FLOAT32][<int> UINT64] = &_f32_u64
+
+cdef void _f32_f32(unumber* u) nogil: u.f32 = <float32> u.f32
+convert_unumber[<int> FLOAT32][<int> FLOAT32] = &_f32_f32
+
+cdef void _f32_f64(unumber* u) nogil: u.f64 = <float64> u.f32
+convert_unumber[<int> FLOAT32][<int> FLOAT64] = &_f32_f64
+
+# FLOAT64
+cdef void _f64_b(unumber* u) nogil: u.b = <bint> u.f64
+convert_unumber[<int> FLOAT64][<int> BOOL] = &_f64_b
+
+cdef void _f64_i8(unumber* u) nogil: u.i8 = <int8> u.f64
+convert_unumber[<int> FLOAT64][<int> INT8] = &_f64_i8
+
+cdef void _f64_i16(unumber* u) nogil: u.i16 = <int16> u.f64
+convert_unumber[<int> FLOAT64][<int> INT16] = &_f64_i16
+
+cdef void _f64_i32(unumber* u) nogil: u.i32 = <int32> u.f64
+convert_unumber[<int> FLOAT64][<int> INT32] = &_f64_i32
+
+cdef void _f64_i64(unumber* u) nogil: u.i64 = <int64> u.f64
+convert_unumber[<int> FLOAT64][<int> INT64] = &_f64_i64
+
+cdef void _f64_u8(unumber* u) nogil: u.u8 = <uint8> u.f64
+convert_unumber[<int> FLOAT64][<int> UINT8] = &_f64_u8
+
+cdef void _f64_u16(unumber* u) nogil: u.u16 = <uint16> u.f64
+convert_unumber[<int> FLOAT64][<int> UINT16] = &_f64_u16
+
+cdef void _f64_u32(unumber* u) nogil: u.u32 = <uint32> u.f64
+convert_unumber[<int> FLOAT64][<int> UINT32] = &_f64_u32
+
+cdef void _f64_u64(unumber* u) nogil: u.u64 = <uint64> u.f64
+convert_unumber[<int> FLOAT64][<int> UINT64] = &_f64_u64
+
+cdef void _f64_f32(unumber* u) nogil: u.f32 = <float32> u.f64
+convert_unumber[<int> FLOAT64][<int> FLOAT32] = &_f64_f32
+
+cdef void _f64_f64(unumber* u) nogil: u.f64 = <float64> u.f64
+convert_unumber[<int> FLOAT64][<int> FLOAT64] = &_f64_f64

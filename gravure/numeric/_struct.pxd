@@ -149,10 +149,6 @@ ctypedef fused fused_number_3:
 ctypedef struct cnumber:
     num_types ctype
     unumber val
-    void *val_p[ALL_FORMATS]
-
-cdef void init_cnumber(cnumber*)
-
 
 ctypedef struct formatdef:
     num_types format
@@ -180,4 +176,13 @@ cdef int struct_pack(_struct *, char *, cnumber **)
 
 
 
+ctypedef struct chunk:
+    num_types  ctype
+    unumber*   val
+    Py_ssize_t size
+    Py_ssize_t max_size
+    Py_ssize_t nbytes
+    Py_ssize_t item_size
+
+cdef int init_chunk(chunk* c, Py_ssize_t nbytes, num_types ctype) except -1
 

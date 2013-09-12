@@ -1,0 +1,1232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>DEVICEN CHANGE 9.02 to 9.06</title>
+		<meta name='Generator' content='Zim 0.56'>
+		<style type='text/css'>
+			a          { text-decoration: none      }
+			a:hover    { text-decoration: underline }
+			a:active   { text-decoration: underline }
+			strike     { color: grey                }
+			u          { text-decoration: none;
+			             background-color: yellow   }
+			tt         { color: #2e3436;            }
+			pre        { color: #2e3436;
+			             margin-left: 20px          }
+			h1         { text-align: center;
+			             color: #4e9a06             }
+			h2         { color: #4e9a06             }
+			h3         { color: #4e9a06             }
+			h4         { color: #4e9a06             }
+			h5         { color: #4e9a06             }
+			span.insen { color: grey                }
+			.page { max-width: 1000px;}
+			.menu{
+				float:left; width: 300px;
+			}
+			
+			.content { padding-left: 320px;}
+			.notebook{font-variant: small-caps;
+					color:#4e9a06;
+					padding: 0px 20px;}
+			hr{clear:both;}
+		</style>
+		
+	</head>
+	<body>
+		<div class="page">
+			<div class="heading">
+				<h1><a href="./Home.html" class="notebook">GRAVURE:</a>
+			
+				
+									DEVICEN CHANGE 9.02 to 9.06</h1>
+			</div>
+			<hr>
+			<div class="menu">
+				<ul>
+<li><a href="../../FOSSIL_REPOSITORY.html" title="FOSSIL REPOSITORY">FOSSIL REPOSITORY</a></li>
+<li><a href="../../GRAPHIC_LIBRARY.html" title="GRAPHIC LIBRARY">GRAPHIC LIBRARY</a></li>
+<li><a href="../../GRAVURE.html" title="GRAVURE">GRAVURE</a></li>
+<ul>
+<li><a href="../COLOR_MANAGMENT.html" title="COLOR MANAGMENT">COLOR MANAGMENT</a></li>
+<li><a href="../GRAVURE_GHOSCRIPT_DEVICE.html" title="GRAVURE GHOSCRIPT DEVICE">GRAVURE GHOSCRIPT DEVICE</a></li>
+<ul>
+<li><a href="./16_bit_OUTPUT.html" title="16 bit OUTPUT">16 bit OUTPUT</a></li>
+<li><a href="./BUILD_GS.html" title="BUILD GS">BUILD GS</a></li>
+<li><a href="./CUPS.html" title="CUPS">CUPS</a></li>
+<li><strong>DEVICEN CHANGE 9.02 to 9.06</strong></li>
+<li><a href="./HALFTONING.html" title="HALFTONING">HALFTONING</a></li>
+<li><a href="./NOTES.html" title="NOTES">NOTES</a></li>
+<li><a href="./TAGGING.html" title="TAGGING">TAGGING</a></li>
+</ul>
+<li><a href="../IMPOSITION.html" title="IMPOSITION">IMPOSITION</a></li>
+<li><a href="../POSTSCRIPT.html" title="POSTSCRIPT">POSTSCRIPT</a></li>
+<li><a href="../PYTHON.html" title="PYTHON">PYTHON</a></li>
+<li><a href="../scenario_CMM.html" title="scenario CMM">scenario CMM</a></li>
+<li><a href="../VUE_GENERALE.html" title="VUE GENERALE">VUE GENERALE</a></li>
+</ul>
+<li><a href="../../TRC.html" title="TRC">TRC</a></li>
+</ul>
+
+			</div>
+			<div class="content">
+			<!-- Wiki content -->
+				<p>
+Created samedi 06 octobre 2012<br>
+</p>
+
+<p>
+2012-08-02 20:34:26 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+588c2ee040526fbea470e36e7cbc8e87a503cab9<br>
+</p>
+
+<p>
+    Update documentation for tiffsep planar device<br>
+</p>
+
+<p>
+    Add in comments about the use of -dMaxSpots as well as the fact that the device,<br>
+    and psdcmyk are planar and limited to 64 colorants per page. Also add in a<br>
+    hint about using -dMaxSpots when we are processing a Postscript file and bump<br>
+    up to the default max limit of 10 colorants. Tested it and it worked nicely.<br>
+    Thanks Robin Watts.<br>
+</p>
+
+<p>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/doc/Devices.htm<br>
+________________________________________________________________________<br>
+2012-08-02 18:27:45 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+836a551b97dd4a8436608b6dcebe8f8fb8632bcd<br>
+</p>
+
+<p>
+    Add -dMaxSpots for tiffsep and psd devices.<br>
+</p>
+
+<p>
+    psd and tiffsep devices now run with GS_SOFT_MAX_SPOTS spots enabled<br>
+    by default (ten, unless predefined differently at build time). The<br>
+    user can change this value using -dMaxSpots=X (where<br>
+    0 &lt;= X &lt;= GS_CLIENT_COLOR_MAX_COMPONENTS-4).<br>
+</p>
+
+<p>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gsccolor.h<br>
+_____________________________________________________________________<br>
+2012-07-31 17:53:58 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+c832985cab3b769d460a3f3e0ae894c2a84fa1ba<br>
+</p>
+
+<p>
+    Update tiffsep/tiffsep1 documentation w.r.t downscaler.<br>
+</p>
+
+<p>
+    Document 32 and 34 ratios. Add extra info to tiffsep1 to distinguish<br>
+    it from tiffsep in 1bpp mode.<br>
+</p>
+
+<p>
+    gs/doc/Devices.htm<br>
+___________________________________________________________________<br>
+2012-07-31 10:50:43 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+76722bee735462eedf4f4c6d9dfa552e3c1f7ebc<br>
+</p>
+
+<p>
+    Fix link warnings about bad memset in gdevtsep.c<br>
+</p>
+
+<p>
+    Due to a mistake on my part, the tiffsep device had a couple of<br>
+    memsets in that did nothing; these were intended to clear an array<br>
+    of pointers before use. Not clearing the array would only have been<br>
+    a problem if we'd hit an error condition in a very small region of<br>
+    code, but nonetheless, this is a fix.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+__________________________________________________________________<br>
+2012-07-30 19:05:08 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+443ad5a4885be7abf5a1e0777275eefbc5322cd2<br>
+</p>
+
+<p>
+    Up default GS_CLIENT_COLOR_MAX_COMPONENTS to 32.<br>
+</p>
+
+<p>
+    The planar changes have enabled us to increase the default maximum<br>
+    number of spot changes to 32. Tests show only a few differences<br>
+    due to roundings.<br>
+</p>
+
+<p>
+    Hopefully we can push it to 64 soon.<br>
+</p>
+
+<p>
+    gs/base/gsccolor.h<br>
+_______________________________________________________________<br>
+2012-07-25 23:58:40 -0700<br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+428869d288d87d95fbcb5dcf8a0563003ff26294<br>
+</p>
+
+<p>
+    Fix bug 693220. The pdf14 device used compressed encoding in clist mode.<br>
+</p>
+
+<p>
+    The pdf14 device clist mode did not respect the USE_COMPRESSED_ENCODING<br>
+    setting always using compressed encoding, and ended up writing pure<br>
+    colors with num_bytes == -3. This was undetected because tiffsep1 is not<br>
+    part of the regression testing, and because the tiffsep1 device did not<br>
+    use 'planar' mode as the tiffsep device did. Also fixed some blanks before<br>
+    line ends and tab indents.<br>
+</p>
+
+<p>
+    Also, since planar mode is more efficient and allows for &gt; 8 colorants<br>
+    tiffsep1 was changed to use planar mode, getting rid of the need for<br>
+    compressed color encoding in this file (maybe the last one).<br>
+</p>
+
+<p>
+    gs/base/gdevp14.c<br>
+    gs/base/gdevtsep.c<br>
+_________________________________________________________________<br>
+2012-07-25 22:02:00 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+c8fc89fe8d72ad87158569825ddf421887c47713<br>
+</p>
+
+<p>
+    Replace magic 32 number with MAX_COMPONENTS_IN_DEVN<br>
+</p>
+
+<p>
+    gs/base/gsccolor.h<br>
+    gs/psi/icremap.h<br>
+_________________________________________________<br>
+</p>
+
+<p>
+2012-07-24 21:40:05 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+e884e39691346b35ea8b87fe26d8d98857689397<br>
+</p>
+
+<p>
+    Change the remap_color_info structure so that we can support up to 32 colorants DeviceN<br>
+</p>
+
+<p>
+    AR supports up to 32 colorants in a DeviceN color space and this brings us in line with<br>
+    that product's limits. Note that if the number of colorants is greater than<br>
+    GS_CLIENT_COLOR_MAX_COMPONENTS then we end up using the alternate tint transform.<br>
+    Previously, the tint transform would fail if we encountered a color DeviceN color<br>
+    space with more that GS_CLIENT_COLOR_MAX_COMPONENTS colorants. This fixes bug 693185<br>
+</p>
+
+<p>
+    gs/psi/icremap.h<br>
+</p>
+
+<p>
+------------------------------------<br>
+2012-07-20 15:46:06 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+a06bb8cfd8791254655889d85a1d37f173f53597<br>
+</p>
+
+<p>
+    Rework colors_used to be a color_usage bitfield.<br>
+</p>
+
+<p>
+    Previously, the clist would collate the colors used in a band/page<br>
+    by ORing together any color indexs uses into a single gx_color_index.<br>
+    This relies on the gx_color_index being able to represent the whole<br>
+    depth.<br>
+</p>
+
+<p>
+    This is dodgy with compressed encoding, and fails entirely with the<br>
+    new planar based tiffsep/psdcmyk and high level color stuff, as the<br>
+    total depth can far exceed the number of bits available in a<br>
+    gx_color_index.<br>
+</p>
+
+<p>
+    The fix here is to change to using a bitfield (gx_color_usage_bits)<br>
+    for this record; this allows us to have up to 64 colorants with a<br>
+    standard build.<br>
+</p>
+
+<p>
+    The code here is still imperfect for all the reasons listed within<br>
+    the original code (only works for subtractive spaces, can falsely<br>
+    detect 'no colors used', etc), but it is at least consistently<br>
+    imperfect now.<br>
+</p>
+
+<p>
+    gs/base/gdevpbm.c<br>
+    gs/base/gdevprn.c<br>
+    gs/base/gdevprn.h<br>
+    gs/base/gxband.h<br>
+    gs/base/gxcldev.h<br>
+    gs/base/gxclimag.c<br>
+    gs/base/gxclist.c<br>
+    gs/base/gxclist.h<br>
+    gs/base/gxclpath.c<br>
+    gs/base/gxclpath.h<br>
+    gs/base/gxclread.c<br>
+    gs/base/gxclrect.c<br>
+____________________________________________________________________2012-06-01 14:05:03 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+3a5a524ea71a58cc0e9e0200bb98a2fc341ec033<br>
+</p>
+
+<p>
+    Fix for broken AA support for devices that support the devn color type<br>
+</p>
+
+<p>
+    This fix involved the addition of a copy_alpha_hl_color for passing along the devn color<br>
+    value when doing the copy_alpha procedure. This required support through the clist,<br>
+    special handing in the pdf14 device and a default procedure for the operation.<br>
+    The only devices that should be affected are tiffsep and psdcmyk. Support for 16bit psd<br>
+    devices may have issues and I will go back to check on this later as a customer is waiting<br>
+    for this for 8 bit tiffsep.<br>
+</p>
+
+<p>
+    gs/base/gdevabuf.c<br>
+    gs/base/gdevdbit.c<br>
+    gs/base/gdevdflt.c<br>
+    gs/base/gdevmem.c<br>
+    gs/base/gdevmem.h<br>
+    gs/base/gdevmpla.c<br>
+    gs/base/gdevnfwd.c<br>
+    gs/base/gdevp14.c<br>
+    gs/base/gsdcolor.h<br>
+    gs/base/gspaint.c<br>
+    gs/base/gxccman.c<br>
+    gs/base/gxcldev.h<br>
+    gs/base/gxclip.c<br>
+    gs/base/gxclip.h<br>
+    gs/base/gxclip2.c<br>
+    gs/base/gxclipm.c<br>
+    gs/base/gxclist.c<br>
+    gs/base/gxclpath.h<br>
+    gs/base/gxclrast.c<br>
+    gs/base/gxclrect.c<br>
+    gs/base/gxdevcli.h<br>
+    gs/base/gxdevice.h<br>
+    gs/base/gxdevmem.h<br>
+_________________________________________________________________2012-06-26 15:34:44 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+526c580e272ee15c488b9fe4845482a30ce05eef<br>
+</p>
+
+<p>
+    Bug 693064: raise maximum possible GS_CLIENT_COLOR_MAX_COMPONENTS to 32<br>
+</p>
+
+<p>
+    By default we support a maximum of 14 components. Supposedly this can be<br>
+    increased by raising GS_CLIENT_COLOR_MAX_COMPONENTS to a larger number<br>
+    on startup, but this starts to cause problems in various places throughout<br>
+    the code.<br>
+</p>
+
+<p>
+    The first such place is in the bpc_to_depth function (found in gdevdevn<br>
+    and various other places), where the calculation goes wrong for anything<br>
+    above 31 components at 8 bpc. We fix that here.<br>
+</p>
+
+<p>
+    This allows us to get to 32 components. To raise it above 32 presents<br>
+    problems on most architectures as the code assumes elsewhere that we<br>
+    can use a bitmask to represent which components are present.<br>
+</p>
+
+<p>
+    We may be able to tweak the code to use a uint64_t instead, in which<br>
+    case we can probably get to 64 components; is that high enough?<br>
+</p>
+
+<p>
+    gs/base/gdevdevn.c<br>
+    gs/base/gdevrinkj.c<br>
+    gs/base/gdevxcf.c<br>
+    gs/base/gxclist.c<br>
+__________________________________________________________________<br>
+2012-06-18 16:51:30 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+7f98970a6c0e641e87eb202dc2087814249d0408<br>
+</p>
+
+<p>
+    Add 3:2 and 3:4 downscaling to tiffsep/psd/downscaler.<br>
+</p>
+
+<p>
+    Currently the downscaler can only downscale in integer increments. To<br>
+    accomodate a potential need to efficiently scale 1200 -&gt; 800 and<br>
+    600 -&gt; 800 dpi, we introduce new functionality to allow 3:2 and 3:4<br>
+    scaling modes.<br>
+</p>
+
+<p>
+    We shoehorn these into the existing scaler system by using DownScaleFactor<br>
+    settings of 32 and 34 respectively; any other DownScaleFactor &gt; 8 will<br>
+    give a rangecheck error.<br>
+</p>
+
+<p>
+    This has required some changes within the downscaler code itself, and<br>
+    will require more changes in any device that wants to use these. Currently<br>
+    the cores are only provided in the planar modes; hence tiffsep and psd are<br>
+    the only devices that have been updated to work with this.<br>
+</p>
+
+<p>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtifs.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gxdownscale.c<br>
+    gs/base/gxdownscale.h<br>
+_______________________________________<br>
+-2012-05-28 13:05:00 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+f30e8944b915936befffbadc036e1de16659914e<br>
+</p>
+
+<p>
+    Add 16bpp support to downscaler.<br>
+</p>
+
+<p>
+    Currently unused, but passes local tests with James Cloos' proposed<br>
+    psdcmyk16 and psdrgb16 devices.<br>
+</p>
+
+<p>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gxdownscale.c<br>
+    gs/base/gxdownscale.h<br>
+____________________________________________________<br>
+2012-05-22 13:35:31 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+15cc33536ada0b4cb105110a48df0132539c54db<br>
+</p>
+
+<p>
+    Add downscaler functionality to tiffsep.<br>
+</p>
+
+<p>
+    Update tiffsep to call the downscaler. This means adding MinFeatureSize<br>
+    and DownScaleFactor to tiffsep. Also add BitsPerComponent to allow us to<br>
+    specify 8 (default) or 1 (monochrome). MinFeatureSize is ignored except<br>
+    in monochrome mode.<br>
+</p>
+
+<p>
+    This has meant slight reworking of the downscaler to cope with planar<br>
+    buffers, and its use of get_bits_rectangle rather than get_bits.<br>
+</p>
+
+<p>
+    Also updated docs, and fixed some leaks on memory allocation failures<br>
+    within tiffsep.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+    gs/base/gxdownscale.c<br>
+    gs/base/gxdownscale.h<br>
+    gs/base/lib.mak<br>
+    gs/doc/Devices.htm<br>
+___________________________________2012-05-03 12:13:06 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+7b81312d205a2f9b89f40da4b4f6b67bcacd8ef1<br>
+</p>
+
+<p>
+    Fix for issues in use of /SeparationOrder and /SeparationColorNames<br>
+</p>
+
+<p>
+    Several issues and quite a bit of confusion in the code with respect<br>
+    to this option. I believe this should clear some things up.<br>
+    Documentation still needs to be updated as to how this option functions<br>
+    and what devices it actually works with. Note that<br>
+    SeparationOrder and SeparationColorNames really only works for the<br>
+    tiffsep device. The psdcmyk device was never really set up for use<br>
+    with this option. Not sure if we want to add it. Also, I discovered<br>
+    that with the disabling of compressed color encoding, the tiffsep1<br>
+    device renders incorrectly. I had not converted this device to planar<br>
+    as I had thought that it performed halftoning during rendering. I<br>
+    did not realize it was rendering 8 bit data and then doing<br>
+    a thresholding operation. We may want to just move this to a planar<br>
+    based device. In that case, we could use the fast planar halftoning.<br>
+</p>
+
+<p>
+    Note that with this fix, the device will only create output for the<br>
+    colorants listed in /SeparationOrder. The psdcmyk device was not<br>
+    making use of the /SeparationOrder information properly. It is now<br>
+    which makes for some different renderings in the ps3cet/29-07*.ps test<br>
+    files which exercise /SeparationOrder changes. In such a case, the<br>
+    device will not output any missing colorants, which previously<br>
+    it was doing.<br>
+</p>
+
+<p>
+    gs/base/gdevdevn.c<br>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtsep.c<br>
+________________________________<br>
+2012-04-30 15:27:30 +0100<br>
+Chris Liddell &lt;<a href="mailto:chris.liddell@artifex.com" title="chris.liddell@artifex.com">chris.liddell@artifex.com</a>&gt;<br>
+3cde6d6d3d24a0930d591df9914ddda194d13b37<br>
+</p>
+
+<p>
+    Bug 692459: stop tiffsep(1) overwriting pages already written<br>
+</p>
+
+<p>
+    The tiffsep and tiffsep1 devices both get closed and reopen when the separations<br>
+    change (communicated by put_params). Previously this caused the output files to<br>
+    be closed and reopened - not a problem when writing each page to its own set of<br>
+    files, but when writing multipage tiffs, it resulted in all pages up to that<br>
+    point to be overwritten.<br>
+</p>
+
+<p>
+    We now have tiffsep and tiffsep1 handle their own file "management", and prevent<br>
+    output files from being closed and reopened when the device is closed and<br>
+    reopened due to a put_params call.<br>
+</p>
+
+<p>
+    No cluster differences.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+___________________________________________________________________________<br>
+2012-04-27 18:46:27 +0100<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+60640aeb33b18f9a9fcd76fc6f1083d7c7635f24<br>
+</p>
+
+<p>
+<ul style='padding-left: 30pt'>
+<li>Change of the tiffsep and psdcmyk device to planar devices.</li>
+</ul>
+</p>
+
+<p>
+    This change in these devices was made to remove the 64 bit limitation of<br>
+    our existing color encoding which limits us to 8 colorants without<br>
+    compressed color encoding. The motivation for this work is that even<br>
+    with compressed color encoding we were starting<br>
+    to encounter files with transparency in particular that exceeded the<br>
+    capabilities of encoding, leading to dropped colors. With this fix, we<br>
+    encode through the clist the DeviceN color values. The buffers for the<br>
+    devices are maintained as planar buffers and fills occur with the high level<br>
+    device colors.<br>
+</p>
+
+<p>
+    Support was added to handle the devn color type through the shading code. The old<br>
+    code would have supported only 8 colorants in a shading.<br>
+</p>
+
+<p>
+    Support was also added to the transparency code to enable the use of the put_image<br>
+    procedure which for the planar device saves quite a bit of time since we can do the<br>
+    copy_planes proc directly from the pdf14 planar buffer to the planar memory device buffer.<br>
+    The pdf14 device also had to support fill_rectangle_hl_color.<br>
+</p>
+
+<p>
+    Changes were also made to the pattern tiling code so that we avoid any planar to chunky and<br>
+    back to planar conversions. These were being done to handle ROPs. Even when there were<br>
+    not any ROPs to perform we were going through strip_tile_rop operations since the<br>
+    gx_default_strip_tile_rectangle did not support planar to planar. That support is added<br>
+    with this commit.<br>
+</p>
+
+<p>
+    Support had to be added to the overprint compositor to support the new color type with<br>
+    fill_rectangle_hl_color.<br>
+</p>
+
+<p>
+    Support had to be added to the clist for fill_rectangle_hl_color. This required changes<br>
+    on both the writing and reading side. It is possible that the amount of data written<br>
+    for these commands could be reduced and that is commented in the code.<br>
+</p>
+
+<p>
+    Support also had to be added to the clip device and the mask_clip device as well<br>
+    for uncolored patterns. Also the tile clip device required support and the transparency device<br>
+    required support for copy_planes. This last function needs to be optimized.<br>
+</p>
+
+<p>
+    Both of the separation devices (tiffsep and psdcmyk) that we currently have are updated to<br>
+    support this method. There is an #if option in each device file to return the<br>
+    code back to the old chunky format.<br>
+</p>
+
+<p>
+    A new device procedure for handling strip tiling of masks with devn colors had<br>
+    to be added. Functionality was only required for the mem planar and clist devices.<br>
+</p>
+
+<p>
+    Also, it was found that the tiffsep and psdcmyk devices were maintaining separations<br>
+    (spot colors) across pages. That is if page 1 had a spot color, subsequent pages<br>
+    created a separation for that spot<br>
+    even if those pages did not contain it. This was fixed so that separations for a page<br>
+    are only created for the spots that occur on that page.<br>
+</p>
+
+<p>
+    A fix was also made to ensure that we had proper handling for the None colorants when<br>
+    they are part of the DeviceN color space.<br>
+</p>
+
+<p>
+    gs/base/devs.mak<br>
+    gs/base/gdevbbox.c<br>
+    gs/base/gdevdbit.c<br>
+    gs/base/gdevdevn.c<br>
+    gs/base/gdevdevn.h<br>
+    gs/base/gdevdflt.c<br>
+    gs/base/gdevdsha.c<br>
+    gs/base/gdevmem.c<br>
+    gs/base/gdevmem.h<br>
+    gs/base/gdevmpla.c<br>
+    gs/base/gdevmx.c<br>
+    gs/base/gdevnfwd.c<br>
+    gs/base/gdevp14.c<br>
+    gs/base/gdevpdfi.c<br>
+    gs/base/gdevppla.c<br>
+    gs/base/gdevprn.c<br>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gscdevn.c<br>
+    gs/base/gscicach.c<br>
+    gs/base/gscms.h<br>
+    gs/base/gscsepr.c<br>
+    gs/base/gsdcolor.h<br>
+    gs/base/gsdps1.c<br>
+    gs/base/gsequivc.c<br>
+    gs/base/gsicc_manage.c<br>
+    gs/base/gsovrc.c<br>
+    gs/base/gsptype1.c<br>
+    gs/base/gxblend.h<br>
+    gs/base/gxblend1.c<br>
+    gs/base/gxcldev.h<br>
+    gs/base/gxclimag.c<br>
+    gs/base/gxclip.c<br>
+    gs/base/gxclip.h<br>
+    gs/base/gxclip2.c<br>
+    gs/base/gxclipm.c<br>
+    gs/base/gxclist.c<br>
+    gs/base/gxclpath.c<br>
+    gs/base/gxclpath.h<br>
+    gs/base/gxclrast.c<br>
+    gs/base/gxclrect.c<br>
+    gs/base/gxcmap.c<br>
+    gs/base/gxdcolor.c<br>
+    gs/base/gxdcolor.h<br>
+    gs/base/gxdevcli.h<br>
+    gs/base/gxdevice.h<br>
+    gs/base/gxdevsop.h<br>
+    gs/base/gxgetbit.h<br>
+    gs/base/gxht.c<br>
+    gs/base/gxicolor.c<br>
+    gs/base/gxp1fill.c<br>
+    gs/base/gxp1impl.h<br>
+    gs/base/gxpcmap.c<br>
+    gs/base/gxpcolor.h<br>
+    gs/base/gxshade6.c<br>
+    gs/base/lib.mak<br>
+_________________________________________________________________-<br>
+2012-03-27 19:29:56 -0700<br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+5b50a46f4ed3e54fec6727a1ad52258e5d32b0a9<br>
+</p>
+
+<p>
+    Add -sBandListStorage={file|memory} option and default to no bitmap compression if file clist.<br>
+</p>
+
+<p>
+    Also alphabetize the clist options and remove the arbitrary 10000 minimum for MaxBitmap<br>
+    (now -dMaxBitmap=0 is legal). The change to not compress bitmaps (using CCITT) when going<br>
+    to disk based clist improves performance.<br>
+</p>
+
+<p>
+    gs/base/gdevprn.c<br>
+    gs/base/gdevprn.h<br>
+    gs/base/gxclbits.c<br>
+    gs/base/gxclist.c<br>
+    gs/base/lib.mak<br>
+    gs/doc/Language.htm<br>
+__________________________________________________________<br>
+2012-03-13 22:45:00 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+0eae84aaf7a1c27f077d4aff3050ae48bb5a6aaa<br>
+</p>
+
+<p>
+    Fix for broken tiff devices due to use of huge signed number in overflow test<br>
+</p>
+
+<p>
+    0xFFFFFFFF is used in a calculation to see how close we are to the 4G limit in<br>
+    a tiff file. Problem was this was cast as a long which, in a 32 bit<br>
+    system ends up being -1.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+_________________________________________________<br>
+2012-03-09 13:53:55 -0800<br>
+Marcos H. Woehrmann &lt;<a href="mailto:marcos.woehrmann@artifex.com" title="marcos.woehrmann@artifex.com">marcos.woehrmann@artifex.com</a>&gt;<br>
+dc98b15546522ce28edad3f129f1ae8e05300a34<br>
+</p>
+
+<p>
+    Change compression of the tiffsep device composite output to match the separations.<br>
+</p>
+
+<p>
+    Previous to this commit the tiffsep device would always write out<br>
+    an uncompressed composite file; the separation files were lzw<br>
+    compressed by default and this could be changed via the -sCompression=<br>
+    option. Now the compression of the composite file is the same as<br>
+    that of the separation files.<br>
+</p>
+
+<p>
+    Fixes Bug 692907.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+    gs/doc/Devices.htm<br>
+___________________________________________________________-<br>
+2012-03-06 09:06:55 -0800<br>
+Marcos H. Woehrmann &lt;<a href="mailto:marcos.woehrmann@artifex.com" title="marcos.woehrmann@artifex.com">marcos.woehrmann@artifex.com</a>&gt;<br>
+23e37b6fc4d79741007cc18d770bb3e449e53014<br>
+</p>
+
+<p>
+    Fix the checks in gdevtsep.c missed by commit e954dd4683c35dbd66de3e045d979ebbf20c4d72<br>
+</p>
+
+<p>
+    Henry pointed out that my e954dd4683c35dbd66de3e045d979ebbf20c4d72<br>
+    fix was incomplete; this commit replaces the remaining max_long<br>
+    references with 2^32-1.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+________________________________________________________________<br>
+2012-03-05 19:21:53 -0800<br>
+Marcos H. Woehrmann &lt;<a href="mailto:marcos.woehrmann@artifex.com" title="marcos.woehrmann@artifex.com">marcos.woehrmann@artifex.com</a>&gt;<br>
+e954dd4683c35dbd66de3e045d979ebbf20c4d72<br>
+</p>
+
+<p>
+    Fix detection of TIFF file size overflow in tiffsep.<br>
+</p>
+
+<p>
+    The TIFF spec limits files to 4 Gigs. The code to detect attempts<br>
+    to write files that were larger than this in gdevtsep.c was broken<br>
+    on systems were a long != 32 bit.<br>
+</p>
+
+<p>
+    Fixes Bug 692896.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+__________________________________________________________________<br>
+2012-02-16 18:16:16 +0000<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+21579b00e53b97cd655f164bb92c5280c586e365<br>
+</p>
+
+<p>
+    Output helpful debug warning when tif output would be too large.<br>
+</p>
+
+<p>
+    Currently we just raise a rangecheck, which can be very confusing.<br>
+</p>
+
+<p>
+    CLUSTER_UNTESTED.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c<br>
+___________________________________________________________________<br>
+</p>
+
+
+<p>
+2012-02-15 19:03:56 +0000<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+43b14b24fcc13d816dd41ca335d52cd3074bd0d8<br>
+</p>
+
+<p>
+    Update garbage collection to cope with pdf14_compressed_color_list.<br>
+</p>
+
+<p>
+    A second list of compressed colors was recently added to the<br>
+    gdevn_params structure, but this wasn't added to the garbage<br>
+    collection routines. Fixed here.<br>
+</p>
+
+<p>
+    gs/base/gdevp14.c<br>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevtsep.c<br>
+_______________________________________________________________________-<br>
+2012-02-14 14:57:07 +0000<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+00a96d35b30d77f8dfbc8ae12326c81053fc50c9<br>
+</p>
+
+<p>
+    Fix Bug 692854; tweak gdev_prn color procs.<br>
+</p>
+
+<p>
+    A previous commit (cf37ea5) changed the prn device macros to<br>
+    duplicate map_color_rgb/map_rgb_color to encode/decode_color.<br>
+    I thought this was safe as the default color encoding/decoding<br>
+    functions were actually implemented as encode/decode, rather<br>
+    than map_ variants.<br>
+</p>
+
+<p>
+    Unfortunately, this falls down when other devices (such as the<br>
+    tiffscaled ones) provide genuine map_ functions rather than<br>
+    encode/decodes.<br>
+</p>
+
+<p>
+    So, a small tweak to the macros is required; we now duplicate<br>
+    to encode/decode only if specifically told to - and the macros<br>
+    that use the defaults specifically say to. Other devices should<br>
+    remain unchanged.<br>
+</p>
+
+<p>
+    gs/base/gdevprn.h<br>
+______________________________________________________-<br>
+2012-02-10 17:20:36 +0000<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+cf37ea5d017193c76341aafd60e35d3b1826046f<br>
+</p>
+
+<p>
+    Prn device changes to encode/decode_color.<br>
+</p>
+
+<p>
+    At the moment, prn devices do not implement encode_decode/color,<br>
+    choosing instead to provide map_rgb_color/map_color_rgb which<br>
+    just get called through a 'backwards compatibility' layer.<br>
+</p>
+
+<p>
+    In fact, they actually implement encode/decode_rgb rather than<br>
+    map_rgb_color/map_color_rgb, so we just copy the entries here.<br>
+</p>
+
+<p>
+    No changes expected in cluster.<br>
+</p>
+
+<p>
+    gs/base/gdevprn.h<br>
+___________________________________________________________________<br>
+2011-12-06 13:34:47 -0800<br>
+Marcos H. Woehrmann &lt;<a href="mailto:marcos.woehrmann@artifex.com" title="marcos.woehrmann@artifex.com">marcos.woehrmann@artifex.com</a>&gt;<br>
+0b21c79855e8f50a218a478bf9fc9d10e20c4db4<br>
+</p>
+
+<p>
+    Partial fix for Bug 692434, removed some of the memcmp() of structures.<br>
+</p>
+
+<p>
+    No cluster differences expected.<br>
+</p>
+
+<p>
+    gs/base/gdevdevn.c<br>
+    gs/base/gdevpdfg.c<br>
+    gs/base/gdevpdti.c<br>
+    gs/base/gdevpdts.c<br>
+    gs/base/gdevprn.c<br>
+    gs/base/gsequivc.h<br>
+    gs/base/gsfont.c<br>
+    gs/base/gsmatrix.c<br>
+    gs/base/gsmatrix.h <br>
+_____________________________________________________-<br>
+2011-11-16 10:32:30 -0800<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+6fbdd32889dfa9d318170e63245755057bb8b401<br>
+</p>
+
+<p>
+    Save ICC profile in TIFF and PNG device output.<br>
+</p>
+
+<p>
+    This addresses Bug 692183. The patch for the TIFF case was not<br>
+    quite sufficient due to changes in the device profile structure,<br>
+    issues regarding the separations from the tiffsep device, and<br>
+    how we handle the case when the output profile is CIELAB.<br>
+</p>
+
+<p>
+    gs/base/gdevpng.c<br>
+    gs/base/gdevtifs.c<br>
+    gs/base/gdevtsep.c <br>
+_________________________________________________________<br>
+2011-11-10 20:11:03 +0000<br>
+Robin Watts &lt;<a href="mailto:robin.watts@artifex.com" title="robin.watts@artifex.com">robin.watts@artifex.com</a>&gt;<br>
+d81dffe6142ead8245baacf12f3b2ae4fe20b206<br>
+</p>
+
+<p>
+    Squash warnings in MSVC build.<br>
+</p>
+
+<p>
+    All self evident, really. Lots of char's that should be bytes etc.<br>
+</p>
+
+<p>
+    gs/base/gdevclj.c<br>
+    gs/base/gdevpdtw.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gp_wgetv.c<br>
+    gs/base/gsicc_cache.c<br>
+    gs/base/gxicolor.c<br>
+    gs/base/gxipixel.c<br>
+    gs/base/sidscale.c<br>
+    pcl/pcht.c<br>
+    pcl/rtmisc.c<br>
+    pl/plchar.c<br>
+    pl/plfont.c<br>
+    xps/xpspath.c <br>
+__________________________________________________________<br>
+2011-08-31 18:39:24 +0100<br>
+Robin Watts &lt;<a href="mailto:Robin.Watts@artifex.com" title="Robin.Watts@artifex.com">Robin.Watts@artifex.com</a>&gt;<br>
+1da2a46ed9f6ae0b0afc5fd4417943a36e532171<br>
+</p>
+
+<p>
+    More work on bug 690538: introduce macros for color rounding.<br>
+</p>
+
+<p>
+    Introduce new macros to gxcvalue.h header file that defines helpful macros<br>
+    for colour depth changing.<br>
+</p>
+
+<p>
+    COLROUND macros do rounding (16-&gt;n bits), COLDUP macros do bit duplication<br>
+    (n-&gt;16 bits). Use these macros in various places throughout the code.<br>
+</p>
+
+<p>
+    Also tweak the gx_color_value_to_byte macro to round in the same way.<br>
+</p>
+
+<p>
+    Colors for devices that use these functions are now rounded in the same way<br>
+    that lcms does.<br>
+</p>
+
+<p>
+    Change as many encode_color routines as I can find to use this new code<br>
+    rather than simply truncating.<br>
+</p>
+
+<p>
+    gs/base/gdevbit.c<br>
+    gs/base/gdevcdj.c<br>
+    gs/base/gdevdevn.c<br>
+    gs/base/gdevdsp.c<br>
+    gs/base/gdevperm.c<br>
+    gs/base/gdevplan.c<br>
+    gs/base/gdevplib.c<br>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevrinkj.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gdevxcf.c<br>
+    gs/base/gxblend1.c<br>
+    gs/base/gxcmap.c<br>
+    gs/base/gxcvalue.h<br>
+_____________________________________________________________________<br>
+2011-10-20 22:11:00 -0700<br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+7ebbcae24116a37b2f32f52bc7330383752f903f<br>
+</p>
+
+<p>
+    Fix bug 692618. Clear pointers to compressed color structured in pdf14 device.<br>
+</p>
+
+<p>
+    After the devn compressed color structures were freed, the pointers were not reset to<br>
+    NULL so subsequent GC would trace into freed or re-used memory. -Z? showed errors and,<br>
+    depending on memory contents and usage could result in a seg fault. Also add 'mem'<br>
+    element to the compressed_color_list structure to be used when freeing to avoid<br>
+    confusion about the correct allocator.<br>
+</p>
+
+<p>
+    Issue with non-encodable colors is _not_ fixed by this, only the segfault.<br>
+</p>
+
+<p>
+    gs/base/gdevdevn.c<br>
+    gs/base/gdevdevn.h<br>
+    gs/base/gdevp14.c <br>
+______________________________________________________________________<br>
+2011-09-23 23:23:02 -0700<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+545cd811c4a2c33c472f302088a10a807e98d9be<br>
+</p>
+
+<p>
+    Fix for Bug 692339<br>
+</p>
+
+<p>
+    Threshold creation code in the tiffsep1 code was not handled correctly when the dorder was a simple form<br>
+    that included a repeated shift.<br>
+</p>
+
+<p>
+    gs/base/gdevtsep.c <br>
+_________________________________________________________________-<br>
+2011-08-10 10:27:03 +0100<br>
+Chris Liddell &lt;<a href="mailto:chris.liddell@artifex.com" title="chris.liddell@artifex.com">chris.liddell@artifex.com</a>&gt;<br>
+edd256d908da6ad77d3e595febffcc3717d5e900<br>
+</p>
+
+<p>
+    Bug 692367: add gs_memory_t arg to finalize method<br>
+</p>
+
+<p>
+    By adding a gs_memory_t argument to the object "finalize" method, we can<br>
+    dispense with the pointer-pun hackery that stores the memory context<br>
+    in an extra struct array element of the IO device table, so it's availabe<br>
+    in the finalize method.<br>
+</p>
+
+<p>
+    Although primarily addresses one hack, this commit touches a number of files<br>
+    because it affects every object with a "finalize" method.<br>
+</p>
+
+<p>
+    This also addresses an error condition cleanup of a partially create IO<br>
+    device table.<br>
+</p>
+
+<p>
+    No cluster differences.<br>
+</p>
+
+<p>
+    gs/base/gdevdevn.c <br>
+__________________________________________________________________<br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+d3302b1176683dc9e4cb5cb8ed9f42bffa0888ee<br>
+</p>
+
+
+<p>
+    Fix for bug 692204. This forces DeviceGray to K only for CMYK devices.<br>
+</p>
+
+<p>
+    This is performed by default now. To return to a composite type mapping<br>
+    that makes use of the true DeviceProfile, use the option -dDeviceGrayToK=false.<br>
+    This commit includes a fix to rename the device member variable<br>
+    icc_array to icc_struct to reduce confusion in reading the code.<br>
+</p>
+
+<p>
+    gs/Resource/Init/gs_lev2.ps<br>
+    gs/base/gdevp14.c<br>
+    gs/base/gdevpdfk.c<br>
+    gs/base/gdevtfnx.c<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/gdevvec.c <br>
+__________________________________________________________________-<br>
+2011-07-06 13:30:23 +0100<br>
+Chris Liddell &lt;<a href="mailto:chris.liddell@artifex.com" title="chris.liddell@artifex.com">chris.liddell@artifex.com</a>&gt;<br>
+e5a37634a8e15a945e7f5ea4aca68ab8e1e34d3a<br>
+</p>
+
+<p>
+    Bug 692318: Ensure that compiler flags are used for the "aux" files.<br>
+</p>
+
+<p>
+    For a normal host build, the build tools (genarch, genconf etc) should be<br>
+    built with the same compiler flags as Ghostscript/Ghost*. In this case<br>
+    the integer type used for encoded color values was not getting used<br>
+    when compiling genarch.<br>
+</p>
+
+<p>
+    Also, add a warning when tiffsep does have to skip one or more plates, with<br>
+    a pointer to the relevant documentation. Lastly, update the doc to reflect<br>
+    that the contone preview output may not be as expected if the job uses<br>
+    overprint.<br>
+</p>
+
+<p>
+    No cluster differences expected.<br>
+</p>
+
+<p>
+    common/ugcc_top.mak<br>
+    gs/base/gdevtsep.c<br>
+    gs/base/msvccmd.mak<br>
+    gs/base/msvctail.mak<br>
+    gs/base/unix-aux.mak<br>
+    gs/doc/Devices.htm <br>
+______________________________________________________________________<br>
+2011-06-06 22:13:07 -0400<br>
+Alex Cherepanov &lt;<a href="mailto:alex.cherepanov@artifex.com" title="alex.cherepanov@artifex.com">alex.cherepanov@artifex.com</a>&gt;<br>
+8b90a80fe86364c0b6c1cad12cfb241c66943c24<br>
+</p>
+
+
+<p>
+    Bug 688064: Add AdjustWidth=WIDTH<br>
+</p>
+
+<p>
+    Extend AdjustWidth option to support adjustment to any width. This option<br>
+    now accepts the following values;<br>
+    0 - no adjustment, the same as before<br>
+    1 - low res fax adjustments, the same as before<br>
+    &gt;1 - adjust to the given width, regardless of the document width.<br>
+</p>
+
+<p>
+    gs/base/gdevfax.c<br>
+    gs/base/gdevpng.c<br>
+    gs/base/gdevtifs.c<br>
+    gs/base/gdevtifs.h<br>
+    gs/base/gxdownscale.c<br>
+    gs/base/gxdownscale.h<br>
+    gs/base/minftrsz.c<br>
+    gs/base/minftrsz.h<br>
+    gs/doc/Devices.htm <br>
+_____________________________________________________-<br>
+2011-04-22 18:08:10 +0100<br>
+Robin Watts &lt;<a href="mailto:Robin.Watts@artifex.com" title="Robin.Watts@artifex.com">Robin.Watts@artifex.com</a>&gt;<br>
+1b3908faa01c7ef6197374a27b1a5861f0a383fe<br>
+</p>
+
+
+<p>
+    Extend downscaling to png devices too (from tiffscaled).<br>
+</p>
+
+<p>
+    Extract the code to do downscaling/min feature size from tiffscaled{,8,24}<br>
+    into a new gx_downscaler class. Make tiffscaled{,8,24} call this new class<br>
+    with no change in functionality.<br>
+</p>
+
+<p>
+    Make png devices call this new code. Only png16m and pnggray are actually<br>
+    affected by downscaling though. Add a new pngmonod device to do grayscale<br>
+    rendering internally and to downscale/min_feature_size/error diffuse to<br>
+    monochrome.<br>
+__________________________________________________________<br>
+2011-04-22 18:08:10 +0100<br>
+Robin Watts &lt;<a href="mailto:Robin.Watts@artifex.com" title="Robin.Watts@artifex.com">Robin.Watts@artifex.com</a>&gt;<br>
+1b3908faa01c7ef6197374a27b1a5861f0a383fe<br>
+</p>
+
+
+<p>
+    Extend downscaling to png devices too (from tiffscaled).<br>
+</p>
+
+<p>
+    Extract the code to do downscaling/min feature size from tiffscaled{,8,24}<br>
+    into a new gx_downscaler class. Make tiffscaled{,8,24} call this new class<br>
+    with no change in functionality.<br>
+</p>
+
+<p>
+    Make png devices call this new code. Only png16m and pnggray are actually<br>
+    affected by downscaling though. Add a new pngmonod device to do grayscale<br>
+    rendering internally and to downscale/min_feature_size/error diffuse to<br>
+    monochrome.<br>
+</p>
+
+
+
+			<!-- End wiki content -->
+			</div>
+			<hr>
+			<!-- Backlinks -->
+			<div class="footer">
+				Backlinks:
+			<!-- End Backlinks -->
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2013-07-24, 04:04:10 -->
+<!-- Saved: 2013-07-27, 10:37:43 -->
 <!-- Copyright (C) 2013 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -99,6 +99,7 @@
     <Source>gravure/numeric/TYPE_DEF.pxi</Source>
     <Source>gravure/numeric/type_promotion.pyx</Source>
     <Source>gravure/numeric/type_promotion.pxd</Source>
+    <Source>gravure/numeric/type_convertion.pyx</Source>
   </Sources>
   <Forms/>
   <Translations/>

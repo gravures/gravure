@@ -883,21 +883,26 @@ cdef test_promo():
 """
 
 def test_arithmetic():
-    mva = md.mdarray((10, 10), format=b'f', initializer=range(100))
-    mvb = md.mdarray((10, 10), format=b'i', initializer=[10])
-    mvc = mva + mvb
-    print(mva)
-    print(mvb)
-    print(mvc)
+#    mva = md.mdarray((10, 10), format=b'f', initializer=range(100))
+#    mvb = md.mdarray((10, 10), format=b'i', initializer=[10])
+#    mvc = mva + mvb
+#    print(mva)
+#    print(mvb)
+#    print(mvc)
+#
+#
+#    mva = md.mdarray((5, 5, 5), format=b'i2', initializer=range(125))
+#    mvb = md.mdarray((1, 5), format=b'i2', initializer=[10])
+#    mvc = mva + mvb
+#    print(mva)
+#    print(mvb)
+#    print(mvc)
 
-    """
-    mva = md.mdarray((5, 5, 5), format=b'i2', initializer=range(125))
-    mvb = md.mdarray((1, 5), format=b'i2', initializer=[10])
-    mvc = mvb + mva
+    mva = md.mdarray((10, 5), order='f', format=b'i', initializer=range(100))
     print(mva)
-    print(mvb)
-    print(mvc)
-    """
+    print(mva.shape)
+    print(mva.strides)
+
 
 #------------------------------------------------------------------------------
 # Main

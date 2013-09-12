@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>WTS & GEN ORDERED</title>
+		<meta name='Generator' content='Zim 0.56'>
+		<style type='text/css'>
+			a          { text-decoration: none      }
+			a:hover    { text-decoration: underline }
+			a:active   { text-decoration: underline }
+			strike     { color: grey                }
+			u          { text-decoration: none;
+			             background-color: yellow   }
+			tt         { color: #2e3436;            }
+			pre        { color: #2e3436;
+			             margin-left: 20px          }
+			h1         { text-align: center;
+			             color: #4e9a06             }
+			h2         { color: #4e9a06             }
+			h3         { color: #4e9a06             }
+			h4         { color: #4e9a06             }
+			h5         { color: #4e9a06             }
+			span.insen { color: grey                }
+			.page { max-width: 1000px;}
+			.menu{
+				float:left; width: 300px;
+			}
+			
+			.content { padding-left: 320px;}
+			.notebook{font-variant: small-caps;
+					color:#4e9a06;
+					padding: 0px 20px;}
+			hr{clear:both;}
+		</style>
+		
+	</head>
+	<body>
+		<div class="page">
+			<div class="heading">
+				<h1><a href="./Home.html" class="notebook">GRAVURE:</a>
+			
+				
+									WTS & GEN ORDERED</h1>
+			</div>
+			<hr>
+			<div class="menu">
+				<ul>
+<li><a href="../../../FOSSIL_REPOSITORY.html" title="FOSSIL REPOSITORY">FOSSIL REPOSITORY</a></li>
+<li><a href="../../../GRAPHIC_LIBRARY.html" title="GRAPHIC LIBRARY">GRAPHIC LIBRARY</a></li>
+<li><a href="../../../GRAVURE.html" title="GRAVURE">GRAVURE</a></li>
+<ul>
+<li><a href="../../COLOR_MANAGMENT.html" title="COLOR MANAGMENT">COLOR MANAGMENT</a></li>
+<li><a href="../../GRAVURE_GHOSCRIPT_DEVICE.html" title="GRAVURE GHOSCRIPT DEVICE">GRAVURE GHOSCRIPT DEVICE</a></li>
+<ul>
+<li><a href="../16_bit_OUTPUT.html" title="16 bit OUTPUT">16 bit OUTPUT</a></li>
+<li><a href="../BUILD_GS.html" title="BUILD GS">BUILD GS</a></li>
+<li><a href="../CUPS.html" title="CUPS">CUPS</a></li>
+<li><a href="../DEVICEN_CHANGE_9.02_to_9.06.html" title="DEVICEN CHANGE 9.02 to 9.06">DEVICEN CHANGE 9.02 to 9.06</a></li>
+<li><a href="../HALFTONING.html" title="HALFTONING">HALFTONING</a></li>
+<ul>
+<li><strong>WTS &amp; GEN ORDERED</strong></li>
+</ul>
+<li><a href="../NOTES.html" title="NOTES">NOTES</a></li>
+<li><a href="../TAGGING.html" title="TAGGING">TAGGING</a></li>
+</ul>
+<li><a href="../../IMPOSITION.html" title="IMPOSITION">IMPOSITION</a></li>
+<li><a href="../../POSTSCRIPT.html" title="POSTSCRIPT">POSTSCRIPT</a></li>
+<li><a href="../../PYTHON.html" title="PYTHON">PYTHON</a></li>
+<li><a href="../../scenario_CMM.html" title="scenario CMM">scenario CMM</a></li>
+<li><a href="../../VUE_GENERALE.html" title="VUE GENERALE">VUE GENERALE</a></li>
+</ul>
+<li><a href="../../../TRC.html" title="TRC">TRC</a></li>
+</ul>
+
+			</div>
+			<div class="content">
+			<!-- Wiki content -->
+				<p>
+Created jeudi 18 octobre 2012<br>
+</p>
+
+
+<p>
+suppression de WTS et créations des trames en externe <br>
+<a href="http://bugs.ghostscript.com/show_bug.cgi?id=691883" title="http://bugs.ghostscript.com/show_bug.cgi?id=691883">http://bugs.ghostscript.com/show_bug.cgi?id=691883</a><br>
+</p>
+
+
+<p>
+<strong>2011-11-15 11:26:36 -0800</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=27806596e3c2820064788bba903cc569ce89f1e7" title="27806596e3c2820064788bba903cc569ce89f1e7">27806596e3c2820064788bba903cc569ce89f1e7</a><br>
+    <u>Removal of WTS from code.</u><br>
+    Plan is to suggest the use of screens generated with gs\toolbin\halftone\gen_ordered<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-11-14 22:37:28 -0800</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=f0b1c2aefaed5ba17fea69848c0b5489b541c4cf" title="f0b1c2aefaed5ba17fea69848c0b5489b541c4cf">f0b1c2aefaed5ba17fea69848c0b5489b541c4cf</a><br>
+    Clarification of the gen_ordered settings and README.<br>
+    The current default value for -s (size of the super cell) is 1<br>
+    which indicates that them smallest possible size should be used.<br>
+    This occurs regardless of the requested quantization levels.<br>
+    This is clarified in the README and a message is displayed<br>
+    during the creation of the screen providing a minimum suggested<br>
+    value for -s to achieve the number of requested levels.<br>
+    gs/toolbin/halftone/gen_ordered/README<br>
+    gs/toolbin/halftone/gen_ordered/gen_ordered.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-11-10 11:08:56 -0800</strong><br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=108bf3d9fd2770c1b97a4eabcd4f09dd13c7fe18" title="108bf3d9fd2770c1b97a4eabcd4f09dd13c7fe18">108bf3d9fd2770c1b97a4eabcd4f09dd13c7fe18</a><br>
+    Fix several problems with the 16-bit PS output from gen_ordered.<br>
+    CLUSTER_UNTESTED<br>
+    gs/toolbin/halftone/gen_ordered/gen_ordered.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-11-10 10:35:57 -0800</strong><br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=cde0561c8ffc71c231a0aeff399852c43ab7a9e8" title="73770f28c263a514a318aa91af24b26814062bd1">73770f28c263a514a318aa91af24b26814062bd1</a><br>
+    Change options and README for gen_ordered.c and fix 16-bit PS output.<br>
+    Also add check for missing value for an option (get_arg returning NULL) and add specific 'format' for<br>
+    16-bit .raw (raw16) (reserving the -b option for number of bits 1, 2, 4) for multi-level threshold<br>
+    arrays.<br>
+    CLUSTER_UNTESTED<br>
+    gs/toolbin/halftone/gen_ordered/README<br>
+    gs/toolbin/halftone/gen_ordered/gen_ordered.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-11-10 09:01:28 -0800</strong><br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=cde0561c8ffc71c231a0aeff399852c43ab7a9e8" title="cde0561c8ffc71c231a0aeff399852c43ab7a9e8">cde0561c8ffc71c231a0aeff399852c43ab7a9e8</a><br>
+    Move the ordered dither screen creation tool to toolbin/halftone/gen_ordered.<br>
+    Previously this was buried under the toolbin/color directory. Also by putting it into gen_ordered, we<br>
+    prepare for the addition of gen_stochastic and threshold_remap tools related halftone tools. Michael<br>
+    Vrhel as agreed with this change.<br>
+    CLUSTER_UNTESTED <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-10-18 22:12:24 -0700</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=357009d7fc55166a6e8f9da539e1f785d05e9b6c" title="357009d7fc55166a6e8f9da539e1f785d05e9b6c">357009d7fc55166a6e8f9da539e1f785d05e9b6c</a><br>
+    Maintain 16bit precision in threshold array creation.<br>
+    Also add option to output either 8bit or 16bit data<br>
+    including a type 16 halftone dictionary<br>
+    gs/toolbin/color/halftone/halfttoning/halftone.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-10-17 20:48:26 -0700</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=bcfc1a94c76d84511cec09673e220b8bf15823e9" title="bcfc1a94c76d84511cec09673e220b8bf15823e9">bcfc1a94c76d84511cec09673e220b8bf15823e9</a><br>
+    Make it possible to output turn on sequence for ordered dithered screens<br>
+    This enables us to use the linearize_threshold program that Ray wrote to apply a TRC<br>
+    to our screen.<br>
+    gs/toolbin/color/halftone/halfttoning/halftone.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-10-17 15:57:50 -0700</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=253285f2a4cb681d601817185d6dba083d8b117e" title="253285f2a4cb681d601817185d6dba083d8b117e">253285f2a4cb681d601817185d6dba083d8b117e</a><br>
+    Addition of support for different vertical and horizontal resolution in ordered dithered screen creation.<br>
+    The support for this was already in place in the code. It was only was a matter of getting the parameters set.<br>
+    gs/toolbin/color/halftone/halfttoning/halftone.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-10-14 23:00:03 -0700</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=2e92d2916a189d19213d830956a2e02f7cfb6872" title="2e92d2916a189d19213d830956a2e02f7cfb6872">2e92d2916a189d19213d830956a2e02f7cfb6872</a><br>
+    Addition of dot shape specification in ordered dither screen threshold array creation.<br>
+    This provides a number of example dot shapes including, circles, diamonds, lines and<br>
+    inverted circles. Also cleaned up the code a bit.<br>
+    gs/toolbin/color/halftone/halfttoning/halftone.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-10-11 10:02:48 -0700</strong><br>
+Michael Vrhel &lt;<a href="mailto:michael.vrhel@artifex.com" title="michael.vrhel@artifex.com">michael.vrhel@artifex.com</a>&gt;<br>
+<a href="http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff;h=e96836194b0eb6085f59d41feb445d60f946dda9" title="e96836194b0eb6085f59d41feb445d60f946dda9">e96836194b0eb6085f59d41feb445d60f946dda9</a><br>
+    Fix of bugs in halftone ordered screen creation code<br>
+    This fixes several bugs. Including fixes for issues with modulo operation on negative numbers,<br>
+    integer division, faulty logic that prevented maximum lpi screens and non-dithered ordered screens.<br>
+    gs/toolbin/color/halftone/halfttoning/halftone.c <br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-03-11T04:15:39.316030Z Michael Vrhel</strong><br>
+    A reorganization of the halftone code in preparation of doing thresholding of color images.  This basically pulls out some code pieces that will be shared in all the image thresholding cases.  No differences expected (or seen in the cluster push).<br>
+    [base/gxht_thresh.h base/lib.mak base/gximono.c base/gxicolor.c base/gxht_thresh.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-03-03T17:51:48.590954Z Michael Vrhel</strong><br>
+    Enabling of thresholding code as default image rendering of monochrome/indexed images for monochrome devices.  This will result in about 2432 differences reported.  I stepped through them in a bmpcmp to check for serious issues.  The minor halftone differences were due to the fact that we step in the device space for pixel replication in the threshold code but step in source space for the rect fill code.  Enabling this code now will make it easier to track issues as we expand the use of the thresholding code.<br>
+    [base/gximono.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-03-02T18:51:23.645025Z Michael Vrhel</strong><br>
+    Introduction of a member variable in gs_image1_t, which will let us know the original source type of the image.  For example if, the parent source were type3 this spawns two type1 images.  One for the mask and one for the image data.  The mask is rendered using image render simple.  If the image is monochrome or indexed, it is rendered with the renderer in gximono.c .   If we are going to a halftone monochrome device, we end up using the fast threshold based renderer which has its interpolation stepping in device space as opposed to source space.  This causes very minor differences between the mask and the image data.  To avoid this, we use the old rect_fill code for the image type3 data to ensure a more exact spatial match.<br>
+    [base/gximono.c base/gximage1.c base/gximage2.c base/gximage3.c base/gximage4.c base/gximage.h base/gximag3x.c base/gsiparam.h]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-02-28T05:23:46.157854Z Michael Vrhel</strong><br>
+    Fix for mis-scale on decode for render mono cache.  Fixes improper rendering of 148-11.ps with new halftone code.<br>
+    [base/gxipixel.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-02-27T23:26:10.406657Z Michael Vrhel</strong><br>
+    Removal (or inactivation) of code to include inverse of transfer function in the threshold values.  Also minor fix for scaling issue in halftone code in portrait mode.  Code is inactive so no regression diffs expected.<br>
+    [base/gximono.c base/gsht.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-02-22T19:52:43.275685Z Michael Vrhel</strong><br>
+    Merge of halftone branch into the trunk.  The new rendering code is actually disabled with this commit.  As such, there should not be any testing differences.<br>
+    [base/gxipixel.c base/lib.mak base/Makefile.in base/gxcie.h /trunk/gs base/gsht.c base/gxcmap.c psi/msvc.mak ghostscript.vcproj base/gximono.c base/gzht.h base/gxidata.c base/configure.ac base/gxdht.h base/gxcmap.h base/gxicolor.c base/gximage.h base/gsciemap.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-01-11T21:33:54.972732Z Michael Vrhel</strong><br>
+    Fix for a number of issues found by Ray with the halftone creation tool.  <br>
+    These include a crash for a divide by zero in the gcd function (caused failure at 0 degree screen generation)<br>
+    Fix so that the Holladay screen is no longer created as an output option.<br>
+    Fix in  ppm output header.<br>
+    Fix in how the lpi is selected.<br>
+    Fix for when we have a screen that has essentially one dot (also caused a crash).<br>
+    Addition of a ReadMe.<br>
+</p>
+
+<p>
+    A lot more testing is needed, in particular, the dithering of the dots in the macro-screens needs additional testing and the relationship between the desired number of quantization levels and the size of the screen needs to be properly computed.  There is a list of features that need to be added described in the ReadMe.  <br>
+    [toolbin/color/halftone/halfttoning/halfttoning.vcproj toolbin/color/halftone/README toolbin/color/halftone/halfttoning/halftone.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2011-01-11T01:17:59.815496Z Ray Johnston</strong><br>
+    Add output modes for PostScript HalftoneType 3 threshold arrays (-ps) and<br>
+    PPM files (-ppm) that have the width in the file rather than only encoded<br>
+    in the filename. The -ppm mode is untested and marginally useful.<br>
+    The -ps mode was tested (on Windoze) with:<br>
+    toolbin/color/halftone/Debug/halfttoning.exe -ps -r 300 -l 23 -a 45<br>
+    gswin32c -r300 -dDisplayFormat=16#20102 -c "(Screen_Holladay_Shift10_20x10.ps) \<br>
+     run sethalftone (examples/tiger.eps) run"<br>
+    The result doesn't look very good, but at least it runs and we can examine<br>
+    the problems.<br>
+    [toolbin/color/halftone/halfttoning/halftone.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2010-12-22T18:48:13.456231Z Michael Vrhel</strong><br>
+    Initial commit of code for creating halftone screens.  This code needs additional debugging, especially in the case of edge parameters.  It will currently create threshold arrays based upon desired lpi, angle, quantization levels, and device resolution.  The method is restricted to angles that are the arctangent of rational numbers. Every attempt is made to achieve the requested lpi by using the rational angle that achieves an lpi over the requested value.  Since there is a trade off between lpi and quantization levels, the requested quantization levels are obtained through dithering of the dot cells within the supercell.  Essentially, the dots within the supercell do not all take on the same values and can grow at different rates in a visually pleasing manner.  There is still a bit of work to do still on this dithering as well as controlling the rate of growth for the dots.<br>
+    [toolbin/color/halftone toolbin/color/halftone/halfttoning.sln toolbin/color/halftone/halfttoning/halfttoning.vcproj toolbin/color/halftone/halfttoning toolbin/color/halftone/halfttoning/halftone.c]<br>
+-----------------------------------------------------------------------------------------------------------------------------------------<br>
+<strong>2010-07-18T05:30:08.091459Z Alex Cherepanov</strong><br>
+    Implement halftones type 6, 10, 16 in PDF interpreter.<br>
+    Use default halftone when the halftone type is incorrect.<br>
+    [Resource/Init/pdf_draw.ps]<br>
+</p>
+
+
+
+
+			<!-- End wiki content -->
+			</div>
+			<hr>
+			<!-- Backlinks -->
+			<div class="footer">
+				Backlinks:
+			<!-- End Backlinks -->
+			</div>
+		</div>
+	</body>
+</html>

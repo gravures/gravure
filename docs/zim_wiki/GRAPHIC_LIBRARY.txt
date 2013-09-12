@@ -1,0 +1,27 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-09-01T11:51:10+02:00
+
+====== GRAPHIC LIBRARY ======
+Created dimanche 01 septembre 2
+
+
+==== freeimage smc ====
+* python binding
+
+==== graphicsmagick ====
+* cmyk support
+
+==== opencv ====
+* python api
+* no cmyk
+
+==== vips ====
+* python api
+* no cmyk
+
+==== gegl ====
+* python api
+* colrs suport via **babl**
+
+==== babl ====

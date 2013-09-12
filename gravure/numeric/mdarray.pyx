@@ -581,6 +581,7 @@ cdef class mdarray:
         self.clamp = clamp
         memcpy(self.c_to_py, c_to_py_functions, sizeof(co_ptr) * ALL_FORMATS)
         memcpy(self.py_to_c, py_to_c_functions, sizeof(co_ptr) * ALL_FORMATS)
+        #FIXME; platform dependant code here
         if not overflow and not clamp:
             self.py_to_c[<Py_ssize_t> INT8] = py_to_wide
             self.py_to_c[<Py_ssize_t> UINT8] = py_to_wide
@@ -1514,7 +1515,7 @@ cdef class mdarray:
     # ARITHMETIC
     #
     def __add__(x, y):
-        return _compute(x, y, &c_add)
+        return _compute(x, y, 0)
 
 
     #
@@ -1524,46 +1525,103 @@ cdef class mdarray:
 #
 # GENERAL ARITHMETIC C ROUTINE
 #
-ctypedef object (*c_arithmetic)(object, object)
+cdef object numtypes_to_format = [""] * ALL_FORMATS
+numtypes_to_format[<int> BOOL]    = "b"
+numtypes_to_format[<int> UINT8]    = "u1"
+numtypes_to_format[<int> UINT16]   = "u2"
+numtypes_to_format[<int> UINT32]   = "u4"
+numtypes_to_format[<int> UINT64]   = "u8"
+numtypes_to_format[<int> UINT128]  = "u16"
+numtypes_to_format[<int> UINT256]  = "u32"
+numtypes_to_format[<int> INT8]     = "i1"
+numtypes_to_format[<int> INT16]    = "i2"
+numtypes_to_format[<int> INT32]    = "i4"
+numtypes_to_format[<int> INT64]    = "i8"
+numtypes_to_format[<int> INT128]   = "i16"
+numtypes_to_format[<int> INT256]   = "i32"
+numtypes_to_format[<int> FLOAT16]  = "f2"
+numtypes_to_format[<int> FLOAT32]  = "f4"
+numtypes_to_format[<int> FLOAT64]  = "f8"
+numtypes_to_format[<int> FLOAT80]  = "f10"
+numtypes_to_format[<int> FLOAT96]  = "f12"
+numtypes_to_format[<int> FLOAT128] = "f16"
+numtypes_to_format[<int> FLOAT256] = "f32"
+numtypes_to_format[<int> COMPLEX32]  = "c4"
+numtypes_to_format[<int> COMPLEX64]  = "c8"
+numtypes_to_format[<int> COMPLEX128] = "c16"
+numtypes_to_format[<int> COMPLEX160] = "c20"
+numtypes_to_format[<int> COMPLEX192] = "c24"
+numtypes_to_format[<int> COMPLEX256] = "c32"
+numtypes_to_format[<int> COMPLEX512] = "c64"
 
-cdef object c_add(x, y):
-    return x + y
 
+ctypedef fused_number_1 (*c_arithmetic)(fused_number_1, fused_number_1) nogil
 cdef fused_number_1 fuse_add(fused_number_1 x, fused_number_1 y) nogil:
     return x + y
 
-cdef void test():
-    cdef int8 a,b,c
-    cdef int8 *ap
-    cdef cnumber cn, cb, cres
-    cdef float32 *fp
-    cdef fused_number_1 fnum
-
-    init_cnumber(&cn)
-
-    cn.val.i8 = 8
-    cn.ctype = INT8
-    cb.val.f32 = 3.33
-    cb.ctype = FLOAT32
-
-
+"""
+cdef void cnum_op(cnumber *x, cnumber *y, cnumber *r, int op) nogil:
     with nogil:
-        cres.val.w = <wide> fuse_add( (cn.val.i8 if cn.ctype == INT8 else \
-                                (cn.val.i16 if cn.ctype == INT16 else \
-                                (cn.val.f32 if cn.ctype == FLOAT32 else cn.val.f64))),\
+        r.val.w = <wide> op_tab[op] \
+            (<wide>    (x.val.b if x.ctype == BOOL else \
+            (x.val.i8 if x.ctype == INT8 else \
+            (x.val.i16 if x.ctype == INT16 else \
+            (x.val.i32 if x.ctype == INT32 else \
+            (x.val.i64 if x.ctype == INT64 else \
+            (x.val.i128 if x.ctype == INT128 else \
+            (x.val.i256 if x.ctype == INT256 else \
+            (x.val.u8 if x.ctype == UINT8 else \
+            (x.val.u16 if x.ctype == UINT16 else \
+            (x.val.u32 if x.ctype == UINT32 else \
+            (x.val.u64 if x.ctype == UINT64 else \
+            (x.val.u128 if x.ctype == UINT128 else \
+            (x.val.u256 if x.ctype == UINT256 else \
+            (x.val.f16 if x.ctype == FLOAT16 else \
+            (x.val.f32 if x.ctype == FLOAT32 else \
+            (x.val.f64 if x.ctype == FLOAT64 else \
+            (x.val.f80 if x.ctype == FLOAT80 else \
+            (x.val.f96 if x.ctype == FLOAT96 else \
+            (x.val.f128 if x.ctype == FLOAT128 else \
+            (x.val.f256 if x.ctype == FLOAT256 else \
+            (x.val.c32 if x.ctype == COMPLEX32 else \
+            (x.val.c64 if x.ctype == COMPLEX64 else \
+            (x.val.c128 if x.ctype == COMPLEX128 else \
+            (x.val.c160 if x.ctype == COMPLEX160 else \
+            (x.val.c192 if x.ctype == COMPLEX192 else \
+            (x.val.c256 if x.ctype == COMPLEX256 else x.val.c512)))))))))))))))))))))))))), \
 
-                                (cb.val.i8 if cb.ctype == INT8 else \
-                                (cb.val.i16 if cb.ctype == INT16 else \
-                                (cb.val.f32 if cb.ctype == FLOAT32 else cb.val.f64)))   )
+            <wide> (y.val.b if y.ctype == BOOL else \
+            (y.val.i8 if y.ctype == INT8 else \
+            (y.val.i16 if y.ctype == INT16 else \
+            (y.val.i32 if y.ctype == INT32 else \
+            (y.val.i64 if y.ctype == INT64 else \
+            (y.val.i128 if y.ctype == INT128 else \
+            (y.val.i256 if y.ctype == INT256 else \
+            (y.val.u8 if y.ctype == UINT8 else \
+            (y.val.u16 if y.ctype == UINT16 else \
+            (y.val.u32 if y.ctype == UINT32 else \
+            (y.val.u64 if y.ctype == UINT64 else \
+            (y.val.u128 if y.ctype == UINT128 else \
+            (y.val.u256 if y.ctype == UINT256 else \
+            (y.val.f16 if y.ctype == FLOAT16 else \
+            (y.val.f32 if y.ctype == FLOAT32 else \
+            (y.val.f64 if y.ctype == FLOAT64 else \
+            (y.val.f80 if y.ctype == FLOAT80 else \
+            (y.val.f96 if y.ctype == FLOAT96 else \
+            (y.val.f128 if y.ctype == FLOAT128 else \
+            (y.val.f256 if y.ctype == FLOAT256 else \
+            (y.val.c32 if y.ctype == COMPLEX32 else \
+            (y.val.c64 if y.ctype == COMPLEX64 else \
+            (y.val.c128 if y.ctype == COMPLEX128 else \
+            (y.val.c160 if y.ctype == COMPLEX160 else \
+            (y.val.c192 if y.ctype == COMPLEX192 else \
+            (y.val.c256 if y.ctype == COMPLEX256 else y.val.c512)))))))))))))))))))))))))) \
+            )
+"""
+DEF CHUNK_NBYTES = 1024
 
-    print "ternaire", cres.val.i8
 
-
-
-
-
-
-cdef object _compute(object x, object y, c_arithmetic operator):
+cdef object _compute(object x, object y, int operator):
     cdef bint reverse_op = 0
     cdef bint have_arr = 0
     cdef bint broadcasting
@@ -1572,8 +1630,7 @@ cdef object _compute(object x, object y, c_arithmetic operator):
     cdef object scalar = None
     cdef array_view src_x, src_y, dst
 
-
-    # test operand validity
+    # OPERAND VALIDITY TEST
     if isinstance(x, mdarray):
         cx = <mdarray> x
         have_arr = 1
@@ -1589,8 +1646,8 @@ cdef object _compute(object x, object y, c_arithmetic operator):
             return NotImplemented
         scalar = y
 
+    # SCALAR VALIDITY TEST
     # we have one scalar and a array
-    # test scalar validity
     if scalar is not None:
         if scalar == x:
             format_len = cy.formater.length
@@ -1601,37 +1658,50 @@ cdef object _compute(object x, object y, c_arithmetic operator):
         if format_len == 1:
             if not PyNumber_Check(scalar):
                 return NotImplemented
-        elif isinstance(scalar, tuple) and len(scalar) == format_len:
-                for e in scalar:
-                    if not PyNumber_Check(e):
-                        return NotImplemented
+        else:
+            return NotImplemented
 
-    # we have 2 arrays
     # BROADCASTING TEST
+    # we have 2 arrays
     else:
         if cx.formater.length != cy.formater.length:
             return NotImplemented
-        broadcast(&src_x, &src_y, &broadcasting, &ndim)
+        if cx.formater.length > 1:
+            return NotImplemented
+        broadcast(&src_y, &src_x, &broadcasting, &ndim)
 
     #
-    # GO TO MATH
+    # CHECK OPERAND ORDER
     #
     if reverse_op:  # so, we have 1 scalar
         cx = cy
         cy = None
         src_x = src_y
 
-    # return array
-    #FIXME: format should be compute.
+    # COOK RETURN ARRAY
+    #FIXME: format endianess should be compute.
     # shape, mode, overflow and clamp inherited
-
-
+    cdef object promo_fmt
+    cdef object shape
+    cdef num_types math_type
+    math_type = get_promotion(cx.formater.formats[0], \
+                cy.formater.formats[0])
+    promo_fmt = numtypes_to_format[<int> math_type]
     shape = tuple([src_x.shape[i] for i in xrange(ndim)])
-    arr_res = mdarray(shape, cx.format, cx.mode,
-                     overflow=cx.overflow, clamp=cx.clamp)
+    arr_res = mdarray(shape, promo_fmt, cx.mode, \
+              overflow=cx.overflow, clamp=cx.clamp)
     dst = arr_res._interface
 
-    # LOOP
+    # USING CHUNKS FOR THE MATH
+    cdef chunk chunk_x, chunk_y
+    init_chunk(&chunk_x, CHUNK_NBYTES, math_type)
+    init_chunk(&chunk_y, CHUNK_NBYTES, math_type)
+
+    for i in xrange(chunk_x.size):
+        pass
+
+
+    # ITERATION LOOP
     cdef int limit = 1, loop = 1
     cdef int offset_src_y = 0, offset_src_x = 0, offset_dst=0, pos = 0
     cdef int last_dim_len, cursor
@@ -1661,17 +1731,12 @@ cdef object _compute(object x, object y, c_arithmetic operator):
             ptr_dst = dst.data + offset_dst
             ptr_src_y = src_y.data + offset_src_y
 
-            #val_x = cx.convert_item_to_object(ptr_src_x)
             struct_unpack(&cx.formater, ptr_src_x, &cx.items_cache)
-
-            #val_y = cy.convert_item_to_object(ptr_src_y)
             struct_unpack(&cy.formater, ptr_src_y, &cy.items_cache)
 
-            #cn_add(&cx.items_cache[0], &cy.items_cache[0], &arr_res.items_cache[0])
-            #struct_pack(&arr_res.formater, ptr_dst, &arr_res.items_cache)
+            #cnum_op(&cx.items_cache[0], &cy.items_cache[0], &arr_res.items_cache[0], operator)
+            struct_pack(&arr_res.formater, ptr_dst, &arr_res.items_cache)
 
-            #val_dst = operator(val_x, val_y)
-            #arr_res.assign_item_from_object(ptr_dst, val_dst)
 
             src_x_indices[cursor] -= 1
             src_y_indices[cursor] = src_x_indices[cursor] % src_y.shape[cursor]
@@ -1740,6 +1805,8 @@ cdef int raise_err_extents(int i, Py_ssize_t extent1,
 #@cname('__pyx_memoryview_err_dim')
 cdef int raise_err_dim(object error, char *msg, int dim) except -1 with gil:
     raise error(msg.decode('ascii') % dim)
+
+
 
 #@cname('__pyx_memoryview_err')
 #cdef int _err(object error, char *msg) except -1 with gil:

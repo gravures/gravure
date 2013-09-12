@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>TAGGING</title>
+		<meta name='Generator' content='Zim 0.56'>
+		<style type='text/css'>
+			a          { text-decoration: none      }
+			a:hover    { text-decoration: underline }
+			a:active   { text-decoration: underline }
+			strike     { color: grey                }
+			u          { text-decoration: none;
+			             background-color: yellow   }
+			tt         { color: #2e3436;            }
+			pre        { color: #2e3436;
+			             margin-left: 20px          }
+			h1         { text-align: center;
+			             color: #4e9a06             }
+			h2         { color: #4e9a06             }
+			h3         { color: #4e9a06             }
+			h4         { color: #4e9a06             }
+			h5         { color: #4e9a06             }
+			span.insen { color: grey                }
+			.page { max-width: 1000px;}
+			.menu{
+				float:left; width: 300px;
+			}
+			
+			.content { padding-left: 320px;}
+			.notebook{font-variant: small-caps;
+					color:#4e9a06;
+					padding: 0px 20px;}
+			hr{clear:both;}
+		</style>
+		
+	</head>
+	<body>
+		<div class="page">
+			<div class="heading">
+				<h1><a href="./Home.html" class="notebook">GRAVURE:</a>
+			
+				
+									TAGGING</h1>
+			</div>
+			<hr>
+			<div class="menu">
+				<ul>
+<li><a href="../../FOSSIL_REPOSITORY.html" title="FOSSIL REPOSITORY">FOSSIL REPOSITORY</a></li>
+<li><a href="../../GRAPHIC_LIBRARY.html" title="GRAPHIC LIBRARY">GRAPHIC LIBRARY</a></li>
+<li><a href="../../GRAVURE.html" title="GRAVURE">GRAVURE</a></li>
+<ul>
+<li><a href="../COLOR_MANAGMENT.html" title="COLOR MANAGMENT">COLOR MANAGMENT</a></li>
+<li><a href="../GRAVURE_GHOSCRIPT_DEVICE.html" title="GRAVURE GHOSCRIPT DEVICE">GRAVURE GHOSCRIPT DEVICE</a></li>
+<ul>
+<li><a href="./16_bit_OUTPUT.html" title="16 bit OUTPUT">16 bit OUTPUT</a></li>
+<li><a href="./BUILD_GS.html" title="BUILD GS">BUILD GS</a></li>
+<li><a href="./CUPS.html" title="CUPS">CUPS</a></li>
+<li><a href="./DEVICEN_CHANGE_9.02_to_9.06.html" title="DEVICEN CHANGE 9.02 to 9.06">DEVICEN CHANGE 9.02 to 9.06</a></li>
+<li><a href="./HALFTONING.html" title="HALFTONING">HALFTONING</a></li>
+<li><a href="./NOTES.html" title="NOTES">NOTES</a></li>
+<li><strong>TAGGING</strong></li>
+<ul>
+<li><a href="./TAGGING/Raster_object_tagging.html" title="Raster object tagging">Raster object tagging</a></li>
+</ul>
+</ul>
+<li><a href="../IMPOSITION.html" title="IMPOSITION">IMPOSITION</a></li>
+<li><a href="../POSTSCRIPT.html" title="POSTSCRIPT">POSTSCRIPT</a></li>
+<li><a href="../PYTHON.html" title="PYTHON">PYTHON</a></li>
+<li><a href="../scenario_CMM.html" title="scenario CMM">scenario CMM</a></li>
+<li><a href="../VUE_GENERALE.html" title="VUE GENERALE">VUE GENERALE</a></li>
+</ul>
+<li><a href="../../TRC.html" title="TRC">TRC</a></li>
+</ul>
+
+			</div>
+			<div class="content">
+			<!-- Wiki content -->
+				<p>
+Created samedi 06 octobre 2012<br>
+</p>
+
+<p>
+2011-06-23 11:55:14 -0700<br>
+Ray Johnston &lt;<a href="mailto:ray.johnston@artifex.com" title="ray.johnston@artifex.com">ray.johnston@artifex.com</a>&gt;<br>
+06df93f6babc540b8e29ae7cc1fcaed888142d52<br>
+</p>
+
+
+<p>
+    Rename object_tag to graphics_type_tag and move to the device for MT rendering.<br>
+</p>
+
+<p>
+    The memory-&gt;gs_lib_ctx-&gt;BITTAG hack was inherently NOT safe for use by multiple<br>
+    rendering threads. Devices that want to encode the tag info in the gx_color_index<br>
+    need the tag, so we have moved this to the device structure. Multiple rendering<br>
+    threads each have unique buffer devices, so this allows clist playback to set<br>
+    and use the appropriate tag as the bands are played back without thread<br>
+    interference.<br>
+</p>
+
+<p>
+    Rename the gs_object_tag_type_t to gs_graphics_type_t to make it more unique for<br>
+    grep based searching and prevent confusion with other uses of the term 'object'.<br>
+    Move the enum to gscms.h with the 'set' functions prototyped in gxdevcli.h.<br>
+</p>
+
+<p>
+    Just as for the device's cmm_dev_profile_t information, the tag needs to be<br>
+    forwarded by devices in the chain (clipper, compositor) so that these 'helper'<br>
+    filtering devices don't interfere with the setting of the tag. The tag value is<br>
+    maintained in all devices in the chain so a 'get_graphics_type_tag' dev_proc<br>
+    is not needed -- the dev-&gt;graphics_type_tag can be access directly.<br>
+</p>
+
+<p>
+    Previously, tags were not recorded except for devices that enabled tags.<br>
+    Now tags are tracked for all devices for use in selecting an ICC profile<br>
+    and a device can signal that it maintains tags by setting GS_DEVICE_ENCODES_TAGS<br>
+    for use by compositors that want to know whether or not to maintain a tag<br>
+    plane, such as the pdf14 device.<br>
+</p>
+
+<p>
+    Also replace the old 'get_object_type' that the anti-aliasing used with the<br>
+    single approach for consistency and to cure problems (not identifed) with using<br>
+    AA when other devices are interposed in the chain (clipper, compositor).<br>
+</p>
+
+<p>
+    EXPECTED_DIFFERENCES:<br>
+</p>
+
+<p>
+    Various 12-07D.PS PS LL3 CET files will show color differences on page 3 (GLOBINT)<br>
+    as described in Bug692334.<br>
+</p>
+
+<p>
+    gs/base/gdevabuf.c<br>
+    gs/base/gdevbit.c<br>
+    gs/base/gdevddrw.c<br>
+    gs/base/gdevdflt.c<br>
+    gs/base/gdevimdi.c<br>
+    gs/base/gdevmem.c<br>
+    gs/base/gdevnfwd.c<br>
+    gs/base/gdevp14.c<br>
+    gs/base/gdevprn.h<br>
+    gs/base/gdevpsd.c<br>
+    gs/base/gdevrinkj.c<br>
+    gs/base/gdevrops.c<br>
+    gs/base/gdevwts.c<br>
+    gs/base/gdevxcf.c<br>
+    gs/base/gscms.h<br>
+    gs/base/gscsepr.c<br>
+    gs/base/gsdevice.c<br>
+    gs/base/gsdps1.c<br>
+    gs/base/gsequivc.c<br>
+    gs/base/gsicc.c<br>
+    gs/base/gsicc_cache.c<br>
+    gs/base/gsicc_manage.c<br>
+    gs/base/gsicc_manage.h<br>
+    gs/base/gsimage.c<br>
+    gs/base/gslibctx.c<br>
+    gs/base/gslibctx.h<br>
+    gs/base/gsnamecl.c<br>
+    gs/base/gsncdummy.c<br>
+    gs/base/gspaint.c<br>
+    gs/base/gstext.c<br>
+    gs/base/gstrans.c<br>
+    gs/base/gsutil.c<br>
+    gs/base/gsutil.h<br>
+    gs/base/gxacpath.c<br>
+    gs/base/gxblend1.c<br>
+    gs/base/gxclip.c<br>
+    gs/base/gxclipm.c<br>
+    gs/base/gxclist.c<br>
+    gs/base/gxclrast.c<br>
+    gs/base/gxcmap.c<br>
+    gs/base/gxdevcli.h<br>
+    gs/base/gxdevice.h<br>
+    gs/base/gxi12bit.c<br>
+    gs/base/gxicolor.c<br>
+    gs/base/gximono.c<br>
+    gs/base/gxiscale.c<br>
+    gs/base/gxistate.h<br>
+    gs/base/gxpcmap.c<br>
+    gs/base/gxshade.c<br>
+    xps/xpsgradient.c<br>
+</p>
+
+
+
+			<!-- End wiki content -->
+			</div>
+			<hr>
+			<!-- Backlinks -->
+			<div class="footer">
+				Backlinks:
+			<!-- End Backlinks -->
+			</div>
+		</div>
+	</body>
+</html>

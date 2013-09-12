@@ -1,0 +1,357 @@
+/* ------------------------------------------ */
+/* PAGE LAYOUT											 */
+/* ------------------------------------------ */
+body {
+	margin-top: 15px;
+	margin-left:30px;
+	margin-right:30px;
+	margin-bottom:30px;
+	background-color: #fff;
+}
+
+page, #page{
+	min-height:560px;
+	background-color: #fff;
+}
+
+#page { 
+	margin-right: auto;
+	margin-left: auto; 
+	/*padding : 0 0 0 0;*/
+	border:0;
+	position: relative; 
+	/*width: 58em;*/ 
+	/*margin: 1em auto; */
+	/*padding:1em 2em;*/ 
+	text-align: left; 
+	/*border:3px solid #ddd; */
+}
+
+.container {
+  margin:0 0 0 0;
+}
+
+/* ------------------------------------------ */
+/* ENTETE												 */
+/* ------------------------------------------ */
+#entete { 	
+	padding-top:0;
+	padding-bottom:0;
+	margin:0;
+	width:100%; 
+	/*padding-top: 1.60em; padding-bottom: 1.60em;
+	margin-bottom:1em; border-bottom: 2px solid #5ac;*/
+}			
+#entete .accueil {
+	padding:0;
+	margin:0;
+	display: block; 
+	/*width: 67%;*/ 
+}
+#entete .accueil .spip_logos { 
+	padding:0;
+	margin:0;
+	/*vertical-align: bottom; */
+	/*line-height: 1em;*/ 
+}
+
+#entete .formulaire_menu_lang { 
+	position: absolute; 
+	right: 0; 
+	/*top: 0.90em; */
+	display: block; 
+	/*width: 30%;*/ 
+} /*Cf.: spip_formulaires.css*/
+
+/* ------------------------------------------ */
+/* CONTENU												 */
+/* ------------------------------------------ */
+#conteneur { 
+	/*
+	padding:0;
+	margin:0;
+	border:0;
+	*/
+	clear: both; 
+	overflow: hidden; 
+}
+#contenu { 
+	/*
+	padding:0;
+	margin:0;
+	border:0;
+	*/
+	/*padding-top: 0.30em;*/ 
+	float:left;
+	/*width:65%;*/
+}
+
+#navigation { 
+	/*float: right;*/ 
+	/*width: 30%;*/ 
+	/*margin-top: 1em;*/
+	overflow: hidden; 
+}
+
+.cartouche {
+	margin:0;
+	padding:0;
+}
+
+
+/* ------------------------------------------ */
+/* PIED DE PAGE										 */
+/* ------------------------------------------ */
+#pied {
+	border-top: 1px solid #888;
+	margin-top:-1px; 
+	clear: both;
+	/*width: 100%;*/ 
+	/*vertical-align: baseline;
+	/*padding: 0.60em 0; 
+	/*border: 2px solid #ddd; 
+	/*background:#f9f9f9; */
+	/*text-align: center; 
+	/*font-size: 0.90em;*/ 
+}
+#pied a { /*color:#666;*/ } /* ne pas utiliser de selecteur trop precis, et eviter de toucher aux liens */
+#pied img { 
+	/*vertical-align: baseline;*/
+	vertical-align: middle; 
+}
+
+/* ------------------------------------------ */
+/* NAVIGATION ET MENU								 */
+/* ------------------------------------------ */
+
+.menu { 
+	clear: both; 
+	/*margin-bottom: 2em; */
+	text-align: left; 
+}
+
+.menu p { 
+	/*margin: 0.20em 0; 
+	padding: 0.20em 0.10em;*/ 
+}
+
+.menu-liste { 
+	margin: 0; 
+	padding: 0; 
+	list-style: none; 
+}
+
+.menu-liste .menu-entree { 
+	margin: 0 0 0 0; 
+	padding: 0 0 0 0;
+	border: 0; 
+	/*margin: 0.20em 0; 
+	padding: 0.20em;*/
+}
+
+.menu-liste .menu-entree .menu-liste { margin-left: 1em; border: 0; }
+.menu-liste .menu-entree .menu-entree { padding: 0; border: 0; }
+
+#nav {
+	padding-bottom:2.66666666em;
+}
+
+#nav .menu-liste{
+	/*border-bottom: 1px solid #000;
+	margin-bottom:-2px;*/
+}
+
+#nav .menu-liste .menu-entree {	
+	display: inline;
+	margin:0 0 0 0;
+	padding:0 5px 0px 10px;
+	border-right:1px solid #d00;
+	float:left;
+	position:relative;
+	min-width:106px;
+	line-height:1em;
+	/*font-size:1.3333333em;
+	/*border-bottom: 1px solid #000; */
+}
+
+#nav .menu-liste .on { 
+	font-weight:600;
+	/*background-color:#111;*/
+}
+
+#nav .menu-liste .on a{ 
+	/*color:#990033;*/
+}
+		
+#navigation .menu {
+	/*background:#fcfcfc; 
+	padding:0.5em; 
+	border: 1px 
+	solid #ddd;*/
+}
+#navigation .menu a {/*color:#666;*/} /* ne pas utiliser de selecteur trop precis, et eviter de toucher aux liens */
+#navigation .menu-liste {
+
+}
+#navigation .menu-liste .menu-entree {
+	/*list-style:square; 
+	margin-left:15px; */
+	padding:0; 
+	/*color:#f63;*/
+}
+#navigation .menu-liste .menu-entree .menu-liste {margin-left:0;}
+#navigation .liste .h2 {
+	/*margin-top:1em;*/
+}
+
+#navigation .formulaire_recherche{
+	/*margin-bottom:2em;*/
+}
+
+
+/* ------------------------------------------ */
+/*  PAGINATION											 */
+/* ------------------------------------------ */
+
+.pagination { 
+	clear: both; 
+	text-align: right; 
+	/*font-size: 0.90em;*/ 
+	color: #666; 
+}
+.pagination .on { font-weight: bold; color: #666; }
+
+
+/* ------------------------------------------ */
+/*  PORTFOLIO											 */
+/* ------------------------------------------ */
+ 
+.documents_portfolio { 
+	clear: both;
+	width:100%; 
+	border:0;
+	margin: 0;
+	padding:0; 
+	margin-top:1.3333333em;
+	/*text-align: center; */
+}
+
+.documents_portfolio .spip_logos { 
+	margin: 6px 3px 0 3px; 
+	border: 4px solid #DDD; 
+	margin:0;
+	border:0;
+	padding:0;
+	}
+.documents_portfolio a.on .spip_logos { border-color: #f63; }
+.documents_portfolio a:focus .spip_logos,
+.documents_portfolio a:hover .spip_logos,
+.documents_portfolio a:active .spip_logos { border-color: #5ac; }
+
+
+/* ------------------------------------------ */
+/*  MASQUAGE D'ELEMENTS ,.info-publi			 */
+/* ------------------------------------------ */
+
+ #hierarchie,#navigation .menu .h2 { visibility:hidden;line-height: 0em; margin-top: 0em;margin-bottom:0; }
+ 
+ 
+/* OUTILS BLOC DEPLIALE COUTEAU SUISSE			 */
+/* attention ici h5 car parametre comme tel	 */
+/* dans l'interface du couteau suisse.			 */
+/* ------------------------------------------ */
+
+h5.blocs_titre {
+	background:transparent none;
+	/*background:transparent url([(#EVAL{_DIR_IMG_PACK}|url_absolue)]triangle-bas.gif) no-repeat scroll left center;*/
+	font-weight:normal;
+	line-height:1.3333333em;
+	margin-top:0px;
+	padding:0pt 0pt 0pt 0px;
+	margin-bottom:0;
+	clear:left;
+	cursor:pointer;
+}
+
+h5.blocs_titre :hover {
+	background-color:#ccc;
+}
+
+h5.blocs_replie {
+	background:transparent none;
+	/*background:transparent url([(#EVAL{_DIR_IMG_PACK}|url_absolue)]triangle.gif) no-repeat scroll left center;*/
+}
+
+h5.blocs_replie :hover {
+	background-color:#fbb;
+}
+
+div.cs_blocs>div {
+}
+
+/* ------------------------------------------ */
+/*  UTILS									  */
+/* ------------------------------------------ */
+
+.nonefloat{float:none;}
+.fullheight{height:900px;}
+.alignbottom {vertical-align:bottom;}
+.scroll{ overflow-y:scroll; }
+
+/* ------------------------------------------ */
+/* Rubrique organisation convention 		  */
+/* ------------------------------------------ */
+
+.bdcadre { display: block; height:350px; max-height: 350px; overflow-y: scroll;}
+.convention {}
+.convention td { border-top : 1px solid #555; vertical-align: top; }
+.convention table table td {border-top: 0px;}
+ 
+.convention .noborder td{border-top: 0px;}
+
+.crayon-background { background-color: #eee; border: 1px solid #333; }
+.convention .noborder thead th { background: #eee; }
+.convention .noborder tr.row_first { background: #eee;}
+.convention .scrollzone { display: block; height:100px; max-height: 100px; overflow-y: scroll; }
+
+.convention  .status_sans {background-color: #fff;}
+.convention  .status_ok {background-color: #6f6;}
+.convention  .status_unknow {background-color: #ccc;}
+.convention  .status_open {background-color: #ff5;}
+.convention  .status_dead {background-color: #666;}
+  
+.listette ul li { border-top : 1px dotted #333;}
+
+.framecontact { 
+	width: 800px ;
+	height: 400px ;
+	visibility:hidden;
+	position:fixed;
+	top : 80px;
+	left: 200px;
+	background-color: #fff;
+	border: dotted 1px #333;
+	padding: 8px;
+	margin: 4px;
+}
+
+.framecontact table, .framecontact .bdcadre{ width:776px; max-width: 776px;}
+
+
+
+.formulaire_ajouter_ligne_table { float:left; display: inline; }
+.formulaire_ajouter_ligne_table ul li { clear:none ;float:left; display: inline; margin-right: 10px;}
+.formulaire_ajouter_ligne_table fieldset { clear:none ;float:left;}
+.formulaire_ajouter_ligne_table boutons { vertical-align:bottom; clear:none ;float:left; display: inline; margin-right: 10px;}
+
+div.borderleft {
+  padding-left: 10px;
+  padding-right: 8px;
+  margin-left: 15px;
+  border-left: 1px solid #bbb;
+}
+
+
+/* ------------------------------------------ */
+/*  FIN													 */
+/* ------------------------------------------ */

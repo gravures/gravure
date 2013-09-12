@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>2D ARRAYS AND NUMBERS</title>
+		<meta name='Generator' content='Zim 0.56'>
+		<style type='text/css'>
+			a          { text-decoration: none      }
+			a:hover    { text-decoration: underline }
+			a:active   { text-decoration: underline }
+			strike     { color: grey                }
+			u          { text-decoration: none;
+			             background-color: yellow   }
+			tt         { color: #2e3436;            }
+			pre        { color: #2e3436;
+			             margin-left: 20px          }
+			h1         { text-align: center;
+			             color: #4e9a06             }
+			h2         { color: #4e9a06             }
+			h3         { color: #4e9a06             }
+			h4         { color: #4e9a06             }
+			h5         { color: #4e9a06             }
+			span.insen { color: grey                }
+			.page { max-width: 1000px;}
+			.menu{
+				float:left; width: 300px;
+			}
+			
+			.content { padding-left: 320px;}
+			.notebook{font-variant: small-caps;
+					color:#4e9a06;
+					padding: 0px 20px;}
+			hr{clear:both;}
+		</style>
+		
+	</head>
+	<body>
+		<div class="page">
+			<div class="heading">
+				<h1><a href="./Home.html" class="notebook">GRAVURE:</a>
+			
+				
+									2D ARRAYS AND NUMBERS</h1>
+			</div>
+			<hr>
+			<div class="menu">
+				<ul>
+<li><a href="../../FOSSIL_REPOSITORY.html" title="FOSSIL REPOSITORY">FOSSIL REPOSITORY</a></li>
+<li><a href="../../GRAPHIC_LIBRARY.html" title="GRAPHIC LIBRARY">GRAPHIC LIBRARY</a></li>
+<li><a href="../../GRAVURE.html" title="GRAVURE">GRAVURE</a></li>
+<ul>
+<li><a href="../COLOR_MANAGMENT.html" title="COLOR MANAGMENT">COLOR MANAGMENT</a></li>
+<li><a href="../GRAVURE_GHOSCRIPT_DEVICE.html" title="GRAVURE GHOSCRIPT DEVICE">GRAVURE GHOSCRIPT DEVICE</a></li>
+<li><a href="../IMPOSITION.html" title="IMPOSITION">IMPOSITION</a></li>
+<li><a href="../POSTSCRIPT.html" title="POSTSCRIPT">POSTSCRIPT</a></li>
+<li><a href="../PYTHON.html" title="PYTHON">PYTHON</a></li>
+<ul>
+<li><strong>2D ARRAYS</strong></li>
+<li><a href="./CHANGES_IN_PYTHON_3.html" title="CHANGES IN PYTHON 3">CHANGES IN PYTHON 3</a></li>
+</ul>
+<li><a href="../scenario_CMM.html" title="scenario CMM">scenario CMM</a></li>
+<li><a href="../VUE_GENERALE.html" title="VUE GENERALE">VUE GENERALE</a></li>
+</ul>
+<li><a href="../../TRC.html" title="TRC">TRC</a></li>
+</ul>
+
+			</div>
+			<div class="content">
+			<!-- Wiki content -->
+				<p>
+Created mercredi 20 mars 2013<br>
+</p>
+
+
+<h3>CYTHON CEP</h3>
+<p>
+<a href="http://wiki.cython.org/enhancements/array" title="http://wiki.cython.org/enhancements/array">http://wiki.cython.org/enhancements/array</a><br>
+<a href="http://docs.cython.org/src/userguide/memoryviews.html" title="http://docs.cython.org/src/userguide/memoryviews.html">http://docs.cython.org/src/userguide/memoryviews.html</a><br>
+</p>
+
+<p>
+<a href="https://groups.google.com/forum/?fromgroups=#!topic/cython-users/CwtU_jYADgM" title="https://groups.google.com/forum/?fromgroups=#!topic/cython-users/CwtU_jYADgM">https://groups.google.com/forum/?fromgroups=#!topic/cython-users/CwtU_jYADgM</a><br>
+cython.view is a fake module. The cython array implementation and<br>
+other things can be found in Cython/Utility/MemoryView.pyx.<br>
+</p>
+
+<p>
+The reason it is slow is because no one ever cared to optimize it. It<br>
+allocates shape and strides independently on the heap. So it contains<br>
+at least 3 malloc calls, and a bunch of other code.<br>
+</p>
+
+<p>
+If you want to make it really fast, implement it with a free list,<br>
+only malloc the data and make sure the code in the constructor is<br>
+native where possible. No one is actively working on it, but it's just<br>
+Cython code, so patches would be appreciated and merged. <br>
+</p>
+
+
+<h3>CARRAYS</h3>
+<p>
+<a href="https://github.com/FrancescAlted/carray" title="https://github.com/FrancescAlted/carray">https://github.com/FrancescAlted/carray</a><br>
+<a href="https://pypi.python.org/pypi/carray/0.5.1" title="https://pypi.python.org/pypi/carray/0.5.1">https://pypi.python.org/pypi/carray/0.5.1</a><br>
+</p>
+
+
+<h3>CDECIMAL</h3>
+<p>
+<a href="http://www.bytereef.org/mpdecimal/index.html" title="http://www.bytereef.org/mpdecimal/index.html">http://www.bytereef.org/mpdecimal/index.html</a><br>
+</p>
+
+<p>
+store decimal number as bytes in a c buffer.<br>
+value for decimal are store as four variable:<br>
+</p>
+
+<p>
+a python string <strong>_int</strong> = string of length context.prec (default = 28)	→  unsigned int with n bytes = int(d._int).bit_length() // 8<br>
+<div style='padding-left: 540pt'>
+or a bytes of same length : a struct format = "n<strong>c</strong>"<br>
+</div>
+a python int <strong>_exp</strong> = an signed int (-_int.<u>len</u>(), int.__len()) 		→ signed int 8 or 16 bits length (prec &gt; 126)<br>
+a python int <strong>_sign </strong>= (0,1)								→ c bool<br>
+a python boolean <strong>_is_special </strong>= (True, Fale)					→ c bool <br>
+</p>
+
+
+
+
+
+
+
+			<!-- End wiki content -->
+			</div>
+			<hr>
+			<!-- Backlinks -->
+			<div class="footer">
+				Backlinks:
+			<!-- End Backlinks -->
+			</div>
+		</div>
+	</body>
+</html>

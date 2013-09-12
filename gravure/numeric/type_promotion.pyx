@@ -121,14 +121,7 @@ types_promotion[<int> FLOAT80][:]    = [FLOAT80     , FLOAT80     , FLOAT80     
 types_promotion[<int> FLOAT96][:]    = [FLOAT96     , FLOAT96     , FLOAT96     , COMPLEX192]
 types_promotion[<int> FLOAT128][:]   = [FLOAT128    , FLOAT128    , FLOAT128    , COMPLEX256]
 types_promotion[<int> FLOAT256][:]   = [FLOAT256    , FLOAT256    , FLOAT256    , COMPLEX512]
-### normaly following should never be used
-#types_promotion[<int> COMPLEX32][:]  = [COMPLEX32   , COMPLEX32   , COMPLEX32   , COMPLEX32]
-#types_promotion[<int> COMPLEX64][:]  = [COMPLEX64   , COMPLEX64   , COMPLEX64   , COMPLEX64]
-#types_promotion[<int> COMPLEX128][:] = [COMPLEX128  , COMPLEX128  , COMPLEX128  , COMPLEX128]
-#types_promotion[<int> COMPLEX160][:] = [COMPLEX160  , COMPLEX160  , COMPLEX160  , COMPLEX160]
-#types_promotion[<int> COMPLEX192][:] = [COMPLEX192  , COMPLEX192  , COMPLEX192  , COMPLEX192]
-#types_promotion[<int> COMPLEX256][:] = [COMPLEX256  , COMPLEX256  , COMPLEX256  , COMPLEX256]
-#types_promotion[<int> COMPLEX512][:] = [COMPLEX512  , COMPLEX512  , COMPLEX512  , COMPLEX512]
+
 
 # ALTER THE PROMOTION LOOK UP TABLE WITH AVAILABLE TYPE
 cdef int i, j

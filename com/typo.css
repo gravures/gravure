@@ -1,0 +1,428 @@
+body{
+	font-family:Helvetica;
+}	
+
+.chapo{
+	font-weight: bolder;
+}
+
+.capital{	
+	font-variant:small-caps ;
+	font-weight: bolder;  
+}
+
+/* Use this to create a horizontal ruler across a column. */
+hr {
+  background: #ddd; 
+  color: #ddd;
+  clear: both; 
+  float: none; 
+  width: 100%; 
+  height: .1em;
+  margin: 0 0 1.45em;
+  border: none; 
+}
+hr.space {
+  background: #fff;
+  color: #fff;
+}
+
+hr, hr.spip {
+	padding : 7px 0 0 0;
+	clear: both; 
+  	float: none; 
+  	width: 100%;
+	background:none;
+	border-bottom:#666 1px dotted;
+	margin:0px 0 -8px 0;
+}
+
+hr.dot {
+	padding : 7px 0 0 0;
+	clear: both; 
+  	float: none; 
+  	width: 100%;
+	background:none;
+	border-bottom:#C1272D 4px solid;
+	margin:0px 0 -8px 0;
+}
+
+hr.hard {
+	border:none;
+	background-image: url(img/HR.png);
+	min-height: 16px;
+}
+
+abbr,acronym { border-bottom: 1px dotted #666; }
+
+/* formulaire */
+input.text, 
+input.title   { 
+	width: 300px; 
+	padding:0 0 0 0;
+	margin: 0 0 0 0; 
+}
+
+input.title   { font-size:1.33333333333em; }
+textarea      { width: 390px; height: 250px; padding:0px; }
+
+
+/* Use a .box to create a padded box inside a column.  */ 
+.box { 
+  background:none; 
+}
+
+
+
+/* Text colors */
+body {
+	background-color:#fff;
+	}
+h1, h2, h3, h4, h5, h6, h3 .spip, .entry-title a, .h3 a{color:#C1272D;} 
+.black {color:#333;}
+p, blockquote, a , small{color:#322;}
+#nav .menu-liste .menu-entree a {color:#211;}
+#nav .menu-liste .on { }
+#nav .menu-liste .on a{ color:#f00;}
+.spip_code {color:#f63;}
+#pied a { color:#330000 }
+p{color:#444}
+.descriptif p {
+	color:#666;
+	letter-spacing:.06em;
+}
+
+#entete .accueil #nom_site_spip {
+	margin:0;
+	padding:0;
+	border:0;	
+	padding-left:0em;
+	font-family:Helvetica;
+	font-weight:bold;
+	letter-spacing:.01em;
+	font-size: 1.666em; line-height: 2em;  
+	margin-bottom: 0.0em;
+}
+
+#entete .accueil #nom_site_spip a{
+	color:#333;
+	color: #C1272D;
+	text-align:right;
+	text-decoration:none;
+	}
+	
+#entete {	
+	border-bottom:4px solid #fff;
+	margin-bottom:-4px;
+}
+
+#bandeau_event {
+	padding-top:0;
+	padding-bottom:0;
+	margin:0;
+	width:100%; 
+	min-height:320px;
+	background-image: url(img/BANNIERE.png);
+
+}
+
+#slogan_site_spip{
+	padding-top:0.66666666666em;
+	text-align:right;
+	padding-right:1em;
+	font-size: 0.8em; margin: 0em; line-height: 1.11em;
+	letter-spacing:.14em;
+	color:#aaa;
+}
+
+.spip_cadre {
+	color:#444; 
+	background-color: #fff; 
+	}
+#hierarchie, #hierarchie a { 
+	color: #666; 
+}
+
+.cartouche .soustitre{
+	color:#666;
+	font-weight:bold;
+	letter-spacing:.05em;
+}
+
+.texte { 
+ 	margin:0;
+	padding:0;
+}
+
+.ps, .notes { 
+	margin:0;
+	padding:0;
+}
+.notes { 
+	clear: both; 
+}
+
+
+/* Listes d'articles et extraits introductifs */
+.liste-items {
+	margin:0;
+	padding:0;
+	list-style: none; 
+	border:0;
+}
+.liste-items .item {
+	margin:0;
+	padding:0;
+	list-style:square;
+	/*padding:2px 0;*/ 
+	/*color:#f63;*/
+	clear: both;
+	overflow:hidden;
+}
+.liste-items .item .h3 { 
+	border:0;
+	/*margin: 0.30em 0; */
+	/*border-bottom:1px 
+	solid #5ac;*/
+}
+.liste-items .item .h3 a:hover { text-decoration:none;}
+.liste-items .item .info-publi { 
+	border:0; 
+	display:block; 
+	/*float:right; */
+	/*margin-top:0.6em;*/
+}
+
+.liste.articles .spip_logos { 
+	float: right; 
+	clear: right; 
+	/*margin: .8em 0 4px 16px; */
+}
+.liste .articles .item .introduction { 
+	margin: 0 0 0 0; 
+	padding : 0 0 0 0;
+	border: 0;
+	vertical-align: baseline;
+	/*margin-top: 0.30em; 
+	line-height: 1.40em; 
+	padding: 0.5em 0 1.5em 1em;*/
+}
+
+
+
+/* Couleurs des liens
+---------------------------------------------- */
+a { 
+	/*color: #000;*/ 
+	text-decoration: none; 
+}
+a:focus,a:hover,a:active { color: #5ac; text-decoration: underline; }
+a.spip_out, a.spip_glossaire {
+	color: #5ac;
+	/*background:transparent url(img/out.gif) no-repeat scroll right center;
+	padding-right:12px;
+	*/
+}
+
+
+/*  ------------------------------------------
+/*  Habillage des formulaires
+/*  ------------------------------------------ */
+input, select, textarea { font-size: 100%; font-family: inherit; }
+
+
+/* Structure generale des formulaires
+----------------------------------------------- */
+.formulaire_spip { 
+	clear: both; 
+	margin-bottom: 2em; 
+	padding: 0; 
+	border: 0; 
+	text-align: 
+	left; 
+	/*font-size: 1em;*/ 
+}
+.formulaire_spip form { margin: 0; padding: 0; } /* Bug IE/Win */
+
+/* Fieldset */
+.formulaire_spip fieldset { 
+	clear: both; 
+	/*margin: 0 0 1em 0;*/ 
+	padding: 0; 
+	border: 0; 
+}
+.formulaire_spip fieldset legend { 
+	margin: 0; 
+	padding: 0; 
+	font-size: 1.05em; 
+	font-weight: bold; 
+	background-color: #fff; 
+	color: #333; 
+} /* Preciser la couleur des legend et du fond pour IE/Win */
+
+.formulaire_spip fieldset fieldset { 
+	/*	margin-top: 1em; */
+}
+.formulaire_spip fieldset fieldset legend { font-size: 1em; font-weight: normal; }
+
+/* Explications */
+.formulaire_spip .explication { margin: 0.50em 0; color: #444; }
+
+/* Lignes */
+.formulaire_spip ul { margin: 0; padding: 0; list-style: none; }
+.formulaire_spip ul li { clear: both; margin: 0; padding: 0.50em 0; }
+
+/* Labels */
+.formulaire_spip label { 
+	display: block; 
+	text-align: left; 
+	color: #444; 
+	font-weight: bold; /* pour IE/Win */ 
+	position: relative;  
+}
+.formulaire_spip li p { margin-top: 0; margin-bottom: 0; }
+
+.formulaire_spip .choix label{display:inline;font-weight:normal;}
+.formulaire_spip .choix input.radio,
+.formulaire_spip .choix input.checkbox {width:auto;}
+
+
+/* Champs de saisie */
+.formulaire_spip input.text { width: 15em; border: 1px inset; }
+.formulaire_spip textarea { width: 99%; border: 1px inset; }
+.formulaire_spip select { width: 99%; }
+
+/* Boutons */
+.formulaire_spip .boutons { clear: both; margin: 0; padding: 0; text-align: right; }
+.formulaire_spip .boutons input { margin-left: 1em; }
+.formulaire_spip .boutons input, input.submit {}
+
+
+/* Reponses, previsu et erreurs
+----------------------------------------------- */
+
+/* Champs obligatoires */
+.formulaire_spip li.obligatoire {}
+.formulaire_spip li.obligatoire label {}
+
+/* Previsualisation du message */
+.formulaire_spip fieldset.previsu { margin-bottom: 2em; padding: 1em; border: 2px dashed #F57900; }
+.formulaire_spip fieldset.previsu legend { padding: 0 0.50em; font-weight: bold; color: #F57900; }
+.formulaire_spip fieldset.previsu li { padding: 3px; border: none; }
+.formulaire_spip fieldset.previsu p { margin: 1em 0; } 
+
+/* Reponse du formulaire */
+.reponse_formulaire { font-weight: bold; color: #e86519; font-size: 1.20em; }
+fieldset.reponse_formulaire { border-color: #e86519; font-weight: normal; }
+fieldset.reponse_formulaire.reponse_formulaire legend { color: #F57900; } /* Preciser la couleur des legend et du fond pour IE/Win */
+
+/* * Erreurs */
+.formulaire_spip li.erreur .erreur_message { display: block; color: #C30; font-weight: bold; }
+.formulaire_spip li.erreur input.text, .formulaire_spip li.erreur textarea { background-color: #FCC; border-style: solid; border-color: #C30; }
+.reponse_formulaire_erreur { margin: 0; color: #C30; font-weight: bold; }
+
+/* * OK */
+.reponse_formulaire_ok { margin: 0; color: #53AD20; font-weight: bold; }
+
+
+/* Variantes et cas particuliers
+----------------------------------------------- */
+
+/* Barre de raccourcis typographiques */
+table.spip_barre { width: 100%; }
+table.spip_barre a img { background: #FDA; padding: 3px; border: 1px outset #CC9; }
+table.spip_barre a:focus img,
+table.spip_barre a:hover img,
+table.spip_barre a:active img { background: #FFF; border: 1px solid #CC9; }
+table.spip_barre input.barre { width: 99%; background: transparent; border: 0; }
+
+/* Formulaire de forum */
+.formulaire_forum .saisie_titre input.text, .formulaire_forum .saisie_titre textarea { width: 98%; }
+.forum .ancre {float:left; margin-right:0.5em;}
+.forum .spip_logos {float:right; margin: 0 2px 4px 10px;}
+
+/* Selection des langues */
+.formulaire_menu_lang { padding: 0; background: none; }
+
+/* Formulaires de recherche (site / petitions) */
+.formulaire_recherche {
+	 margin:0 0 0 0;
+	 margin-top: 0em; 
+	 padding: 0 0 0 0;
+	 margin-bottom:0em; 
+	 background: none; 
+	 
+}
+.formulaire_recherche * { display: inline; vertical-align: baseline; }
+.formulaire_recherche label {
+	visibility :hidden;
+	line-height:0em;
+}
+.formulaire_recherche input.text { 
+	width: 50%; 
+	background-color: #fff;
+	font-size:.8em;
+	margin:0;
+	border-top:none;
+	background-image:none;
+	/*padding-left: 25px;*/ 
+	/*background: #FFF url(rechercher.gif) no-repeat left center; */
+}
+	
+.formulaire_recherche input.submit {
+	background:none;	
+	background-image:url(img/ok-recherche.png) ;
+	border:none;
+	font-size:0em;
+	width:14px;
+	height:14px;
+	vertical-align:middle;
+	/*margin:1px;*/
+}
+
+/* Choix des mots-clefs */
+ul.choix_mots { display: block; margin: 0; padding: 0; list-style: none; }
+ul.choix_mots li { clear: none; float: left; display: block; width: 30%; padding: 1%; }
+ul.choix_mots li label { display: inline; font-weight: normal; }
+
+.formulaire_spip .bugajaxie { display: none; } /* Bug IE/Win */
+
+/* Formulaire de login dans une page */
+.formulaire_login ul li {clear:left;}
+.formulaire_login .editer_password .details {display:block;}
+.formulaire_login #spip_logo_auteur {float:right;}
+
+
+/* Habillage des forums
+---------------------------------------------- */
+.repondre { clear: both; margin-top: 2.50em; margin-right: 1em; text-align: right; font-weight: bold; }
+.poster-message { border-bottom: 1px solid #444; border-top: 1px solid #444;
+	clear: both; margin-top: 2.50em; margin-right: 1em; text-align: right; font-weight: bold; }
+
+/* Habillage des forums */
+ul.forum { display: block; clear: both; margin: 0; padding: 0; }
+ul.forum, ul.forum ul { list-style: none; }
+.forum-fil { margin-top: 1.50em; }
+.forum-fil ul { display: block; margin: 0; padding: 0; margin-left: 1em; }
+.forum-chapo .forum-titre, .forum-chapo .forum-titre a { display: block; margin: 0; padding: 0; font-weight: bold; color: #333; }
+.forum-texte { margin: 0; padding: 0.50em 1em; color: #333; }
+.forum-texte .hyperlien {}
+.forum-texte .repondre { margin: 0; padding: 0.10em 0; text-align: right; }
+.forum-texte .poster-message { margin: 0; padding: 0.10em 0; text-align: right; }
+
+
+/* Boite d'un forum : eclaircissement progressif des bords */
+ul .forum-message { border: 1px solid #666; margin: 0; padding: 0; margin-bottom: 1em; }
+ul ul .forum-message { border: 1px solid #A4A4A4; }
+ul ul ul .forum-message { border: 1px solid #B8B8B8; }
+ul ul ul ul .forum-message { border: 1px solid #CCC; }
+ul ul ul ul ul .forum-message { border: 1px solid #E0E0E0; }
+ul ul ul ul ul ul .forum-message { border: 1px dotted #E0E0E0; }
+
+/* Boite de titre d'un forum : mise en couleur selon la profondeur du forum */
+ul .forum-chapo { border: 0; border-bottom: 1px dotted #B8B8B8; margin: 0; padding: 3px 6px 2px 6px; background: #C4C4C4; }
+ul ul .forum-chapo { background: #D4D4D4; }
+ul ul ul .forum-chapo { background: #E4E4E4; }
+ul ul ul ul .forum-chapo { background: #F4F4F4; border-bottom: 1px dotted #E0E0E0; }
+ul ul ul ul ul .forum-chapo { background: #FFF; }
+
