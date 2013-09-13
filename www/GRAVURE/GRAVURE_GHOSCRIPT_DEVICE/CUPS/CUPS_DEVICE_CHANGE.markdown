@@ -1,0 +1,43 @@
+# CUPS DEVICE CHANGE
+Created samedi 06 octobre 2012
+
+ 2011-08-01 13:05:09 +0200
+Till Kamppeter <[till.kamppeter@gmail.com](mailto:till.kamppeter@gmail.com)>
+b4c67383d9e71b468b5384b7a63095864d3a9ae7
+
+
+    CUPS Raster output device: Ignore RIP_MAX_CACHE environment variable
+
+    Ghostscript is (at least currently) not able to work with hard-limited
+    space parameters. It crashes with a segmentation fault on many input
+    files then. Leaving the setting of these parameters fully automatic
+    Ghostscript works just fine. As in most distributions (Currently all
+    except Debian, Ubuntu, and their derivatives) CUPS imposes a hard
+    limit via the RIP_MAX_CACHE environment variable, the only way to
+    assure reliable working of Ghostscript is to ignore the parameter,
+    leaving the space parameters in automatic mode. For CUPS this should
+    be no regression, as print queues with other Ghostscript drivers (like
+    pxlcolor, ljet4, ...) worked without hard limits all the time and no
+    one complained.
+
+    To ignore this RIP_MAX_CACHE we simply add a "return" right at the
+    beginning of this function. It will be removed when a real fix gets
+    into place.
+
+    See <http://bugs.ghostscript.com/show_bug.cgi?id=691586>
+
+    gs/cups/gdevcups.c 
+_________________________________________________________________
+2011-07-30 11:56:53 +0200
+Till Kamppeter <[till.kamppeter@gmail.com](mailto:till.kamppeter@gmail.com)>
+83abb6ca67829a1273ed4fdfc894a6af44c5c5ad
+
+    Added "-dNOINTERPOLATE" to the Ghostscript command lines of the CUPS filters
+
+    This makes rendering significantly faster and the output of normal
+    files comming as print jobs from applications does not show any
+    visible difference.
+
+    gs/cups/gstoraster.c
+    gs/cups/pstopxl.in 
+
