@@ -1,0 +1,499 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>PPD</title>
+		<meta name='Generator' content='Zim 0.56'>
+		
+		<link rel="stylesheet" href='../../../_resources/style.css' type="text/css"
+        media="screen" />
+		
+		<style type='text/css'>
+			span.insen { color: grey                }
+			.page { max-width: 1000px;}
+			.menu{
+				float:left; width: 300px;
+			}
+			
+			.content { padding-left: 320px;}
+			.notebook{font-variant: small-caps;
+					color:#4e9a06;
+					padding: 0px 20px;}
+			hr{clear:both;}
+		</style>
+		
+	</head>
+	<body>
+	    <div class="header">><th1></th1></div>
+	    
+	    <div class="header container">
+            <div class="logo">
+                <img src='../../../_resources/logo.png' alt="logo" />
+            </div>
+            <div class="title"><small>Documentations</small></div>
+            </br>
+        </div>
+            
+        <div class="mainmenu">
+        <th1>
+            <a href='$home$index_page'>Home</a>
+            <a href='$home/doc/trunk/www/GRAVURE.txt'>Documentation</a>
+            <a href='$home/timeline'>Timeline</a>
+            <a href='$home/dir?ci=tip'>Code</a>
+            <a href='$home/brlist'>Branches</a>
+            <a href='$home/taglist'>Tags</a>
+            <a href='$home/reportlist'>Tickets</a>
+            <a href='$home/wiki'>Wiki</a>
+            <a href='$home/setup'>Admin</a>
+            <a href='$home/setup_ulist'>Users</a>
+        </th1></div>     
+            
+            
+	   
+			<div class="heading">
+				<h1><a href="./Home.html" class="notebook">GRAVURE:</a>
+			
+				
+									PPD</h1>
+			</div>
+			<hr>
+			<div class="menu">
+				<ul>
+<li><a href="../../../FOSSIL_REPOSITORY.html" title="FOSSIL REPOSITORY">FOSSIL REPOSITORY</a></li>
+<li><a href="../../../GRAPHIC_LIBRARY.html" title="GRAPHIC LIBRARY">GRAPHIC LIBRARY</a></li>
+<li><a href="../../../GRAVURE.html" title="GRAVURE">GRAVURE</a></li>
+<ul>
+<li><a href="../../COLOR_MANAGMENT.html" title="COLOR MANAGMENT">COLOR MANAGMENT</a></li>
+<li><a href="../../GRAVURE_GHOSCRIPT_DEVICE.html" title="GRAVURE GHOSCRIPT DEVICE">GRAVURE GHOSCRIPT DEVICE</a></li>
+<li><a href="../../IMPOSITION.html" title="IMPOSITION">IMPOSITION</a></li>
+<li><a href="../../POSTSCRIPT.html" title="POSTSCRIPT">POSTSCRIPT</a></li>
+<li><a href="../../PYTHON.html" title="PYTHON">PYTHON</a></li>
+<li><a href="../../scenario_CMM.html" title="scenario CMM">scenario CMM</a></li>
+<li><a href="../../VUE_GENERALE.html" title="VUE GENERALE">VUE GENERALE</a></li>
+<ul>
+<li><a href="../id%C3%A9e_de_distribution.html" title="idée de distribution">idée de distribution</a></li>
+<li><a href="../PACKAGING_%26_DISTRIBUTION.html" title="PACKAGING &amp; DISTRIBUTION">PACKAGING &amp; DISTRIBUTION</a></li>
+<li><a href="../PRINTING.html" title="PRINTING">PRINTING</a></li>
+<ul>
+<li><a href="./IPP.html" title="IPP">IPP</a></li>
+<li><a href="./JDF.html" title="JDF">JDF</a></li>
+<li><strong>PPD</strong></li>
+</ul>
+</ul>
+</ul>
+<li><a href="../../../TRC.html" title="TRC">TRC</a></li>
+</ul>
+
+			</div>
+			<div class="content">
+			<!-- Wiki content -->
+				<p>
+Created jeudi 27 décembre 2012<br>
+</p>
+
+<h2>Cups ppd extensions</h2>
+<p>
+<a href="http://www.cups.org/documentation.php/doc-1.6/spec-ppd.html#CONSTRAINTS" title="http://www.cups.org/documentation.php/doc-1.6/spec-ppd.html#CONSTRAINTS">http://www.cups.org/documentation.php/doc-1.6/spec-ppd.html#CONSTRAINTS</a><br>
+</p>
+
+
+<h4>Some Cups Supported Page Device Attributes</h4>
+
+<p>
+<strong>cupsRenderingIntent</strong> 	String 	Specifies the color rendering intent. 	&lt;&lt;/cupsRenderingIntent (AbsoluteColorimetric)&gt;&gt;setpagedevice<br>
+</p>
+
+<p>
+<strong>cupsPreferredBitsPerColor</strong> 	Integer 	Specifies the preferred number of bits per color, typically 8 or 16. 	&lt;&lt;/cupsPreferredBitsPerColor 16&gt;&gt;setpagedevice<br>
+<strong>cupsCompression</strong> 	Integer 	Specifies a driver compression type/mode. 	&lt;&lt;/cupsCompression 2&gt;&gt;setpagedevice<br>
+<strong>Separations</strong> 	Boolean 	Specifies whether to produce color separations. 	&lt;&lt;/Separations true&gt;&gt;setpagedevice<br>
+<strong>MediaWeight</strong> 	Integer 	Specifies the media weight in grams per meter2. 	&lt;&lt;/MediaWeight 100&gt;&gt;setpagedevice<br>
+<strong>MirrorPrint</strong> 	Boolean 	Specifies whether to flip the output image horizontally. 	&lt;&lt;/MirrorPrint true&gt;&gt;setpagedevice<br>
+<strong>NegativePrint</strong> 	Boolean 	Specifies whether to invert the output image. 	&lt;&lt;/NegativePrint true&gt;&gt;setpagedevice<br>
+<strong>Orientation</strong> 	Integer 	Specifies the orientation of the output: 0 = portrait, 1 = landscape rotated counter-clockwise, 2 = upside-down, 3 = landscape rotated clockwise. 	&lt;&lt;/Orientation 3&gt;&gt;setpagedevice<br>
+</p>
+
+<h4>cupsFilter</h4>
+
+<p>
+<code>*cupsFilter: "source/type cost program"</code><br>
+</p>
+
+<p>
+This string keyword provides a conversion rule from the given source type to the printer's native format using the filter "program". If a printer supports the source type directly, the special filter program "-" may be specified.<br>
+</p>
+
+<p>
+<strong>Examples</strong>:<br>
+</p>
+
+<pre>
+*% Standard raster printer driver filter
+*cupsFilter: "application/vnd.cups-raster 100 rastertofoo"
+
+*% Plain text filter
+*cupsFilter: "text/plain 10 texttofoo"
+
+*% Pass-through filter for PostScript printers
+*cupsFilter: "application/vnd.cups-postscript 0 -"
+</pre>
+
+
+<h4>cupsFilter2</h4>
+
+<p>
+<code>*cupsFilter2: "source/type destination/type cost program"</code><br>
+</p>
+
+<p>
+This string keyword provides a conversion rule from the given source type to the printer's native format using the filter "program". If a printer supports the source type directly, the special filter program "-" may be specified. The destination type is automatically created as needed and is passed to the filters and backend as the FINAL_CONTENT_TYPE value.<br>
+</p>
+
+<p>
+    <u>Note:</u><br>
+<u>    The presence of a single cupsFilter2 keyword in the PPD file will hide any cupsFilter keywords from the CUPS scheduler. When using cupsFilter2 to provide filters specific for CUPS 1.5 and later, provide a cupsFilter2 line for every filter and a cupsFilter line for each filter that is compatible with older versions of CUPS.</u><br>
+</p>
+
+<p>
+<strong>Examples</strong>:<br>
+</p>
+
+<pre>
+*% Standard raster printer driver filter
+*cupsFilter2: "application/vnd.cups-raster application/vnd.foo 100 rastertofoo"
+
+*% Plain text filter
+*cupsFilter2: "text/plain application/vnd.foo 10 texttofoo"
+
+*% Pass-through filter for PostScript printers
+*cupsFilter2: "application/vnd.cups-postscript application/postscript 0 -"
+</pre>
+
+
+
+<h4>cupsPreFilter</h4>
+
+<p>
+<code>*cupsPreFilter: "source/type cost program"</code><br>
+</p>
+
+<p>
+This string keyword provides a pre-filter rule. The pre-filter program will be inserted in the conversion chain immediately before the filter that accepts the given MIME type.<br>
+</p>
+
+<p>
+<strong>Examples</strong>:<br>
+</p>
+
+<pre>
+*% PDF pre-filter
+*cupsPreFilter: "application/pdf 100 mypdfprefilter"
+
+*% PNG pre-filter
+*cupsPreFilter: "image/png 0 mypngprefilter"
+</pre>
+
+
+<h3>cupsManualCopies</h3>
+
+<p>
+<code>*cupsManualCopies: boolean</code><br>
+</p>
+
+<p>
+This boolean keyword notifies the RIP filters that the destination printer does not support copy generation in hardware. The default value is false.<br>
+</p>
+
+<p>
+<strong>Example</strong>:<br>
+</p>
+
+<pre>
+*% Tell the RIP filters to generate the copies for us
+*cupsManualCopies: true
+</pre>
+
+
+
+
+<h2>Extract from a xerox.ppd</h2>
+
+<p>
+*NonUIOrderDependency<br>
+</p>
+
+<p>
+*ColorDevice: True<br>
+*DefaultColorSpace: CMYK<br>
+*AccurateScreensSupport: True<br>
+*DefaultGuaranteedMaxSeparations: 4<br>
+</p>
+
+<p>
+*DefaultHalftoneType: 9<br>
+*ScreenFreq: "60.0"<br>
+*ScreenAngle: "45.0"<br>
+*DefaultScreenProc: Dot<br>
+*ScreenProc Dot: "{180 mul cos exch 180 mul cos add 2 div} bind"<br>
+*DefaultTransfer: Null<br>
+*Transfer Null: "{ }"<br>
+*Transfer Null.Inverse: "{1 exch sub} bind"<br>
+</p>
+
+<p>
+*DefaultColorSep: ProcessBlack.60lpi.600dpi/60 lpi / 600 dpi<br>
+</p>
+
+
+
+<h2>Adobe PPD specifications</h2>
+
+<h3>System management and local customisation ppd</h3>
+
+<p>
+One approach to system management is for a print manager to parse all of the<br>
+PPD files available on a host system and store the data into a database. The<br>
+print manager (or other utilities) can then query the user or the device or<br>
+watch for system changes and update the database dynamically to reflect<br>
+additional memory, fonts, available trays, and other changeable printer fea-<br>
+tures.<br>
+A less dynamic approach is provided in this specification by local customiza-<br>
+tion files, which contain only the changed or added items and a reference to<br>
+the primary PPD file. In a given computing environment, there is usually one<br>
+PPD file for each type or model of device in use. For example, there may be<br>
+seven Acme FunPrinters in the system, but there is usually only one Acme<br>
+FunPrinter PPD file, which is shared by or copied onto each host computer in<br>
+the system. However, if applications or users want to add to or modify the<br>
+contents of a PPD file, they can create a local customization file for a specific<br>
+instance of a device or for use by a particular application.<br>
+</p>
+
+<p>
+The local customization file should generally contain only entries only for<br>
+items that are changed or added. However, to be understood by applications<br>
+parsing PPD files, the local customization file must conform to the PPD spec-<br>
+ification, so in a sense, the local customization file is a minimal PPD file. The<br>
+minimal set of required keywords listed in section 3.8 must be included at the<br>
+beginning of the file, so print managers can recognize it as a PPD file. Other<br>
+keywords that are marked Required in this specification, such as *PageSize, are<br>
+not required in the local customization file, unless they are being customized.<br>
+</p>
+
+<p>
+The customization file should be given a unique name that represents a par-<br>
+ticular device (for example, MyPrntr.PPD). The .PPD extension should be<br>
+preserved, with case irrelevant, in case applications or print managers are<br>
+searching for files with that extension. Application developers can also create<br>
+customization files with different extensions, which are read only by their<br>
+application.<br>
+</p>
+
+<p>
+The local customization file must contain a reference to the primary PPD file<br>
+in this format:<br>
+</p>
+
+<p>
+<div style='padding-left: 30pt'>
+<code>*Include: "filename"</code><br>
+</div>
+</p>
+
+<p>
+Before creating a local customization file, a system administrator should<br>
+make sure that computing environment provides support for the concept.<br>
+Some print managers might not process the *Include statement, or the system<br>
+might not provide a way to install both the primary PPD file and the local<br>
+customization file.<br>
+</p>
+
+<p>
+When a primary PPD file is included by a local customization file, the pars-<br>
+ing details change somewhat. In particular, there might be several instances<br>
+of the same keyword in the “composite” file. In this case, the first instance<br>
+of a given keyword (or, if the keyword takes an option, of a keyword-<br>
+option pair) is correct. This enables a parser to ignore subsequent versions<br>
+of the same statement, possibly reducing the parsing time.<br>
+</p>
+
+<p>
+Because the first instance of a keyword is the correct instance, all keywords<br>
+in a local customization file should occur before the *Include statement that<br>
+references the primary PPD file.For example, assuming the primary PPD file<br>
+is called TIMICRO1.PPD, a local customization file might look like this<br>
+</p>
+
+<pre>
+*% Local Customization File for TI microLaser
+*FreeVM: "1907408"
+*Include: "TIMICRO1.PPD"
+*% end of local customization file
+</pre>
+
+
+<h3>default values</h3>
+
+<p>
+The defaults listed in the original PPD file reflect the state of the device when<br>
+it is shipped from the factory. If the system administrator wants to set up the<br>
+device differently, the new defaults should be included in the local customiza-<br>
+tion files. For example, if the device in the previous example was set up to<br>
+always feed from the manual feed slot, then the local customization file<br>
+should contain the entire *ManualFeed entry, copied from the original PPD file,<br>
+with the value of *DefaultManualFeed changed from False to True:<br>
+</p>
+
+<pre>
+*OpenUI *ManualFeed: Boolean
+*OrderDependency: 20 AnySetup *ManualFeed
+*DefaultManualFeed: True
+*ManualFeed True: “code”
+*ManualFeed False: “code”
+*?ManualFeed: “query code”
+*CloseUI: *ManualFeed
+</pre>
+
+<p>
+This allows the print manager to indicate in the user interface that manual<br>
+feeding of the media on this device is, by default, turned on.<br>
+</p>
+
+
+<h3>relationship between default keywords and keywords</h3>
+
+<p>
+Default keywords start with the prefix *Default, as in *DefaultPageSize. Where<br>
+applicable, there is a relationship between the three kinds of main keywords,<br>
+as in *PageSize, *DefaultPageSize, and *?PageSize. However, there is no require-<br>
+ment for a *Default keyword to have corresponding main and query keywords<br>
+in a PPD file. A *Default keyword may appear alone if it makes sense.<br>
+There is also a relationship between keywords that start with the prefix<br>
+*Param, as in *ParamCustomPageSize, and the associated root keyword<br>
+(*CustomPageSize, in this case). The prefix *Param signifies that this keyword<br>
+documents parameters needed by the root keyword. See *CustomPageSize and<br>
+*ParamCustomPageSize for more explanation.<br>
+</p>
+
+
+<h3>new main keywords</h3>
+
+<p>
+If a main keyword is not recognized, the entire statement (including multi-<br>
+line code segments) should be skipped. However, read section 5.2 and<br>
+keep in mind that the point of the *OpenUI/*CloseUI structures is to allow new<br>
+main keywords to appear without a print manager explicitly recognizing<br>
+them. The most functionality will be provided to the user if a print man-<br>
+ager handles all main keywords that occur within the *OpenUI/*CloseUI struc-<br>
+ture, displaying them and invoking their associated code to the best of its<br>
+ability. Unrecognized main keywords that occur outside of the *OpenUI/*Clo-<br>
+seUI structure should be skipped.<br>
+</p>
+
+
+<h3>options keywords</h3>
+
+<p>
+An option keyword is terminated by a colon or a slash if there is a translation<br>
+string (see section 3.5 for information on translation strings). There is no<br>
+escape mechanism for the forbidden characters listed above.<br>
+Option keywords can have extensions called qualifiers. Qualifiers are<br>
+appended to option keywords with the . (period) character (decimal<br>
+ASCII 46) as a separator. Any number of these qualifiers can be appended to<br>
+an option keyword, as appropriate. For example:<br>
+</p>
+<pre>
+*PageSize Letter
+*PageSize Letter.Transverse
+*PageSize Letter.2
+</pre>
+
+<p>
+In this example, qualifiers are used to differentiate between several instances<br>
+of a particular media type that differ only slightly. For example, the .Transverse<br>
+qualifier signifies that Letter differs from Letter.Transverse only in the direction<br>
+that the media is fed into the device.<br>
+</p>
+
+
+<h3>Type of options values</h3>
+
+<p>
+There are five basic types of values:<br>
+<ul>
+<li>InvocationValue</li>
+<li>QuotedValue</li>
+<li>SymbolValue</li>
+<li>StringValue</li>
+<li>NoValue</li>
+</ul>
+</p>
+
+<h4>SymbolValue</h4>
+<p>
+A SymbolValue is used as pointer to a body of PostScript language code (an<br>
+InvocationValue). A SymbolValue can occur in a statement whether or not<br>
+there is an option keyword present.<br>
+A SymbolValue starts with a caret ^ (decimal 94)<br>
+</p>
+
+
+<h3>comments</h3>
+
+<p>
+Comments are supported in the PPD files using the main keyword ‘*%’. Any-<br>
+thing following this main keyword (through the end of the line on which it<br>
+appears) should be ignored by a parsing program. The * character is the same<br>
+introductory symbol used for all main keywords, and the % character is bor-<br>
+rowed from PostScript language syntax as its comment character. These com-<br>
+ments will begin only in column one, for simplicity.<br>
+There can also be comments in any PostScript language code, using the stan-<br>
+dard syntax of starting the comment with a %. Comments in code should be<br>
+kept to a minimum, however, to reduce transmission time.<br>
+</p>
+
+<h3>PostScript Language Sequences</h3>
+
+<p>
+The PostScript language sequences supplied for invoking device features are<br>
+usually represented as InvocationValues. Sometimes they are represented as<br>
+QuotedValues, for example, when they contain binary data.<br>
+</p>
+
+<p>
+For multiple-line InvocationValues or QuotedValues, the main keyword *End<br>
+is used as an extra delimiter to help line-extraction programs (such as grep or<br>
+awk in UNIX). The keyword *End also makes the PPD file more easily read-<br>
+able by humans, because the double quote delimiter is sometimes difficult to<br>
+see at the end of a long string of code.<br>
+*End is used only when the code requires more than one line in the PPD file.<br>
+In the following two examples, the *PageSize statement fits on one line and<br>
+does not require *End. The *?Smoothing statement is an “extended” code<br>
+sequence that does require *End:<br>
+</p>
+
+<pre>
+*PageSize Legal: "serverdict begin legaltray end"
+
+*?Smoothing: "save
+[(None)(Light)(Medium)(Dark)]
+statusdict /doret {get exec}
+stopped { pop pop (Unknown)} if
+= flush restore"
+*End
+</pre>
+
+
+
+
+
+			<!-- End wiki content -->
+			</div>
+			<hr>
+			<!-- Backlinks -->
+			<div class="footer">
+				Backlinks:
+			<!-- End Backlinks -->
+			</div>
+
+	</body>
+</html>

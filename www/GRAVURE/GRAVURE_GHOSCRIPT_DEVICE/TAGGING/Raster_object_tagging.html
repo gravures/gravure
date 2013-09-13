@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Raster object tagging</title>
+		<meta name='Generator' content='Zim 0.56'>
+		
+		<link rel="stylesheet" href='../../../_resources/style.css' type="text/css"
+        media="screen" />
+		
+		<style type='text/css'>
+			span.insen { color: grey                }
+			.page { max-width: 1000px;}
+			.menu{
+				float:left; width: 300px;
+			}
+			
+			.content { padding-left: 320px;}
+			.notebook{font-variant: small-caps;
+					color:#4e9a06;
+					padding: 0px 20px;}
+			hr{clear:both;}
+		</style>
+		
+	</head>
+	<body>
+	    <div class="header">><th1></th1></div>
+	    
+	    <div class="header container">
+            <div class="logo">
+                <img src='../../../_resources/logo.png' alt="logo" />
+            </div>
+            <div class="title"><small>Documentations</small></div>
+            </br>
+        </div>
+            
+        <div class="mainmenu">
+        <th1>
+            <a href='$home$index_page'>Home</a>
+            <a href='$home/doc/trunk/www/GRAVURE.txt'>Documentation</a>
+            <a href='$home/timeline'>Timeline</a>
+            <a href='$home/dir?ci=tip'>Code</a>
+            <a href='$home/brlist'>Branches</a>
+            <a href='$home/taglist'>Tags</a>
+            <a href='$home/reportlist'>Tickets</a>
+            <a href='$home/wiki'>Wiki</a>
+            <a href='$home/setup'>Admin</a>
+            <a href='$home/setup_ulist'>Users</a>
+        </th1></div>     
+            
+            
+	   
+			<div class="heading">
+				<h1><a href="./Home.html" class="notebook">GRAVURE:</a>
+			
+				
+									Raster object tagging</h1>
+			</div>
+			<hr>
+			<div class="menu">
+				<ul>
+<li><a href="../../../FOSSIL_REPOSITORY.html" title="FOSSIL REPOSITORY">FOSSIL REPOSITORY</a></li>
+<li><a href="../../../GRAPHIC_LIBRARY.html" title="GRAPHIC LIBRARY">GRAPHIC LIBRARY</a></li>
+<li><a href="../../../GRAVURE.html" title="GRAVURE">GRAVURE</a></li>
+<ul>
+<li><a href="../../COLOR_MANAGMENT.html" title="COLOR MANAGMENT">COLOR MANAGMENT</a></li>
+<li><a href="../../GRAVURE_GHOSCRIPT_DEVICE.html" title="GRAVURE GHOSCRIPT DEVICE">GRAVURE GHOSCRIPT DEVICE</a></li>
+<ul>
+<li><a href="../16_bit_OUTPUT.html" title="16 bit OUTPUT">16 bit OUTPUT</a></li>
+<li><a href="../BUILD_GS.html" title="BUILD GS">BUILD GS</a></li>
+<li><a href="../CUPS.html" title="CUPS">CUPS</a></li>
+<li><a href="../DEVICEN_CHANGE_9.02_to_9.06.html" title="DEVICEN CHANGE 9.02 to 9.06">DEVICEN CHANGE 9.02 to 9.06</a></li>
+<li><a href="../HALFTONING.html" title="HALFTONING">HALFTONING</a></li>
+<li><a href="../NOTES.html" title="NOTES">NOTES</a></li>
+<li><a href="../TAGGING.html" title="TAGGING">TAGGING</a></li>
+<ul>
+<li><strong>Raster object tagging</strong></li>
+</ul>
+</ul>
+<li><a href="../../IMPOSITION.html" title="IMPOSITION">IMPOSITION</a></li>
+<li><a href="../../POSTSCRIPT.html" title="POSTSCRIPT">POSTSCRIPT</a></li>
+<li><a href="../../PYTHON.html" title="PYTHON">PYTHON</a></li>
+<li><a href="../../scenario_CMM.html" title="scenario CMM">scenario CMM</a></li>
+<li><a href="../../VUE_GENERALE.html" title="VUE GENERALE">VUE GENERALE</a></li>
+</ul>
+<li><a href="../../../TRC.html" title="TRC">TRC</a></li>
+</ul>
+
+			</div>
+			<div class="content">
+			<!-- Wiki content -->
+				<p>
+Created dimanche 24 juillet 2011<br>
+</p>
+
+
+
+<h4>gslibctx.h :</h4>
+
+<pre style='padding-left: 30pt'>
+/* GS graphical object tags */
+
+typedef enum {
+    
+</pre>
+
+<p>
+<strong>GS_DEVICE_DOESNT_SUPPORT_TAGS</strong><code> = 0, /* default */</code><br>
+    <strong>GS_UNKNOWN_TAG</strong><code> = 0x1,</code><br>
+    <strong>GS_TEXT_TAG</strong><code> = 0x2,</code><br>
+    <strong>GS_IMAGE_TAG</strong><code> = 0x4,</code><br>
+    <strong>GS_PATH_TAG</strong><code> = 0x8,</code><br>
+    <strong>GS_UNTOUCHED_TAG</strong><code> = 0x10</code><br>
+<code>} gs_object_tag_type_t;</code><br>
+</p>
+
+<pre style='padding-left: 30pt'>
+typedef struct gs_lib_ctx_s {
+</pre>
+
+<pre style='padding-left: 60pt'>
+gs_memory_t *memory;  /* mem-&gt;gs_lib_ctx-&gt;memory == mem */
+...
+/* Define the default value of AccurateScreens that affects setscreen 
+and setcolorscreen. */
+bool screen_accurate_screens;
+bool screen_use_wts;
+uint screen_min_screen_levels;
+/* tag stuff */
+</pre>
+
+<p>
+<div style='padding-left: 60pt'>
+<strong>gs_object_tag_type_t BITTAG</strong><code>;</code><br>
+<code> ...</code><br>
+</div>
+</p>
+
+<pre style='padding-left: 30pt'>
+}
+</pre>
+
+
+<h4>gsutil.h</h4>
+
+<h4>:</h4>
+
+<pre style='padding-left: 30pt'>
+#include "gslibctx.h"
+
+/* accessors for object tags */
+gs_object_tag_type_t 
+</pre>
+
+<p>
+<strong>gs_current_object_tag</strong><code>(gs_memory_t *);</code><br>
+</p>
+
+<p>
+<code>#include "gxstate.h"</code><br>
+</p>
+
+<p>
+<code>#ifndef gs_imager_state_DEFINED</code><br>
+<code>#  define gs_imager_state_DEFINED</code><br>
+<code>typedef struct gs_imager_state_s gs_imager_state;</code><br>
+<code>#endif</code><br>
+</p>
+
+<p>
+<code>void </code><strong>gs_set_object_tag</strong><code>(gs_imager_state * pis, const gs_object_tag_type_t tag);</code><br>
+<code>void </code><strong>gs_enable_object_tagging</strong><code>(gs_memory_t *);</code><br>
+</p>
+
+
+
+
+
+
+			<!-- End wiki content -->
+			</div>
+			<hr>
+			<!-- Backlinks -->
+			<div class="footer">
+				Backlinks:
+			<!-- End Backlinks -->
+			</div>
+
+	</body>
+</html>
