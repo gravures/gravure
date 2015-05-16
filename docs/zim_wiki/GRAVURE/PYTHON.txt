@@ -41,20 +41,16 @@ http://google-styleguide.googlecode.com/svn/trunk/pyguide.html
 === DEBIAN & PYTHON ===
 http://www.debian.org/doc/packaging-manuals/python-policy/
 
-
 ==== TESTING TOOLS ====
 https://nose.readthedocs.org/en/latest/
-
 
 ==== IDE ====
 * [[http://packages.python.org/spyder/index.html|spyder]]
 * eric5
 
-
 ==== FRAMEWORK ====
 http://code.enthought.com/
 http://www.riverbankcomputing.com/static/Docs/dip/index.html
-
 
 ==== GTK3 ====
 → http://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html
@@ -77,6 +73,20 @@ http://packages.python.org/pycups/
 
 === Matplotlib gtk3 ===
 http://matplotlib.org/examples/user_interfaces/embedding_in_gtk3.html
+
+==== IMAGE LIB ====
+
+* imageio 0.5.1
+* freeimage smc
+* opencv
+* vips
+* gegl
+
+==== PDF ====
+
+* PDF 1.0
+* pdfminer3K
+* pdfnup
 
 
 

@@ -20,5 +20,9 @@ http://www.timesys.com/embedded-linux/distribution-builder
 http://www.diy-linux.org/about
 http://maketecheasier.com/6-tools-to-easily-create-your-own-custom-linux-distro/2010/04/08
 
+http://crunchbang.org/
+https://www.yoctoproject.org/
+https://wiki.debian.org/DebianInstaller/Preseed
+
 ==== python ====
 cx_Freeze

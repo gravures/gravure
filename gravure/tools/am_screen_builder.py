@@ -28,7 +28,7 @@ from gi.repository import GObject
 
 from halftone import spotfunctions
 from halftone.base import *
-from array_interface import *
+#from numeric.array_interface import *
 
 class MatrixView(Gtk.DrawingArea, Gtk.Scrollable):
     """A scrollable Gtk widget for making graphical representation\

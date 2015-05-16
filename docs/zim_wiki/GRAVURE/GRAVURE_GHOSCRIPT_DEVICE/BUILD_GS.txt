@@ -3,27 +3,36 @@ Wiki-Format: zim 0.4
 Creation-Date: 2011-06-08T12:04:54.003302
 
 ====== BUILD GS ======
-Created mercredi 08 juin 2011
-
 
 
 ==== Linux ====
 
+**dependenices on debian:**
+* libjpeg8-dev
+* liblcms2-dev
+* libfreetype6-dev
+* libpng-dev
+* libpaper-dev
+* libfontconfig-dev
+* libtiff4-dev
+
 Ghostscript now ships with a build system for unix-like operating systems based on GNU Autoconf. In general the following should work to configure and build Ghostscript:
 
-   '' ./configure''
-''make''
+'''
+./configure
+make
+'''
+    ''sudo make install''
 or
-   '' ./configure''
+''./configure''
 ''make so	''
+    ''sudo make install''
 or
-   '' ./configure''
-	''make debug install''
-	
-	''make clean''
+''./configure''
+''make debug install''
+''make clean''
 
 for building ghostscript as a shared library. It is recommended to have the extra option --enable-dynamic in ./configure --enable-dynamic which returns an error message on platforms for which shared-library support is inadequate. 
-
 
 * If you build on Linux with X11 R6 or later, you may get link-time error messages about undefined references to various functions beginning with "SMC" and "ICE". If this happens, make sure that XLIBS in the makefile is set to "Xt SM ICE Xext X11" rather than "Xt Xext X11".
 
@@ -33,10 +42,9 @@ for building ghostscript as a shared library. It is recommended to have the extr
 
 _______________________________________________________________________________________
 
+=== TESTING PURPOSE CONFIGURE OPTIONS ===
 
-[[./configure]] --prefix='/opt' --exec-prefix='/opt' --without-pdftoraster  --with-drivers=PBM,PS,TIFF,ETS,devicen,spotcmyk,bit,bitcmyk,bitrgb,bitrgbtags,ijs,gravure  --with-x
-
-
+''./configure --prefix='/opt' --exec-prefix='/opt' --without-pdftoraster  --with-drivers=PBM,PS,TIFF,ETS,devicen,spotcmyk,bit,bitcmyk,bitrgb,bitrgbtags,gravure  --with-x''
 
 * --with-local-cups       Force using the GS supplied cups code - only usefull for debugging
 

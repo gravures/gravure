@@ -26,7 +26,7 @@ import math
 from fractions import Fraction
 from decimal import *
 
-import gmath as gm
+import numeric.gmath as gm
 from halftone import spotfunctions
 
 

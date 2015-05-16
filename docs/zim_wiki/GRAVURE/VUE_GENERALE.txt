@@ -5,10 +5,11 @@ Creation-Date: 2012-12-17T09:19:09+01:00
 ====== VUE GENERALE ======
 Created lundi 17 décembre 2012
 
+
 ==== GRAVURE ====
 
 === fonctionnalité plannifiés ===
-* pouvoir utiliser / mettre en place la première mouture de la [[VUE GENERALE:idée de distribution|distribution]]
+[x] pouvoir utiliser / mettre en place la première mouture de la [[VUE GENERALE:idée de distribution|distribution]]
 * gestion des limites de ressources du RIP
 * disposer d'une première implémentation des lignes d'impressions
 	* composite/séparation
@@ -27,22 +28,101 @@ Created lundi 17 décembre 2012
 * étudier un hack du system-config-printer
 * étudier genppd de gutenprint en vue d'une regénération des ppd de libgutenprint 
 
-==== GRAVURE-PYGUTENPRINT ====
+______________________________________________________________________________
 
+==== GRAVURE RIP ====
 
-==== NEMO ====
-[*] empaquetage de vers wheezy
+[ ] implement a print lines model
+[ ] implement a generic document modéle
+[ ] gestion des ressources du RIP
+[ ] module d'imposition
+[ ] module de calibration
+[ ] direct print module 
+______________________________________________________________________________
 
-==== NEMO-EXTENSIONS ====
-[*] empaquetage de file-roller vers wheezy
+==== SCREEN MODELER ====
+
+[ ] GREEN NOISE STOCHASTIQUE THRESHOLD ARRAY GENERATION
+	[*] first implementation
+[ ] AM THRESHOLD ARRAY GENERATION
+[ ] MODELER GUI 
+[ ] screenprinting helper
+[ ] MOIRE MODELER
+
+______________________________________________________________________________
+
+==== GRAVURE.NUMERIC ====
+
+[*] gmath module
+[ ] mdarray module
+	[*] base implementation
+	[ ] arithmetic methods
+	[ ] 1 bit array mode
+	[ ] convertion methods
+
+______________________________________________________________________________
+
+==== GRAVURE.PYGUTENPRINT ====
+
+* reprendre l'implementation
+
+______________________________________________________________________________
 
 ==== GHOSTSCRIPT-GRAVURE ====
+
 [*] empaquetage de ghostscript-9.06 pour wheezy
-[ ] empaquetage de gen_ordered
+[*] empaquetage de ghostscript-9.15 pour wheezy
+[x] empaquetage de gen_ordered
 [ ] portage de icc_creator
 [ ] empaquetage de device gravure pour test
+______________________________________________________________________________
 
-==== RASTERVIEW ====
+==== VIEWER PS/PDF ====
+
+* un remplacement à ghostview
+
+______________________________________________________________________________
+
+==== CALCULATEUR / CONVERTISSEUR ====
+
+* voir table de conversion "how to be a great screenprinter"
+* calculatrice pour imprimeur
+
+______________________________________________________________________________
+
+==== AUTRES EMPAQUETAGE ====
+
+=== RASTERVIEW ===
 [*] empaquetage pour wheezy
+
+=== NEMO ===
+[*] empaquetage de vers wheezy
+
+=== NEMO-EXTENSIONS ===
+[*] empaquetage de file-roller vers wheezy
+
+______________________________________________________________________________
+
+==== ARGYLL GUI ====
+* hack des utilitaires dispcal orienté print
+* exploration des profils icc
+* convertion v4-->v3
+* dotgain curve <--> icc
+* gui utilitaire argyll
+* voir lcms et outil icc consortium
+* viewer gamut 3d : library lookat, 
+http://www.scipy.org/topical-software.html
+http://mayavi.sourceforge.net/
+https://pypi.python.org/pypi/menpo-PyVRML97/2.3.0a4
+
+
+
+
+
+
+
+
+
+
 
 

@@ -32,6 +32,7 @@ ________________________________________________________________________________
 == device de separation (uniquement raster : ==
 tiffsep1 > 1 bit
 tiiffsep > 8 bits
+**tiff64nc » 16 bit**
 devicen > 8 bits
 spotcmyk > 8 bits
 bmpsep1

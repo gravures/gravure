@@ -911,8 +911,8 @@ from nose.config import Config
 
 if __name__ == '__main__':
     #test_swapaxes()
-    test_arithmetic()
-    #nose.run()
+    #test_arithmetic()
+    nose.run()
 
 
 

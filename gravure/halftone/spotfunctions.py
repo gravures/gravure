@@ -67,7 +67,7 @@ __all__ = ['SpotFunction', 'CosineDot', 'Cross', 'HillDot', 'Line',
 
 
 from decimal import Decimal
-import gmath as gm
+import numeric.gmath as gm
 
 
 class SpotFunction():

@@ -18,6 +18,7 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
+#TODO: release python buffer where acquired
 
 import cython
 cimport cython
@@ -70,6 +71,10 @@ cdef extern from "Python.h":
     # Return 1 if the memory defined by the view is C-style (fortran
     # is 'C') or Fortran-style (fortran is 'F') contiguous or either
     # one (fortran is 'A'). Return 0 otherwise.
+
+    void PyBuffer_Release(Py_buffer *view)
+    # Release the buffer view. This should be called when the buffer
+    # is no longer being used as it may free memory from it.
 
 cdef extern from "pyport.h":
     ctypedef Py_ssize_t Py_intptr_t
