@@ -21,8 +21,17 @@
 #TODO: make user documentaion
 #TODO: make tests
 #TODO: define an interface for module that produce threshold array
-#           with coomon user paramater setting, common structure to
-#           to use the same quality metric tools like fourrier transform, etc
+#TODO: make module for quality metric tools like fourrier transform, etc
+#TODO: make a screen designer UI with screenprint data
+#TODO: work on dotshape
+#TODO: implement min_black_dot & min_white_dot
+#TODO: implement gamma correction
+#TODO: save as postscript
+#TODO: implement dynamic parameters : threshold, bias, ...
+#TODO: check bit depth output
+#TODO: optimisation, release the gil when possible
+#NOTE: what about inkjet overlap dot model
+
 
 import cython
 cimport cython
@@ -49,113 +58,47 @@ cdef extern from "stdlib.h" nogil:
 cdef extern from"math.h" nogil:
     double c_pow "pow"(double x, double y)
 
-DEF	MAX_ARRAY_WIDTH	    = 512
-DEF	MAX_ARRAY_HEIGHT    = 512
+
+DEF	MAX_ARRAY_WIDTH = 512
+DEF	MAX_ARRAY_HEIGHT = 512
 DEF BIG_FLOAT = 999999999.0
 DEF MAX_DOT = 16
 
-cdef int array_width, array_height
-cdef int resolution [2]
 cdef int threshold_array [MAX_ARRAY_WIDTH][MAX_ARRAY_HEIGHT]
-
 cdef double	values_array [MAX_ARRAY_WIDTH * MAX_ARRAY_HEIGHT]
 cdef double min_value = 0.0
 cdef double max_value = 0.0
 cdef double value_range = 0.0
+cdef bint data_is_ready = False
+cdef int level
+cdef double top_level
 
 ctypedef struct order_t:
     int x
     int y
 
 cdef order_t tos[MAX_ARRAY_WIDTH * MAX_ARRAY_HEIGHT]
-
 cdef order_t dot_tos [MAX_DOT * MAX_DOT]
 cdef int dotshape_array [MAX_DOT][MAX_DOT]
 cdef int mark_array [MAX_ARRAY_WIDTH][MAX_ARRAY_HEIGHT]
-cdef int max_dot_size = 1
-cdef bint data_is_ready = False
-cdef int level
-cdef double top_level
 
-
-# Definition of the minimum dot patterns
-ctypedef struct dot_shape:
-    int num_rows
-    int left [3]
-    int right [3]
-
-cdef dot_shape min_dot_edges [20]
-cdef dot_shape fill_dot_shape(int rows, object left, object right):
-    cdef dot_shape ds
-    ds.num_rows = rows
-    for i in xrange(3):
-        ds.left[i] = left[i]
-        ds.right[i] = right[i]
-    return ds
-
-min_dot_edges[0] =  fill_dot_shape(rows=1, left=( 0, 0, 0 ), right=( 0, 0, 0 ))	# 0     x__
-min_dot_edges[1] =  fill_dot_shape(rows=1, left=( 0, 0, 0 ), right=( 1, 0, 0 ))	# 1     xx_.
-min_dot_edges[2] =  fill_dot_shape(rows=2, left=( 0, 0, 0 ), right=( 0, 0, 0 ))	# 2     x__
-                                                                                                                    #        x__
-min_dot_edges[3] =  fill_dot_shape(rows=2, left=( 0, 0, 0 ), right=( 1, 0, 0 ))	# 3:    xx_
-                                                                                                                    #        x__
-min_dot_edges[4] =  fill_dot_shape(rows= 2, left=( 0, 1, 0 ), right=( 0, 1, 0 ))	#4      x__
-                                                                                                                    #        _x_
-min_dot_edges[5] =  fill_dot_shape(rows= 2, left=( 0, 0, 0 ), right=( 1, 1, 0 ))	# 5     xx_
-                                                                                                                    #        xx_
-min_dot_edges[6] =  fill_dot_shape(rows=1, left=( 0, 0, 0 ), right=( 2, 0, 0 ))	# 6     xxx
-min_dot_edges[7] =  fill_dot_shape(rows=2, left=( 0, 0, 0 ), right=( 2, 0, 0 ))	# 7     xxx
-                                                                                                                    #        x__
-min_dot_edges[8] =  fill_dot_shape(rows=2, left=( 0, 0, 0 ), right=( 2, 1, 0 ))	# 8     xxx
-                                                                                                                    #        xx_
-min_dot_edges[9] =  fill_dot_shape(rows=2, left=( 0, 0, 0 ), right=( 2, 2, 0 ))	#9      xxx
-                                                                                                                        #        xxx
-min_dot_edges[10] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 2, 0, 0 ))	#10    xxx
-                                                                                                                        #        x__
-                                                                                                                        #        x__
-min_dot_edges[11] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 2, 1, 0 ))	#11    xxx
-                                                                                                                        #        xx_
-                                                                                                                        #        x__
-min_dot_edges[12] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 2, 2, 0 ))	#12    xxx
-                                                                                                                        #        xxx
-                                                                                                                        #        x__
-min_dot_edges[13] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 2, 2, 1 ))	#13    xxx
-                                                                                                                        #        xxx
-                                                                                                                        #        xx_
-min_dot_edges[14] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 0, 0, 0 ))	#14    x__
-                                                                                                                        #        x__
-                                                                                                                        #        x__
-min_dot_edges[15] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 1, 0, 0 ))	#15    xx_
-                                                                                                                        #        x__
-                                                                                                                        #        x__
-min_dot_edges[16] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 1, 1, 0 ))	#16    xx_
-                                                                                                                        #        xx_
-                                                                                                                        #        x__
-min_dot_edges[17] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 1, 1, 1 ))	#17    xx_
-                                                                                                                        #        xx_
-                                                                                                                        #        xx_
-min_dot_edges[18] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 2, 1, 1 ))	#18:   xxx
-                                                                                                                        #        xx_
-                                                                                                                        #        xx_
-min_dot_edges[19] =  fill_dot_shape(rows=3, left=( 0, 0, 0 ), right=( 2, 2, 1 ))	#19:   xxx
-                                                                                                                        #        xxx
-                                                                                                                        #        xxx
+cdef int resolution [2]
+cdef int array_width, array_height
 
 
 #
 # Python interface for the screening process
 #TODO: make doc string
-def make_screen(res=(720,720), min_dot=4, max_dot=8, spotfnc=RoundDot,
-                                level=256, threshold=80, bias=1.0, seed=13,
-                                quiet=False):
-    cdef double thresh
-    cdef int min_dot_index
-    cdef int width, height
+def make_screen(res=(720,720), min_black_dot=4, min_white_dot=2,
+                                dot_size=8, spotfnc=RoundDot, level=256, threshold=80,
+                                bias=1.0, seed=13, quiet=False):
     global resolution, top_level
-
+    global tos, threshold_array, values_array
+    global array_width, array_height, dotshape_array
+    cdef double thresh
+    cdef int width, height
     cdef unsigned int x, y, i, q_level
     cdef double arr_level, max_level, tmp
-    global tos, threshold_array, values_array, array_width, array_height, dotshape_array, max_dot_size
 
     #TODO: test params validity
     #TODO: set some params like array size from
@@ -171,23 +114,18 @@ def make_screen(res=(720,720), min_dot=4, max_dot=8, spotfnc=RoundDot,
         resolution[0] = 1
         resolution[1] = 1
 
-    min_dot_index = 19
     thresh = threshold / 1000.0
     width = 150
     height = 150
-    max_dot_size = max_dot
-    _make_dotshape(spotfnc)
+    _make_dotshape(spotfnc, dot_size)
     max_level =  255
     arr_level = width * height
     top_level = arr_level - 1
 
     _make_screen(width=width, height=height, \
-                        value_thresh=thresh, bias_power=bias, seed=seed, quiet=quiet)
-    #_make_screen_old(width=width, height=height, min_dot_pattern=min_dot_index, \
-    #                    value_thresh=thresh, bias_power=bias, seed=seed, quiet=quiet)
+            value_thresh=thresh, bias_power=bias, \
+            seed=seed, quiet=quiet, dot_size=dot_size)
 
-
-    #
     # OUTPUT IMAGE
     #normalize threshold array to 8 bit depth
     my_array = md.mdarray(shape=(array_width, array_height),format="=u1")
@@ -200,7 +138,6 @@ def make_screen(res=(720,720), min_dot=4, max_dot=8, spotfnc=RoundDot,
                 tmp = 0
             q_level = <unsigned int> (c_floor(tmp) )
             my_array[x, y] = q_level
-    #print my_array
 
     my_array.reshape((array_width * array_height))
     image_thresh = Image.frombuffer(mode='L',
@@ -209,7 +146,7 @@ def make_screen(res=(720,720), min_dot=4, max_dot=8, spotfnc=RoundDot,
     image_thresh.save(img_file)
 
 # print out threshold array
-cdef print_threshold():
+cdef _print_threshold():
     global array_width, array_height, threshold_array
     strout = ""
     for y in xrange(array_height):
@@ -221,7 +158,7 @@ cdef print_threshold():
             strout += "\n"
     print strout
 
-cdef  _make_dotshape(spotfnc):
+cdef  _make_dotshape(spotfnc, dot_size):
     # TODO: make apect ratio implementation
     global dotshape_array, dot_tos, max_dot_size
     cdef int i, j, xp, yp
@@ -230,29 +167,29 @@ cdef  _make_dotshape(spotfnc):
 
     # Fill the cell with spot function
     sp = spotfnc()
-    z = 2.0 / (max_dot_size - 1)
-    for i in xrange(max_dot_size):
+    z = 2.0 / (dot_size - 1)
+    for i in xrange(dot_size):
         x = -1.0 + z * i
-        for j in xrange(max_dot_size):
+        for j in xrange(dot_size):
             y = -1.0 + z * j
             w = sp(x,y)
-            dotshape_array[i][j] = <int> ((w + 1) / 2.0 * max_dot_size * max_dot_size)
-            dot_tos[i * max_dot_size + j].x = i
-            dot_tos[i * max_dot_size + j].y = j
+            dotshape_array[i][j] = <int> ((w + 1) / 2.0 * dot_size * dot_size)
+            dot_tos[i * dot_size + j].x = i
+            dot_tos[i * dot_size + j].y = j
 
     # Build the whitening order
-    qsort(<void *> dot_tos, max_dot_size * max_dot_size, sizeof(order_t), compare_tos)
+    qsort(<void *> dot_tos, dot_size * dot_size, sizeof(order_t), compare_tos)
 
     # update mindot coordinates relative to the center of the cell
     # center is the first mindot in the whitening order
     xp = dot_tos[0].x
     yp = dot_tos[0].y
-    for i in xrange(max_dot_size * max_dot_size):
+    for i in xrange(dot_size * dot_size):
         dot_tos[i].x = dot_tos[i].x - xp
         dot_tos[i].y = dot_tos[i].y - yp
 
 cdef int compare_tos(const void *vp, const void *vq) nogil:
-    global dotshape_array, max_dot_size
+    global dotshape_array
     cdef order_t *p = <order_t *> vp
     cdef order_t *q = <order_t *> vq
     cdef int pi, qi, retval = 0
@@ -296,9 +233,6 @@ cdef int image_value_map():
 # width, height:
 # size of threshold_array
 #
-# min_dot_pattern:
-# set the minimum dot size/shape pattern.
-# This is an index to a specific size/shape table
 #
 # value_thresh
 # sets the choice value threshold in 0.1% units (default 50 = 5%)
@@ -313,22 +247,22 @@ cdef int image_value_map():
 # quiet:
 # if quiet is false output some statistic
 cdef int _make_screen(int width, int height, double value_thresh,
-                                        double bias_power, int seed, bint quiet):
+                                        double bias_power, int seed, bint quiet, int dot_size):
     global min_value, max_value, value_range, array_width
     global array_height, resolution, threshold_array
-    global values_array, tos, min_dot_edges, top_level
-    global level, dotshape_array, mark_array, max_dot_size
+    global values_array, tos, top_level
+    global level, dotshape_array, mark_array
 
     cdef int i, j, k, m, choice_range,x, y, ox, oy
     cdef int choice, choice_x, choice_y, mx, my
     cdef int sort_range, do_min_dot, order, dist
     cdef int row, dot, cx, cy, userow, dot_depth
     cdef double	value, rand_scaled, rx_sq, ry_sq
-    cdef int err_code = 0
+    cdef int err_code = 0, array_size
 
-    print "top_level", top_level
     # TODO: update when dealing with non square ratio
-    dot_depth = max_dot_size * max_dot_size
+    dot_depth = dot_size * dot_size
+    array_size = array_width * array_height
 
     # allows for horizontal / vertical resolution, e.g. -r2x1
     # values are used for aspect ratio -- actual values arbitrary
@@ -338,7 +272,7 @@ cdef int _make_screen(int width, int height, double value_thresh,
     #	Initialize master threshold array
     array_width = width
     array_height = height
-    if array_width * array_height > MAX_ARRAY_WIDTH * MAX_ARRAY_HEIGHT:
+    if array_size> MAX_ARRAY_WIDTH * MAX_ARRAY_HEIGHT:
         print "Array size is too large, max width = %d, max height = %d\n"  \
                 % (MAX_ARRAY_WIDTH, MAX_ARRAY_HEIGHT)
         return 1
@@ -353,40 +287,28 @@ cdef int _make_screen(int width, int height, double value_thresh,
             values_array[y * array_width + x ] = 0.0
             threshold_array[x][y] = -1
             mark_array[x][y] = -1
-    #
+
     # Create an ordered list of values
-    #
     sort_range = array_width * array_height
     min_value = 0.0
     max_value = 0.0
     value_range = 1.0
-
-    cdef bint dot_done = False
     level = 0
-    #for level in xrange(array_width * array_height):
 
-    while level < (array_width * array_height):
+    while level < (array_size):
         # We focus the processing on the first "SortRange" number of
         # elements to speed up the processing. The SortRange starts
         # at the full array size, then is reduced to a smaller value
 
         # sort the list of values in the tos
-        #random seed
+
+        # random seed
         seed += 1
         srand(seed)
         qsort(<void *> tos, sort_range, sizeof(order_t), compare_order)
-        sort_range = array_width * array_height - level
-
-        #TODO:
-        # display an array of values in pseudo color
-        if not quiet:
-            image_value_map()
-
-        if not quiet:
-            print "min_value = %f, min_x = %d, min_y = %d\n" \
-                        % (min_value, tos[0].x, tos[0].y)
-
+        sort_range = array_size - level
         choice_range = 0
+
         for i in xrange(sort_range):
             value = values_array[tos[i].y * array_width + tos[i].x]
             value = (value - min_value) / value_range
@@ -394,19 +316,14 @@ cdef int _make_screen(int width, int height, double value_thresh,
                 break
             choice_range += 1
 
-        # Print some statistics on the ordered array
-        if not quiet:
-            print "Number of points less than %5.3f = %d " % (value_thresh, choice_range)
-            print "min_value = %f, max_value = %f,, value_range = %f\n " % (min_value, max_value, value_range)
-
         # Now select the next pixel using a random number
         #
         # Limit the choice to the 1/10 of the total number
         # of points or those points less than "value_thresh"
         # whichever is smaller
         #TODO: put the divisor in user parameter
-        if choice_range > array_width * array_height / 10:
-            choice_range = array_width * array_height / 10
+        if choice_range > array_size / 10:
+            choice_range = array_size / 10
 
         # Choose from among the 'acceptable' points
         rand_scaled = <double> rand() / <double> RAND_MAX
@@ -486,176 +403,6 @@ cdef int _make_screen(int width, int height, double value_thresh,
                     # so we deal with the first mindot of a cell
                     mark_array[mx][my] = 0
                     level += 1
-
-    err_code = 0  # normal return
-    return err_code
-
-cdef int _make_screen_old(int width, int height,
-                                        int min_dot_pattern, double value_thresh,
-                                        double bias_power, int seed, bint quiet):
-    global min_value, max_value, value_range, array_width
-    global array_height, resolution, threshold_array
-    global values_array, tos, min_dot_edges
-    global level
-
-    cdef int i, j, k, m
-    cdef int x, y, choice_range, choice, choice_x, choice_y
-    cdef int sort_range
-    cdef int do_min_dot
-    cdef int row, dot, cx, cy, userow
-    cdef double	value
-    cdef int err_code = 0
-    cdef double rand_scaled
-
-    # allows for horizontal / vertical resolution, e.g. -r2x1
-    # values are used for aspect ratio -- actual values arbitrary
-    cdef double rx_sq
-    cdef double ry_sq
-    rx_sq = resolution[0] * resolution[0]
-    ry_sq = resolution[1] * resolution[1]
-
-    #	Initialize master threshold array
-    array_width = width
-    array_height = height
-    if array_width * array_height > MAX_ARRAY_WIDTH * MAX_ARRAY_HEIGHT:
-        print "Array size is too large, max width = %d, max height = %d\n"  \
-                % (MAX_ARRAY_WIDTH, MAX_ARRAY_HEIGHT)
-        return 1
-
-    #NOTE: open the output file from the next required parameter
-
-    # initialize the threshold_array to -1
-    # (an invalid value) for unfilled dots
-    # Initialize the tos array
-    for y in xrange(array_height):
-        for x in xrange(array_width):
-            tos[y * array_width + x].x = x
-            tos[y * array_width + x].y = y
-            values_array[y * array_width + x ] = 0.0
-            threshold_array[x][y] = -1
-
-    #
-    # Create an ordered list of values
-    #
-    sort_range = array_width * array_height
-    min_value = 0.0
-    max_value = 0.0
-    value_range = 1.0
-
-    cdef bint dot_done = False
-    level = 0
-    #for level in xrange(array_width * array_height):
-    while level < (array_width * array_height):
-        # We focus the processing on the first "SortRange" number of
-        # elements to speed up the processing. The SortRange starts
-        # at the full array size, then is reduced to a smaller value
-
-        # sort the list of values in the tos
-        #random seed
-        seed += 1
-        srand(seed)
-        qsort(<void *> tos, sort_range, sizeof(order_t), compare_order)
-        sort_range = array_width * array_height - level
-
-        #TODO:
-        # display an array of values in pseudo color
-        if not quiet:
-            image_value_map()
-
-        if not quiet:
-            print "min_value = %f, min_x = %d, min_y = %d\n" \
-                        % (min_value, tos[0].x, tos[0].y)
-
-        choice_range = 0
-        for i in xrange(sort_range):
-            value = values_array[tos[i].y * array_width + tos[i].x]
-            value = (value - min_value) / value_range
-            if value > value_thresh:
-                break
-            choice_range += 1
-
-        # Print some statistics on the ordered array
-        if not quiet:
-            print "Number of points less than %5.3f = %d " % (value_thresh, choice_range)
-            print "min_value = %f, max_value = %f,, value_range = %f\n " % (min_value, max_value, value_range)
-
-        # Now select the next pixel using a random number
-        #
-        # Limit the choice to the 1/10 of the total number
-        # of points or those points less than "value_thresh"
-        # whichever is smaller
-        if choice_range > array_width * array_height / 10:
-            choice_range = array_width * array_height / 10
-
-        # Choose from among the 'acceptable' points
-        rand_scaled = <double> rand() / <double> RAND_MAX
-        choice = <int> (<double> choice_range * c_pow(rand_scaled, bias_power))
-        choice_x = tos[choice].x
-        choice_y = tos[choice].y
-
-        # if minimum dot size is set, modify the choice
-        # depending on the neighboring dots.
-        # If the edge of the expanded dot is adajcent
-        # to a dot aleady 'on', then increase the size
-        # of that dot instead
-        do_min_dot = min_dot_pattern
-        if min_dot_pattern != 0:
-            # If a nearby dot it 'on', choose the 'best'
-            # one instead of the 'min_dot'. This insures
-            # that each min_dot will have at least
-            # a one dot 'white' area around it
-            for row in xrange(-1, min_dot_edges[min_dot_pattern].num_rows + 1):
-                userow = 0 if row < 0 else (row - 1 \
-                    if row == min_dot_edges [min_dot_pattern].num_rows else row)
-                cy = (choice_y + row) % array_height
-
-                for dot in xrange(min_dot_edges[min_dot_pattern].left[userow] - 1,
-                                                min_dot_edges[min_dot_pattern].right[userow] + 1):
-                    cx = (choice_x + dot) % array_width
-                    if threshold_array[cx][cy] != -1:
-                        if not quiet:
-                            print "min_dot suppressed due \
-                                to neighbor dot at: [%d, %d]\n" % (cx, cy)
-                        # Choose a white dot adjacent to this dot
-                        #choice_x = cx
-                        #choice_y = cy
-                        do_min_dot = 0  # don't do the min_dot expansion
-                        break
-                if do_min_dot == 0:  # did we bail out of the 'dot' loop ?
-                    break
-            #  end of row loop
-        # end of if min_dot_pattern != 0
-
-        # Print some statistics on the ordered array
-        if not quiet:
-            print "choice: %d, choice_range: %d, \
-            do_min_dot: %d\n" % (choice, choice_range, do_min_dot)
-            print "Threshold Level %4d is depth %d, \
-              val = %5.3f at (%4d, %4d)\n" % (level, \
-                choice, values_array[choice_y * array_width + \
-                choice_x], choice_x, choice_y)
-
-        if do_min_dot != 0: #original != 0
-            for row in xrange(min_dot_edges[min_dot_pattern].num_rows):
-                cy = (choice_y + row) % array_height
-                for dot in xrange(min_dot_edges[min_dot_pattern].left[row], \
-                                min_dot_edges[min_dot_pattern].right[row] + 1):
-                    cx = (choice_x + dot) % array_width
-                    if row > 0 or dot > 0:
-                        # The 'choice' dot will be done
-                        # outside this block as the 'last'
-                        if threshold_array[cx][cy] == -1:
-                            do_dot(cx, cy, level, 0)
-                            level += 1
-
-        # end of  if do_min_dot
-
-        # last dot in group
-        if threshold_array[choice_x][choice_y] == -1:
-            do_dot(choice_x, choice_y, level, 1)
-            level += 1
-
-    # end for level...
 
     err_code = 0  # normal return
     return err_code
