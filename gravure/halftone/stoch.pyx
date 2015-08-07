@@ -30,41 +30,27 @@
 #TODO: optimisation, parallelisme
 #NOTE: what about inkjet overlap dot model
 
+# distutils: extra_compile_args = -fopenmp
+# distutils: extra_link_args = -fopenmp
 
-import cython
 cimport cython
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
+from libc.stdlib cimport rand, srand, qsort, RAND_MAX
+from libc.stdlib cimport abs as c_abs
+from libc.math cimport floor as c_floor
+from libc.math cimport pow as c_pow
+from libc.math cimport sqrt as c_sqrt
+from cython.parallel import prange
 
+import cython
+from cython cimport boundscheck,wraparound, nonecheck
+from time import time
 from PIL import Image
-
+#TODO: replace by normal import
 import pyximport; pyximport.install()
 import numeric.mdarray as md
 import spotfunctions
 from core.property import *
-
-cdef extern from "stdlib.h" nogil:
-    # 7.20.2 Pseudo-random sequence generation functions
-    enum: RAND_MAX
-    int rand ()
-    void srand (unsigned int SEED)
-
-    # 7.20.5 Searching and sorting utilities
-    void qsort (void *ARRAY, size_t COUNT, size_t SIZE,
-                int (*COMPARE)(const void *, const void *))
-
-    # 7.20.6 Integer arithmetic functions
-    int c_abs "abs" (int number)
-    double c_floor "floor"(double x)
-
-    void *calloc (size_t, size_t) nogil
-    void *malloc(size_t) nogil
-    void free(void *) nogil
-    void realloc(void *, size_t) nogil
-    void *memcpy(void *dest, void *src, size_t n) nogil
-
-cdef extern from"math.h" nogil:
-    double c_pow "pow"(double x, double y)
-
 
 
 DEF BIG_FLOAT = 999999999.0
@@ -95,6 +81,7 @@ cdef int array_width = 0
 cdef int array_height = 0
 cdef bint fudge_diagonal = 0
 cdef double fudge_factor = .50
+cdef unsigned int fudge_radius = 128
 
 #
 # Application ProptyList
@@ -117,24 +104,25 @@ import math
 
 def run_screener():
     # output resolution
-    res = (1440,1440)
+    res = (1440, 720)
     # lpi reference
     lpi = 80#70 #80
     # dot shape
     shape = spotfunctions.RoundDot
     # 120-34 mesh
-    mesh_opening = 0.045#0.060    #0.045 #mm
+    mesh_opening = 0.045#mm
     thread_diameter = 0.034 #mm
     # screen_size
-    screen_size = 200   #800
+    screen_size = 100  #800
     threshold = 75
     bias = 5
     seed = 5
-    gamma = .33
+    gamma = 1.0 #.33
 
-    global fudge_diagonal, fudge_factor
-    fudge_diagonal = 1
-    fudge_factor = 75.0 / 100.0
+    global fudge_diagonal, fudge_factor, fudge_radius
+    fudge_diagonal = 0
+    fudge_factor = 1.1
+    fudge_radius = 128
 
     #
     #
@@ -146,9 +134,12 @@ def run_screener():
     min_black_dot = math.ceil((mesh_opening + 1.5 * thread_diameter) / mindot)
     #Minimum Size Of Shadow Dot Needs : 2 Openings + 1.5 Threads
     min_white_dot = math.ceil((mesh_opening * 2 + 1.5 * thread_diameter) / mindot)
+    print min_black_dot, min_white_dot
+    min_black_dot = 3
+    min_white_dot = 3
 
     make_screen(res, min_black_dot, min_white_dot, dotsize, shape, screen_size,
-                        threshold=threshold, bias=bias, seed=seed, gamma = gamma, quiet=True)
+                        threshold=threshold, bias=bias, seed=seed, gamma = gamma, quiet=0)
 
 #
 # Python interface for the screening process
@@ -190,29 +181,41 @@ def make_screen(res=(1440,720), min_black_dot=5, min_white_dot=2,
         dot_h = max(dot_size // resolution[0], 2)
         dot_w = dot_h * resolution[0]
         height = screensize // resolution[0]
-        width = height * resolution[0]
+        #width = height * resolution[0]
+        height = width = height * resolution[0]
     else:
         dot_w = max(dot_size // resolution[1], 2)
         dot_h = dot_w * resolution[1]
         width = screensize // resolution[1]
-        height = width * resolution[1]
+        #height = width * resolution[1]
+        width = height = width * resolution[1]
 
     if max(dot_w, dot_h) > MAX_DOT:
         raise RuntimeError("dot size error")
 
     thresh = threshold / 1000.0
-    top_level = width * height - 1
+    #top_level = width * height - 1
+    top_level = (width / resolution[1]) * (height / resolution[0]) - 1
 
+    start_time = time()
     _make_dotshape(spotfnc, dot_w, dot_h)
-    _print_dotshape(dot_w, dot_h)
     screen_level = _make_screen(width, height, thresh, bias, \
             seed, quiet, dot_w, dot_h, \
             min_black_dot, min_white_dot)
+    time_laps = time() - start_time
     saveasfile(level, screen_level, gamma)
-    savepostscript(level, screen_level, gamma)
+    #savepostscript(level, screen_level, gamma)
 
     # Release Memory Heap
     _free_memory()
+
+    # Print Statistic
+    print "STOCHASTIC GREEN NOISE STATISTICS"
+    print "screen size : %i x %i" %(width, height)
+    print "aspect ratio : %i/%i" %(resolution[0], resolution[1])
+    print "total differents levels : %i" %(top_level + 1)
+    print "minimum sizes dot - black : %i - dot(s) white : %i dot(s)" %(min_black_dot, min_white_dot)
+    print "computation time : %f sec." %time_laps
 
 #TODO: verifiy this thing......!!!
 cdef double gamma_corr(double pixel, double gamma):
@@ -223,29 +226,31 @@ cdef double gamma_corr(double pixel, double gamma):
 cdef object _get_qarray(int level, int array_level, double gamma):
     global array_width, array_height, mark_array, threshold_array
     global top_level, resolution
-    cdef unsigned int x, y, i, q_level
+    cdef unsigned int x, y, i, q_level, width, height, error_dot = 0
     cdef double arr_level, max_level, tmp
 
     max_level =  level - 1
-
-    #TODO: verify this in futur
+    #TODO: verify this in futurd
     format = "=u1" if level <= 256 else "=u2"
-
+    width = array_width / resolution[1]
+    height = array_height / resolution[0]
     # OUTPUT IMAGE : normalize threshold array to 8 bit depth
-    q_array = md.mdarray(shape=(array_height, array_width), format=format)
+    q_array = md.mdarray(shape=(height, width), format=format)
 
-    for x in xrange(array_width):
-        for y in xrange(array_height):
-            if mark_array[y * array_width + x] == -1 :
-                raise RuntimeError  ("dot bug placement")
+    for x in range(0, array_width, resolution[1]):
+        for y in range(0, array_height, resolution[0]):
+            if mark_array[y * array_width + x] < 0 :
+                error_dot += 1
                 tmp = 0
             else:
                 tmp = gamma_corr( <double>  threshold_array[y * array_width + x] / array_level, gamma)
                 #tmp = ((<double> threshold_array[y * array_width + x]) / array_level) * max_level
             q_level = <unsigned int> (c_floor(tmp * max_level))
             #q_level = <unsigned int> (c_floor(tmp) )
-            q_array[y, x] = q_level
+            q_array[y / resolution[0], x / resolution[1]] = q_level
 
+    if error_dot:
+        print "UNVALUED DOT ERROR : %i / %i" % (error_dot, array_height * array_width)
     return q_array
 
 cdef int image_value_map()except -1:
@@ -256,15 +261,16 @@ cdef int image_value_map()except -1:
     cdef double arr_level, max_level, tmp
 
     if max_value == 0:
-        return 0
+    #    return 0
+        max_value = 1.0
 
     #normalize array to 8 bit depth
     my_array = md.mdarray(shape=(array_height, array_width),format="=u1")
     max_level =  255
     arr_level = array_width * array_height
 
-    for x in xrange(array_width):
-        for y in xrange(array_height):
+    for x in range(array_width):
+        for y in range(array_height):
             tmp = values_array[y * array_width + x]
             if tmp == BIG_FLOAT :
                 tmp = 255
@@ -340,11 +346,15 @@ cdef int savepostscript(int level, int array_level, double gamma)except -1:
 
 cdef int saveasfile(int level, int array_level, double gamma)except -1:
     global array_width, array_height
+    cdef width, height
+
     q_array = _get_qarray(level, array_level, gamma)
-    q_array.reshape((array_width * array_height))
+    width = q_array.shape[1]
+    height = q_array.shape[0]
+    q_array.reshape((width * height))
 
     image_thresh = Image.frombuffer(mode='L',
-                size=(array_width, array_height), data=q_array.memview)
+                size=(width, height), data=q_array.memview)
     img_file = open("/home/gilles/TEST/thres_out.pgm", mode="wb", closefd=True)
     image_thresh.save(img_file)
 
@@ -352,8 +362,8 @@ cdef int saveasfile(int level, int array_level, double gamma)except -1:
 cdef int _print_threshold()except -1:
     global array_width, array_height, threshold_array
     strout = ""
-    for y in xrange(array_height):
-        for x in xrange(array_width):
+    for y in range(array_height):
+        for x in range(array_width):
             #strout += " %3d\t\t" % (threshold_array[x][y])
             strout += " %3d\t\t" % (threshold_array[y * array_width + x])
             if (x & 15) == 15:
@@ -365,8 +375,8 @@ cdef int _print_threshold()except -1:
 cdef int _print_dotshape(dot_w, dot_h)except -1:
     global  dotshape_array
     strout = ""
-    for y in xrange(dot_h):
-        for x in xrange(dot_w):
+    for y in range(dot_h):
+        for x in range(dot_w):
             strout += " %3d\t\t" % (dotshape_array[y][x])
             if (x & 15) == 15:
                 strout += "\n"
@@ -385,9 +395,9 @@ cdef int _make_dotshape(spotfnc, dot_w, dot_h)except -1:
     zx = 2.0 / (dot_w - 1)
     zy = 2.0 / (dot_h - 1)
 
-    for i in xrange(dot_w):
+    for i in range(dot_w):
         x = -1.0 + zx * i
-        for j in xrange(dot_h):
+        for j in range(dot_h):
             y = -1.0 + zy * j
             w = sp(x,y)
             dotshape_array[j][i] = <int> ((w + 1) / 2.0 * dot_w * dot_h)
@@ -401,7 +411,7 @@ cdef int _make_dotshape(spotfnc, dot_w, dot_h)except -1:
     # center is the first mindot in the whitening order
     xp = dot_tos[0].x
     yp = dot_tos[0].y
-    for i in xrange(dot_w * dot_h):
+    for i in range(dot_w * dot_h):
         dot_tos[i].x = dot_tos[i].x - xp
         dot_tos[i].y = dot_tos[i].y - yp
 
@@ -423,25 +433,28 @@ def  _memory_allocation(int aw, int ah):
     global threshold_array, mark_array, values_array, tos
     cdef size_t sz = aw * ah
 
-    threshold_array = <unsigned int*> calloc(sz, sizeof(unsigned int))
+    threshold_array = <unsigned int*> PyMem_Malloc(sz * sizeof(unsigned int))
     if not threshold_array:
         raise MemoryError("Unable to allocate memory for threshold_array")
 
-    mark_array = <int*> calloc(sz, sizeof(int))
+    mark_array = <int*> PyMem_Malloc(sz * sizeof(int))
     if not mark_array:
         raise MemoryError("Unable to allocate memory for mark_array")
 
-    values_array = <double*> calloc(sz, sizeof(double))
-    if not mark_array:
-        raise MemoryError("Unable to allocate memory for value_array")
+    values_array = <double*> PyMem_Malloc(sz * sizeof(double))
+    if not values_array:
+        raise MemoryError("Unable to allocate memory for values_array")
 
-    tos = <order_t*> calloc(sz, sizeof(order_t))
-    if not mark_array:
+    tos = <order_t*> PyMem_Malloc(sz * sizeof(order_t))
+    if not tos:
         raise MemoryError("Unable to allocate memory for whitenig order array")
 
 
 cdef int _free_memory():
-    free(threshold_array)
+    PyMem_Free(threshold_array)
+    PyMem_Free(mark_array)
+    PyMem_Free(values_array)
+    PyMem_Free(tos)
 
 # width, height:
 # size of threshold_array
@@ -472,7 +485,7 @@ cdef int _make_screen(int width, int height, double value_thresh,
     cdef int sort_range, do_min_dot, order, dist
     cdef int row, dot, cx, cy, userow, dot_depth
     cdef double	value, rand_scaled, rx_sq, ry_sq
-    cdef int loop_level, array_size, err_code = 0
+    cdef int loop_level, array_size
 
     # Initialize master threshold array
     # initialize the mark_array to  -1
@@ -482,21 +495,27 @@ cdef int _make_screen(int width, int height, double value_thresh,
     array_size = width * height
     array_width = width
     array_height = height
+    rx_sq = resolution[0] * resolution[0]
+    ry_sq = resolution[1] * resolution[1]
     _memory_allocation(width, height)
 
     cdef int step_debug
-    step_debug = array_size // 40
+    step_debug = 10#array_size // 40
 
-    for y in xrange(array_height):
-        for x in xrange(array_width):
+    for y in range(array_height):
+        for x in range(array_width):
             tos[y * array_width + x].x = x
             tos[y * array_width + x].y = y
-            values_array[y * array_width + x ] = 0.0
             threshold_array[y * array_width + x] = 0
+            values_array[y * array_width + x ] = 0.0
+            #values_array[y * array_width + x ] = 0.0 if ((y % resolution[0]) == 0 \
+            #            and (x % resolution[1]) == 0) else BIG_FLOAT
             mark_array[y * array_width + x ] = -1
+    image_value_map()
 
     # Create an ordered list of values
     sort_range = array_width * array_height
+    #sort_range = (array_width / resolution[1]) * (array_height / resolution[0])
     min_value = 0.0
     max_value = 0.0
     value_range = 1.0
@@ -505,24 +524,29 @@ cdef int _make_screen(int width, int height, double value_thresh,
     # convert initial min_kdot value to a level
     # in dot_tos (same as distance below
     #TODO: make a function to do this precisely
+    cdef int min_kdot_order = 1
     if min_kdot > 1:
         if dot_w > dot_h:
-            for dot in xrange(0,dot_depth):
+            for dot in range(0,dot_depth):
                 if dot_tos[dot].x == min_kdot / 2:
                     break
         else:
-            for dot in xrange(0,dot_depth):
+            for dot in range(0,dot_depth):
                 if dot_tos[dot].y == min_kdot / 2:
                     break
-        min_kdot = dot
+        min_kdot_order = dot
 
     cdef int counter = 0
     cdef bint added = 0, dot_done = 0
     cdef int tx, ty
     cdef int distance, neg_dist, dot_radius
     cdef double var_thresh, white_thresh
-    white_thresh = .50
-    loop_level = array_size
+    #loop_level = array_size
+    loop_level = (array_width / resolution[1]) * (array_height / resolution[0])
+    #TODO: put the distance in user parameter
+    distance = <int> (dot_depth * .60) # dots density
+    dot_radius = <int> (dot_depth * .30) # max dot size
+    neg_dist = <int> (dot_depth * .50) # white dot size
 
     with nogil:
         while level < loop_level:
@@ -530,23 +554,16 @@ cdef int _make_screen(int width, int height, double value_thresh,
             # elements to speed up the processing. The SortRange starts
             # at the full array size, then is reduced to a smaller value
 
-            #debug output
-            if not quiet:
-                if level % step_debug == 0:
-                    with gil:
-                        image_value_map()
-
-            var_thresh = <double> level / (loop_level - 1)
-
             # sort the list of values in the tos
             # random seed
-            seed += 1
+            seed += 1 * resolution[0] * resolution[1]
             srand(seed)
             qsort(<void *> tos, sort_range, sizeof(order_t), compare_order)
             sort_range = array_size - level
+            #sort_range = ((array_width / resolution[1]) * (array_height / resolution[0])) - level
             choice_range = 0
 
-            for i in xrange(sort_range):
+            for i in range(sort_range):
                 value = values_array[tos[i].y * array_width + tos[i].x]
                 value = (value - min_value) / value_range
                 if value > value_thresh:
@@ -559,95 +576,63 @@ cdef int _make_screen(int width, int height, double value_thresh,
             # of points or those points less than "value_thresh"
             # whichever is smaller
             #TODO: put the divisor in user parameter
-            if choice_range > array_size / 10:
-                choice_range = array_size / 10
+            #if choice_range > array_size / 10:
+            #    choice_range = array_size / 10
+            if choice_range > loop_level / 10:
+                choice_range = loop_level / 10
 
             # Choose from among the 'acceptable' points
             rand_scaled = <double> rand() / <double> RAND_MAX
             choice = <int> (<double> choice_range * c_pow(rand_scaled, bias_power))
-            mx = choice_x = tos[choice].x
-            my = choice_y = tos[choice].y
-
+            choice_x = tos[choice].x
+            choice_y = tos[choice].y
+            ox = choice_x - (choice_x % resolution[1])
+            oy = choice_y - (choice_y % resolution[0])
+            if mark_array[oy * array_width + ox] > -1:
+                values_array[choice_y * array_width + choice_x] = BIG_FLOAT
+                continue
+            mx = ox
+            my = oy
             # if minimum dot size is set, modify the choice
             # depending on the neighboring dots.
             # If the edge of the expanded dot is adajcent
             # to a dot aleady 'on', then increase the size
             # of that dot instead
-            do_min_dot = 1
+            do_min_dot = 0
             dot_done = 0
-
-            #TODO: put the distance in user parameter
-            distance = <int> (dot_depth * .40) # dots density
-            dot_radius = <int> (dot_depth * .30) # max dot size
-            neg_dist = <int> (dot_depth * .50) # white dot size
-            ox = choice_x
-            oy = choice_y
             order = dot_radius
+            counter = 0
 
             # look for surrounding dot(s)
-            counter = 0
-            for dot in xrange(0, distance):
-                cx = (ox + dot_tos[dot].x) % array_width
-                cy = (oy + dot_tos[dot].y) % array_height
-                # if have several dots try to choose
-                # the smaller to expand.
-                indice = cy * array_width + cx
-                added = 0
-                if mark_array[indice] > -1: # we've find a dot
-                    tx = cx - dot_tos[mark_array[indice]].x # center of the cell
-                    ty = cy - dot_tos[mark_array[indice]].y
-                    for dot in xrange(0, counter):
-                        if tx == mark_dot[dot].x and ty == mark_dot[dot].y:
-                            added = 1
-                            break
-                    if not added:
-                        mark_dot[counter].x = tx
-                        mark_dot[counter].y = ty
-                        mark_dot[100 + counter].x = cx
-                        mark_dot[100 + counter].y = cy
-                        counter += 1
+            #for dot in range(0, distance):
+            #    cx = (ox + dot_tos[dot].x) % array_width
+            #    cy = (oy + dot_tos[dot].y) % array_height
+            #    if mark_array[cy * array_width + cx] < 0:
+            #        mark_dot[counter].x = cx
+            #        mark_dot[counter].y = cy
+            #        counter += 1
+            #    else:
+            #        do_min_dot = 0
 
-            if counter:
-            # we have neighbouring dot(s)
-            # so choose the less expanded
-                for dot in xrange(0, counter):
-                    tx = mark_dot[dot + 100].x
-                    ty = mark_dot[dot + 100].y
-                    if mark_array[ty * array_width + tx] < order:
-                        order = mark_array[ty * array_width + tx]
-                        choice_x = tx
-                        choice_y = ty
-                        do_min_dot = 0
+            if do_min_dot == 0:
+                #qsort(<void *> mark_dot, counter , sizeof(order_t), compare_order)
+                #ox = mark_dot[counter].x
+                #oy = mark_dot[counter].y
+                #level = do_dot(ox, oy, level, loop_level, 0, min_kdot, 0, var_thresh, white_thresh)
+                level = do_dot(mx, my, level, loop_level, 0, min_kdot, min_wdot, 0, rx_sq, ry_sq)
+                dot_done = 1
 
-                if do_min_dot == 0:
-                # we have a dot to expand
-                    ox = choice_x - dot_tos[order].x
-                    oy = choice_y - dot_tos[order].y
-                    for dot in xrange(order+1, dot_radius):
-                        cx = (ox + dot_tos[dot].x) % array_width
-                        cy = (oy + dot_tos[dot].y) % array_height
-                        # check if our new choice is not already painted
-                        indice = cy * array_width + cx
-                        if mark_array[indice] <= -1:
-                            loop_level = do_dot(cx, cy, level, loop_level, 0, min_kdot, dot, var_thresh, white_thresh)
-                            level += 1
-                            dot_done = 1
-                            break
-                    if dot_done:
-                        continue
-
-            #else: # counter == 0
+            else: # counter == 0
             # no dot too near so initial choice is ok
             # and we deal with the first mindot of a new cell
-            loop_level = do_dot(mx, my, level, loop_level, 1, min_kdot, 0, var_thresh, white_thresh)
-            level += 1
-            k_cells_count += 1
+                level = do_dot(mx, my, level, loop_level, 0, min_kdot, min_wdot, 0, rx_sq, ry_sq)
+                k_cells_count += 1
 
             if False:
                 # WHITE DOT
                 #elif var_thresh > white_thresh:
                 # No dot to expand
-                for dot in xrange(0, neg_dist,):
+                for dot in range(0, neg_dist,):
                     cx = (mx + dot_tos[dot].x) % array_width
                     cy = (my + dot_tos[dot].y) % array_height
                     # look for white dot center
@@ -662,13 +647,12 @@ cdef int _make_screen(int width, int height, double value_thresh,
                     mark_array[my * array_width + mx] = -2
                     w_cells_count += 1
 
-                for dot in xrange(neg_dist, 0, -1):
+                for dot in range(neg_dist, 0, -1):
                     cx = (choice_x + dot_tos[dot].x) % array_width
                     cy = (choice_y + dot_tos[dot].y) % array_height
                     # paint the first empty dot we find
                     if mark_array[cy * array_width + cx] < 0:
-                        loop_level = do_dot(cx, cy, level, loop_level, 0, min_kdot, 0, var_thresh, white_thresh)
-                        level += 1
+                        level = do_dot(cx, cy, level, loop_level, 0, min_kdot, min_wdot, 0, rx_sq, ry_sq)
                         dot_done = 1
                         break
                 if dot_done:
@@ -676,8 +660,7 @@ cdef int _make_screen(int width, int height, double value_thresh,
                 else:
                     with gil:
                         print "white", var_thresh
-                    loop_level = do_dot(mx, my, level, loop_level, 1, min_kdot, 0, var_thresh, white_thresh)
-                    level += 1
+                    level = do_dot(mx, my, level, loop_level, 1, min_kdot, min_wdot, 0, rx_sq, ry_sq)
 
 
 
@@ -694,11 +677,16 @@ cdef int _make_screen(int width, int height, double value_thresh,
 # for points that would form lines, then it will probably
 # be necessary to recalculate values for the entire array.
 # (but maybe not even then -- just keep it in mind)
-cdef double val_function(int this_x, int this_y, int ref_x, int ref_y, double rx_sq, double ry_sq) nogil:
-    global array_height, array_width, level, top_level, fudge_diagonal, fudge_factor
+@cython.wraparound(False)
+@cython.boundscheck(False)
+@cython.nonecheck(False)
+cdef double val_function(int this_x, int this_y, int ref_x, int ref_y,
+                    double rx_sq, double ry_sq, int min_kdot, int min_wdot) nogil:
+    global array_height, array_width
+    global fudge_diagonal, fudge_factor, fudge_radius
     cdef int dx, dy
-    cdef double distance, q
-    q = 1.0
+    cdef double distance, q, slope, dys, dxs, fc, dist_u
+    cdef bint line
 
     dx = c_abs(ref_x - this_x)
     if dx > array_width / 2:
@@ -708,18 +696,25 @@ cdef double val_function(int this_x, int this_y, int ref_x, int ref_y, double rx
     if dy > array_height / 2:
         dy = array_height - dy
 
-    distance = (<double> (dx * dx) / rx_sq) + (<double> (dy * dy) / ry_sq)
+    dxs = <double> (dx * dx)
+    dys = <double> (dy * dy)
+    #distance = ((dxs / rx_sq) + (dys / ry_sq)) * rx_sq * ry_sq
+    #distance = c_sqrt(dxs * ry_sq+ dys * rx_sq)
+    distance = c_sqrt(dxs + dys)
+    #dist_u = c_sqrt(dxs + dys)
 
-    # NOTE: OPTIONAL FUDGE_DIAG_ONAXIS
-    # Now decrease the distance (increasing the value returned for	*/
-    # on-axis and diagonal positions.				*/
-    if fudge_diagonal:
-        if (dx == 0) or (dy == 0) or (dx == dy)  or ((dx+dy) < 10):
-            distance *= fudge_factor
+    # Now decrease the distance (increasing the value returned for
+    # on-axis and diagonal positions.
+    # NOTE: should it be tempered with rx_sq and ry_sq ?
+    #fc =   distance / dist_u       # vary between 1/max(rx_sq, ry_sq) and 1.0
 
-    #if <double> level / top_level > 0.5:
-    #    q = 1.0
-    return q / distance
+    if distance < <double>(min_wdot):
+        distance = <double> (min_wdot)
+    elif fudge_diagonal:
+        if (dx == 0) or (dy == 0) or (dx == dy) or (dx+dy < fudge_radius):
+            distance = distance * fudge_factor
+
+    return 1.0 / distance
 
 # sort function for the turn on sequence array
 cdef int compare_order(const void *vp, const void *vq) nogil:
@@ -734,36 +729,24 @@ cdef int compare_order(const void *vp, const void *vq) nogil:
        retval = 1
     return retval
 
-cdef bint thresh_switch = False
-
-cdef int switch_values()nogil:
-    global values_array, array_width, array_height, mark_array
-    global min_value, max_value, value_range, thresh_switch
-    cdef int x, y
-
-    for y in xrange(array_height):
-        for x in xrange(array_width):
-            if mark_array[y * array_width + x] == -1:
-                values_array[y * array_width + x] = max_value - values_array[y * array_width + x]
-
-    thresh_switch = True
-
-
+@cython.wraparound(False)
+@cython.boundscheck(False)
+@cython.nonecheck(False)
 cdef int do_dot(int choice_x, int choice_y, int level,
-        int depth, bint do_mindot, int min_kdot, int mindot_level, double thresh, double white_thresh) nogil:
+        int depth, bint do_mindot, int min_kdot, int min_wdot,
+        int mindot_level, double rx_sq, double ry_sq) nogil:
 
     global min_value, max_value, value_range, array_width
-    global array_height, resolution, threshold_array
-    global values_array, tos, mark_array, dot_tos, mark_dot, thresh_switch
+    global array_height, threshold_array, values_array, mark_array, dot_tos, mark_dot
     cdef int x, y, cx, cy, dot, marked_dot, i
-    cdef double value, rx_sq, ry_sq, vtmp
+    cdef double value, vtmp
 
     marked_dot = 0
     if do_mindot:
         # so we deal with the first mindot of a cell
         # do we have to draw a minimum sized dot
         if min_kdot > 1:
-            for dot in xrange(0, min_kdot):
+            for dot in range(0, min_kdot):
                 cx = (choice_x + dot_tos[dot].x) % array_width
                 cy = (choice_y + dot_tos[dot].y) % array_height
                 if mark_array[cx + cy * array_width] <= -1:
@@ -779,11 +762,13 @@ cdef int do_dot(int choice_x, int choice_y, int level,
         mark_array[choice_x + choice_y * array_width] = mindot_level
         marked_dot = 1
 
-    for i in xrange(0, marked_dot):
+    level = level + marked_dot - 1
+    for i in range(0, marked_dot):
         threshold_array[mark_dot[i].y * array_width + mark_dot[i].x] = level
+    level += 1
 
     # BIG_FLOAT: value for dot already painted
-    for i in xrange(0, marked_dot):
+    for i in range(0, marked_dot):
         values_array[mark_dot[i].y * array_width + mark_dot[i].x] = BIG_FLOAT
 
     # accumulate the value contribution
@@ -791,30 +776,25 @@ cdef int do_dot(int choice_x, int choice_y, int level,
     # the min_value and max_value and value_range
     min_value = BIG_FLOAT
     max_value = 0.0
-    rx_sq = resolution[0] * resolution[0]
-    ry_sq = resolution[1] * resolution[1]
 
-    for y in xrange(array_height):
-        for x in xrange(array_width):
-            if mark_array[y * array_width + x] <= -1:
-                if thresh < white_thresh:
-                    for i in xrange(0, marked_dot):
-                        choice_x = mark_dot[i].x
-                        choice_y = mark_dot[i].y
-                        vtmp = values_array[y * array_width + x] + val_function(x, y, choice_x, choice_y, rx_sq, ry_sq)
-                        values_array[y * array_width + x] = vtmp
-                else:
-                    vtmp = values_array[y * array_width + x] + val_function(x, y, choice_x, choice_y, rx_sq, ry_sq)
+    #for x in prange(array_width, schedule='static', chunksize=50, num_threads=8):
+    for x in range(array_width):
+        for y in range(array_height):
+            if values_array[y * array_width + x] < BIG_FLOAT:
+                for i in range(0, marked_dot):
+                    choice_x = mark_dot[i].x
+                    choice_y = mark_dot[i].y
+                    vtmp = values_array[y * array_width + x] \
+                                + val_function(x, y, choice_x, choice_y, \
+                                rx_sq, ry_sq, min_kdot, min_wdot)
                     values_array[y * array_width + x] = vtmp
                 if vtmp < min_value:
                     min_value = vtmp
                 if vtmp > max_value:
                     max_value = vtmp
-        # end for X -- columns
-    # end for Y -- rows
 
     value_range = max_value - min_value
     if value_range == 0.0:
         value_range = 1.0
 
-    return depth
+    return level
