@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: carray
+Version: 0.5.1
+Summary: A chunked data container that can be compressed in-memory.
+Home-page: https://github.com/FrancescAlted/carray
+Author: Francesc Alted
+Author-email: francesc@continuum.com
+License: http://www.opensource.org/licenses/bsd-license.php
+Download-URL: http://carray.pytables.org/download/carray-0.5.1/carray-0.5.1.tar.gz
+Description: carray is a chunked container for numerical data.  Chunking allows for
+        efficient enlarging/shrinking of data container.  In addition, it can
+        also be compressed for reducing memory needs.  The compression process
+        is carried out internally by Blosc, a high-performance compressor that
+        is optimized for binary data.
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: Unix

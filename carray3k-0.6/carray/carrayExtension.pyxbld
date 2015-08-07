@@ -1,0 +1,42 @@
+
+
+def make_ext(modname, pyxfilename):
+    from distutils.extension import Extension
+    import os
+    import os.path as path
+    from numpy.distutils.misc_util import get_numpy_include_dirs
+
+    base_path = '/home/gilles/FOSSILS/gravure/carray3k-0.6/carray' #path.dirname(__file__)
+
+    CFLAGS = os.environ.get('CFLAGS', '').split()
+    LFLAGS = os.environ.get('LFLAGS', '').split()
+    # Add -msse2 flag for optimizing shuffle in include Blosc
+    if os.name == 'posix':
+        CFLAGS.append("-msse2")
+
+    LIB_DIRS = []
+    LIBRARIES = []
+    incpath = path.join(path.split(base_path)[0], 'blosc')
+    INCLUDE_DIRS = [incpath]
+    INCLUDE_DIRS.extend(get_numpy_include_dirs())
+
+    DYN_LIBRARY_DIRS = ['/usr/lib']
+    EXTRA_OBJECTS = []
+
+    SOURCES = [pyxfilename, path.join(incpath, "blosc.c"), \
+                                path.join(incpath, "blosclz.c"), \
+                                path.join(incpath, "shuffle.c") ]
+
+    DEPS = [ path.join(incpath, "blosc.h"), path.join(incpath, "blosclz.h"), \
+                     path.join(incpath, "shuffle.h" )]
+    print (base_path, incpath)
+    print(SOURCES)
+    print(  DEPS)
+    print(INCLUDE_DIRS)
+
+    return Extension(modname, \
+                                sources = SOURCES,\
+                                #depends =  DEPS, \
+                                include_dirs = INCLUDE_DIRS, \
+                                extra_link_args=LFLAGS, \
+                                extra_compile_args=CFLAGS)

@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; carray 0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="carray 0.5 documentation" href="index.html" />
+    <link rel="next" title="Installation" href="install.html" />
+    <link rel="prev" title="Welcome to carray’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to carray’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">carray 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="carray-at-glance">
+<h2>carray at glance<a class="headerlink" href="#carray-at-glance" title="Permalink to this headline">¶</a></h2>
+<p>carray is a Python package that provides containers (called <cite>carray</cite>
+and <cite>ctable</cite>) for numerical data that can be compressed either
+in-memory and on-disk.  It is based on NumPy, and uses it as the
+standard data container to communicate with carray objects.</p>
+<p>The building blocks of carray objects are the so-called <tt class="docutils literal"><span class="pre">chunks</span></tt>
+that are bits of data compressed as a whole, but that can be
+decompressed partially in order to improve the fetching of small parts
+of the array.  This <tt class="docutils literal"><span class="pre">chunked</span></tt> nature of the carray objects, together
+with a buffered I/O, makes appends very cheap and fetches reasonably
+fast (although the modification of values can be an expensive
+operation).</p>
+<p>The compression/decompression process is carried out internally by
+Blosc, a high-performance compressor that is optimized for binary
+data.  That ensures maximum performance for I/O operation.</p>
+<p>carray can use numexpr internally (it does if it detects numexpr
+installed) so as to accelerate many vector and query operations
+(although it can use pure NumPy for doing so too).  numexpr can use
+optimize the memory usage and use several cores for doing the
+computations, so it is blazing fast.  Moreover, with the introduction
+of a carray/ctable disk-based container (in version 0.5), it can be
+used for seamlessly performing out-of-core computations.</p>
+<div class="section" id="carray-and-ctable-objects">
+<h3>carray and ctable objects<a class="headerlink" href="#carray-and-ctable-objects" title="Permalink to this headline">¶</a></h3>
+<p>The main objects in the carray package are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><cite>carray</cite>: container for homogeneous &amp; heterogeneous (row-wise) data</li>
+<li><cite>ctable</cite>: container for heterogeneous (column-wise) data</li>
+</ul>
+</div></blockquote>
+<p><cite>carray</cite> is very similar to a NumPy <cite>ndarray</cite> in that it supports the
+same types and data access interface.  The main difference between
+them is that a <cite>carray</cite> can keep data compressed (both in-memory and
+on-disk), allowing to deal with larger datasets with the same amount
+of RAM/disk.  And another important difference is the chunked nature
+of the <cite>carray</cite> that allows data to be appended much more efficiently.</p>
+<p>On his hand, a <cite>ctable</cite> is also similar to a NumPy <tt class="docutils literal"><span class="pre">structured</span>
+<span class="pre">array</span></tt>, that shares the same properties with its <cite>carray</cite> brother,
+namely, compression and chunking.  Another difference is that data is
+stored in a column-wise order (and not on a row-wise, like the
+<tt class="docutils literal"><span class="pre">structured</span> <span class="pre">array</span></tt>), allowing for very cheap column handling.  This
+is of paramount importance when you need to add and remove columns in
+wide (and possibly large) in-memory and on-disk tables &#8211;doing this
+with regular <tt class="docutils literal"><span class="pre">structured</span> <span class="pre">arrays</span></tt> in NumPy is exceedingly slow.</p>
+<p>Also, column-wise ordering turns out that this gives the <cite>ctable</cite> a
+huge opportunity to improve compression ratio.  This is because data
+tends to expose more similarity in elements that sit in the same
+column rather than those in the same row, so compressors generally do
+a much better job when data is aligned column-wise.</p>
+</div>
+<div class="section" id="carray-main-features">
+<h3>carray main features<a class="headerlink" href="#carray-main-features" title="Permalink to this headline">¶</a></h3>
+<p>carray objects bring several advantages over plain NumPy objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Data is compressed: they take less storage space.</li>
+<li>Efficient shrinks and appends: you can shrink or append more data
+at the end of the objects very efficiently (i.e. copies of the
+whole array are not needed).</li>
+<li>Persistence comes seamlessly integrated, so you can work with
+on-disk arrays almost in the same way than with in-memory ones
+(bar some special attention to flush data being required).</li>
+<li><cite>ctable</cite> objects have the data arranged column-wise.  This allows
+for much better performance when working with big tables, as well
+as for improving the compression ratio.</li>
+<li>Numexpr-powered: you can operate with compressed data in a fast
+and convenient way.  Blosc ensures that the additional overhead of
+handling compressed data natively is very low.</li>
+<li>Advanced query capabilities.  The ability of a <cite>ctable</cite> object to
+iterate over the rows whose fields fulfill some conditions (and
+evaluated via numexpr) allows to perform queries very efficiently.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="carray-limitations">
+<h3>carray limitations<a class="headerlink" href="#carray-limitations" title="Permalink to this headline">¶</a></h3>
+<p>carray does not currently come with good support in the next areas:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Reduced number of operations, at least when compared with NumPy.
+The supported operations are basically vectorized ones (i.e. does
+that are made element-by-element).  But this will change in the
+future, when support for more powerful computational kernels would
+be implemented.</li>
+<li>Limited broadcast support.  For example, NumPy lets you operate
+seamlessly with arrays of different shape (as long as they are
+compatible), but you cannot do that with carray.  The only object
+that can be broadcasted currently are scalars
+(e.g. <tt class="docutils literal"><span class="pre">ca.eval(&quot;x+3&quot;)</span></tt>).</li>
+<li>Some methods (namely <cite>carray.where()</cite> and <cite>carray.wheretrue()</cite>)
+does not have support for multidimensional arrays.</li>
+<li>Multidimensional <cite>ctable</cite> objects are not supported.  However, as
+the columns of these objects can be fully multidimensional, this
+is not regarded as a grave limitation.</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#carray-at-glance">carray at glance</a><ul>
+<li><a class="reference internal" href="#carray-and-ctable-objects">carray and ctable objects</a></li>
+<li><a class="reference internal" href="#carray-main-features">carray main features</a></li>
+<li><a class="reference internal" href="#carray-limitations">carray limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to carray&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="next chapter">Installation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to carray’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">carray 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010,2011 Francesc Alted / 2012 Continuum Analytics, Inc..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
