@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric5 project file for project Gravure -->
-<!-- Saved: 2015-04-02, 12:14:06 -->
+<!-- Saved: 2015-07-29, 14:41:14 -->
 <!-- Copyright (C) 2015 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -80,9 +80,7 @@
     <Source>gravure/tools/mpl_widgets.py</Source>
     <Source>gravure/numeric/__init__.py</Source>
     <Source>gravure/numeric/mdarray.pyx</Source>
-    <Source>gravure/numeric/narray.pyx</Source>
     <Source>gravure/numeric/gmath.py</Source>
-    <Source>gravure/numeric/array_interface.py</Source>
     <Source>gravure/halftone/gen_ordered.c</Source>
     <Source>gravure/numeric/mdarray.rst</Source>
     <Source>gravure/numeric/bit_width_type.pxd</Source>
@@ -103,6 +101,103 @@
     <Source>gravure/halftone/stoch.pyx</Source>
     <Source>gravure/halftone/test/stoch_test.py</Source>
     <Source>gravure/rip/__init__.py</Source>
+    <Source>gravure/core/__init__.py</Source>
+    <Source>gravure/tools/fm_screener.py</Source>
+    <Source>gravure/halftone/stoch_b.pyx</Source>
+    <Source>gravure/halftone/stoch_c.pyx</Source>
+    <Source>gravure/core/property.pyx</Source>
+    <Source>gravure/dumppdf.py</Source>
+    <Source>gravure/rip/manager.py</Source>
+    <Source>pdfminer3k-1.3.0/setup.py</Source>
+    <Source>pdfminer3k-1.3.0/build_cmap.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/conv_cmap.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/runapp.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/prof.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/conv_afm.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/conv_glyphlist.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/latin2ascii.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/pdf2txt.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/pdfexplore.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/dumppdf.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/converter.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/cmapdb.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/layout.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfinterp.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdffont.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdftypes.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfparser.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfcolor.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/rijndael.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/runlength.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/__init__.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/latin_enc.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfdevice.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/lzw.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/ascii85.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/fontmetrics.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/utils.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pslexer.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/psparser.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/arcfour.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/encodingdb.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/glyphlist.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/cmap/__init__.py</Source>
+    <Source>gravure/halftone/stoch.pyxbld</Source>
+    <Source>carray3k-0.6/pavement.py</Source>
+    <Source>carray3k-0.6/setup.py</Source>
+    <Source>carray3k-0.6/persistence.rst</Source>
+    <Source>carray3k-0.6/README.rst</Source>
+    <Source>carray3k-0.6/doc/tutorial.rst</Source>
+    <Source>carray3k-0.6/doc/index.rst</Source>
+    <Source>carray3k-0.6/doc/reference.rst</Source>
+    <Source>carray3k-0.6/doc/conf.py</Source>
+    <Source>carray3k-0.6/doc/intro.rst</Source>
+    <Source>carray3k-0.6/doc/opt-tips.rst</Source>
+    <Source>carray3k-0.6/doc/install.rst</Source>
+    <Source>carray3k-0.6/doc/defaults.rst</Source>
+    <Source>carray3k-0.6/carray/carrayExtension.c</Source>
+    <Source>carray3k-0.6/carray/carrayExtension.pyx</Source>
+    <Source>carray3k-0.6/carray/__init__.py</Source>
+    <Source>carray3k-0.6/carray/arrayprint.py</Source>
+    <Source>carray3k-0.6/carray/toplevel.py</Source>
+    <Source>carray3k-0.6/carray/version.py</Source>
+    <Source>carray3k-0.6/carray/defaults.py</Source>
+    <Source>carray3k-0.6/carray/carrayExtension.pyxbld</Source>
+    <Source>carray3k-0.6/carray/definitions.pxd</Source>
+    <Source>carray3k-0.6/carray/utils.py</Source>
+    <Source>carray3k-0.6/carray/attrs.py</Source>
+    <Source>carray3k-0.6/bench/large_carray.py</Source>
+    <Source>carray3k-0.6/bench/ctable-query.py</Source>
+    <Source>carray3k-0.6/bench/zeros.py</Source>
+    <Source>carray3k-0.6/bench/iterator.py</Source>
+    <Source>carray3k-0.6/bench/expression.py</Source>
+    <Source>carray3k-0.6/bench/iter.py</Source>
+    <Source>carray3k-0.6/bench/eval-profile.py</Source>
+    <Source>carray3k-0.6/bench/getitem.py</Source>
+    <Source>carray3k-0.6/bench/arange.py</Source>
+    <Source>carray3k-0.6/bench/query.py</Source>
+    <Source>carray3k-0.6/bench/fromiter.py</Source>
+    <Source>carray3k-0.6/bench/sum.py</Source>
+    <Source>carray3k-0.6/bench/concat.py</Source>
+    <Source>carray3k-0.6/bench/serialization.py</Source>
+    <Source>carray3k-0.6/bench/eval.py</Source>
+    <Source>carray3k-0.6/bench/fill.py</Source>
+    <Source>carray3k-0.6/blosc/blosc.c</Source>
+    <Source>carray3k-0.6/blosc/blosc.h</Source>
+    <Source>carray3k-0.6/blosc/blosclz.c</Source>
+    <Source>carray3k-0.6/blosc/blosclz.h</Source>
+    <Source>carray3k-0.6/blosc/shuffle.c</Source>
+    <Source>carray3k-0.6/blosc/shuffle.h</Source>
+    <Source>carray3k-0.6/carray/tests/test_queries.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_ndcarray.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_attrs.py</Source>
+    <Source>carray3k-0.6/carray/tests/__init__.py</Source>
+    <Source>carray3k-0.6/carray/tests/common.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_all.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_carray.py</Source>
+    <Source>carray3k-0.6/blosc/win32/stdint-windows.h</Source>
+    <Source>carray3k-0.6/blosc/win32/pthread.c</Source>
+    <Source>carray3k-0.6/blosc/win32/pthread.h</Source>
   </Sources>
   <Forms/>
   <Translations/>
@@ -124,6 +219,8 @@
     <FiletypeAssociation pattern="*.pxi" type="SOURCES"/>
     <FiletypeAssociation pattern="*.py" type="SOURCES"/>
     <FiletypeAssociation pattern="*.pyx" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pyxbld" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pyxdeps" type="SOURCES"/>
     <FiletypeAssociation pattern="*.rb" type="SOURCES"/>
     <FiletypeAssociation pattern="*.rst" type="SOURCES"/>
   </FiletypeAssociations>

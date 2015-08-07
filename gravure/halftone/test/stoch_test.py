@@ -31,10 +31,8 @@ import cython
 import pyximport; pyximport.install()
 import halftone.stoch as stoch
 
-
 def test_stoch():
-    stoch.make_screen(quiet=True)
-
+    stoch.run_screener()
 
 
 #------------------------------------------------------------------------------
