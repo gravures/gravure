@@ -1,0 +1,45 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-09-11T11:47:13+02:00
+
+====== 16 bit OUTPUT ======
+Created mercredi 11 septembre 2013
+
+
+==== grayscale levels problem in 16-bit rasters ====
+http://comments.gmane.org/gmane.comp.printing.ghostscript.devel/2584
+
+Here's how I'm setting up the gx_device:
+
+	pdev->color_info.depth = 16;
+	pdev->color_info.max_gray = 65535;
+	pdev->color_info.max_color = 65535;
+	pdev->color_info.dither_grays = 65536;
+	pdev->color_info.dither_colors = 65536;
+
+Can someone please explain what I am doing wrong?
+____________________________________________________________________
+Close, but the 'depth' is the total number of bits, so it should be
+
+64 for 4 16 bit channels.
+
+Also you need to set num_components (4 for CMYK) and polarity (a
+gx_color_polarity_t enum, GX_CM_POLARITY_SUBTRACTIVE for CMYK)
+
+Your initialization looks plausible. Note that for gradients and so on
+you need to set a smaller smoothness parameter than the default to get
+meaningful 16 bit output. Compare with the png48 device.I am experimenting with Ghostscript trying to create 16-bit output for grayscale, RGB and CMYK. The number of discrete gray levels appears to 
+be wrong.
+____________________________________________________________________
+ I looked through the code for png48 and didn't see anything resembling a smoothness parameter. Why is grayscale only affected? RGB look ok
+____________________________________________________________________
+> For 16 bit, I'd recommend a smaller [smoothness] value such as 0.0005
+
+It's a bug that the png48 device doesn't set this. Ray, do you have
+any suggestions how to override the default? Can the open_device
+method just call gs_setsmoothness()?
+_______________________________________________________________________________
+
+
+
+
