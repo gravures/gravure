@@ -1,0 +1,16 @@
+include MANIFEST.in
+include *.txt *.rst
+include VERSION
+include CHANGES
+include distribute_setup.py
+
+recursive-include gravure *.pyx *.pxd *.pxi *.c *.h
+
+recursive-include docs *.rst *.txt *.py *.pdf *.html *.css *.png
+include docs/make.bat 
+include docs/Makefile
+include docs/_themes/pydoctheme/theme.conf
+recursive-exclude docs/_build *
+
+exclude DEVTREE
+exclude rundev.py
