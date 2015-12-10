@@ -11,9 +11,9 @@ ___________________________________________________________________________-
 **FilterLimit**
 Exemples
 
-    FilterLimit 0
-    FilterLimit 200
-    FilterLimit 1000
+	FilterLimit 0
+	FilterLimit 200
+	FilterLimit 1000
 
 Description
 
@@ -26,9 +26,9 @@ __________________________________________________________
 **RIPCache**
 Exemples
 
-    RIPCache 8m
-    RIPCache 1g
-    RIPCache 2048k
+	RIPCache 8m
+	RIPCache 1g
+	RIPCache 2048k
 
 Description
 
@@ -37,8 +37,8 @@ _____________________________________________________________
 **TempDir**
 Exemples
 
-    TempDir /var/tmp
-    TempDir /foo/bar/tmp
+	TempDir /var/tmp
+	TempDir /foo/bar/tmp
 
 Description
 
@@ -47,14 +47,14 @@ The default directory is [[/var/spool/cups/tmp.]]
 
 Les répertoires temporaires doivent être inscriptibles pour tous et devraient avoir le "sticky" bit activé de sorte que les utilisateurs ne puissent pas supprimer les fichiers temporaires de filtres. Les commandes suivantes créerons un répertoire temporaire approprié appelé /foo/bar/tmp:
 
-    mkdir /foo/bar/tmp ENTREE
-    chmod a+rwxt /foo/bar/tmp ENTREE
+	mkdir /foo/bar/tmp ENTREE
+	chmod a+rwxt /foo/bar/tmp ENTREE
 _________________________________________________________________
 **User**
 Exemples
 
-    User lp
-    User guest
+	User lp
+	User guest
 
 Description
 
@@ -63,9 +63,9 @@ ________________________________________________________________
 **Group**
 Exemples
 
-    Group sys
-    Group system
-    Group root
+	Group sys
+	Group system
+	Group root
 
 Description
 
@@ -74,8 +74,8 @@ _________________________________________________________________________
 **RunAsUser**
 Exemples
 
-    RunAsUser Yes
-    RunAsUser No
+	RunAsUser Yes
+	RunAsUser No
 
 Description
 
@@ -86,8 +86,8 @@ ____________________________________________________________________
 **PreserveJobFiles**
 Exemples
 
-    PreserveJobFiles On
-    PreserveJobFiles Off
+	PreserveJobFiles On
+	PreserveJobFiles Off
 
 Description
 
@@ -101,9 +101,9 @@ _________________________________________________________________________
 **MaxJobsPerUser**
 Exemples
 
-    MaxJobsPerUser 100
-    MaxJobsPerUser 9999
-    MaxJobsPerUser 0
+	MaxJobsPerUser 100
+	MaxJobsPerUser 9999
+	MaxJobsPerUser 0
 
 Description
 
@@ -114,17 +114,17 @@ ______________________________________________________________
 **MaxJobsPerPrinter**
 Exemples
 
-    MaxJobsPerPrinter 100
-    MaxJobsPerPrinter 9999
-    MaxJobsPerPrinter 0
+	MaxJobsPerPrinter 100
+	MaxJobsPerPrinter 9999
+	MaxJobsPerPrinter 0
 
 Description
 ________________________________________________________________
 **AutoPurgeJobs**
 Exemples
 
-    AutoPurgeJobs Yes
-    AutoPurgeJobs No
+	AutoPurgeJobs Yes
+	AutoPurgeJobs No
 
 Description
 

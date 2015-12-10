@@ -28,7 +28,7 @@ http://rcrowley.org/articles/packaging.html
 
 ==== Essentials Tools ====
 
-build-essential autoconf automake autotools-dev debhelper dh-make dh-autoreconf devscripts fakeroot file git gnupg lintian patch patchutils pbuilder quilt xutils-dev [[piuparts]]
+build-essential autoconf automake autotools-dev debhelper dh-make dh-autoreconf devscripts fakeroot file git gnupg lintian patch patchutils pbuilder quilt xutils-dev [[GRAVURE:VUE GENERALE:PACKAGING & DISTRIBUTION:piuparts]]
 
 
 ==== Modification de debian/changelog ====
@@ -91,7 +91,7 @@ https://www.debian.org/doc/manuals/maint-guide/advanced.en.html
 http://www.debian.org/doc/manuals/maint-guide/checkit.fr.html
 
 * verification de nom de fichier en conflit avec **apt-file**
-	    ''apt-file update''
+		''apt-file update''
 	''apt-file search -D nemo_1.1.2_amd64.deb''
 	
 * Vérification de l'installation d'un paquet avec **debi**

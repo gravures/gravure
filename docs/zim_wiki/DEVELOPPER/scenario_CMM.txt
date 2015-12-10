@@ -35,9 +35,9 @@ ______________________________________________________________________
 Jan-Peter Homann homann at colormanagement.de
 Tue May 15 01:30:12 PDT 2012
 
-    Previous message: [Openicc] Gutenprint mission as Linux moves towards color managed workflows
-    Next message: [Openicc] Gutenprint mission ... Printer profiling workflow
-    Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+	Previous message: [Openicc] Gutenprint mission as Linux moves towards color managed workflows
+	Next message: [Openicc] Gutenprint mission ... Printer profiling workflow
+	Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
 
 Hello to all, some feedback from a non-developer:
 
@@ -62,9 +62,9 @@ CUPS/Filter, Driver)
 2) Configure the chain, to avoid double or triple color transformations
 3) create or choose a printing queue / driver setting which relates to 
 the printer profile
-     3a. Install a standard printer profile for this queue / setting 
+	 3a. Install a standard printer profile for this queue / setting 
 (This could be also a printer profile which have embedded driver settings)
-     3b. Optionally print a testchart  for profiling
+	 3b. Optionally print a testchart  for profiling
 
  From my experience of making printer profiles since 15 years, it makes 
 a lot of sense, that the tasks of:

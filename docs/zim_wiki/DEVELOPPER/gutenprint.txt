@@ -16,18 +16,18 @@ There are three new settings, Drop Size
    medium drops or 1 large drop.
 
    * The largest drop size you want active should be set to 1.
-     Normally that means the large drop size.  However, if you don't
-     want to use the large drop size (at very high resolution), you
-     may set one of the smaller drops to 1.
+	 Normally that means the large drop size.  However, if you don't
+	 want to use the large drop size (at very high resolution), you
+	 may set one of the smaller drops to 1.
 
    * A drop size of 0 is not used.  So if you set the large drop size
-     to 1, the small drop size to 0.25, and the medium drop size to 0,
-     only the small and large drops will be used.
+	 to 1, the small drop size to 0.25, and the medium drop size to 0,
+	 only the small and large drops will be used.
 
    * Drop sizes should be specified in ascending order, other than
-     drops of 0 size.  For example, you should not set the small drop
-     size to 0.5 and the medium drop size to 0.25.  If you do, the
-     results are undefined.
+	 drops of 0 size.  For example, you should not set the small drop
+	 size to 0.5 and the medium drop size to 0.25.  If you do, the
+	 results are undefined.
 
 === Light ink value options ===
 
@@ -58,29 +58,29 @@ These options replace the previous
    these will be the least useful of the new options, but I may be
    wrong.
 
-=== Raw  ===
+=== Raw ===
 if you want to adjust all the settings manually.  In Raw color
-    correction mode, there will be no automatic correction of any
-    kind, including density adjustment.  If you're not careful, you
-    may find yourself using an excessive amount of ink with this
-    setting.  You will need to adjust the Density control or the
-    controls for the densities of the individual colors.  You may want
-    to use this to establish custom densities and ink limits to
-    achieve maximum gamut.
+	correction mode, there will be no automatic correction of any
+	kind, including density adjustment.  If you're not careful, you
+	may find yourself using an excessive amount of ink with this
+	setting.  You will need to adjust the Density control or the
+	controls for the densities of the individual colors.  You may want
+	to use this to establish custom densities and ink limits to
+	achieve maximum gamut.
 
-=== Density  ===
+=== Density ===
 if you want to use Gutenprint's choice of density, but
-    otherwise have no automatic color correction applied.  This choice
-    of setting should be safe (at least in RGB mode; in CMYK mode it's
-    possible for too much ink to be applied).  This is useful if
-    you're satisfied with Gutenprint's default ink limits, but want to
-    adjust the linearization yourself.
+	otherwise have no automatic color correction applied.  This choice
+	of setting should be safe (at least in RGB mode; in CMYK mode it's
+	possible for too much ink to be applied).  This is useful if
+	you're satisfied with Gutenprint's default ink limits, but want to
+	adjust the linearization yourself.
 
-=== Uncorrected  ===
+=== Uncorrected ===
 if you want to use Gutenprint's choice of
-    linearization, but otherwise have no cross-channel correction
-    applied.  If you're satisfied with Gutenprint's linearization and
-    want to profile the driver, this may be a good selection.
+	linearization, but otherwise have no cross-channel correction
+	applied.  If you're satisfied with Gutenprint's linearization and
+	want to profile the driver, this may be a good selection.
 
 === devicen ===
 And how to deal with multicolor printers? Do I understand

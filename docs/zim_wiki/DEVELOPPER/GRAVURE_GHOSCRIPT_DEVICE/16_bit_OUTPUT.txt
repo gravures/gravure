@@ -10,11 +10,11 @@ http://comments.gmane.org/gmane.comp.printing.ghostscript.devel/2584
 
 Here's how I'm setting up the gx_device:
 
-    pdev->color_info.depth = 16;
-    pdev->color_info.max_gray = 65535;
-    pdev->color_info.max_color = 65535;
-    pdev->color_info.dither_grays = 65536;
-    pdev->color_info.dither_colors = 65536;
+	pdev->color_info.depth = 16;
+	pdev->color_info.max_gray = 65535;
+	pdev->color_info.max_color = 65535;
+	pdev->color_info.dither_grays = 65536;
+	pdev->color_info.dither_colors = 65536;
 
 Can someone please explain what I am doing wrong?
 ____________________________________________________________________
@@ -39,10 +39,10 @@ any suggestions how to override the default? Can the open_device
 method just call gs_setsmoothness()?
 _______________________________________________________________________________
 
-==== Making a PDF grayscale with ghostscript  ====
+==== Making a PDF grayscale with ghostscript ====
 http://handyfloss.net/2008.09/making-a-pdf-grayscale-with-ghostscript/
 
-    ''% gs -sOutputFile=grayscale.pdf -sDEVICE=pdfwrite \''
+	''% gs -sOutputFile=grayscale.pdf -sDEVICE=pdfwrite \''
 ''-sColorConversionStrategy=Gray -dProcessColorModel=/DeviceGray \''
 ''-dCompatibilityLevel=1.4 -dNOPAUSE -dBATCH color.pdf'' 
 

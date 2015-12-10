@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
-<!-- eric5 project file for project Gravure -->
-<!-- Saved: 2015-07-29, 14:41:14 -->
+<!-- eric project file for project Gravure -->
+<!-- Saved: 2015-12-07, 09:41:08 -->
 <!-- Copyright (C) 2015 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -14,21 +14,161 @@
   <Email>gilles@atelierobscur.org</Email>
   <Eol index="-1"/>
   <Sources>
+    <Source>carray3k-0.6/README.rst</Source>
+    <Source>carray3k-0.6/bench/arange.py</Source>
+    <Source>carray3k-0.6/bench/concat.py</Source>
+    <Source>carray3k-0.6/bench/ctable-query.py</Source>
+    <Source>carray3k-0.6/bench/eval-profile.py</Source>
+    <Source>carray3k-0.6/bench/eval.py</Source>
+    <Source>carray3k-0.6/bench/expression.py</Source>
+    <Source>carray3k-0.6/bench/fill.py</Source>
+    <Source>carray3k-0.6/bench/fromiter.py</Source>
+    <Source>carray3k-0.6/bench/getitem.py</Source>
+    <Source>carray3k-0.6/bench/iter.py</Source>
+    <Source>carray3k-0.6/bench/iterator.py</Source>
+    <Source>carray3k-0.6/bench/large_carray.py</Source>
+    <Source>carray3k-0.6/bench/query.py</Source>
+    <Source>carray3k-0.6/bench/serialization.py</Source>
+    <Source>carray3k-0.6/bench/sum.py</Source>
+    <Source>carray3k-0.6/bench/zeros.py</Source>
+    <Source>carray3k-0.6/blosc/blosc.c</Source>
+    <Source>carray3k-0.6/blosc/blosc.h</Source>
+    <Source>carray3k-0.6/blosc/blosclz.c</Source>
+    <Source>carray3k-0.6/blosc/blosclz.h</Source>
+    <Source>carray3k-0.6/blosc/shuffle.c</Source>
+    <Source>carray3k-0.6/blosc/shuffle.h</Source>
+    <Source>carray3k-0.6/blosc/win32/pthread.c</Source>
+    <Source>carray3k-0.6/blosc/win32/pthread.h</Source>
+    <Source>carray3k-0.6/blosc/win32/stdint-windows.h</Source>
+    <Source>carray3k-0.6/carray/__init__.py</Source>
+    <Source>carray3k-0.6/carray/arrayprint.py</Source>
+    <Source>carray3k-0.6/carray/attrs.py</Source>
+    <Source>carray3k-0.6/carray/carrayExtension.c</Source>
+    <Source>carray3k-0.6/carray/carrayExtension.pyx</Source>
+    <Source>carray3k-0.6/carray/carrayExtension.pyxbld</Source>
+    <Source>carray3k-0.6/carray/defaults.py</Source>
+    <Source>carray3k-0.6/carray/definitions.pxd</Source>
+    <Source>carray3k-0.6/carray/tests/__init__.py</Source>
+    <Source>carray3k-0.6/carray/tests/common.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_all.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_attrs.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_carray.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_ndcarray.py</Source>
+    <Source>carray3k-0.6/carray/tests/test_queries.py</Source>
+    <Source>carray3k-0.6/carray/toplevel.py</Source>
+    <Source>carray3k-0.6/carray/utils.py</Source>
+    <Source>carray3k-0.6/carray/version.py</Source>
+    <Source>carray3k-0.6/doc/conf.py</Source>
+    <Source>carray3k-0.6/doc/defaults.rst</Source>
+    <Source>carray3k-0.6/doc/index.rst</Source>
+    <Source>carray3k-0.6/doc/install.rst</Source>
+    <Source>carray3k-0.6/doc/intro.rst</Source>
+    <Source>carray3k-0.6/doc/opt-tips.rst</Source>
+    <Source>carray3k-0.6/doc/reference.rst</Source>
+    <Source>carray3k-0.6/doc/tutorial.rst</Source>
+    <Source>carray3k-0.6/pavement.py</Source>
+    <Source>carray3k-0.6/persistence.rst</Source>
+    <Source>carray3k-0.6/setup.py</Source>
+    <Source>distribute_setup.py</Source>
+    <Source>gravure/PARAM.py</Source>
+    <Source>gravure/__init__.py</Source>
+    <Source>gravure/core/__init__.py</Source>
+    <Source>gravure/core/property.pyx</Source>
+    <Source>gravure/curve/curve.py</Source>
+    <Source>gravure/grvApp.py</Source>
+    <Source>gravure/halftone/__init__.py</Source>
+    <Source>gravure/halftone/base.py</Source>
+    <Source>gravure/halftone/gen_ordered.c</Source>
+    <Source>gravure/halftone/spotfunctions.py</Source>
+    <Source>gravure/halftone/stoch.pyx</Source>
+    <Source>gravure/halftone/stoch.pyxbld</Source>
+    <Source>gravure/halftone/test/stoch_test.py</Source>
+    <Source>gravure/numeric/TYPE_DEF.pxi</Source>
+    <Source>gravure/numeric/__init__.py</Source>
+    <Source>gravure/numeric/_struct.pxd</Source>
+    <Source>gravure/numeric/_struct.pyx</Source>
+    <Source>gravure/numeric/bit_width_type.pxd</Source>
+    <Source>gravure/numeric/enum.pxd</Source>
+    <Source>gravure/numeric/enum.pyx</Source>
+    <Source>gravure/numeric/gmath.py</Source>
+    <Source>gravure/numeric/max_const.pxd</Source>
+    <Source>gravure/numeric/max_const.pyx</Source>
+    <Source>gravure/numeric/mdarray.pyx</Source>
+    <Source>gravure/numeric/mdarray.rst</Source>
+    <Source>gravure/numeric/test/mdarray_test.py</Source>
+    <Source>gravure/numeric/type_promotion.pxd</Source>
+    <Source>gravure/numeric/type_promotion.pyx</Source>
+    <Source>gravure/parameters.py</Source>
+    <Source>gravure/ppdparser.py</Source>
+    <Source>gravure/rip/__init__.py</Source>
+    <Source>gravure/rip/manager.py</Source>
+    <Source>gravure/tools/__init__.py</Source>
+    <Source>gravure/tools/am_screen_builder.py</Source>
+    <Source>gravure/tools/fm_screener.py</Source>
+    <Source>gravure/tools/mpl_widgets.py</Source>
+    <Source>pdfminer3k-1.3.0/build_cmap.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/__init__.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/arcfour.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/ascii85.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/cmap/__init__.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/cmapdb.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/converter.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/encodingdb.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/fontmetrics.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/glyphlist.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/latin_enc.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/layout.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/lzw.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfcolor.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfdevice.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdffont.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfinterp.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdfparser.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pdftypes.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/pslexer.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/psparser.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/rijndael.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/runlength.py</Source>
+    <Source>pdfminer3k-1.3.0/pdfminer/utils.py</Source>
+    <Source>pdfminer3k-1.3.0/setup.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/conv_afm.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/conv_cmap.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/conv_glyphlist.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/dumppdf.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/latin2ascii.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/pdf2txt.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/pdfexplore.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/prof.py</Source>
+    <Source>pdfminer3k-1.3.0/tools/runapp.py</Source>
     <Source>ressources/__init__.py</Source>
     <Source>ressources/calibrate/GrayTestPatch.py</Source>
     <Source>ressources/calibrate/ruler.py</Source>
+    <Source>setup.py</Source>
+    <Source>src/CairoChart.py</Source>
+    <Source>src/cinepaint_catmul/cinepaint_curve.c</Source>
+    <Source>src/epics_new/__init__.py</Source>
+    <Source>src/epics_new/func.py</Source>
+    <Source>src/epics_new/spline.py</Source>
+    <Source>src/example.py</Source>
+    <Source>src/financial_ncs/decimalpy/__init__.py</Source>
+    <Source>src/financial_ncs/decimalpy/decimalfunctions.py</Source>
+    <Source>src/financial_ncs/decimalpy/decimalmetafunctions.py</Source>
+    <Source>src/financial_ncs/decimalpy/decimaltypes.py</Source>
+    <Source>src/financial_ncs/mathematical_meta_code/__init__.py</Source>
+    <Source>src/financial_ncs/mathematical_meta_code/algebraic_structures.py</Source>
+    <Source>src/gimp_curvw_bezier/curve.c</Source>
+    <Source>src/misc_splines/natural_cubic_spline.c</Source>
+    <Source>src/natural-cubic-spline-interpolation/sanciyangtiao.c</Source>
+    <Source>src/py_spline/__init__.py</Source>
     <Source>src/py_spline/spline.py</Source>
     <Source>src/py_spline/spline2.py</Source>
-    <Source>src/py_spline/__init__.py</Source>
-    <Source>src/test.py</Source>
-    <Source>src/financial_ncs/decimalpy/decimalfunctions.py</Source>
-    <Source>src/financial_ncs/decimalpy/decimaltypes.py</Source>
-    <Source>src/financial_ncs/decimalpy/__init__.py</Source>
-    <Source>src/financial_ncs/decimalpy/decimalmetafunctions.py</Source>
-    <Source>src/financial_ncs/mathematical_meta_code/algebraic_structures.py</Source>
-    <Source>src/financial_ncs/mathematical_meta_code/__init__.py</Source>
     <Source>src/python_epics/BltPlot.py</Source>
     <Source>src/python_epics/CARSMath.py</Source>
+    <Source>src/python_epics/Mca.py</Source>
+    <Source>src/python_epics/Med.py</Source>
+    <Source>src/python_epics/Scan.py</Source>
+    <Source>src/python_epics/Xrf.py</Source>
+    <Source>src/python_epics/__init__.py</Source>
     <Source>src/python_epics/epicsLogger.py</Source>
     <Source>src/python_epics/epicsMca.py</Source>
     <Source>src/python_epics/epicsMed.py</Source>
@@ -40,164 +180,21 @@
     <Source>src/python_epics/func.py</Source>
     <Source>src/python_epics/hardwareMca.py</Source>
     <Source>src/python_epics/jcpds.py</Source>
+    <Source>src/python_epics/localMedLayout.py</Source>
     <Source>src/python_epics/localMedLayout_16.py</Source>
     <Source>src/python_epics/localMedLayout_4.py</Source>
     <Source>src/python_epics/localMedLayout_9.py</Source>
-    <Source>src/python_epics/localMedLayout.py</Source>
     <Source>src/python_epics/mcaCalibrate2theta.py</Source>
     <Source>src/python_epics/mcaCalibrateEnergy.py</Source>
     <Source>src/python_epics/mcaControlPresets.py</Source>
     <Source>src/python_epics/mcaDisplay.py</Source>
     <Source>src/python_epics/mcaPeakFit.py</Source>
-    <Source>src/python_epics/Mca.py</Source>
     <Source>src/python_epics/medDisplay.py</Source>
-    <Source>src/python_epics/Med.py</Source>
     <Source>src/python_epics/mpfit.py</Source>
     <Source>src/python_epics/myTkTop.py</Source>
     <Source>src/python_epics/scanDisplay.py</Source>
-    <Source>src/python_epics/Scan.py</Source>
     <Source>src/python_epics/spline.py</Source>
-    <Source>src/python_epics/Xrf.py</Source>
-    <Source>src/python_epics/__init__.py</Source>
-    <Source>src/epics_new/__init__.py</Source>
-    <Source>src/epics_new/spline.py</Source>
-    <Source>src/epics_new/func.py</Source>
-    <Source>src/CairoChart.py</Source>
-    <Source>src/example.py</Source>
-    <Source>gravure/__init__.py</Source>
-    <Source>gravure/curve/curve.py</Source>
-    <Source>gravure/halftone/__init__.py</Source>
-    <Source>gravure/halftone/spotfunctions.py</Source>
-    <Source>gravure/PARAM.py</Source>
-    <Source>gravure/parameters.py</Source>
-    <Source>gravure/ppdparser.py</Source>
-    <Source>distribute_setup.py</Source>
-    <Source>setup.py</Source>
-    <Source>gravure/grvApp.py</Source>
-    <Source>gravure/tools/__init__.py</Source>
-    <Source>gravure/tools/am_screen_builder.py</Source>
-    <Source>gravure/halftone/base.py</Source>
-    <Source>gravure/tools/mpl_widgets.py</Source>
-    <Source>gravure/numeric/__init__.py</Source>
-    <Source>gravure/numeric/mdarray.pyx</Source>
-    <Source>gravure/numeric/gmath.py</Source>
-    <Source>gravure/halftone/gen_ordered.c</Source>
-    <Source>gravure/numeric/mdarray.rst</Source>
-    <Source>gravure/numeric/bit_width_type.pxd</Source>
-    <Source>src/natural-cubic-spline-interpolation/sanciyangtiao.c</Source>
-    <Source>src/cinepaint_catmul/cinepaint_curve.c</Source>
-    <Source>src/gimp_curvw_bezier/curve.c</Source>
-    <Source>src/misc_splines/natural_cubic_spline.c</Source>
-    <Source>gravure/numeric/_struct.pyx</Source>
-    <Source>gravure/numeric/max_const.pyx</Source>
-    <Source>gravure/numeric/max_const.pxd</Source>
-    <Source>gravure/numeric/_struct.pxd</Source>
-    <Source>gravure/numeric/test/mdarray_test.py</Source>
-    <Source>gravure/numeric/enum.pyx</Source>
-    <Source>gravure/numeric/enum.pxd</Source>
-    <Source>gravure/numeric/TYPE_DEF.pxi</Source>
-    <Source>gravure/numeric/type_promotion.pyx</Source>
-    <Source>gravure/numeric/type_promotion.pxd</Source>
-    <Source>gravure/halftone/stoch.pyx</Source>
-    <Source>gravure/halftone/test/stoch_test.py</Source>
-    <Source>gravure/rip/__init__.py</Source>
-    <Source>gravure/core/__init__.py</Source>
-    <Source>gravure/tools/fm_screener.py</Source>
-    <Source>gravure/halftone/stoch_b.pyx</Source>
-    <Source>gravure/halftone/stoch_c.pyx</Source>
-    <Source>gravure/core/property.pyx</Source>
-    <Source>gravure/dumppdf.py</Source>
-    <Source>gravure/rip/manager.py</Source>
-    <Source>pdfminer3k-1.3.0/setup.py</Source>
-    <Source>pdfminer3k-1.3.0/build_cmap.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/conv_cmap.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/runapp.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/prof.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/conv_afm.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/conv_glyphlist.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/latin2ascii.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/pdf2txt.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/pdfexplore.py</Source>
-    <Source>pdfminer3k-1.3.0/tools/dumppdf.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/converter.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/cmapdb.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/layout.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pdfinterp.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pdffont.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pdftypes.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pdfparser.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pdfcolor.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/rijndael.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/runlength.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/__init__.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/latin_enc.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pdfdevice.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/lzw.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/ascii85.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/fontmetrics.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/utils.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/pslexer.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/psparser.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/arcfour.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/encodingdb.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/glyphlist.py</Source>
-    <Source>pdfminer3k-1.3.0/pdfminer/cmap/__init__.py</Source>
-    <Source>gravure/halftone/stoch.pyxbld</Source>
-    <Source>carray3k-0.6/pavement.py</Source>
-    <Source>carray3k-0.6/setup.py</Source>
-    <Source>carray3k-0.6/persistence.rst</Source>
-    <Source>carray3k-0.6/README.rst</Source>
-    <Source>carray3k-0.6/doc/tutorial.rst</Source>
-    <Source>carray3k-0.6/doc/index.rst</Source>
-    <Source>carray3k-0.6/doc/reference.rst</Source>
-    <Source>carray3k-0.6/doc/conf.py</Source>
-    <Source>carray3k-0.6/doc/intro.rst</Source>
-    <Source>carray3k-0.6/doc/opt-tips.rst</Source>
-    <Source>carray3k-0.6/doc/install.rst</Source>
-    <Source>carray3k-0.6/doc/defaults.rst</Source>
-    <Source>carray3k-0.6/carray/carrayExtension.c</Source>
-    <Source>carray3k-0.6/carray/carrayExtension.pyx</Source>
-    <Source>carray3k-0.6/carray/__init__.py</Source>
-    <Source>carray3k-0.6/carray/arrayprint.py</Source>
-    <Source>carray3k-0.6/carray/toplevel.py</Source>
-    <Source>carray3k-0.6/carray/version.py</Source>
-    <Source>carray3k-0.6/carray/defaults.py</Source>
-    <Source>carray3k-0.6/carray/carrayExtension.pyxbld</Source>
-    <Source>carray3k-0.6/carray/definitions.pxd</Source>
-    <Source>carray3k-0.6/carray/utils.py</Source>
-    <Source>carray3k-0.6/carray/attrs.py</Source>
-    <Source>carray3k-0.6/bench/large_carray.py</Source>
-    <Source>carray3k-0.6/bench/ctable-query.py</Source>
-    <Source>carray3k-0.6/bench/zeros.py</Source>
-    <Source>carray3k-0.6/bench/iterator.py</Source>
-    <Source>carray3k-0.6/bench/expression.py</Source>
-    <Source>carray3k-0.6/bench/iter.py</Source>
-    <Source>carray3k-0.6/bench/eval-profile.py</Source>
-    <Source>carray3k-0.6/bench/getitem.py</Source>
-    <Source>carray3k-0.6/bench/arange.py</Source>
-    <Source>carray3k-0.6/bench/query.py</Source>
-    <Source>carray3k-0.6/bench/fromiter.py</Source>
-    <Source>carray3k-0.6/bench/sum.py</Source>
-    <Source>carray3k-0.6/bench/concat.py</Source>
-    <Source>carray3k-0.6/bench/serialization.py</Source>
-    <Source>carray3k-0.6/bench/eval.py</Source>
-    <Source>carray3k-0.6/bench/fill.py</Source>
-    <Source>carray3k-0.6/blosc/blosc.c</Source>
-    <Source>carray3k-0.6/blosc/blosc.h</Source>
-    <Source>carray3k-0.6/blosc/blosclz.c</Source>
-    <Source>carray3k-0.6/blosc/blosclz.h</Source>
-    <Source>carray3k-0.6/blosc/shuffle.c</Source>
-    <Source>carray3k-0.6/blosc/shuffle.h</Source>
-    <Source>carray3k-0.6/carray/tests/test_queries.py</Source>
-    <Source>carray3k-0.6/carray/tests/test_ndcarray.py</Source>
-    <Source>carray3k-0.6/carray/tests/test_attrs.py</Source>
-    <Source>carray3k-0.6/carray/tests/__init__.py</Source>
-    <Source>carray3k-0.6/carray/tests/common.py</Source>
-    <Source>carray3k-0.6/carray/tests/test_all.py</Source>
-    <Source>carray3k-0.6/carray/tests/test_carray.py</Source>
-    <Source>carray3k-0.6/blosc/win32/stdint-windows.h</Source>
-    <Source>carray3k-0.6/blosc/win32/pthread.c</Source>
-    <Source>carray3k-0.6/blosc/win32/pthread.h</Source>
+    <Source>src/test.py</Source>
   </Sources>
   <Forms/>
   <Translations/>

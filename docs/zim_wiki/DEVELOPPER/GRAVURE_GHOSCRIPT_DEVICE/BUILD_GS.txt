@@ -22,11 +22,11 @@ Ghostscript now ships with a build system for unix-like operating systems based 
 ./configure
 make
 '''
-    ''sudo make install''
+	''sudo make install''
 or
 ''./configure''
 ''make so	''
-    ''sudo make install''
+	''sudo make install''
 or
 ''./configure''
 ''make debug install''

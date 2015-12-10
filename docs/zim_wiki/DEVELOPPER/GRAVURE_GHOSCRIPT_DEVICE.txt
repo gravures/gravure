@@ -24,7 +24,7 @@ Created samedi 04 juin 2011
 _____________________________________________________________________________
 
 bases	→  gdevprn.c, gdevprn.h, gdevbit.c, //doc for// [[http://svn.ghostscript.com/ghostscript/tags/ghostscript-9.02/doc/Drivers.htm|gs_device]]
-		     gdevdjet.c, gdevbj10.c, gdevmiff.c
+			 gdevdjet.c, gdevbj10.c, gdevmiff.c
 
 deviceN	→  gdevdevn.c, gdevdevn.h, gdevtsep
 cups	→  gdevcups.c (, gdevijs.c)
