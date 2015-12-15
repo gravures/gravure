@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building ghostsctipt &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-ghostsctipt">
+<h1>Building ghostsctipt<a class="headerlink" href="#building-ghostsctipt" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>dependenices on debian:</strong></div>
+<div class="line">- libjpeg8-dev</div>
+<div class="line">- liblcms2-dev</div>
+<div class="line">- libfreetype6-dev</div>
+<div class="line">- libpng-dev</div>
+<div class="line">- libpaper-dev</div>
+<div class="line">- libfontconfig-dev</div>
+<div class="line">- libtiff4-dev</div>
+</div>
+<div class="line-block">
+<div class="line">Ghostscript now ships with a build system for unix-like operating systems based on GNU Autoconf. In general the following should work to configure and build Ghostscript:</div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>./configure
+make
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">make</span> <span class="pre">install</span></tt></div>
+</div>
+<div class="line">or</div>
+<div class="line"><tt class="docutils literal"><span class="pre">./configure</span></tt></div>
+<div class="line"><a href="#id1"><span class="problematic" id="id2">``</span></a>make so     ``</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">make</span> <span class="pre">install</span></tt></div>
+</div>
+<div class="line">or</div>
+<div class="line"><tt class="docutils literal"><span class="pre">./configure</span></tt></div>
+<div class="line"><tt class="docutils literal"><span class="pre">make</span> <span class="pre">debug</span> <span class="pre">install</span></tt></div>
+<div class="line"><tt class="docutils literal"><span class="pre">make</span> <span class="pre">clean</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">for building ghostscript as a shared library. It is recommended to have the extra option &#8211;enable-dynamic in ./configure &#8211;enable-dynamic which returns an error message on platforms for which shared-library support is inadequate.</div>
+</div>
+<div class="line-block">
+<div class="line">- If you build on Linux with X11 R6 or later, you may get link-time error messages about undefined references to various functions beginning with &#8220;SMC&#8221; and &#8220;ICE&#8221;. If this happens, make sure that XLIBS in the makefile is set to &#8220;Xt SM ICE Xext X11&#8221; rather than &#8220;Xt Xext X11&#8221;.</div>
+</div>
+<div class="line-block">
+<div class="line">- On very old systems (circa gcc version 2.6.3), you may encounter an incompatibility in object formats (a.out vs. ELF) with the XFree86 library. Typically, ld complains that some X library is not found, or that many Xlib or Xt functions are not found in the library (similar to the messages for omitting SM and ICE from XLIBS). Or you get a message when you start Ghostscript that the program or the shared library is an unrecognized format. If this happens, edit your top-level makefile to add the switches &#8220;-b i486-linuxaout&#8221; to both CFLAGS and LDFLAGS, then &#8220;make clean&#8221; followed by &#8220;make&#8221;). If this doesn&#8217;t help, or if other strange things happen, contact your Linux supplier or support resource.</div>
+</div>
+<div class="line-block">
+<div class="line">- A few of Ghostscript&#8217;s drivers are multi-threaded. None of them are in the default build. Currently the only ones are the &#8220;bmpa&#8221; series. These drivers require libc version 6 or higher. Most distributions include this, but it may be an issue on very old systems.</div>
+</div>
+<div class="line-block">
+<div class="line">_______________________________________________________________________________________</div>
+</div>
+<div class="section" id="testing-purpose-configure-options">
+<h3>TESTING PURPOSE CONFIGURE OPTIONS<a class="headerlink" href="#testing-purpose-configure-options" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">./configure</span> <span class="pre">--prefix='/opt'</span> <span class="pre">--exec-prefix='/opt'</span> <span class="pre">--without-pdftoraster</span>&nbsp; <span class="pre">--with-drivers=PBM,PS,TIFF,ETS,devicen,spotcmyk,bit,bitcmyk,bitrgb,bitrgbtags,gravure</span>&nbsp; <span class="pre">--with-x</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">- &#8211;with-local-cups       Force using the GS supplied cups code - only usefull for debugging</div>
+</div>
+<div class="line-block">
+<div class="line">_______________________________________________________________________________________</div>
+</div>
+<div class="line-block">
+<div class="line">With switching to freetype 2 as the default font renderer in April 2010, we added a new switch:-dDisableFAPI=true to revert to the older behavior, just in case serious regression happens that cannot be resolved in a timely manner.</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Building ghostsctipt</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a><ul>
+<li><a class="reference internal" href="#testing-purpose-configure-options">TESTING PURPOSE CONFIGURE OPTIONS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/zim_rst/DEVELOPPER/Gravure_Ghostscript_device/Building_ghostsctipt.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

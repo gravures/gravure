@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gutenprint library &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gutenprint-library">
+<h1>Gutenprint library<a class="headerlink" href="#gutenprint-library" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created dimanche 09 novembre 2014</div>
+</div>
+<div class="section" id="drop-size-selection">
+<h2>Drop size selection<a class="headerlink" href="#drop-size-selection" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">There are three new settings, Drop Size</div>
+<div class="line">Small, Drop Size Medium, and Drop Size Large, that can be used to</div>
+<div class="line">specify the relative sizes of the three drops.  The screening code</div>
+<div class="line">assumes that the ratios specified relate to the number of drops of</div>
+<div class="line">each size that will produce a constant darkness; sizes of 0.25,</div>
+<div class="line">0.5, and 1.0 mean that 4 small drops are treated as equivalent to 2</div>
+<div class="line">medium drops or 1 large drop.</div>
+</div>
+<div class="line-block">
+<div class="line">- The largest drop size you want active should be set to 1.</div>
+<div class="line-block">
+<div class="line">Normally that means the large drop size.  However, if you don&#8217;t</div>
+<div class="line">want to use the large drop size (at very high resolution), you</div>
+<div class="line">may set one of the smaller drops to 1.</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- A drop size of 0 is not used.  So if you set the large drop size</div>
+<div class="line-block">
+<div class="line">to 1, the small drop size to 0.25, and the medium drop size to 0,</div>
+<div class="line">only the small and large drops will be used.</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- Drop sizes should be specified in ascending order, other than</div>
+<div class="line-block">
+<div class="line">drops of 0 size.  For example, you should not set the small drop</div>
+<div class="line">size to 0.5 and the medium drop size to 0.25.  If you do, the</div>
+<div class="line">results are undefined.</div>
+</div>
+</div>
+</div>
+<div class="section" id="light-ink-value-options">
+<h2>Light ink value options<a class="headerlink" href="#light-ink-value-options" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">These options, which are available for</div>
+<div class="line">whichever light inks are available on the particular printer, can</div>
+<div class="line">be used to set the intensity relative to the dark ink.  &#8220;Intensity&#8221;</div>
+<div class="line">means the inverse of the amount of ink required to achieve a</div>
+<div class="line">particular darkness.  For example, a Light Cyan Value of 0.25 means</div>
+<div class="line">that the driver will trade off 4 drops of light ink for 1 drop of</div>
+<div class="line">dark ink.</div>
+</div>
+</div>
+<div class="section" id="light-ink-transition-options">
+<h2>Light ink transition options<a class="headerlink" href="#light-ink-transition-options" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">These options, which are available</div>
+<div class="line">for each channel with light inks, specify at what point the driver</div>
+<div class="line">will start using dark ink.  This is expressed as a fraction of the</div>
+<div class="line">intensity of the light ink.  For example, if Light Cyan Transition</div>
+<div class="line">is set to 0.40, the driver will start using dark ink when the</div>
+<div class="line">amount of light ink reaches 40%.  So and the Light Cyan Value is</div>
+<div class="line">0.25, the driver will start using dark ink at 0.1 (6554 on a raw</div>
+<div class="line">scale of 0-65535).</div>
+</div>
+</div>
+<div class="section" id="light-ink-scaling-options">
+<h2>Light ink scaling options<a class="headerlink" href="#light-ink-scaling-options" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">These options replace the previous</div>
+<div class="line">light ink transition options, which basically just adjusted the</div>
+<div class="line">density of the light ink relative to the dark ink.  I expect that</div>
+<div class="line">these will be the least useful of the new options, but I may be</div>
+<div class="line">wrong.</div>
+</div>
+</div>
+<div class="section" id="raw">
+<h2>Raw<a class="headerlink" href="#raw" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">if you want to adjust all the settings manually.  In Raw color</div>
+<div class="line">correction mode, there will be no automatic correction of any</div>
+<div class="line">kind, including density adjustment.  If you&#8217;re not careful, you</div>
+<div class="line">may find yourself using an excessive amount of ink with this</div>
+<div class="line">setting.  You will need to adjust the Density control or the</div>
+<div class="line">controls for the densities of the individual colors.  You may want</div>
+<div class="line">to use this to establish custom densities and ink limits to</div>
+<div class="line">achieve maximum gamut.</div>
+</div>
+</div>
+<div class="section" id="density">
+<h2>Density<a class="headerlink" href="#density" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">if you want to use Gutenprint&#8217;s choice of density, but</div>
+<div class="line">otherwise have no automatic color correction applied.  This choice</div>
+<div class="line">of setting should be safe (at least in RGB mode; in CMYK mode it&#8217;s</div>
+<div class="line">possible for too much ink to be applied).  This is useful if</div>
+<div class="line">you&#8217;re satisfied with Gutenprint&#8217;s default ink limits, but want to</div>
+<div class="line">adjust the linearization yourself.</div>
+</div>
+</div>
+<div class="section" id="uncorrected">
+<h2>Uncorrected<a class="headerlink" href="#uncorrected" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">if you want to use Gutenprint&#8217;s choice of</div>
+<div class="line">linearization, but otherwise have no cross-channel correction</div>
+<div class="line">applied.  If you&#8217;re satisfied with Gutenprint&#8217;s linearization and</div>
+<div class="line">want to profile the driver, this may be a good selection.</div>
+</div>
+</div>
+<div class="section" id="devicen">
+<h2>devicen<a class="headerlink" href="#devicen" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">And how to deal with multicolor printers? Do I understand</div>
+<div class="line">correctly, that there is currently no print mode available, which</div>
+<div class="line">accepts &#8220;DeviceN&#8221; input (i.e. one input channel for each ink)?</div>
+</div>
+<div class="line-block">
+<div class="line">Yes there is, actually &#8211; see src/testpattern to see how to use it.</div>
+<div class="line">If someone wants to do N-channel linearization and RGB-&gt;DeviceN or</div>
+<div class="line">CMYK-&gt;DeviceN, it will work just fine with Gutenprint (if they have a</div>
+<div class="line">way of talking to the driver).</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gutenprint library</a><ul>
+<li><a class="reference internal" href="#drop-size-selection">Drop size selection</a></li>
+<li><a class="reference internal" href="#light-ink-value-options">Light ink value options</a></li>
+<li><a class="reference internal" href="#light-ink-transition-options">Light ink transition options</a></li>
+<li><a class="reference internal" href="#light-ink-scaling-options">Light ink scaling options</a></li>
+<li><a class="reference internal" href="#raw">Raw</a></li>
+<li><a class="reference internal" href="#density">Density</a></li>
+<li><a class="reference internal" href="#uncorrected">Uncorrected</a></li>
+<li><a class="reference internal" href="#devicen">devicen</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/Gutenprint_library.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

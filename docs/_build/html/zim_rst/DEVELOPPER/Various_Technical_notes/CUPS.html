@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CUPS &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cups">
+<h1>CUPS<a class="headerlink" href="#cups" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created mercredi 17 octobre 2012</div>
+</div>
+<div class="section" id="ipp">
+<h2>IPP<a class="headerlink" href="#ipp" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://en.wikipedia.org/wiki/Internet_Printing_Protocol">http://en.wikipedia.org/wiki/Internet_Printing_Protocol</a></div>
+<div class="line"><a class="reference external" href="http://www.cups.org/documentation.php/api-httpipp.html">http://www.cups.org/documentation.php/api-httpipp.html</a></div>
+<div class="line"><a class="reference external" href="http://www.cups.org/documentation.php/spec-ipp.html">http://www.cups.org/documentation.php/spec-ipp.html</a></div>
+</div>
+</div>
+<div class="section" id="cups-pk-helper">
+<h2>Cups-pk-helper<a class="headerlink" href="#cups-pk-helper" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">see : <a class="reference external" href="http://www.vuntz.net/journal/post/2010/02/19/A-few-words-about-cups-pk-helper">http://www.vuntz.net/journal/post/2010/02/19/A-few-words-about-cups-pk-helper</a>...</div>
+</div>
+</div>
+<div class="section" id="cups-device-changes">
+<h2>Cups device changes<a class="headerlink" href="#cups-device-changes" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">2011-08-01 13:05:09 +0200</div>
+<div class="line">Till Kamppeter &lt;<a class="reference external" href="mailto:till&#46;kamppeter&#37;&#52;&#48;gmail&#46;com">till<span>&#46;</span>kamppeter<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</div>
+<div class="line">b4c67383d9e71b468b5384b7a63095864d3a9ae7</div>
+</div>
+<div class="line-block">
+<div class="line">CUPS Raster output device: Ignore RIP_MAX_CACHE environment variable</div>
+</div>
+<div class="line-block">
+<div class="line">Ghostscript is (at least currently) not able to work with hard-limited</div>
+<div class="line">space parameters. It crashes with a segmentation fault on many input</div>
+<div class="line">files then. Leaving the setting of these parameters fully automatic</div>
+<div class="line">Ghostscript works just fine. As in most distributions (Currently all</div>
+<div class="line">except Debian, Ubuntu, and their derivatives) CUPS imposes a hard</div>
+<div class="line">limit via the RIP_MAX_CACHE environment variable, the only way to</div>
+<div class="line">assure reliable working of Ghostscript is to ignore the parameter,</div>
+<div class="line">leaving the space parameters in automatic mode. For CUPS this should</div>
+<div class="line">be no regression, as print queues with other Ghostscript drivers (like</div>
+<div class="line">pxlcolor, ljet4, ...) worked without hard limits all the time and no</div>
+<div class="line">one complained.</div>
+</div>
+<div class="line-block">
+<div class="line">To ignore this RIP_MAX_CACHE we simply add a &#8220;return&#8221; right at the</div>
+<div class="line">beginning of this function. It will be removed when a real fix gets</div>
+<div class="line">into place.</div>
+</div>
+<div class="line-block">
+<div class="line">See <a class="reference external" href="http://bugs.ghostscript.com/show_bug.cgi?id=691586">http://bugs.ghostscript.com/show_bug.cgi?id=691586</a></div>
+</div>
+<div class="line-block">
+<div class="line">gs/cups/gdevcups.c</div>
+</div>
+<div class="line-block">
+<div class="line">_________________________________________________________________</div>
+<div class="line">2011-07-30 11:56:53 +0200</div>
+<div class="line">Till Kamppeter &lt;<a class="reference external" href="mailto:till&#46;kamppeter&#37;&#52;&#48;gmail&#46;com">till<span>&#46;</span>kamppeter<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</div>
+<div class="line">83abb6ca67829a1273ed4fdfc894a6af44c5c5ad</div>
+</div>
+<div class="line-block">
+<div class="line">Added &#8220;-dNOINTERPOLATE&#8221; to the Ghostscript command lines of the CUPS filters</div>
+</div>
+<div class="line-block">
+<div class="line">This makes rendering significantly faster and the output of normal</div>
+<div class="line">files comming as print jobs from applications does not show any</div>
+<div class="line">visible difference.</div>
+</div>
+<div class="line-block">
+<div class="line">gs/cups/gstoraster.c</div>
+<div class="line">gs/cups/pstopxl.in</div>
+</div>
+</div>
+<div class="section" id="limiting-usage-ressources">
+<h2>Limiting usage ressources<a class="headerlink" href="#limiting-usage-ressources" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">see : <a class="reference external" href="http://pl.digipedia.org/usenet/thread/15766/2301/">http://pl.digipedia.org/usenet/thread/15766/2301/</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>FilterLimit</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">FilterLimit 0</div>
+<div class="line">FilterLimit 200</div>
+<div class="line">FilterLimit 1000</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive FilterLimit définit le coût maximal de tous les filtres appliqués au travaux en cours de traitement. Elle peut être utilisée pour limiter le nombre de programmes de filtres qui son exécutés dans un serveur pour minimiser les problèmes de ressources disque, mémoire ou CPU. Une limite de 0 désactive la limitation des filtres.</div>
+</div>
+<div class="line-block">
+<div class="line">Le coût moyen d&#8217;une impression vers une imprimante non-PostScript nécessite une limitation de filtre aux alentours de 200. Une imprimante PostScript nécessite une limite d&#8217;environ la moitié (100). Positionner la limite en dessous de ces seuils va effectivement limiter l&#8217;ordonnanceur à l&#8217;impression d&#8217;un travail à la fois.</div>
+</div>
+<div class="line-block">
+<div class="line">La valeur implicite est 0.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>RIPCache</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">RIPCache 8m</div>
+<div class="line">RIPCache 1g</div>
+<div class="line">RIPCache 2048k</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive RIPCache définit la quantité de mémoire utilisée par les filtres RIP (&#8220;Raster Images Processor&#8221;) tels que imagetoraster et pstoraster. La taille peut être suffixée par &#8220;k&#8221; pour kilo-octets, &#8220;m&#8221; pour méga-octets, ou &#8220;g&#8221; pour giga-octets. La taille implicite est de &#8220;8m&#8221;, ou 8 méga-octets.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>TempDir</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">TempDir /var/tmp</div>
+<div class="line">TempDir /foo/bar/tmp</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive TempDir indique un chemin absolu pour le répertoire à employer pour les fichiers temporaires. Le répertoire standard est <a class="reference external" href="file:///var/tmp.">/var/tmp.</a></div>
+<div class="line">The default directory is <a class="reference external" href="file:///var/spool/cups/tmp.">/var/spool/cups/tmp.</a></div>
+</div>
+<div class="line-block">
+<div class="line">Les répertoires temporaires doivent être inscriptibles pour tous et devraient avoir le &#8220;sticky&#8221; bit activé de sorte que les utilisateurs ne puissent pas supprimer les fichiers temporaires de filtres. Les commandes suivantes créerons un répertoire temporaire approprié appelé /foo/bar/tmp:</div>
+</div>
+<div class="line-block">
+<div class="line">mkdir /foo/bar/tmp ENTREE</div>
+<div class="line">chmod a+rwxt /foo/bar/tmp ENTREE</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>User</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">User lp</div>
+<div class="line">User guest</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive User indique l&#8217;utilisateur UNIX sous l&#8217;identité duquel les programmes CGI et les filtres doivent fonctionner. La valeur implicite est lp.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Group</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">Group sys</div>
+<div class="line">Group system</div>
+<div class="line">Group root</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive Group définit le groupe UNIX sous l&#8217;identité duquel les programmes CGI et de filtrage fonctionnent. Le groupe implicite est sys, system, ou root selon le système d&#8217;exploitation.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>RunAsUser</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">RunAsUser Yes</div>
+<div class="line">RunAsUser No</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive RunAsUser contrôle si l&#8217;ordonnanceur fonctionne sous l&#8217;identité d&#8217;un compte utilisateur non privilégié (habituellement lp). La valeur implicite est No qui laisse l&#8217;utilisateur fonctionner en tant qu&#8217;utilisateur root .</div>
+</div>
+<div class="line-block">
+<div class="line">Note: Faire fonctionner CUPS en tant qu&#8217;utilisateur non privilégié peut empêcher LPD et les imprimantes connectées localement de fonctionner correctement en raison de problèmes de permissions. Le programme d&#8217;arrière-plan lpd utilisera automatiquement le mode non privilégié ce qui est 100% conforme à la RFC 1179. Les programmes d&#8217;arrière-plan parallel, serial, et usb auront besoin d&#8217;accès en écriture aux fichiers de périphériques correspondants.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>PreserveJobFiles</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">PreserveJobFiles On</div>
+<div class="line">PreserveJobFiles Off</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive PreserveJobFiles contrôle si les fichiers des documents complétés, annulés ou abandonnés sont stockés sur disque.</div>
+</div>
+<div class="line-block">
+<div class="line">La valeur On conserve les fichiers des travaux jusqu&#8217;à ce que l&#8217;administrateur les purge au moyen de la commande cancel . Les travaux peuvent être resoumis (réimprimés) jusqu&#8217;à ce qu&#8217;ils soient purgés.</div>
+</div>
+<div class="line-block">
+<div class="line">La valeur Off (valeur implicite) retire les fichiers des travaux dès ceux-ci sont complétés, annulés ou abandonnés.</div>
+<div class="line">Printcap</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>MaxJobsPerUser</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">MaxJobsPerUser 100</div>
+<div class="line">MaxJobsPerUser 9999</div>
+<div class="line">MaxJobsPerUser 0</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive MaxJobsPerUser contrôle le nombre maximum de travaux d&#8217;impression qui sont autorisés pour chaque utilisateur. Dès qu&#8217;un utilsateur atteint le maximum autorisé, tout nouveau travail sera rejeté avant qu&#8217;un des travaux actifs soit complété, arrêté, annulé ou abandonné.</div>
+</div>
+<div class="line-block">
+<div class="line">Régler le maximum sur 0 (valeur implicite) désactive cette fonctionnalité.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>MaxJobsPerPrinter</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">MaxJobsPerPrinter 100</div>
+<div class="line">MaxJobsPerPrinter 9999</div>
+<div class="line">MaxJobsPerPrinter 0</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>AutoPurgeJobs</strong></div>
+<div class="line">Exemples</div>
+</div>
+<div class="line-block">
+<div class="line">AutoPurgeJobs Yes</div>
+<div class="line">AutoPurgeJobs No</div>
+</div>
+<div class="line-block">
+<div class="line">Description</div>
+</div>
+<div class="line-block">
+<div class="line">La directive AutoPurgeJobs indique si oui ou non il faut purger les travaux d&#8217;impression lorsqu&#8217;ils ne sont plus nécessaires au vu des quotas. Cet option n&#8217;a aucun effet si les quotas ne sont pas activés. La valeur implicite est No.</div>
+<div class="line">La directive MaxJobsPerPrinter contrôle le nombre maximum de travaux actifs qui sont autorisés pour chaque imprimante ou classe d&#8217;imprimantes. Dès que le nombre est atteint pour une imprimante ou une classe, les nouveaux travaux sont rejetés tant que l&#8217;un des travaux actifs n&#8217;est pas complété, arrêté, annulé ou abandonné.</div>
+</div>
+<div class="line-block">
+<div class="line">Régler le maximum sur la valeur 0 (valeur implicite) désactive cette fonctionnalité.</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CUPS</a><ul>
+<li><a class="reference internal" href="#ipp">IPP</a></li>
+<li><a class="reference internal" href="#cups-pk-helper">Cups-pk-helper</a></li>
+<li><a class="reference internal" href="#cups-device-changes">Cups device changes</a></li>
+<li><a class="reference internal" href="#limiting-usage-ressources">Limiting usage ressources</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/CUPS.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

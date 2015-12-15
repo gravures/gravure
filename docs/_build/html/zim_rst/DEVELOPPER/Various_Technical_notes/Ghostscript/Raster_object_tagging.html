@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Raster object tagging &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="raster-object-tagging">
+<h1>Raster object tagging<a class="headerlink" href="#raster-object-tagging" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created samedi 06 octobre 2012</div>
+</div>
+<div class="line-block">
+<div class="line">2011-06-23 11:55:14 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">06df93f6babc540b8e29ae7cc1fcaed888142d52</div>
+</div>
+<div class="line-block">
+<div class="line">Rename object_tag to graphics_type_tag and move to the device for MT rendering.</div>
+</div>
+<div class="line-block">
+<div class="line">The memory-&gt;gs_lib_ctx-&gt;BITTAG hack was inherently NOT safe for use by multiple</div>
+<div class="line">rendering threads. Devices that want to encode the tag info in the gx_color_index</div>
+<div class="line">need the tag, so we have moved this to the device structure. Multiple rendering</div>
+<div class="line">threads each have unique buffer devices, so this allows clist playback to set</div>
+<div class="line">and use the appropriate tag as the bands are played back without thread</div>
+<div class="line">interference.</div>
+</div>
+<div class="line-block">
+<div class="line">Rename the gs_object_tag_type_t to gs_graphics_type_t to make it more unique for</div>
+<div class="line">grep based searching and prevent confusion with other uses of the term &#8216;object&#8217;.</div>
+<div class="line">Move the enum to gscms.h with the &#8216;set&#8217; functions prototyped in gxdevcli.h.</div>
+</div>
+<div class="line-block">
+<div class="line">Just as for the device&#8217;s cmm_dev_profile_t information, the tag needs to be</div>
+<div class="line">forwarded by devices in the chain (clipper, compositor) so that these &#8216;helper&#8217;</div>
+<div class="line">filtering devices don&#8217;t interfere with the setting of the tag. The tag value is</div>
+<div class="line">maintained in all devices in the chain so a &#8216;get_graphics_type_tag&#8217; dev_proc</div>
+<div class="line">is not needed &#8211; the dev-&gt;graphics_type_tag can be access directly.</div>
+</div>
+<div class="line-block">
+<div class="line">Previously, tags were not recorded except for devices that enabled tags.</div>
+<div class="line">Now tags are tracked for all devices for use in selecting an ICC profile</div>
+<div class="line">and a device can signal that it maintains tags by setting GS_DEVICE_ENCODES_TAGS</div>
+<div class="line">for use by compositors that want to know whether or not to maintain a tag</div>
+<div class="line">plane, such as the pdf14 device.</div>
+</div>
+<div class="line-block">
+<div class="line">Also replace the old &#8216;get_object_type&#8217; that the anti-aliasing used with the</div>
+<div class="line">single approach for consistency and to cure problems (not identifed) with using</div>
+<div class="line">AA when other devices are interposed in the chain (clipper, compositor).</div>
+</div>
+<div class="line-block">
+<div class="line">EXPECTED_DIFFERENCES:</div>
+</div>
+<div class="line-block">
+<div class="line">Various 12-07D.PS PS LL3 CET files will show color differences on page 3 (GLOBINT)</div>
+<div class="line">as described in Bug692334.</div>
+</div>
+<div class="line-block">
+<div class="line">gs/base/gdevabuf.c</div>
+<div class="line">gs/base/gdevbit.c</div>
+<div class="line">gs/base/gdevddrw.c</div>
+<div class="line">gs/base/gdevdflt.c</div>
+<div class="line">gs/base/gdevimdi.c</div>
+<div class="line">gs/base/gdevmem.c</div>
+<div class="line">gs/base/gdevnfwd.c</div>
+<div class="line">gs/base/gdevp14.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevrinkj.c</div>
+<div class="line">gs/base/gdevrops.c</div>
+<div class="line">gs/base/gdevwts.c</div>
+<div class="line">gs/base/gdevxcf.c</div>
+<div class="line">gs/base/gscms.h</div>
+<div class="line">gs/base/gscsepr.c</div>
+<div class="line">gs/base/gsdevice.c</div>
+<div class="line">gs/base/gsdps1.c</div>
+<div class="line">gs/base/gsequivc.c</div>
+<div class="line">gs/base/gsicc.c</div>
+<div class="line">gs/base/gsicc_cache.c</div>
+<div class="line">gs/base/gsicc_manage.c</div>
+<div class="line">gs/base/gsicc_manage.h</div>
+<div class="line">gs/base/gsimage.c</div>
+<div class="line">gs/base/gslibctx.c</div>
+<div class="line">gs/base/gslibctx.h</div>
+<div class="line">gs/base/gsnamecl.c</div>
+<div class="line">gs/base/gsncdummy.c</div>
+<div class="line">gs/base/gspaint.c</div>
+<div class="line">gs/base/gstext.c</div>
+<div class="line">gs/base/gstrans.c</div>
+<div class="line">gs/base/gsutil.c</div>
+<div class="line">gs/base/gsutil.h</div>
+<div class="line">gs/base/gxacpath.c</div>
+<div class="line">gs/base/gxblend1.c</div>
+<div class="line">gs/base/gxclip.c</div>
+<div class="line">gs/base/gxclipm.c</div>
+<div class="line">gs/base/gxclist.c</div>
+<div class="line">gs/base/gxclrast.c</div>
+<div class="line">gs/base/gxcmap.c</div>
+<div class="line">gs/base/gxdevcli.h</div>
+<div class="line">gs/base/gxdevice.h</div>
+<div class="line">gs/base/gxi12bit.c</div>
+<div class="line">gs/base/gxicolor.c</div>
+<div class="line">gs/base/gximono.c</div>
+<div class="line">gs/base/gxiscale.c</div>
+<div class="line">gs/base/gxistate.h</div>
+<div class="line">gs/base/gxpcmap.c</div>
+<div class="line">gs/base/gxshade.c</div>
+<div class="line">xps/xpsgradient.c</div>
+</div>
+<div class="line-block">
+<div class="line">see : <strong>gslibctx.h :</strong></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>/* GS graphical object tags */
+
+typedef enum {
+
+
+GS_DEVICE_DOESNT_SUPPORT_TAGS = 0, /* default */
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>GS_UNKNOWN_TAG = 0x1,
+GS_TEXT_TAG = 0x2,
+GS_IMAGE_TAG = 0x4,
+GS_PATH_TAG = 0x8,
+GS_UNTOUCHED_TAG = 0x10
+} gs_object_tag_type_t;
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>typedef struct gs_lib_ctx_s {
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>gs_memory_t *memory;  /* mem-&gt;gs_lib_ctx-&gt;memory == mem */
+...
+/* Define the default value of AccurateScreens that affects setscreen
+and setcolorscreen. */
+bool screen_accurate_screens;
+bool screen_use_wts;
+uint screen_min_screen_levels;
+/* tag stuff */
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>gs_object_tag_type_t BITTAG;
+ ...
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>}
+
+
+gsutil.h
+
+:
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>#include &quot;gslibctx.h&quot;
+
+/* accessors for object tags */
+gs_object_tag_type_t
+
+gs_current_object_tag(gs_memory_t *);
+
+#include &quot;gxstate.h&quot;
+
+#ifndef gs_imager_state_DEFINED
+#  define gs_imager_state_DEFINED
+typedef struct gs_imager_state_s gs_imager_state;
+#endif
+
+void gs_set_object_tag(gs_imager_state * pis, const gs_object_tag_type_t tag);
+void gs_enable_object_tagging(gs_memory_t *);
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Raster_object_tagging.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

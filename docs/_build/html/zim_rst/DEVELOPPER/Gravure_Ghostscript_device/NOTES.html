@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>NOTES &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="notes">
+<h1>NOTES<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created samedi 04 juin 2011</div>
+</div>
+<div class="line-block">
+<div class="line">regarder quand meme comment scribus cree des separation :</div>
+<div class="line">scprintengine_gdi_h</div>
+</div>
+<div class="section" id="ghostscript">
+<h2>GHOSTSCRIPT<a class="headerlink" href="#ghostscript" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">Étudier le driver epsontoraster de cups,</div>
+<div class="line">est-ce-qu&#8217;il attend la fin du stream venue de gs pour ensuite</div>
+<div class="line">envoyer le raster à l&#8217;imprimante ?</div>
+<div class="line">les driver peuvent-il écrire des fichiers sur le systeme ?</div>
+<div class="line">________________________________________________________________________________</div>
+</div>
+<div class="line-block">
+<div class="line">etudier le filtre pdftoraster version ghoscript</div>
+<div class="line">________________________________________________________________________________</div>
+</div>
+<div class="section" id="devices-interessant">
+<h3>Devices interessant<a class="headerlink" href="#devices-interessant" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">: gdevbit, gdevtrac, gdevtsep, gdevwts, gdevtxtw,</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gdevdevn.c/h, gdevcups, gdevprn.c/.h, gdevijs (regarder</div>
+</div>
+<div class="line">le krgb mode !!!)</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">Fichier de déclarations : devs.mak, contrib.mak, cups.mak</div>
+<div class="line">________________________________________________________________________________</div>
+</div>
+</div>
+<div class="section" id="device-de-separation-uniquement-raster">
+<h3>device de separation (uniquement raster :<a class="headerlink" href="#device-de-separation-uniquement-raster" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">tiffsep1 &gt; 1 bit</div>
+<div class="line">tiiffsep &gt; 8 bits</div>
+<div class="line"><strong>tiff64nc » 16 bit</strong></div>
+<div class="line">devicen &gt; 8 bits</div>
+<div class="line">spotcmyk &gt; 8 bits</div>
+<div class="line">bmpsep1</div>
+<div class="line">bmpsep8</div>
+<div class="line">pksm</div>
+</div>
+</div>
+<div class="section" id="devicen-spot-colors">
+<h3>deviceN spot colors :<a class="headerlink" href="#devicen-spot-colors" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">devicen &gt; 8 bits</div>
+<div class="line">spotcmyk &gt; 8 bits</div>
+<div class="line">tiffsep1 &gt; 1 bit</div>
+<div class="line">tiiffsep &gt; 8 bits</div>
+<div class="line">psd &gt;</div>
+<div class="line">xcf</div>
+</div>
+<div class="line-block">
+<div class="line">Comme le format d&#8217;entier le + long est sur 64bit dans gs, et que tous les deviceN</div>
+<div class="line">driver estime devoir fournir les plaques cmyk avec les tons direct, ils se sont limités</div>
+<div class="line">à des sortie 8 bits par plaque.</div>
+<div class="line">Une première entreprise peut etre pas trop compliqué serait de développer un device</div>
+<div class="line">qui sort une plaque à la fois, et en plus accompagné d&#8217;un pixmap/Object pour</div>
+<div class="line">la séparation. La sélection de la plaque se ferait par un setPageDevice.</div>
+</div>
+<div class="line-block">
+<div class="line">________________________________________________________________________________</div>
+</div>
+</div>
+<div class="section" id="petit-calcul-de-raster">
+<h3>petit calcul de raster<a class="headerlink" href="#petit-calcul-de-raster" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">pour un format F4+ : 95 X 132 cm à 1440x1440 dpi</div>
+<div class="line">1 inch=2.54 cm -&gt; 37.4 X 51 .9</div>
+<div class="line">37.4*1440 * 51 .9*1440 = 4&#8216;024&#8216;982&#8216;016 pixel</div>
+<div class="line">16 bit/pixel -&gt; 64399712256 bits = 7861293 Ko = 7.8 Go</div>
+</div>
+<div class="line-block">
+<div class="line">Question : qu&#8217;est ce qu&#8217;il arrive actuellement si j&#8217;envoie une impression</div>
+<div class="line">de cette taille à gutenprint en demandant du 16 bits (par exemple une</div>
+<div class="line">photo 16bit à 120dpi pleine page dans un pdf) ?</div>
+<div class="line">________________________________________________________________________________</div>
+</div>
+</div>
+<div class="section" id="unique-scenario-de-separation-postscript">
+<h3>Unique scénario de séparation postscript<a class="headerlink" href="#unique-scenario-de-separation-postscript" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">ps_comp (level &lt;=3) -&gt; GS : ps_comp_level_1.5 -&gt; aurora.ps : sep_N_ps_level_1</div>
+</div>
+<div class="line-block">
+<div class="line">pdf_comp (&gt;=1.4) -&gt; pdftops : ps_separable_(level &lt;=3) -&gt; GS : ps__level_1.5</div>
+</div>
+<div class="line-block">
+<div class="line">-&gt; aurora.ps : sep_N_ps_level_1</div>
+</div>
+<div class="line-block">
+<div class="line">pdftops = poppler (xpdf)</div>
+<div class="line">&gt;&gt; <strong>aurora n&#8217;est pas gpl !!</strong></div>
+</div>
+<div class="line-block">
+<div class="line">________________________________________________________________________________</div>
+</div>
+</div>
+<div class="section" id="pdf-2-ps-issues">
+<h3>PDF 2 PS ISSUES<a class="headerlink" href="#pdf-2-ps-issues" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">Both PostScript 3 and PDF 1.3 &amp; later support a mechanism called smooth shading which offers higher-quality monochrome or color gradient fills. Older versions of PostScript as well as the EPS file format don’t support smooth shading. This means that gradients are transformed when converting from PDF to EPS or PostScript level 2. This may lead to banding or thin white lines in the gradient.</div>
+</div>
+<div class="line-block">
+<div class="line">I have never encountered PDF files with 16-bit images in them besides the ones that I created myself when playing around with that feature. Those 16 bits won’t survive refrying. A refried PDF always contains 8-bit data because that is all that PostScript can handle.</div>
+</div>
+<div class="line-block">
+<div class="line">(<a class="reference external" href="http://www.prepressure.com/pdf/basics/refrying">http://www.prepressure.com/pdf/basics/refrying</a>)</div>
+</div>
+<div class="line-block">
+<div class="line">PostScript as a page description language has never been limited to 256 gray levels.</div>
+</div>
+<div class="line-block">
+<div class="line">Admittedly Adobe&#8217;s own Level 1 RIPs did have this limitation, but the language itself does not impose any limits. (Improvements to the language incorporated in PostScript Level 2 included the ability to move data with 12 bits per channel directly to the &#8220;image&#8221; operator.)</div>
+</div>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.ledet.com/margulis/ACT_postings/ColorCorrection/ACT-16bit-histogram.htm">http://www.ledet.com/margulis/ACT_postings/ColorCorrection/ACT-16bit-histogram.htm</a></div>
+</div>
+<div class="line-block">
+<div class="line">Le PostScript 3, selon Buanic, p. 43, accepte 4096 niveaux par couleur de séparation  au lieu de 256, pour le niveau 2.</div>
+<div class="line">________________________________________________________________________________</div>
+</div>
+</div>
+</div>
+<div class="section" id="cups">
+<h2>CUPS<a class="headerlink" href="#cups" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.cups.org/documentation.php/doc-1.2/spec-ppd.html">http://www.cups.org/documentation.php/doc-1.2/spec-ppd.html</a></div>
+<div class="line">Separations : Boolean &lt;&lt;/Separations true&gt;&gt;setpagedevice</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">NOTES</a><ul>
+<li><a class="reference internal" href="#ghostscript">GHOSTSCRIPT</a><ul>
+<li><a class="reference internal" href="#devices-interessant">Devices interessant</a></li>
+<li><a class="reference internal" href="#device-de-separation-uniquement-raster">device de separation (uniquement raster :</a></li>
+<li><a class="reference internal" href="#devicen-spot-colors">deviceN spot colors :</a></li>
+<li><a class="reference internal" href="#petit-calcul-de-raster">petit calcul de raster</a></li>
+<li><a class="reference internal" href="#unique-scenario-de-separation-postscript">Unique scénario de séparation postscript</a></li>
+<li><a class="reference internal" href="#pdf-2-ps-issues">PDF 2 PS ISSUES</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cups">CUPS</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/zim_rst/DEVELOPPER/Gravure_Ghostscript_device/NOTES.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

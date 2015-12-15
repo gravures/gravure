@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Debian Packaging &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="debian-packaging">
+<h1>Debian Packaging<a class="headerlink" href="#debian-packaging" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created lundi 31 décembre 2012</div>
+<div class="line"><a class="reference external" href="http://www.isalo.org/wiki.debian-fr/index.php?title=Gestion_des_archives_sous_Debian">http://www.isalo.org/wiki.debian-fr/index.php?title=Gestion_des_archives_sous_Debian</a></div>
+</div>
+<div class="section" id="chartes-debian">
+<h2>Chartes Debian<a class="headerlink" href="#chartes-debian" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.debian.org/doc/devel-manuals#devref">http://www.debian.org/doc/devel-manuals#devref</a></div>
+<div class="line"><a class="reference external" href="http://ftp-master.debian.org/REJECT-FAQ.html">http://ftp-master.debian.org/REJECT-FAQ.html</a></div>
+<div class="line"><a class="reference external" href="http://lists.debian.org/debian-devel-announce/2006/03/msg00023.html">http://lists.debian.org/debian-devel-announce/2006/03/msg00023.html</a></div>
+<div class="line"><a class="reference external" href="http://www.debian.org/doc/debian-policy/index.html#contents">http://www.debian.org/doc/debian-policy/index.html#contents</a></div>
+</div>
+</div>
+<div class="section" id="gnu-autotools">
+<h2>GNU AutoTools<a class="headerlink" href="#gnu-autotools" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.gnu.org/software/autoconf/">http://www.gnu.org/software/autoconf/</a></div>
+<div class="line"><a class="reference external" href="http://www.lrde.epita.fr/~adl/dl/autotools.pdf">http://www.lrde.epita.fr/~adl/dl/autotools.pdf</a></div>
+<div class="line"><a class="reference external" href="http://www.gnu.org/prep/standards/">http://www.gnu.org/prep/standards/</a></div>
+<div class="line"><a class="reference external" href="http://inti.sourceforge.net/tutorial/libinti/autotoolsproject.html">http://inti.sourceforge.net/tutorial/libinti/autotoolsproject.html</a></div>
+</div>
+</div>
+<div class="section" id="debian-packaging-guides">
+<h2>Debian packaging guides<a class="headerlink" href="#debian-packaging-guides" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">→ <a class="reference external" href="http://www.debian.org/doc/manuals/maint-guide/index.fr.html">http://www.debian.org/doc/manuals/maint-guide/index.fr.html</a></div>
+<div class="line">→ <a class="reference external" href="http://wiki.debian.org/IntroDebianPackaging">http://wiki.debian.org/IntroDebianPackaging</a></div>
+<div class="line">→ <a class="reference external" href="http://www.debian.org/doc/packaging-manuals/python-policy/">http://www.debian.org/doc/packaging-manuals/python-policy/</a></div>
+<div class="line"><a class="reference external" href="http://www.debian.org/devel/wnpp/prospective">http://www.debian.org/devel/wnpp/prospective</a></div>
+<div class="line"><a class="reference external" href="http://rcrowley.org/articles/packaging.html">http://rcrowley.org/articles/packaging.html</a></div>
+</div>
+</div>
+<div class="section" id="essentials-tools">
+<h2>Essentials Tools<a class="headerlink" href="#essentials-tools" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">build-essential autoconf automake autotools-dev debhelper dh-make dh-autoreconf devscripts fakeroot file git gnupg lintian patch patchutils pbuilder quilt xutils-dev DEVELOPPER:VUE GENERALE:PACKAGING &amp; DISTRIBUTION:GRAVURE:VUE GENERALE:PACKAGING &amp; DISTRIBUTION:piuparts</div>
+</div>
+</div>
+<div class="section" id="modification-de-debian-changelog">
+<h2>Modification de debian/changelog<a class="headerlink" href="#modification-de-debian-changelog" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- new upstream release</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">dch</span> <span class="pre">--newversion</span> <span class="pre">--edit</span> <span class="pre">--preserve</span> <span class="pre">--multimaint</span></tt></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- ajouter une modif dans la version actuelle</div>
+<div class="line"><tt class="docutils literal"><span class="pre">dch</span> <span class="pre">--append</span> <span class="pre">--edit</span> <span class="pre">--multimaint</span></tt></div>
+</div>
+</div>
+<div class="section" id="update-symbols">
+<h2>Update Symbols<a class="headerlink" href="#update-symbols" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://www.debian.org/doc/manuals/maint-guide/advanced.en.html">https://www.debian.org/doc/manuals/maint-guide/advanced.en.html</a></div>
+<div class="line-block">
+<div class="line">- construire le paquet avec pdebuild</div>
+<div class="line">- recuperer dans le log de construction le fichier diff généré par dpkg-gensymbols</div>
+<div class="line">- l&#8217;enregistrer comme fichier diff</div>
+<div class="line">- appliquer les diffs avec patch</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">patch</span> <span class="pre">-b</span> <span class="pre">ghostscript-9.15~dfsg-1/debian/symbols.common</span> <span class="pre">libgs-9.15_symbols.diff</span></tt></div>
+</div>
+<div class="line">- tenter de reconstruire le paquet</div>
+</div>
+</div>
+</div>
+<div class="section" id="construire-un-paquet">
+<h2>Construire un paquet<a class="headerlink" href="#construire-un-paquet" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">mk-build-deps</span> <span class="pre">-ir</span></tt></div>
+<div class="line">- dpkg-buildpackage ou debuild</div>
+<div class="line">- <a class="reference external" href="./Debian_Packaging/PBUILDER.txt">pbuilder</a></div>
+</div>
+</div>
+<div class="section" id="cdbs">
+<h2>CDBS<a class="headerlink" href="#cdbs" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- <a class="reference external" href="http://debathena.mit.edu/packaging/">http://debathena.mit.edu/packaging/</a></div>
+<div class="line">- <a class="reference external" href="http://cdbs-doc.duckcorp.org/en/cdbs-doc.xhtml#id467909">http://cdbs-doc.duckcorp.org/en/cdbs-doc.xhtml#id467909</a></div>
+<div class="line">- <a class="reference external" href="http://doc.ubuntu-fr.org/projets/paquets/creer_un_paquet_avec_cdbs">http://doc.ubuntu-fr.org/projets/paquets/creer_un_paquet_avec_cdbs</a></div>
+<div class="line">- python →  <a class="reference external" href="https://wiki.edubuntu.org/PackagingGuide/Python">https://wiki.edubuntu.org/PackagingGuide/Python</a></div>
+</div>
+</div>
+<div class="section" id="signing-package">
+<h2>Signing package<a class="headerlink" href="#signing-package" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- <strong>Creating a new GPG key</strong></div>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://keyring.debian.org/creating-key.html">http://keyring.debian.org/creating-key.html</a></div>
+<div class="line"><a class="reference external" href="http://www.gnupg.org/howtos/fr/GPGMiniHowto-3.html">http://www.gnupg.org/howtos/fr/GPGMiniHowto-3.html</a></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- <strong>signing</strong></div>
+<div class="line-block">
+<div class="line">- Packages will be automatically signed as long as the name and email address in your package’s changelog file are the same as that of the GPG key you created.</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">This means that simply running <strong>dpkg-buildpackage</strong> will now give you signed packages.</div>
+</div>
+<div class="line-block">
+<div class="line">- If you want to resign an existing debian package, for example if you’re setting up your own backport of a package (as with my usecase, backporting Chef 0.9.16 into debian), then this is very easy too if you already have a GPG key set up. We use a tool called <strong>dpkg-sig</strong>.</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">dpkg-sig</span> <span class="pre">--sign-changes</span> <span class="pre">full</span> <span class="pre">--sign</span> <span class="pre">builder</span> <span class="pre">*.deb</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">- signer fichier .changes et dsc</div>
+<div class="line"><tt class="docutils literal"><span class="pre">debsign</span> <span class="pre">-k'atelier</span> <span class="pre">obscur'</span> <span class="pre">libtrio_1.16+dfsg1-3_source.changes</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line">- <strong>laisser rerepro signer les paquets</strong></div>
+</div>
+</div>
+<div class="section" id="verification-apres-construction">
+<h2>Verification apres construction<a class="headerlink" href="#verification-apres-construction" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.debian.org/doc/manuals/maint-guide/checkit.fr.html">http://www.debian.org/doc/manuals/maint-guide/checkit.fr.html</a></div>
+</div>
+<div class="line-block">
+<div class="line">- verification de nom de fichier en conflit avec <strong>apt-file</strong></div>
+<div class="line-block">
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">apt-file</span> <span class="pre">update</span></tt></div>
+</div>
+<div class="line"><tt class="docutils literal"><span class="pre">apt-file</span> <span class="pre">search</span> <span class="pre">-D</span> <span class="pre">nemo_1.1.2_amd64.deb</span></tt></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- Vérification de l&#8217;installation d&#8217;un paquet avec <strong>debi</strong></div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">debi</span> <span class="pre">gentoo_0.9.12-1_i386.changes</span></tt></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- Vérification des scripts du responsable d&#8217;un paquet : <strong>piuparts</strong></div>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://piuparts.debian.org/doc/piuparts.1.html">http://piuparts.debian.org/doc/piuparts.1.html</a></div>
+<div class="line-block">
+<div class="line">- Les séquences suivantes devraient être essayées :</div>
+<div class="line">- installation de la version précédente (si elle existe) ;</div>
+<div class="line">- mise à niveau depuis la version précédente ;</div>
+<div class="line">- dégradation (« downgrade ») à la version précédente (optionnel) ;</div>
+<div class="line">- purge ;</div>
+<div class="line">- installation du nouveau paquet ;</div>
+<div class="line">- suppression (« remove ») du paquet ;</div>
+<div class="line">- installation du paquet, encore ;</div>
+<div class="line">- purge ;</div>
+</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">piuparts</span> <span class="pre">-d</span> <span class="pre">wheezy</span> <span class="pre">--no-upgrade-test</span> <span class="pre">package_amd64.deb</span></tt></div>
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">piuparts</span> <span class="pre">-d</span> <span class="pre">wheezy</span> <span class="pre">--no-upgrade-test</span> <span class="pre">package_amd64.changes</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">- Exécutez <strong>lintian</strong> sur le fichier .changes.</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">lintian</span> <span class="pre">-i</span> <span class="pre">-I</span> <span class="pre">--show-overrides</span> <span class="pre">gentoo_0.9.12-1_i386.changes</span></tt></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- La commande <strong>debc</strong> permet d&#8217;énumérer les fichiers du paquet Debian binaire.</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">debc</span> <span class="pre">paquet.changes</span></tt></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- La commande debdiff(1) peut comparer les contenus de fichiers entre deux paquets Debian sources.</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">debdiff</span> <span class="pre">ancien-paquet.dsc</span> <span class="pre">nouveau-paquet.dsc</span></tt></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- La commande debdiff(1) permet aussi de comparer les listes de fichiers entre deux ensembles de paquets Debian binaires.</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">debdiff</span> <span class="pre">ancien-paquet.changes</span> <span class="pre">nouveau-paquet.changes</span></tt></div>
+</div>
+</div>
+</div>
+<div class="section" id="ajout-dans-le-depot">
+<h2>Ajout dans le dépot<a class="headerlink" href="#ajout-dans-le-depot" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- copy des fichier par scp dan <a class="reference external" href="file:///apt/debian/incoming">/apt/debian/incoming</a></div>
+<div class="line">- connection ssh puis cd <a class="reference external" href="file:///apt/debian">/apt/debian</a></div>
+<div class="line">- rerepro processincoming</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">- reprepro -v includedeb wheezy incoming/<a href="#id1"><span class="problematic" id="id2">*</span></a>.deb</div>
+<div class="line">- reprepro -v includedsc wheezy incoming/<a href="#id3"><span class="problematic" id="id4">*</span></a>.dsc</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Debian Packaging</a><ul>
+<li><a class="reference internal" href="#chartes-debian">Chartes Debian</a></li>
+<li><a class="reference internal" href="#gnu-autotools">GNU AutoTools</a></li>
+<li><a class="reference internal" href="#debian-packaging-guides">Debian packaging guides</a></li>
+<li><a class="reference internal" href="#essentials-tools">Essentials Tools</a></li>
+<li><a class="reference internal" href="#modification-de-debian-changelog">Modification de debian/changelog</a></li>
+<li><a class="reference internal" href="#update-symbols">Update Symbols</a></li>
+<li><a class="reference internal" href="#construire-un-paquet">Construire un paquet</a></li>
+<li><a class="reference internal" href="#cdbs">CDBS</a></li>
+<li><a class="reference internal" href="#signing-package">Signing package</a></li>
+<li><a class="reference internal" href="#verification-apres-construction">Verification apres construction</a></li>
+<li><a class="reference internal" href="#ajout-dans-le-depot">Ajout dans le dépot</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/zim_rst/DEVELOPPER/Developpement_Guide_Line/Debian_Packaging.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

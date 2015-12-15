@@ -5,6 +5,7 @@ Creation-Date: 2011-06-04T11:34:09.534023
 ====== GRAVURE A FREE RIP SOFTWARE ======
 
 
+
 __Setting up libpaper1:amd64 (1.1.24+nmu2) ...__
 __Creating config file /etc/papersize with new version__
 

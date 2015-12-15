@@ -1,0 +1,1735 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Devicen change since version 9.02 &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="devicen-change-since-version-9-02">
+<h1>Devicen change since version 9.02<a class="headerlink" href="#devicen-change-since-version-9-02" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created samedi 06 octobre 2012</div>
+</div>
+<div class="line-block">
+<div class="line">2013-05-31 09:46:10 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">1eef08f4aaf485a18422e9fbcfd6ac8cbfb03cdb</div>
+</div>
+<div class="line-block">
+<div class="line">Temporarily disable BGPrint for the cups device until differences fixed.</div>
+</div>
+<div class="line-block">
+<div class="line">By using gdev_prn_output_page background printing is not performed.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/cups/gdevcups.c</div>
+</div>
+<div class="line">___________________________________________________________________________&#8211;</div>
+<div class="line">2013-04-15 18:35:36 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">e64ac4c83a4ae07dc15c4cacd7b60cba6294899a</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 693843: Add a gs_sprintf() function, and supporting code</div>
+</div>
+<div class="line-block">
+<div class="line">Same as sprintf() but certain to be unaffected by localization.</div>
+</div>
+<div class="line-block">
+<div class="line">Utilizes the &#8220;trio&#8221; string library, also added here. There is one modification</div>
+<div class="line">to trio, in trio.c and labelled with &#8220;/* GS Modification <a href="#id1"><span class="problematic" id="id2">*</span></a>/&#8221; - by default, trio</div>
+<div class="line">is a little aggressive in the point it switches to exponent notation, and the</div>
+<div class="line">patch brings is more line with what we need/expect.</div>
+</div>
+<div class="line-block">
+<div class="line">trio also includes a sscanf() function which we can utilise if required.</div>
+</div>
+<div class="line-block">
+<div class="line">See the gs-sprintf branch for the individual commits - especially those in the</div>
+<div class="line">trio source, should a trio update ever be pulled in.</div>
+</div>
+<div class="line-block">
+<div class="line">This causes rounding differences in the pdfwrite/ps2write output in a number</div>
+<div class="line">of the cluster files. They all appear to be pixel variations.</div>
+</div>
+<div class="line-block">
+<div class="line">on all device file</div>
+<div class="line">_______________________________________________________________________________________</div>
+</div>
+<div class="line-block">
+<div class="line">2013-04-29 09:40:19 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">73957305ae44e43174cd8173b94c35f9f4ca55b4</div>
+</div>
+<div class="line-block">
+<div class="line">Add gdev_prn_bg_output_page (and _seekable) to support BGPrint.</div>
+</div>
+<div class="line-block">
+<div class="line">Some devices are not compatible with background printing, if they are</div>
+<div class="line">not thread safe (use globals) or update the device structure.</div>
+<div class="line">Simple updates to the device structure can be handled in a device&#8217;s</div>
+<div class="line">own output_page function that performs any actions needed before</div>
+<div class="line">calling gdev_prn_bg_output_page, then performing any action needed</div>
+<div class="line">after the page is printed (or started in the background). The cups</div>
+<div class="line">device is an example of this.</div>
+</div>
+<div class="line-block">
+<div class="line">If the page is printed in the background, it uses a clone of the device</div>
+<div class="line">structure, so any changes to that structure will not be reflected in</div>
+<div class="line">the foreground device.</div>
+</div>
+<div class="line-block">
+<div class="line">The devices were reviewed and those that were changed to use gdev_prn_bg</div>
+<div class="line">output_page proc should be safe for background printing, but only</div>
+<div class="line">those that are used in regression testing have been tested by forcing</div>
+<div class="line">BGPrint=true.</div>
+</div>
+<div class="line-block">
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/cups/gdevcups.c</div>
+<div class="line">gs/devices/devs.mak</div>
+<div class="line">gs/devices/gdev3852.c</div>
+<div class="line">gs/devices/gdev4081.c</div>
+<div class="line">gs/devices/gdev4693.c</div>
+<div class="line">gs/devices/gdev8510.c</div>
+<div class="line">gs/devices/gdevadmp.c</div>
+<div class="line">gs/devices/gdevatx.c</div>
+<div class="line">gs/devices/gdevbit.c</div>
+<div class="line">gs/devices/gdevbj10.c</div>
+<div class="line">gs/devices/gdevbmp.c</div>
+<div class="line">gs/devices/gdevccr.c</div>
+<div class="line">gs/devices/gdevcdj.c</div>
+<div class="line">gs/devices/gdevcfax.c</div>
+<div class="line">gs/devices/gdevcif.c</div>
+<div class="line">gs/devices/gdevclj.c</div>
+<div class="line">gs/devices/gdevcljc.c</div>
+<div class="line">gs/devices/gdevcslw.c</div>
+<div class="line">gs/devices/gdevdfax.c</div>
+<div class="line">gs/devices/gdevdjet.c</div>
+<div class="line">gs/devices/gdevdjtc.c</div>
+<div class="line">gs/devices/gdevdm24.c</div>
+<div class="line">gs/devices/gdevepsc.c</div>
+<div class="line">gs/devices/gdevepsn.c</div>
+<div class="line">gs/devices/gdevescp.c</div>
+<div class="line">gs/devices/gdevfax.c</div>
+<div class="line">gs/devices/gdevhl7x.c</div>
+<div class="line">gs/devices/gdevicov.c</div>
+<div class="line">gs/devices/gdevimgn.c</div>
+<div class="line">gs/devices/gdevjbig2.c</div>
+<div class="line">gs/devices/gdevjpeg.c</div>
+<div class="line">gs/devices/gdevjpx.c</div>
+<div class="line">gs/devices/gdevl31s.c</div>
+<div class="line">gs/devices/gdevlbp8.c</div>
+<div class="line">gs/devices/gdevlj56.c</div>
+<div class="line">gs/devices/gdevlp8k.c</div>
+<div class="line">gs/devices/gdevlxm.c</div>
+<div class="line">gs/devices/gdevmgr.c</div>
+<div class="line">gs/devices/gdevmiff.c</div>
+<div class="line">gs/devices/gdevn533.c</div>
+<div class="line">gs/devices/gdevo182.c</div>
+<div class="line">gs/devices/gdevokii.c</div>
+<div class="line">gs/devices/gdevpbm.c</div>
+<div class="line">gs/devices/gdevpcx.c</div>
+<div class="line">gs/devices/gdevperm.c</div>
+<div class="line">gs/devices/gdevphex.c</div>
+<div class="line">gs/devices/gdevpjet.c</div>
+<div class="line">gs/devices/gdevplan.c</div>
+<div class="line">gs/devices/gdevplib.c</div>
+<div class="line">gs/devices/gdevpng.c</div>
+<div class="line">gs/devices/gdevpsd.c</div>
+<div class="line">gs/devices/gdevpxut.c</div>
+<div class="line">gs/devices/gdevpxut.h</div>
+<div class="line">gs/devices/gdevrinkj.c</div>
+<div class="line">gs/devices/gdevsgi.c</div>
+<div class="line">gs/devices/gdevsj48.c</div>
+<div class="line">gs/devices/gdevsppr.c</div>
+<div class="line">gs/devices/gdevstc.c</div>
+<div class="line">gs/devices/gdevsunr.c</div>
+<div class="line">gs/devices/gdevtfax.c</div>
+<div class="line">gs/devices/gdevtfnx.c</div>
+<div class="line">gs/devices/gdevtknk.c</div>
+<div class="line">gs/devices/gdevtsep.c</div>
+<div class="line">gs/devices/gdevxcf.c</div>
+<div class="line">gs/devices/vector/gdevlj56.c</div>
+<div class="line">gs/devices/vector/gdevpxut.c</div>
+<div class="line">gs/devices/vector/gdevpxut.h</div>
+</div>
+<div class="line-block">
+<div class="line">________________________________________________________________________</div>
+<div class="line">2013-04-10 20:24:02 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">c947a5c62b9eef2b2b2afcab986a5b7bbb8fc3ad</div>
+</div>
+<div class="line-block">
+<div class="line">Add BGPrint prn device parameter to render clist pages while parsing.</div>
+</div>
+<div class="line-block">
+<div class="line">This enhancement closes the clist files of the page, then starts a</div>
+<div class="line">printing thread (prn_print_page_in_background) to write out the page</div>
+<div class="line">and returns to allow parsing of the next page into a new set of clist</div>
+<div class="line">files while the &#8216;bg printing&#8217; thread writes out the data, performing</div>
+<div class="line">compression and other conversion that the BGPrint=false mode performs</div>
+<div class="line">in the main (parsing) thread.</div>
+</div>
+<div class="line-block">
+<div class="line">If NumRenderingThreads &gt; 0, the band rendering will also be performed</div>
+<div class="line">for multiple bands in separate threads.</div>
+</div>
+<div class="line-block">
+<div class="line">Thus, the parsing of pages after the first will potentially overlap</div>
+<div class="line">the rendering and writing of the previous page. No queue is maintained,</div>
+<div class="line">so the overlap is limited to the next page.</div>
+</div>
+<div class="line-block">
+<div class="line">If bg_print.device is not NULL, then we have a page that was rendered</div>
+<div class="line">in the background that we may need to wait for before pprinting the next</div>
+<div class="line">page or exiting. After we call the prn_finish_bg_print, we may need to</div>
+<div class="line">re-open the printer in case it was closed (most commonly due to %d in</div>
+<div class="line">the fname).</div>
+</div>
+<div class="line-block">
+<div class="line">When printing in foreground mode, the bg_print.device will be NULL.</div>
+</div>
+<div class="line-block">
+<div class="line">Note, We can&#8217;t use the icc_table created for the foreground since it may</div>
+<div class="line">be in GC&#8217;d memory (it must be created with the thread&#8217;s allocator).</div>
+</div>
+<div class="line-block">
+<div class="line">The equivalent_cmyk_colors are needed by the backgorund print device.</div>
+<div class="line">Add .EquivCMYKColors device parameter which is an array of 5 integers per</div>
+<div class="line">spot color. The first integer is &#8216;valid&#8217; followed by the &#8216;frac&#8217; C, M, Y</div>
+<div class="line">and K values. This allows the gs_putdeviceparams to have the spot color</div>
+<div class="line">information.</div>
+</div>
+<div class="line-block">
+<div class="line">The foreground device was relying on the print_page procedure to free</div>
+<div class="line">the separation names from a page before starting the next page. Move</div>
+<div class="line">this to gdev_prn_output_page instead. Also since this is common, we</div>
+<div class="line">don&#8217;t need it in gdevpsd and gdevtsep print_page functions.</div>
+</div>
+<div class="line-block">
+<div class="line">Expected difference when BGPrint=true is 99-01-fixed.PS for all devices</div>
+<div class="line">due to adding the .EquivCMYKColors device parameter.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/base/gxclist.h</div>
+<div class="line">gs/base/gxclpage.c</div>
+<div class="line">gs/base/gxclthrd.c</div>
+<div class="line">gs/base/gxclthrd.h</div>
+<div class="line">gs/base/lib.mak</div>
+<div class="line">gs/devices/gdevplib.c</div>
+<div class="line">gs/devices/gdevpsd.c</div>
+<div class="line">gs/devices/gdevtsep.c</div>
+</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line">2013-04-27 08:18:18 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">9fac58e19010c5f0772289052082d98f5d89e9a3</div>
+</div>
+<div class="line-block">
+<div class="line">Use &#8220;seekable&#8221; rather than &#8220;positionable&#8221;</div>
+</div>
+<div class="line-block">
+<div class="line">At Ray&#8217;s suggestion, tweak the names from the previous commit.</div>
+</div>
+<div class="line-block">
+<div class="line">No cluster differences.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/devices/gdevbmpa.c</div>
+<div class="line">gs/devices/gdevdfax.c</div>
+<div class="line">gs/devices/gdevsgi.c</div>
+<div class="line">gs/devices/gdevtfax.c</div>
+<div class="line">gs/devices/gdevtfnx.c</div>
+<div class="line">gs/devices/gdevtsep.c</div>
+</div>
+<div class="line">_______________________________________________________________________________</div>
+<div class="line">2013-04-25 19:21:36 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">8bf1c216211d1bf036369fd731fafd1b30eff168</div>
+</div>
+<div class="line-block">
+<div class="line">Have gdev_prn_open_printer_seekable() work sensibly</div>
+</div>
+<div class="line-block">
+<div class="line">If gdev_prn_open_printer_seekable() gets called with the seekable flag set,</div>
+<div class="line">and it can&#8217;t return a seekable file object, return an error, rather than</div>
+<div class="line">silently ignore the flag.</div>
+</div>
+<div class="line-block">
+<div class="line">Add a generic gdev_prn_output_page_positionable() function to replace the one</div>
+<div class="line">that was dedicated to the TIFF devices, and update the TIFF devices and the</div>
+<div class="line">two other devices which require positionable output files to use it.</div>
+</div>
+<div class="line-block">
+<div class="line">No cluster differences.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/devices/gdevdfax.c</div>
+<div class="line">gs/devices/gdevsgi.c</div>
+<div class="line">gs/devices/gdevtfax.c</div>
+<div class="line">gs/devices/gdevtfnx.c</div>
+<div class="line">gs/devices/gdevtifs.c</div>
+<div class="line">gs/devices/gdevtifs.h</div>
+<div class="line">gs/devices/gdevtsep.c</div>
+</div>
+<div class="line">_____________________________________________________________________________</div>
+<div class="line">2013-02-26 18:01:40 +0000</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">f1488c5aff54f37ee67759827d4298592af5dbc8</div>
+</div>
+<div class="line-block">
+<div class="line">Move output devices to their own directory.</div>
+<div class="line">Also put the vector devices in their own directory, so we have:</div>
+<div class="line">gs/devices</div>
+<div class="line">and</div>
+<div class="line">gs/devices/vector</div>
+<div class="line">This is a first pass - further refinement may be required!</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">No cluster differences.</div>
+</div>
+<div class="line">_____________________________________________________________________________</div>
+<div class="line">2013-01-22 21:06:37 +0100</div>
+<div class="line">Till Kamppeter &lt;<a class="reference external" href="mailto:till&#46;kamppeter&#37;&#52;&#48;gmail&#46;com">till<span>&#46;</span>kamppeter<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</div>
+<div class="line">188e13b462ce0d606735b53e22bdba667e391c00</div>
+</div>
+<div class="line-block">
+<div class="line">CUPS Raster &#8220;cups&#8221; device: Improvements for pages size matching with PPD</div>
+</div>
+<div class="line-block">
+<div class="line">These changes improve the matching of the sizes of the incoming pages with</div>
+<div class="line">the page sizes available for thr printer according to the PPD file.</div>
+</div>
+<div class="line-block">
+<div class="line">Instead of stopping to searcg through the PPDs page sizes when a size</div>
+<div class="line">gets found which fits within the limits, we always go through all page</div>
+<div class="line">sizes to find the best match. We consider the best match the size with</div>
+<div class="line">the name given on the command line/by the input file and matching the</div>
+<div class="line">size of the current page within the limits, second level is a match of</div>
+<div class="line">size and margins and third level is only matching the size. If there</div>
+<div class="line">is more than one match of the same level, the product of the</div>
+<div class="line">horizontal and vertival size deviation counts.</div>
+</div>
+<div class="line-block">
+<div class="line">In addition, we let the gstoraster wrapper CUPS filter for Ghostscript</div>
+<div class="line">call Ghostscript with all parameters on the command line (especially</div>
+<div class="line">also the page size name) also when the input is PostScript.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/cups/gdevcups.c</div>
+<div class="line">gs/cups/gstoraster.c</div>
+</div>
+<div class="line">_______________________________________________________________________</div>
+<div class="line">2013-01-17 17:58:01 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">2a3bf5a4865d2d97e46742d14814758bb70abf53</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 693541: Fix &#8216;undefined filename&#8217; error</div>
+</div>
+<div class="line-block">
+<div class="line">If &#8216;%&#8217; is used in a separation name (say &#8220;45% 286 overprinting 186&#8221;),</div>
+<div class="line">then when the file is opened, we interpret the % as a format specifier</div>
+<div class="line">and we complain. Simple fix is to replace &#8216;%&#8217; with &#8216;_&#8217; when generating</div>
+<div class="line">the tif filenames.</div>
+</div>
+<div class="line-block">
+<div class="line">The file now runs further, and hits another (unrelated) pattern cache</div>
+<div class="line">problem.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">______________________________________________________________________________</div>
+<div class="line">2012-11-30 16:51:48 -0800</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">c8fc6c53f0bce4be54c016ddd78f6cfe4d44419a</div>
+</div>
+<div class="line-block">
+<div class="line">Avoid inserting the ICC profile into the halftoned TIFF output files.</div>
+</div>
+<div class="line-block">
+<div class="line">Fixes bug 693060</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtifs.c</div>
+</div>
+<div class="line">______________________________________________________________________________</div>
+<div class="line">2012-11-27 11:57:49 -0500</div>
+<div class="line">Alex Cherepanov &lt;<a class="reference external" href="mailto:alex&#46;cherepanov&#37;&#52;&#48;artifex&#46;com">alex<span>&#46;</span>cherepanov<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">9b59e4d156deae8afd6c8eecad3ce8b83b2d7664</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 693450: Add platform-dependent validation for file name characters.</div>
+</div>
+<div class="line-block">
+<div class="line">Add a new function to the portability layer that verifies, whether</div>
+<div class="line">a given character can be used in a file name. Convert separation</div>
+<div class="line">names to valid file names.</div>
+</div>
+<div class="line-block">
+<div class="line">gs/base/devs.mak</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gp.h</div>
+<div class="line">gs/base/gp_dosfs.c</div>
+<div class="line">gs/base/gp_macio.c</div>
+<div class="line">gs/base/gp_ntfs.c</div>
+<div class="line">gs/base/gp_os2fs.c</div>
+<div class="line">gs/base/gp_unifn.c</div>
+<div class="line">gs/base/gp_vms.c</div>
+</div>
+<div class="line-block">
+<div class="line">_____________________________________________________________________________</div>
+<div class="line">2012-11-01 16:05:13 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">0cefc049bdd1eee78f14c97129627af766e022c9</div>
+</div>
+<div class="line-block">
+<div class="line">Fix tiffsep and introduce tiffscaled4 device.</div>
+</div>
+<div class="line-block">
+<div class="line">The tiffsep device was supposed to be able to be called with</div>
+<div class="line">-dBitsPerComponent set to 1,2,4 or 8 to allow differing bit</div>
+<div class="line">depths of output. This setting would work for the separation</div>
+<div class="line">planes, but would not produce a composite when bpc was not 8</div>
+<div class="line">due to the code not supporting that.</div>
+</div>
+<div class="line-block">
+<div class="line">We add code here to generate composites in 1,2 and 4 bit modes</div>
+<div class="line">too, along with some sanity checking of the compression mode.</div>
+</div>
+<div class="line-block">
+<div class="line">We also add a tiffscaled4 mode where we produce 1bpc cmyk from</div>
+<div class="line">a downscaled dither of 8bpc cmyk.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/devs.mak</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gxdownscale.c</div>
+<div class="line">gs/base/unixansi.mak</div>
+<div class="line">gs/psi/msvc.mak</div>
+<div class="line">main/pcl6_gcc.mak</div>
+<div class="line">main/pcl6_msvc.mak</div>
+</div>
+<div class="line">________________________________________________________________________________</div>
+<div class="line">2012-09-25 11:19:21 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">c81c8f1b8740c484ec332080b5ce5f718357694d</div>
+</div>
+<div class="line-block">
+<div class="line">64 bit stream offsets and 64 bit PS integers objects</div>
+</div>
+<div class="line-block">
+<div class="line">SEE MORE ON GS WEB SITE</div>
+<div class="line">_________________________________________________________________________________</div>
+<div class="line">2012-10-24 10:02:00 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">f25f5e6f94ada1b3908b85ac68cabe2b9831d803</div>
+</div>
+<div class="line-block">
+<div class="line">Enable default spot name usage when output profile is NCLR</div>
+</div>
+<div class="line-block">
+<div class="line">Previously I had added the requirement that we used something like</div>
+<div class="line">-sICCOutputColors=&#8221;Cyan, Magenta, Yellow, Black, Orange, Violet&#8221;</div>
+<div class="line">when using an NCLR ICC profile for the device profile (valid only for</div>
+<div class="line">tiffsep and psdcmyk devices). This was to ensure proper naming of the</div>
+<div class="line">profile colorants. It was pointed out by a customer that they would</div>
+<div class="line">prefer to have a set of default names so this was now added.</div>
+<div class="line">If -sICCOutputColors is not specified and we are using an NCLR ICC profile,</div>
+<div class="line">then we will have spot colors from the profile named ICC_COLOR_0, ICC_COLOR_1</div>
+<div class="line">etc.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gsicc_manage.c</div>
+</div>
+<div class="line">______________________________________________________________________________</div>
+<div class="line">2012-10-12 12:39:53 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">821d4c00e4507c0f68fd1eafb00622cbabcd1343</div>
+</div>
+<div class="line-block">
+<div class="line">Remove calls to gs_lib_ctx_get_non_gc_memory_t from contrib devices.</div>
+</div>
+<div class="line-block">
+<div class="line">This leaves the only calls to gs_lib_ctx_get_non_gc_memory_t being</div>
+<div class="line">from the lcms v1 wrapper code (expected as lcms v1 is not thread</div>
+<div class="line">safe), and from the gp_check_interrupts implementations (though these</div>
+<div class="line">should no longer be required).</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">Update the list of &#8220;not thread safe&#8221; devices in configure.ac; lots</div>
+<div class="line">of devices are now thread safe. The ones that remain &#8216;not thread safe&#8217;</div>
+<div class="line">are those that use static variables (see bug 693376).</div>
+</div>
+<div class="line">__________________________________________________________________________________</div>
+<div class="line">2012-09-21 22:48:37 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">8227d2d46b516b75a4383466eb243b725f3124b0</div>
+</div>
+<div class="line-block">
+<div class="line">Support for the use of N-CLR ICC output profiles extended to the tiffsep device.</div>
+</div>
+<div class="line-block">
+<div class="line">The documentation on the use of this option was also updated.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.h</div>
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/doc/Use.htm</div>
+</div>
+<div class="line">__________________________________________________________________________________</div>
+<div class="line">2012-09-20 22:55:45 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">8a1ca14aab8f3ef6a7ffaa554d4e1d348b7561a7</div>
+</div>
+<div class="line-block">
+<div class="line">Bulk of work to demonstrate the use of DeviceN ICC output profile.</div>
+</div>
+<div class="line-block">
+<div class="line">This adds support to the psdcmyk device as well as the required changes in</div>
+<div class="line">the graphics library. Through the use of the LIMIT_TO_ICC define in gdevpsd, it is</div>
+<div class="line">possible to limit the colorants to those defined by the ICC output profile.</div>
+<div class="line">Setting to 1 will limit it setting to 0 will allow all spots (up to the maximum)</div>
+<div class="line">to be created. If spot names in the document match those in the command line</div>
+<div class="line">with -sICCOutputColors, then those colorants and hence separation will be treated</div>
+<div class="line">the same.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gscdevn.c</div>
+<div class="line">gs/base/gscms.h</div>
+<div class="line">gs/base/gscsepr.c</div>
+<div class="line">gs/base/gsequivc.c</div>
+<div class="line">gs/base/gsicc.c</div>
+<div class="line">gs/base/gsicc_manage.c</div>
+<div class="line">gs/base/gsicc_manage.h</div>
+<div class="line">gs/base/gxcmap.c</div>
+<div class="line">gs/base/gxistate.h</div>
+<div class="line">gs/base/lib.mak</div>
+</div>
+<div class="line">___________________________________________________________________________</div>
+<div class="line">2012-09-13 00:40:03 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">6777c88fab2afc3e6558fda1dfb51110088ede61</div>
+</div>
+<div class="line-block">
+<div class="line">Introduce GS_THREADSAFE define and modify printing calls.</div>
+</div>
+<div class="line-block">
+<div class="line">Lots of debugging/error information is printed using eprintf and</div>
+<div class="line">dlprintf etc. These functions do not take a gs_memory_t * and are</div>
+<div class="line">not safe for use within code that runs under multiple instances</div>
+<div class="line">created by gsapi.</div>
+</div>
+<div class="line-block">
+<div class="line">Introduce new versions (dmprintf, dmlprintf etc) that DO take a</div>
+<div class="line"><a href="#id56"><span class="problematic" id="id57">gs_memory_</span></a> <a href="#id15"><span class="problematic" id="id16">*</span></a>, and move as much of ghostscript/ghostpdl&#8217;s usage</div>
+<div class="line">over to these as possible. I have not touched the contrib directory,</div>
+<div class="line">and some locations in the code do not easily have a gs_memory_t</div>
+<div class="line">to hand, so I have left them be.</div>
+</div>
+<div class="line-block">
+<div class="line">If the GS_THREADSAFE define is made during building, then the</div>
+<div class="line">functions that don&#8217;t take an explicit memory handle are #defined</div>
+<div class="line">away to nothing.</div>
+</div>
+<div class="line-block">
+<div class="line">If the GS_THREADSAFE define is made, we disable the gsapi check that</div>
+<div class="line">checks for a single init.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">see sources for file change</div>
+</div>
+<div class="line">___________________________________________________________________</div>
+<div class="line">2012-08-12 04:32:52 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">82c3d60735ef1a7e702db6833c1c709edeaca1d4</div>
+</div>
+<div class="line-block">
+<div class="line">Initial work towards adding in support for use of DeviceN ICC color profiles as the output profile.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpdfk.c</div>
+<div class="line">gs/base/gscms.h</div>
+<div class="line">gs/base/gsdparam.c</div>
+<div class="line">gs/base/gsequivc.c</div>
+<div class="line">gs/base/gsicc_manage.c</div>
+<div class="line">gs/base/gsicc_manage.h</div>
+</div>
+<div class="line">___________________________________________________________________</div>
+<div class="line">2012-08-09 11:50:21 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">fe79c76c8254faba9a2b422543062a577a375fee</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 692750: have gdevwpr2 &#8220;manage&#8221; device icc profiles</div>
+<div class="line">gdevwpr2 is one of the rare devices that can change its color space during its</div>
+<div class="line">lifetime. Such devices need to &#8220;manage&#8221; their device ICC profiles directly.</div>
+<div class="line">As the cups device is similar, these changes are loosely based on the</div>
+<div class="line">analogous part of gdevcups.c.</div>
+<div class="line">No cluster differences.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevwpr2.c</div>
+<div class="line">gs/base/pcwin.mak</div>
+</div>
+<div class="line">_____________________________________________________________________</div>
+<div class="line"><strong>******************************************************************</strong></div>
+<div class="line">_____________________________________________________________________</div>
+<div class="line">2012-08-02 20:34:26 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">588c2ee040526fbea470e36e7cbc8e87a503cab9</div>
+</div>
+<div class="line-block">
+<div class="line">Update documentation for tiffsep planar device</div>
+</div>
+<div class="line-block">
+<div class="line">Add in comments about the use of -dMaxSpots as well as the fact that the device,</div>
+<div class="line">and psdcmyk are planar and limited to 64 colorants per page. Also add in a</div>
+<div class="line">hint about using -dMaxSpots when we are processing a Postscript file and bump</div>
+<div class="line">up to the default max limit of 10 colorants. Tested it and it worked nicely.</div>
+<div class="line">Thanks Robin Watts.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/doc/Devices.htm</div>
+</div>
+<div class="line">________________________________________________________________________</div>
+<div class="line">2012-08-02 18:27:45 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">836a551b97dd4a8436608b6dcebe8f8fb8632bcd</div>
+</div>
+<div class="line-block">
+<div class="line">Add -dMaxSpots for tiffsep and psd devices.</div>
+</div>
+<div class="line-block">
+<div class="line">psd and tiffsep devices now run with GS_SOFT_MAX_SPOTS spots enabled</div>
+<div class="line">by default (ten, unless predefined differently at build time). The</div>
+<div class="line">user can change this value using -dMaxSpots=X (where</div>
+<div class="line">0 &lt;= X &lt;= GS_CLIENT_COLOR_MAX_COMPONENTS-4).</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gsccolor.h</div>
+</div>
+<div class="line">_____________________________________________________________________</div>
+<div class="line">2012-07-31 17:53:58 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">c832985cab3b769d460a3f3e0ae894c2a84fa1ba</div>
+</div>
+<div class="line-block">
+<div class="line">Update tiffsep/tiffsep1 documentation w.r.t downscaler.</div>
+</div>
+<div class="line-block">
+<div class="line">Document 32 and 34 ratios. Add extra info to tiffsep1 to distinguish</div>
+<div class="line">it from tiffsep in 1bpp mode.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/doc/Devices.htm</div>
+</div>
+<div class="line">___________________________________________________________________</div>
+<div class="line">2012-07-31 10:50:43 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">76722bee735462eedf4f4c6d9dfa552e3c1f7ebc</div>
+</div>
+<div class="line-block">
+<div class="line">Fix link warnings about bad memset in gdevtsep.c</div>
+</div>
+<div class="line-block">
+<div class="line">Due to a mistake on my part, the tiffsep device had a couple of</div>
+<div class="line">memsets in that did nothing; these were intended to clear an array</div>
+<div class="line">of pointers before use. Not clearing the array would only have been</div>
+<div class="line">a problem if we&#8217;d hit an error condition in a very small region of</div>
+<div class="line">code, but nonetheless, this is a fix.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">__________________________________________________________________</div>
+<div class="line">2012-07-30 19:05:08 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">443ad5a4885be7abf5a1e0777275eefbc5322cd2</div>
+</div>
+<div class="line-block">
+<div class="line">Up default GS_CLIENT_COLOR_MAX_COMPONENTS to 32.</div>
+</div>
+<div class="line-block">
+<div class="line">The planar changes have enabled us to increase the default maximum</div>
+<div class="line">number of spot changes to 32. Tests show only a few differences</div>
+<div class="line">due to roundings.</div>
+</div>
+<div class="line-block">
+<div class="line">Hopefully we can push it to 64 soon.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gsccolor.h</div>
+</div>
+<div class="line">_______________________________________________________________</div>
+<div class="line">2012-07-25 23:58:40 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">428869d288d87d95fbcb5dcf8a0563003ff26294</div>
+</div>
+<div class="line-block">
+<div class="line">Fix bug 693220. The pdf14 device used compressed encoding in clist mode.</div>
+</div>
+<div class="line-block">
+<div class="line">The pdf14 device clist mode did not respect the USE_COMPRESSED_ENCODING</div>
+<div class="line">setting always using compressed encoding, and ended up writing pure</div>
+<div class="line">colors with num_bytes == -3. This was undetected because tiffsep1 is not</div>
+<div class="line">part of the regression testing, and because the tiffsep1 device did not</div>
+<div class="line">use &#8216;planar&#8217; mode as the tiffsep device did. Also fixed some blanks before</div>
+<div class="line">line ends and tab indents.</div>
+</div>
+<div class="line-block">
+<div class="line">Also, since planar mode is more efficient and allows for &gt; 8 colorants</div>
+<div class="line">tiffsep1 was changed to use planar mode, getting rid of the need for</div>
+<div class="line">compressed color encoding in this file (maybe the last one).</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevp14.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">_________________________________________________________________</div>
+<div class="line">2012-07-25 22:02:00 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">c8fc89fe8d72ad87158569825ddf421887c47713</div>
+</div>
+<div class="line-block">
+<div class="line">Replace magic 32 number with MAX_COMPONENTS_IN_DEVN</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gsccolor.h</div>
+<div class="line">gs/psi/icremap.h</div>
+</div>
+<div class="line">_________________________________________________</div>
+</div>
+<div class="line-block">
+<div class="line">2012-07-24 21:40:05 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">e884e39691346b35ea8b87fe26d8d98857689397</div>
+</div>
+<div class="line-block">
+<div class="line">Change the remap_color_info structure so that we can support up to 32 colorants DeviceN</div>
+</div>
+<div class="line-block">
+<div class="line">AR supports up to 32 colorants in a DeviceN color space and this brings us in line with</div>
+<div class="line">that product&#8217;s limits. Note that if the number of colorants is greater than</div>
+<div class="line">GS_CLIENT_COLOR_MAX_COMPONENTS then we end up using the alternate tint transform.</div>
+<div class="line">Previously, the tint transform would fail if we encountered a color DeviceN color</div>
+<div class="line">space with more that GS_CLIENT_COLOR_MAX_COMPONENTS colorants. This fixes bug 693185</div>
+</div>
+<div class="line-block">
+<div class="line">gs/psi/icremap.h</div>
+</div>
+<div class="line-block">
+<div class="line">&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;</div>
+<div class="line">2012-07-20 15:46:06 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">a06bb8cfd8791254655889d85a1d37f173f53597</div>
+</div>
+<div class="line-block">
+<div class="line">Rework colors_used to be a color_usage bitfield.</div>
+</div>
+<div class="line-block">
+<div class="line">Previously, the clist would collate the colors used in a band/page</div>
+<div class="line">by ORing together any color indexs uses into a single gx_color_index.</div>
+<div class="line">This relies on the gx_color_index being able to represent the whole</div>
+<div class="line">depth.</div>
+</div>
+<div class="line-block">
+<div class="line">This is dodgy with compressed encoding, and fails entirely with the</div>
+<div class="line">new planar based tiffsep/psdcmyk and high level color stuff, as the</div>
+<div class="line">total depth can far exceed the number of bits available in a</div>
+<div class="line">gx_color_index.</div>
+</div>
+<div class="line-block">
+<div class="line">The fix here is to change to using a bitfield (gx_color_usage_bits)</div>
+<div class="line">for this record; this allows us to have up to 64 colorants with a</div>
+<div class="line">standard build.</div>
+</div>
+<div class="line-block">
+<div class="line">The code here is still imperfect for all the reasons listed within</div>
+<div class="line">the original code (only works for subtractive spaces, can falsely</div>
+<div class="line">detect &#8216;no colors used&#8217;, etc), but it is at least consistently</div>
+<div class="line">imperfect now.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpbm.c</div>
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/base/gxband.h</div>
+<div class="line">gs/base/gxcldev.h</div>
+<div class="line">gs/base/gxclimag.c</div>
+<div class="line">gs/base/gxclist.c</div>
+<div class="line">gs/base/gxclist.h</div>
+<div class="line">gs/base/gxclpath.c</div>
+<div class="line">gs/base/gxclpath.h</div>
+<div class="line">gs/base/gxclread.c</div>
+<div class="line">gs/base/gxclrect.c</div>
+</div>
+<div class="line">____________________________________________________________________2012-06-01 14:05:03 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">3a5a524ea71a58cc0e9e0200bb98a2fc341ec033</div>
+</div>
+<div class="line-block">
+<div class="line">Fix for broken AA support for devices that support the devn color type</div>
+</div>
+<div class="line-block">
+<div class="line">This fix involved the addition of a copy_alpha_hl_color for passing along the devn color</div>
+<div class="line">value when doing the copy_alpha procedure. This required support through the clist,</div>
+<div class="line">special handing in the pdf14 device and a default procedure for the operation.</div>
+<div class="line">The only devices that should be affected are tiffsep and psdcmyk. Support for 16bit psd</div>
+<div class="line">devices may have issues and I will go back to check on this later as a customer is waiting</div>
+<div class="line">for this for 8 bit tiffsep.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevabuf.c</div>
+<div class="line">gs/base/gdevdbit.c</div>
+<div class="line">gs/base/gdevdflt.c</div>
+<div class="line">gs/base/gdevmem.c</div>
+<div class="line">gs/base/gdevmem.h</div>
+<div class="line">gs/base/gdevmpla.c</div>
+<div class="line">gs/base/gdevnfwd.c</div>
+<div class="line">gs/base/gdevp14.c</div>
+<div class="line">gs/base/gsdcolor.h</div>
+<div class="line">gs/base/gspaint.c</div>
+<div class="line">gs/base/gxccman.c</div>
+<div class="line">gs/base/gxcldev.h</div>
+<div class="line">gs/base/gxclip.c</div>
+<div class="line">gs/base/gxclip.h</div>
+<div class="line">gs/base/gxclip2.c</div>
+<div class="line">gs/base/gxclipm.c</div>
+<div class="line">gs/base/gxclist.c</div>
+<div class="line">gs/base/gxclpath.h</div>
+<div class="line">gs/base/gxclrast.c</div>
+<div class="line">gs/base/gxclrect.c</div>
+<div class="line">gs/base/gxdevcli.h</div>
+<div class="line">gs/base/gxdevice.h</div>
+<div class="line">gs/base/gxdevmem.h</div>
+</div>
+<div class="line">_________________________________________________________________2012-06-26 15:34:44 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">526c580e272ee15c488b9fe4845482a30ce05eef</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 693064: raise maximum possible GS_CLIENT_COLOR_MAX_COMPONENTS to 32</div>
+</div>
+<div class="line-block">
+<div class="line">By default we support a maximum of 14 components. Supposedly this can be</div>
+<div class="line">increased by raising GS_CLIENT_COLOR_MAX_COMPONENTS to a larger number</div>
+<div class="line">on startup, but this starts to cause problems in various places throughout</div>
+<div class="line">the code.</div>
+</div>
+<div class="line-block">
+<div class="line">The first such place is in the bpc_to_depth function (found in gdevdevn</div>
+<div class="line">and various other places), where the calculation goes wrong for anything</div>
+<div class="line">above 31 components at 8 bpc. We fix that here.</div>
+</div>
+<div class="line-block">
+<div class="line">This allows us to get to 32 components. To raise it above 32 presents</div>
+<div class="line">problems on most architectures as the code assumes elsewhere that we</div>
+<div class="line">can use a bitmask to represent which components are present.</div>
+</div>
+<div class="line-block">
+<div class="line">We may be able to tweak the code to use a uint64_t instead, in which</div>
+<div class="line">case we can probably get to 64 components; is that high enough?</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevrinkj.c</div>
+<div class="line">gs/base/gdevxcf.c</div>
+<div class="line">gs/base/gxclist.c</div>
+</div>
+<div class="line">__________________________________________________________________</div>
+<div class="line">2012-06-18 16:51:30 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">7f98970a6c0e641e87eb202dc2087814249d0408</div>
+</div>
+<div class="line-block">
+<div class="line">Add 3:2 and 3:4 downscaling to tiffsep/psd/downscaler.</div>
+</div>
+<div class="line-block">
+<div class="line">Currently the downscaler can only downscale in integer increments. To</div>
+<div class="line">accomodate a potential need to efficiently scale 1200 -&gt; 800 and</div>
+<div class="line">600 -&gt; 800 dpi, we introduce new functionality to allow 3:2 and 3:4</div>
+<div class="line">scaling modes.</div>
+</div>
+<div class="line-block">
+<div class="line">We shoehorn these into the existing scaler system by using DownScaleFactor</div>
+<div class="line">settings of 32 and 34 respectively; any other DownScaleFactor &gt; 8 will</div>
+<div class="line">give a rangecheck error.</div>
+</div>
+<div class="line-block">
+<div class="line">This has required some changes within the downscaler code itself, and</div>
+<div class="line">will require more changes in any device that wants to use these. Currently</div>
+<div class="line">the cores are only provided in the planar modes; hence tiffsep and psd are</div>
+<div class="line">the only devices that have been updated to work with this.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtifs.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gxdownscale.c</div>
+<div class="line">gs/base/gxdownscale.h</div>
+</div>
+<div class="line">_______________________________________</div>
+<div class="line">-2012-05-28 13:05:00 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">f30e8944b915936befffbadc036e1de16659914e</div>
+</div>
+<div class="line-block">
+<div class="line">Add 16bpp support to downscaler.</div>
+</div>
+<div class="line-block">
+<div class="line">Currently unused, but passes local tests with James Cloos&#8217; proposed</div>
+<div class="line">psdcmyk16 and psdrgb16 devices.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gxdownscale.c</div>
+<div class="line">gs/base/gxdownscale.h</div>
+</div>
+<div class="line">____________________________________________________</div>
+<div class="line">2012-05-22 13:35:31 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">15cc33536ada0b4cb105110a48df0132539c54db</div>
+</div>
+<div class="line-block">
+<div class="line">Add downscaler functionality to tiffsep.</div>
+</div>
+<div class="line-block">
+<div class="line">Update tiffsep to call the downscaler. This means adding MinFeatureSize</div>
+<div class="line">and DownScaleFactor to tiffsep. Also add BitsPerComponent to allow us to</div>
+<div class="line">specify 8 (default) or 1 (monochrome). MinFeatureSize is ignored except</div>
+<div class="line">in monochrome mode.</div>
+</div>
+<div class="line-block">
+<div class="line">This has meant slight reworking of the downscaler to cope with planar</div>
+<div class="line">buffers, and its use of get_bits_rectangle rather than get_bits.</div>
+</div>
+<div class="line-block">
+<div class="line">Also updated docs, and fixed some leaks on memory allocation failures</div>
+<div class="line">within tiffsep.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gxdownscale.c</div>
+<div class="line">gs/base/gxdownscale.h</div>
+<div class="line">gs/base/lib.mak</div>
+<div class="line">gs/doc/Devices.htm</div>
+</div>
+<div class="line">___________________________________2012-05-03 12:13:06 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">7b81312d205a2f9b89f40da4b4f6b67bcacd8ef1</div>
+</div>
+<div class="line-block">
+<div class="line">Fix for issues in use of /SeparationOrder and /SeparationColorNames</div>
+</div>
+<div class="line-block">
+<div class="line">Several issues and quite a bit of confusion in the code with respect</div>
+<div class="line">to this option. I believe this should clear some things up.</div>
+<div class="line">Documentation still needs to be updated as to how this option functions</div>
+<div class="line">and what devices it actually works with. Note that</div>
+<div class="line">SeparationOrder and SeparationColorNames really only works for the</div>
+<div class="line">tiffsep device. The psdcmyk device was never really set up for use</div>
+<div class="line">with this option. Not sure if we want to add it. Also, I discovered</div>
+<div class="line">that with the disabling of compressed color encoding, the tiffsep1</div>
+<div class="line">device renders incorrectly. I had not converted this device to planar</div>
+<div class="line">as I had thought that it performed halftoning during rendering. I</div>
+<div class="line">did not realize it was rendering 8 bit data and then doing</div>
+<div class="line">a thresholding operation. We may want to just move this to a planar</div>
+<div class="line">based device. In that case, we could use the fast planar halftoning.</div>
+</div>
+<div class="line-block">
+<div class="line">Note that with this fix, the device will only create output for the</div>
+<div class="line">colorants listed in /SeparationOrder. The psdcmyk device was not</div>
+<div class="line">making use of the /SeparationOrder information properly. It is now</div>
+<div class="line">which makes for some different renderings in the ps3cet/29-07*.ps test</div>
+<div class="line">files which exercise /SeparationOrder changes. In such a case, the</div>
+<div class="line">device will not output any missing colorants, which previously</div>
+<div class="line">it was doing.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">________________________________</div>
+<div class="line">2012-04-30 15:27:30 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">3cde6d6d3d24a0930d591df9914ddda194d13b37</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 692459: stop tiffsep(1) overwriting pages already written</div>
+</div>
+<div class="line-block">
+<div class="line">The tiffsep and tiffsep1 devices both get closed and reopen when the separations</div>
+<div class="line">change (communicated by put_params). Previously this caused the output files to</div>
+<div class="line">be closed and reopened - not a problem when writing each page to its own set of</div>
+<div class="line">files, but when writing multipage tiffs, it resulted in all pages up to that</div>
+<div class="line">point to be overwritten.</div>
+</div>
+<div class="line-block">
+<div class="line">We now have tiffsep and tiffsep1 handle their own file &#8220;management&#8221;, and prevent</div>
+<div class="line">output files from being closed and reopened when the device is closed and</div>
+<div class="line">reopened due to a put_params call.</div>
+</div>
+<div class="line-block">
+<div class="line">No cluster differences.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">___________________________________________________________________________</div>
+<div class="line">2012-04-27 18:46:27 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">60640aeb33b18f9a9fcd76fc6f1083d7c7635f24</div>
+</div>
+<div class="line-block">
+<div class="line">- Change of the tiffsep and psdcmyk device to planar devices.</div>
+</div>
+<div class="line-block">
+<div class="line">This change in these devices was made to remove the 64 bit limitation of</div>
+<div class="line">our existing color encoding which limits us to 8 colorants without</div>
+<div class="line">compressed color encoding. The motivation for this work is that even</div>
+<div class="line">with compressed color encoding we were starting</div>
+<div class="line">to encounter files with transparency in particular that exceeded the</div>
+<div class="line">capabilities of encoding, leading to dropped colors. With this fix, we</div>
+<div class="line">encode through the clist the DeviceN color values. The buffers for the</div>
+<div class="line">devices are maintained as planar buffers and fills occur with the high level</div>
+<div class="line">device colors.</div>
+</div>
+<div class="line-block">
+<div class="line">Support was added to handle the devn color type through the shading code. The old</div>
+<div class="line">code would have supported only 8 colorants in a shading.</div>
+</div>
+<div class="line-block">
+<div class="line">Support was also added to the transparency code to enable the use of the put_image</div>
+<div class="line">procedure which for the planar device saves quite a bit of time since we can do the</div>
+<div class="line">copy_planes proc directly from the pdf14 planar buffer to the planar memory device buffer.</div>
+<div class="line">The pdf14 device also had to support fill_rectangle_hl_color.</div>
+</div>
+<div class="line-block">
+<div class="line">Changes were also made to the pattern tiling code so that we avoid any planar to chunky and</div>
+<div class="line">back to planar conversions. These were being done to handle ROPs. Even when there were</div>
+<div class="line">not any ROPs to perform we were going through strip_tile_rop operations since the</div>
+<div class="line">gx_default_strip_tile_rectangle did not support planar to planar. That support is added</div>
+<div class="line">with this commit.</div>
+</div>
+<div class="line-block">
+<div class="line">Support had to be added to the overprint compositor to support the new color type with</div>
+<div class="line">fill_rectangle_hl_color.</div>
+</div>
+<div class="line-block">
+<div class="line">Support had to be added to the clist for fill_rectangle_hl_color. This required changes</div>
+<div class="line">on both the writing and reading side. It is possible that the amount of data written</div>
+<div class="line">for these commands could be reduced and that is commented in the code.</div>
+</div>
+<div class="line-block">
+<div class="line">Support also had to be added to the clip device and the mask_clip device as well</div>
+<div class="line">for uncolored patterns. Also the tile clip device required support and the transparency device</div>
+<div class="line">required support for copy_planes. This last function needs to be optimized.</div>
+</div>
+<div class="line-block">
+<div class="line">Both of the separation devices (tiffsep and psdcmyk) that we currently have are updated to</div>
+<div class="line">support this method. There is an #if option in each device file to return the</div>
+<div class="line">code back to the old chunky format.</div>
+</div>
+<div class="line-block">
+<div class="line">A new device procedure for handling strip tiling of masks with devn colors had</div>
+<div class="line">to be added. Functionality was only required for the mem planar and clist devices.</div>
+</div>
+<div class="line-block">
+<div class="line">Also, it was found that the tiffsep and psdcmyk devices were maintaining separations</div>
+<div class="line">(spot colors) across pages. That is if page 1 had a spot color, subsequent pages</div>
+<div class="line">created a separation for that spot</div>
+<div class="line">even if those pages did not contain it. This was fixed so that separations for a page</div>
+<div class="line">are only created for the spots that occur on that page.</div>
+</div>
+<div class="line-block">
+<div class="line">A fix was also made to ensure that we had proper handling for the None colorants when</div>
+<div class="line">they are part of the DeviceN color space.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/devs.mak</div>
+<div class="line">gs/base/gdevbbox.c</div>
+<div class="line">gs/base/gdevdbit.c</div>
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevdevn.h</div>
+<div class="line">gs/base/gdevdflt.c</div>
+<div class="line">gs/base/gdevdsha.c</div>
+<div class="line">gs/base/gdevmem.c</div>
+<div class="line">gs/base/gdevmem.h</div>
+<div class="line">gs/base/gdevmpla.c</div>
+<div class="line">gs/base/gdevmx.c</div>
+<div class="line">gs/base/gdevnfwd.c</div>
+<div class="line">gs/base/gdevp14.c</div>
+<div class="line">gs/base/gdevpdfi.c</div>
+<div class="line">gs/base/gdevppla.c</div>
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gscdevn.c</div>
+<div class="line">gs/base/gscicach.c</div>
+<div class="line">gs/base/gscms.h</div>
+<div class="line">gs/base/gscsepr.c</div>
+<div class="line">gs/base/gsdcolor.h</div>
+<div class="line">gs/base/gsdps1.c</div>
+<div class="line">gs/base/gsequivc.c</div>
+<div class="line">gs/base/gsicc_manage.c</div>
+<div class="line">gs/base/gsovrc.c</div>
+<div class="line">gs/base/gsptype1.c</div>
+<div class="line">gs/base/gxblend.h</div>
+<div class="line">gs/base/gxblend1.c</div>
+<div class="line">gs/base/gxcldev.h</div>
+<div class="line">gs/base/gxclimag.c</div>
+<div class="line">gs/base/gxclip.c</div>
+<div class="line">gs/base/gxclip.h</div>
+<div class="line">gs/base/gxclip2.c</div>
+<div class="line">gs/base/gxclipm.c</div>
+<div class="line">gs/base/gxclist.c</div>
+<div class="line">gs/base/gxclpath.c</div>
+<div class="line">gs/base/gxclpath.h</div>
+<div class="line">gs/base/gxclrast.c</div>
+<div class="line">gs/base/gxclrect.c</div>
+<div class="line">gs/base/gxcmap.c</div>
+<div class="line">gs/base/gxdcolor.c</div>
+<div class="line">gs/base/gxdcolor.h</div>
+<div class="line">gs/base/gxdevcli.h</div>
+<div class="line">gs/base/gxdevice.h</div>
+<div class="line">gs/base/gxdevsop.h</div>
+<div class="line">gs/base/gxgetbit.h</div>
+<div class="line">gs/base/gxht.c</div>
+<div class="line">gs/base/gxicolor.c</div>
+<div class="line">gs/base/gxp1fill.c</div>
+<div class="line">gs/base/gxp1impl.h</div>
+<div class="line">gs/base/gxpcmap.c</div>
+<div class="line">gs/base/gxpcolor.h</div>
+<div class="line">gs/base/gxshade6.c</div>
+<div class="line">gs/base/lib.mak</div>
+</div>
+<div class="line">_________________________________________________________________-</div>
+<div class="line">2012-03-27 19:29:56 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">5b50a46f4ed3e54fec6727a1ad52258e5d32b0a9</div>
+</div>
+<div class="line-block">
+<div class="line">Add -sBandListStorage={file|memory} option and default to no bitmap compression if file clist.</div>
+</div>
+<div class="line-block">
+<div class="line">Also alphabetize the clist options and remove the arbitrary 10000 minimum for MaxBitmap</div>
+<div class="line">(now -dMaxBitmap=0 is legal). The change to not compress bitmaps (using CCITT) when going</div>
+<div class="line">to disk based clist improves performance.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gdevprn.h</div>
+<div class="line">gs/base/gxclbits.c</div>
+<div class="line">gs/base/gxclist.c</div>
+<div class="line">gs/base/lib.mak</div>
+<div class="line">gs/doc/Language.htm</div>
+</div>
+<div class="line">__________________________________________________________</div>
+<div class="line">2012-03-13 22:45:00 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">0eae84aaf7a1c27f077d4aff3050ae48bb5a6aaa</div>
+</div>
+<div class="line-block">
+<div class="line">Fix for broken tiff devices due to use of huge signed number in overflow test</div>
+</div>
+<div class="line-block">
+<div class="line">0xFFFFFFFF is used in a calculation to see how close we are to the 4G limit in</div>
+<div class="line">a tiff file. Problem was this was cast as a long which, in a 32 bit</div>
+<div class="line">system ends up being -1.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">_________________________________________________</div>
+<div class="line">2012-03-09 13:53:55 -0800</div>
+<div class="line">Marcos H. Woehrmann &lt;<a class="reference external" href="mailto:marcos&#46;woehrmann&#37;&#52;&#48;artifex&#46;com">marcos<span>&#46;</span>woehrmann<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">dc98b15546522ce28edad3f129f1ae8e05300a34</div>
+</div>
+<div class="line-block">
+<div class="line">Change compression of the tiffsep device composite output to match the separations.</div>
+</div>
+<div class="line-block">
+<div class="line">Previous to this commit the tiffsep device would always write out</div>
+<div class="line">an uncompressed composite file; the separation files were lzw</div>
+<div class="line">compressed by default and this could be changed via the -sCompression=</div>
+<div class="line">option. Now the compression of the composite file is the same as</div>
+<div class="line">that of the separation files.</div>
+</div>
+<div class="line-block">
+<div class="line">Fixes Bug 692907.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/doc/Devices.htm</div>
+</div>
+<div class="line">___________________________________________________________-</div>
+<div class="line">2012-03-06 09:06:55 -0800</div>
+<div class="line">Marcos H. Woehrmann &lt;<a class="reference external" href="mailto:marcos&#46;woehrmann&#37;&#52;&#48;artifex&#46;com">marcos<span>&#46;</span>woehrmann<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">23e37b6fc4d79741007cc18d770bb3e449e53014</div>
+</div>
+<div class="line-block">
+<div class="line">Fix the checks in gdevtsep.c missed by commit e954dd4683c35dbd66de3e045d979ebbf20c4d72</div>
+</div>
+<div class="line-block">
+<div class="line">Henry pointed out that my e954dd4683c35dbd66de3e045d979ebbf20c4d72</div>
+<div class="line">fix was incomplete; this commit replaces the remaining max_long</div>
+<div class="line">references with 2^32-1.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">________________________________________________________________</div>
+<div class="line">2012-03-05 19:21:53 -0800</div>
+<div class="line">Marcos H. Woehrmann &lt;<a class="reference external" href="mailto:marcos&#46;woehrmann&#37;&#52;&#48;artifex&#46;com">marcos<span>&#46;</span>woehrmann<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">e954dd4683c35dbd66de3e045d979ebbf20c4d72</div>
+</div>
+<div class="line-block">
+<div class="line">Fix detection of TIFF file size overflow in tiffsep.</div>
+</div>
+<div class="line-block">
+<div class="line">The TIFF spec limits files to 4 Gigs. The code to detect attempts</div>
+<div class="line">to write files that were larger than this in gdevtsep.c was broken</div>
+<div class="line">on systems were a long != 32 bit.</div>
+</div>
+<div class="line-block">
+<div class="line">Fixes Bug 692896.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">__________________________________________________________________</div>
+<div class="line">2012-02-16 18:16:16 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">21579b00e53b97cd655f164bb92c5280c586e365</div>
+</div>
+<div class="line-block">
+<div class="line">Output helpful debug warning when tif output would be too large.</div>
+</div>
+<div class="line-block">
+<div class="line">Currently we just raise a rangecheck, which can be very confusing.</div>
+</div>
+<div class="line-block">
+<div class="line">CLUSTER_UNTESTED.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">___________________________________________________________________</div>
+</div>
+<div class="line-block">
+<div class="line">2012-02-15 19:03:56 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">43b14b24fcc13d816dd41ca335d52cd3074bd0d8</div>
+</div>
+<div class="line-block">
+<div class="line">Update garbage collection to cope with pdf14_compressed_color_list.</div>
+</div>
+<div class="line-block">
+<div class="line">A second list of compressed colors was recently added to the</div>
+<div class="line">gdevn_params structure, but this wasn&#8217;t added to the garbage</div>
+<div class="line">collection routines. Fixed here.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevp14.c</div>
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">_______________________________________________________________________-</div>
+<div class="line">2012-02-14 14:57:07 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">00a96d35b30d77f8dfbc8ae12326c81053fc50c9</div>
+</div>
+<div class="line-block">
+<div class="line">Fix Bug 692854; tweak gdev_prn color procs.</div>
+</div>
+<div class="line-block">
+<div class="line">A previous commit (cf37ea5) changed the prn device macros to</div>
+<div class="line">duplicate map_color_rgb/map_rgb_color to encode/decode_color.</div>
+<div class="line">I thought this was safe as the default color encoding/decoding</div>
+<div class="line">functions were actually implemented as encode/decode, rather</div>
+<div class="line">than <a href="#id58"><span class="problematic" id="id59">map_</span></a> variants.</div>
+</div>
+<div class="line-block">
+<div class="line">Unfortunately, this falls down when other devices (such as the</div>
+<div class="line">tiffscaled ones) provide genuine <a href="#id60"><span class="problematic" id="id61">map_</span></a> functions rather than</div>
+<div class="line">encode/decodes.</div>
+</div>
+<div class="line-block">
+<div class="line">So, a small tweak to the macros is required; we now duplicate</div>
+<div class="line">to encode/decode only if specifically told to - and the macros</div>
+<div class="line">that use the defaults specifically say to. Other devices should</div>
+<div class="line">remain unchanged.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevprn.h</div>
+</div>
+<div class="line">______________________________________________________-</div>
+<div class="line">2012-02-10 17:20:36 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">cf37ea5d017193c76341aafd60e35d3b1826046f</div>
+</div>
+<div class="line-block">
+<div class="line">Prn device changes to encode/decode_color.</div>
+</div>
+<div class="line-block">
+<div class="line">At the moment, prn devices do not implement encode_decode/color,</div>
+<div class="line">choosing instead to provide map_rgb_color/map_color_rgb which</div>
+<div class="line">just get called through a &#8216;backwards compatibility&#8217; layer.</div>
+</div>
+<div class="line-block">
+<div class="line">In fact, they actually implement encode/decode_rgb rather than</div>
+<div class="line">map_rgb_color/map_color_rgb, so we just copy the entries here.</div>
+</div>
+<div class="line-block">
+<div class="line">No changes expected in cluster.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevprn.h</div>
+</div>
+<div class="line">___________________________________________________________________</div>
+<div class="line">2011-12-06 13:34:47 -0800</div>
+<div class="line">Marcos H. Woehrmann &lt;<a class="reference external" href="mailto:marcos&#46;woehrmann&#37;&#52;&#48;artifex&#46;com">marcos<span>&#46;</span>woehrmann<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">0b21c79855e8f50a218a478bf9fc9d10e20c4db4</div>
+</div>
+<div class="line-block">
+<div class="line">Partial fix for Bug 692434, removed some of the memcmp() of structures.</div>
+</div>
+<div class="line-block">
+<div class="line">No cluster differences expected.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevpdfg.c</div>
+<div class="line">gs/base/gdevpdti.c</div>
+<div class="line">gs/base/gdevpdts.c</div>
+<div class="line">gs/base/gdevprn.c</div>
+<div class="line">gs/base/gsequivc.h</div>
+<div class="line">gs/base/gsfont.c</div>
+<div class="line">gs/base/gsmatrix.c</div>
+<div class="line">gs/base/gsmatrix.h</div>
+</div>
+<div class="line">_____________________________________________________-</div>
+<div class="line">2011-11-16 10:32:30 -0800</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">6fbdd32889dfa9d318170e63245755057bb8b401</div>
+</div>
+<div class="line-block">
+<div class="line">Save ICC profile in TIFF and PNG device output.</div>
+</div>
+<div class="line-block">
+<div class="line">This addresses Bug 692183. The patch for the TIFF case was not</div>
+<div class="line">quite sufficient due to changes in the device profile structure,</div>
+<div class="line">issues regarding the separations from the tiffsep device, and</div>
+<div class="line">how we handle the case when the output profile is CIELAB.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevpng.c</div>
+<div class="line">gs/base/gdevtifs.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">_________________________________________________________</div>
+<div class="line">2011-11-10 20:11:03 +0000</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:robin&#46;watts&#37;&#52;&#48;artifex&#46;com">robin<span>&#46;</span>watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">d81dffe6142ead8245baacf12f3b2ae4fe20b206</div>
+</div>
+<div class="line-block">
+<div class="line">Squash warnings in MSVC build.</div>
+</div>
+<div class="line-block">
+<div class="line">All self evident, really. Lots of char&#8217;s that should be bytes etc.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevclj.c</div>
+<div class="line">gs/base/gdevpdtw.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gp_wgetv.c</div>
+<div class="line">gs/base/gsicc_cache.c</div>
+<div class="line">gs/base/gxicolor.c</div>
+<div class="line">gs/base/gxipixel.c</div>
+<div class="line">gs/base/sidscale.c</div>
+<div class="line">pcl/pcht.c</div>
+<div class="line">pcl/rtmisc.c</div>
+<div class="line">pl/plchar.c</div>
+<div class="line">pl/plfont.c</div>
+<div class="line">xps/xpspath.c</div>
+</div>
+<div class="line">__________________________________________________________</div>
+<div class="line">2011-08-31 18:39:24 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:Robin&#46;Watts&#37;&#52;&#48;artifex&#46;com">Robin<span>&#46;</span>Watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">1da2a46ed9f6ae0b0afc5fd4417943a36e532171</div>
+</div>
+<div class="line-block">
+<div class="line">More work on bug 690538: introduce macros for color rounding.</div>
+</div>
+<div class="line-block">
+<div class="line">Introduce new macros to gxcvalue.h header file that defines helpful macros</div>
+<div class="line">for colour depth changing.</div>
+</div>
+<div class="line-block">
+<div class="line">COLROUND macros do rounding (16-&gt;n bits), COLDUP macros do bit duplication</div>
+<div class="line">(n-&gt;16 bits). Use these macros in various places throughout the code.</div>
+</div>
+<div class="line-block">
+<div class="line">Also tweak the gx_color_value_to_byte macro to round in the same way.</div>
+</div>
+<div class="line-block">
+<div class="line">Colors for devices that use these functions are now rounded in the same way</div>
+<div class="line">that lcms does.</div>
+</div>
+<div class="line-block">
+<div class="line">Change as many encode_color routines as I can find to use this new code</div>
+<div class="line">rather than simply truncating.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevbit.c</div>
+<div class="line">gs/base/gdevcdj.c</div>
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevdsp.c</div>
+<div class="line">gs/base/gdevperm.c</div>
+<div class="line">gs/base/gdevplan.c</div>
+<div class="line">gs/base/gdevplib.c</div>
+<div class="line">gs/base/gdevpsd.c</div>
+<div class="line">gs/base/gdevrinkj.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gdevxcf.c</div>
+<div class="line">gs/base/gxblend1.c</div>
+<div class="line">gs/base/gxcmap.c</div>
+<div class="line">gs/base/gxcvalue.h</div>
+</div>
+<div class="line">_____________________________________________________________________</div>
+<div class="line">2011-10-20 22:11:00 -0700</div>
+<div class="line">Ray Johnston &lt;<a class="reference external" href="mailto:ray&#46;johnston&#37;&#52;&#48;artifex&#46;com">ray<span>&#46;</span>johnston<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">7ebbcae24116a37b2f32f52bc7330383752f903f</div>
+</div>
+<div class="line-block">
+<div class="line">Fix bug 692618. Clear pointers to compressed color structured in pdf14 device.</div>
+</div>
+<div class="line-block">
+<div class="line">After the devn compressed color structures were freed, the pointers were not reset to</div>
+<div class="line">NULL so subsequent GC would trace into freed or re-used memory. -Z? showed errors and,</div>
+<div class="line">depending on memory contents and usage could result in a seg fault. Also add &#8216;mem&#8217;</div>
+<div class="line">element to the compressed_color_list structure to be used when freeing to avoid</div>
+<div class="line">confusion about the correct allocator.</div>
+</div>
+<div class="line-block">
+<div class="line">Issue with non-encodable colors is _not_ fixed by this, only the segfault.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.c</div>
+<div class="line">gs/base/gdevdevn.h</div>
+<div class="line">gs/base/gdevp14.c</div>
+</div>
+<div class="line">______________________________________________________________________</div>
+<div class="line">2011-09-23 23:23:02 -0700</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">545cd811c4a2c33c472f302088a10a807e98d9be</div>
+</div>
+<div class="line-block">
+<div class="line">Fix for Bug 692339</div>
+</div>
+<div class="line-block">
+<div class="line">Threshold creation code in the tiffsep1 code was not handled correctly when the dorder was a simple form</div>
+<div class="line">that included a repeated shift.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevtsep.c</div>
+</div>
+<div class="line">_________________________________________________________________-</div>
+<div class="line">2011-08-10 10:27:03 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">edd256d908da6ad77d3e595febffcc3717d5e900</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 692367: add gs_memory_t arg to finalize method</div>
+</div>
+<div class="line-block">
+<div class="line">By adding a gs_memory_t argument to the object &#8220;finalize&#8221; method, we can</div>
+<div class="line">dispense with the pointer-pun hackery that stores the memory context</div>
+<div class="line">in an extra struct array element of the IO device table, so it&#8217;s availabe</div>
+<div class="line">in the finalize method.</div>
+</div>
+<div class="line-block">
+<div class="line">Although primarily addresses one hack, this commit touches a number of files</div>
+<div class="line">because it affects every object with a &#8220;finalize&#8221; method.</div>
+</div>
+<div class="line-block">
+<div class="line">This also addresses an error condition cleanup of a partially create IO</div>
+<div class="line">device table.</div>
+</div>
+<div class="line-block">
+<div class="line">No cluster differences.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevdevn.c</div>
+</div>
+<div class="line">__________________________________________________________________</div>
+<div class="line">Michael Vrhel &lt;<a class="reference external" href="mailto:michael&#46;vrhel&#37;&#52;&#48;artifex&#46;com">michael<span>&#46;</span>vrhel<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">d3302b1176683dc9e4cb5cb8ed9f42bffa0888ee</div>
+</div>
+<div class="line-block">
+<div class="line">Fix for bug 692204. This forces DeviceGray to K only for CMYK devices.</div>
+</div>
+<div class="line-block">
+<div class="line">This is performed by default now. To return to a composite type mapping</div>
+<div class="line">that makes use of the true DeviceProfile, use the option -dDeviceGrayToK=false.</div>
+<div class="line">This commit includes a fix to rename the device member variable</div>
+<div class="line">icc_array to icc_struct to reduce confusion in reading the code.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/Resource/Init/gs_lev2.ps</div>
+<div class="line">gs/base/gdevp14.c</div>
+<div class="line">gs/base/gdevpdfk.c</div>
+<div class="line">gs/base/gdevtfnx.c</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/gdevvec.c</div>
+</div>
+<div class="line">__________________________________________________________________-</div>
+<div class="line">2011-07-06 13:30:23 +0100</div>
+<div class="line">Chris Liddell &lt;<a class="reference external" href="mailto:chris&#46;liddell&#37;&#52;&#48;artifex&#46;com">chris<span>&#46;</span>liddell<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">e5a37634a8e15a945e7f5ea4aca68ab8e1e34d3a</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 692318: Ensure that compiler flags are used for the &#8220;aux&#8221; files.</div>
+</div>
+<div class="line-block">
+<div class="line">For a normal host build, the build tools (genarch, genconf etc) should be</div>
+<div class="line">built with the same compiler flags as Ghostscript/Ghost*. In this case</div>
+<div class="line">the integer type used for encoded color values was not getting used</div>
+<div class="line">when compiling genarch.</div>
+</div>
+<div class="line-block">
+<div class="line">Also, add a warning when tiffsep does have to skip one or more plates, with</div>
+<div class="line">a pointer to the relevant documentation. Lastly, update the doc to reflect</div>
+<div class="line">that the contone preview output may not be as expected if the job uses</div>
+<div class="line">overprint.</div>
+</div>
+<div class="line-block">
+<div class="line">No cluster differences expected.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">common/ugcc_top.mak</div>
+<div class="line">gs/base/gdevtsep.c</div>
+<div class="line">gs/base/msvccmd.mak</div>
+<div class="line">gs/base/msvctail.mak</div>
+<div class="line">gs/base/unix-aux.mak</div>
+<div class="line">gs/doc/Devices.htm</div>
+</div>
+<div class="line">______________________________________________________________________</div>
+<div class="line">2011-06-06 22:13:07 -0400</div>
+<div class="line">Alex Cherepanov &lt;<a class="reference external" href="mailto:alex&#46;cherepanov&#37;&#52;&#48;artifex&#46;com">alex<span>&#46;</span>cherepanov<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">8b90a80fe86364c0b6c1cad12cfb241c66943c24</div>
+</div>
+<div class="line-block">
+<div class="line">Bug 688064: Add AdjustWidth=WIDTH</div>
+</div>
+<div class="line-block">
+<div class="line">Extend AdjustWidth option to support adjustment to any width. This option</div>
+<div class="line">now accepts the following values;</div>
+<div class="line">0 - no adjustment, the same as before</div>
+<div class="line">1 - low res fax adjustments, the same as before</div>
+<div class="line">&gt;1 - adjust to the given width, regardless of the document width.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">gs/base/gdevfax.c</div>
+<div class="line">gs/base/gdevpng.c</div>
+<div class="line">gs/base/gdevtifs.c</div>
+<div class="line">gs/base/gdevtifs.h</div>
+<div class="line">gs/base/gxdownscale.c</div>
+<div class="line">gs/base/gxdownscale.h</div>
+<div class="line">gs/base/minftrsz.c</div>
+<div class="line">gs/base/minftrsz.h</div>
+<div class="line">gs/doc/Devices.htm</div>
+</div>
+<div class="line">_____________________________________________________-</div>
+<div class="line">2011-04-22 18:08:10 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:Robin&#46;Watts&#37;&#52;&#48;artifex&#46;com">Robin<span>&#46;</span>Watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">1b3908faa01c7ef6197374a27b1a5861f0a383fe</div>
+</div>
+<div class="line-block">
+<div class="line">Extend downscaling to png devices too (from tiffscaled).</div>
+</div>
+<div class="line-block">
+<div class="line">Extract the code to do downscaling/min feature size from tiffscaled{,8,24}</div>
+<div class="line">into a new gx_downscaler class. Make tiffscaled{,8,24} call this new class</div>
+<div class="line">with no change in functionality.</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">Make png devices call this new code. Only png16m and pnggray are actually</div>
+<div class="line">affected by downscaling though. Add a new pngmonod device to do grayscale</div>
+<div class="line">rendering internally and to downscale/min_feature_size/error diffuse to</div>
+<div class="line">monochrome.</div>
+</div>
+<div class="line">__________________________________________________________</div>
+<div class="line">2011-04-22 18:08:10 +0100</div>
+<div class="line">Robin Watts &lt;<a class="reference external" href="mailto:Robin&#46;Watts&#37;&#52;&#48;artifex&#46;com">Robin<span>&#46;</span>Watts<span>&#64;</span>artifex<span>&#46;</span>com</a>&gt;</div>
+<div class="line">1b3908faa01c7ef6197374a27b1a5861f0a383fe</div>
+</div>
+<div class="line-block">
+<div class="line">Extend downscaling to png devices too (from tiffscaled).</div>
+</div>
+<div class="line-block">
+<div class="line">Extract the code to do downscaling/min feature size from tiffscaled{,8,24}</div>
+<div class="line">into a new gx_downscaler class. Make tiffscaled{,8,24} call this new class</div>
+<div class="line">with no change in functionality.</div>
+</div>
+<div class="line-block">
+<div class="line">Make png devices call this new code. Only png16m and pnggray are actually</div>
+<div class="line">affected by downscaling though. Add a new pngmonod device to do grayscale</div>
+<div class="line">rendering internally and to downscale/min_feature_size/error diffuse to</div>
+<div class="line">monochrome.</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Devicen_change_since_version_9.02.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

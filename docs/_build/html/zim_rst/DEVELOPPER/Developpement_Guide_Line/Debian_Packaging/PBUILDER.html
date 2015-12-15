@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PBUILDER &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pbuilder">
+<h1>PBUILDER<a class="headerlink" href="#pbuilder" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created dimanche 28 décembre 2014</div>
+</div>
+<div class="section" id="environnement">
+<h2>ENVIRONNEMENT<a class="headerlink" href="#environnement" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">→ <a class="reference external" href="http://www.megatunix.com/blog/2012/05/09/using-pbuilder-for-making-debianubuntu-packages/">http://www.megatunix.com/blog/2012/05/09/using-pbuilder-for-making-debianubuntu-packages/</a></div>
+<div class="line">→ <a class="reference external" href="http://wiki.debian.org/PbuilderTricks">http://wiki.debian.org/PbuilderTricks</a></div>
+</div>
+<div class="line-block">
+<div class="line">- apt-cacher-ng | pbuilder | debootstrap | quilt</div>
+<div class="line">- /usr/lib/pbuilder/hooks</div>
+<div class="line">- /var/cache/pbuilder/repo</div>
+<div class="line">- ajout de ne comme extrapackage pour editer les fichiers apres login chrooter</div>
+<div class="line">- ajout du depot atelier obscur manuellement car l&#8217;ajout dans <a class="reference external" href="file:///home/gilles/.pbuilderrc">~/.pbuilderrc</a> EXTRAMIRROR provoque une erreur 403 à la creation de l&#8217;environnement → conflit avec apt-cacher-ng (double port). deactiver httpproxy in <a class="reference external" href="./PBUILDER/pbuilderrc">./pbuilderrc</a> si besoin du depot ao et installer le par chroot</div>
+</div>
+</div>
+<div class="section" id="hooks">
+<h2>HOOKS<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- <a class="reference external" href="file:///usr/lib/pbuilder/hooks/D05deps">/usr/lib/pbuilder/hooks/B90lintian</a></div>
+<div class="line">- <a class="reference external" href="file:///usr/lib/pbuilder/hooks/C10shell">/usr/lib/pbuilder/hooks/C10shell</a></div>
+<div class="line">- <a class="reference external" href="file:///usr/lib/pbuilder/hooks/D05deps">/usr/lib/pbuilder/hooks/D05deps</a></div>
+</div>
+</div>
+<div class="section" id="initialisation">
+<h2>INITIALISATION<a class="headerlink" href="#initialisation" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- <strong>Now we need to initialize the “Packages” file for the empty repo so we can work the first time:</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">dpkg-scanpackages</span> <span class="pre">/var/cache/pbuilder/repo</span> <span class="pre">&gt;</span> <span class="pre">/var/cache/pbuilder/repo/Packages</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">- <strong>initialize the pbuilder images for each OS variant</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">for</span> <span class="pre">arch</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">i386</span> <span class="pre">amd64`</span> <span class="pre">;</span> <span class="pre">do</span> <span class="pre">for</span> <span class="pre">dist</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">sid</span> <span class="pre">wheezy</span> <span class="pre">jessie</span> <span class="pre">saucy</span> <span class="pre">raring</span> <span class="pre">quantal</span> <span class="pre">precise</span> <span class="pre">trusty`</span> <span class="pre">;</span> <span class="pre">do</span> <span class="pre">sudo</span> <span class="pre">DIST=${dist}</span> <span class="pre">ARCH=${arch}</span> <span class="pre">pbuilder</span> <span class="pre">--create</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc</span> <span class="pre">--architecture</span> <span class="pre">${arch}</span> <span class="pre">--distribution</span> <span class="pre">${dist}</span> <span class="pre">;</span> <span class="pre">done</span> <span class="pre">;</span> <span class="pre">done</span> <span class="pre">|tee</span> <span class="pre">/tmp/baseimage_create.log</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">for</span> <span class="pre">arch</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">i386</span> <span class="pre">amd64`</span> <span class="pre">;</span> <span class="pre">do</span> <span class="pre">for</span> <span class="pre">dist</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">wheezy`;</span> <span class="pre">do</span> <span class="pre">sudo</span> <span class="pre">DIST=${dist}</span> <span class="pre">ARCH=${arch}</span> <span class="pre">pbuilder</span> <span class="pre">--create</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc</span> <span class="pre">--architecture</span> <span class="pre">${arch}</span> <span class="pre">--distribution</span> <span class="pre">${dist}</span>&nbsp; <span class="pre">;</span> <span class="pre">done</span> <span class="pre">;</span> <span class="pre">done</span> <span class="pre">|tee</span> <span class="pre">/tmp/baseimage_create.log</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">for</span> <span class="pre">arch</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">amd64`</span> <span class="pre">;</span> <span class="pre">do</span> <span class="pre">for</span> <span class="pre">dist</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">wheezy`;</span> <span class="pre">do</span> <span class="pre">sudo</span> <span class="pre">DIST=${dist}</span> <span class="pre">ARCH=${arch}</span> <span class="pre">pbuilder</span> <span class="pre">--create</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc</span> <span class="pre">--architecture</span> <span class="pre">${arch}</span> <span class="pre">--distribution</span> <span class="pre">${dist}</span> <span class="pre">;</span> <span class="pre">done</span> <span class="pre">;</span> <span class="pre">done</span> <span class="pre">|tee</span> <span class="pre">/tmp/baseimage_create.log</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">DIST=wheezy</span> <span class="pre">ARCH=amd64</span> <span class="pre">pbuilder</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc</span> <span class="pre">--create</span> <span class="pre">--architecture</span> <span class="pre">amd64</span> <span class="pre">--distribution</span> <span class="pre">testing</span> <span class="pre">|tee</span> <span class="pre">/tmp/baseimage_create.log</span></tt></div>
+</div>
+</div>
+<div class="section" id="build">
+<h2>BUILD<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">- <strong>build any debian source package</strong></div>
+<div class="line-block">
+<div class="line">that has a “debian” directory within it,</div>
+<div class="line">run the following, making sure your in the dir</div>
+<div class="line">that CONTAINS the “debian” directory</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">pdebuild</span> <span class="pre">--architecture</span> <span class="pre">&lt;i386|amd64&gt;</span> <span class="pre">--buildresult</span> <span class="pre">/tmp</span> <span class="pre">--pbuilderroot</span> <span class="pre">&quot;sudo</span> <span class="pre">DIST=&lt;sid|wheezy|jessie|trusty|precise|quantal|raring|saucy&gt;</span> <span class="pre">ARCH=&lt;i386|amd64&gt;&quot;</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">pdebuild</span> <span class="pre">--architecture</span> <span class="pre">&lt;i386|amd64&gt;</span>&nbsp; <span class="pre">--buildresult</span> <span class="pre">/tmp</span> <span class="pre">--pbuilderroot</span> <span class="pre">&quot;sudo</span> <span class="pre">DIST=&lt;unstable|stable|testing|hardy|lucid|natty|oneiric|precise&gt;</span> <span class="pre">ARCH=&lt;i386|amd64&gt;&quot;</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">pdebuild</span> <span class="pre">--architecture</span> <span class="pre">amd64</span>&nbsp; <span class="pre">--buildresult</span> <span class="pre">/tmp</span> <span class="pre">--pbuilderroot</span> <span class="pre">&quot;sudo</span> <span class="pre">DIST=&lt;wheezy</span> <span class="pre">|</span> <span class="pre">jessie&gt;</span> <span class="pre">ARCH=amd64&quot;</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">ou</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">pdebuild</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc</span> <span class="pre">--architecture</span> <span class="pre">amd64</span> <span class="pre">--pbuilderroot</span> <span class="pre">&quot;sudo</span> <span class="pre">DIST=wheezy</span> <span class="pre">ARCH=amd64&quot;</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">- <strong>to UPDATE</strong></div>
+<div class="line-block">
+<div class="line">your distroot’s to current patches do the following:</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">for</span> <span class="pre">arch</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">amd64`</span> <span class="pre">;</span> <span class="pre">do</span> <span class="pre">for</span> <span class="pre">dist</span> <span class="pre">in</span> <span class="pre">`echo</span> <span class="pre">wheezy`</span> <span class="pre">;</span> <span class="pre">do</span> <span class="pre">sudo</span> <span class="pre">DIST=${dist}</span> <span class="pre">ARCH=${arch}</span> <span class="pre">pbuilder</span> <span class="pre">--update</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc;</span> <span class="pre">done</span> <span class="pre">;</span> <span class="pre">done</span> <span class="pre">|tee</span> <span class="pre">/tmp/baseimage_update.log</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line">- to <strong>chroot</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">DIST=wheezy</span> <span class="pre">ARCH=amd64</span> <span class="pre">pbuilder</span> <span class="pre">--login</span> <span class="pre">--save-after-login</span> <span class="pre">--configfile</span> <span class="pre">/home/gilles/.pbuilderrc</span> <span class="pre">--architecture</span> <span class="pre">amd64</span> <span class="pre">--distribution</span> <span class="pre">wheezy</span></tt></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PBUILDER</a><ul>
+<li><a class="reference internal" href="#environnement">ENVIRONNEMENT</a></li>
+<li><a class="reference internal" href="#hooks">HOOKS</a></li>
+<li><a class="reference internal" href="#initialisation">INITIALISATION</a></li>
+<li><a class="reference internal" href="#build">BUILD</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../../_sources/zim_rst/DEVELOPPER/Developpement_Guide_Line/Debian_Packaging/PBUILDER.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

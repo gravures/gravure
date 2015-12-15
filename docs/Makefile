@@ -50,6 +50,7 @@ clean:
 	rm -rf $(BUILDDIR)/*
 
 html:
+	$ python rst_exporter.py --export 'zim_wiki/notebook.zim' --format 'rst' --recursive --overwrite -o ./zim_rst
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

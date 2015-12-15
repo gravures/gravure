@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16 bit OUTPUT &mdash; Gravure trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <link rel="top" title="Gravure trunk documentation" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bit-output">
+<h1>16 bit OUTPUT<a class="headerlink" href="#bit-output" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created mercredi 11 septembre 2013</div>
+</div>
+<div class="section" id="grayscale-levels-problem-in-16-bit-rasters">
+<h2>grayscale levels problem in 16-bit rasters<a class="headerlink" href="#grayscale-levels-problem-in-16-bit-rasters" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://comments.gmane.org/gmane.comp.printing.ghostscript.devel/2584">http://comments.gmane.org/gmane.comp.printing.ghostscript.devel/2584</a></div>
+</div>
+<div class="line-block">
+<div class="line">Here&#8217;s how I&#8217;m setting up the gx_device:</div>
+</div>
+<div class="line-block">
+<div class="line">pdev-&gt;color_info.depth = 16;</div>
+<div class="line">pdev-&gt;color_info.max_gray = 65535;</div>
+<div class="line">pdev-&gt;color_info.max_color = 65535;</div>
+<div class="line">pdev-&gt;color_info.dither_grays = 65536;</div>
+<div class="line">pdev-&gt;color_info.dither_colors = 65536;</div>
+</div>
+<div class="line-block">
+<div class="line">Can someone please explain what I am doing wrong?</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line">Close, but the &#8216;depth&#8217; is the total number of bits, so it should be</div>
+</div>
+<div class="line-block">
+<div class="line">64 for 4 16 bit channels.</div>
+</div>
+<div class="line-block">
+<div class="line">Also you need to set num_components (4 for CMYK) and polarity (a</div>
+<div class="line">gx_color_polarity_t enum, GX_CM_POLARITY_SUBTRACTIVE for CMYK)</div>
+</div>
+<div class="line-block">
+<div class="line">Your initialization looks plausible. Note that for gradients and so on</div>
+<div class="line">you need to set a smaller smoothness parameter than the default to get</div>
+<div class="line">meaningful 16 bit output. Compare with the png48 device.I am experimenting with Ghostscript trying to create 16-bit output for grayscale, RGB and CMYK. The number of discrete gray levels appears to</div>
+<div class="line">be wrong.</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line-block">
+<div class="line">I looked through the code for png48 and didn&#8217;t see anything resembling a smoothness parameter. Why is grayscale only affected? RGB look ok</div>
+</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line">&gt; For 16 bit, I&#8217;d recommend a smaller [smoothness] value such as 0.0005</div>
+</div>
+<div class="line-block">
+<div class="line">It&#8217;s a bug that the png48 device doesn&#8217;t set this. Ray, do you have</div>
+<div class="line">any suggestions how to override the default? Can the open_device</div>
+<div class="line">method just call gs_setsmoothness()?</div>
+<div class="line">_______________________________________________________________________________</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">16 bit OUTPUT</a><ul>
+<li><a class="reference internal" href="#grayscale-levels-problem-in-16-bit-rasters">grayscale levels problem in 16-bit rasters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/16_bit_OUTPUT.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../index.html">Gravure trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
