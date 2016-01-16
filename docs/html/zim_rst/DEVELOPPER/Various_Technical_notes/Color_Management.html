@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CMM &mdash; {g}: gravure - free rip project for gnu/linux</title>
+    
+    <link rel="stylesheet" href="../../../_static/gravure.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="{g}: gravure - free rip project for gnu/linux" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="claim">{g}: gravure, free rip project for gnu / linux</div>
+          <p class="logo"><a href="../../../index.html">
+            <img class="logo" src="../../../_static/{g}.png" alt="Logo"/>
+          </a></p>
+        <div class="headertitle"><a
+          href="../../../index.html">{g}: gravure - free rip project for gnu/linux</a>
+        </div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href='..../home'>Home</a>
+          <a href=''>Documentation</a>
+          <a href='..../timeline'>Timeline</a>
+          <a href='..../dir?ci=tip'>Code</a>
+          <a href='..../brlist'>Branches</a>
+          <a href='..../taglist'>Tags</homea>
+          <a href='..../reportlist'>Tickets</a>
+          <a href='..../wiki'>Wiki</a>
+          <a href='..../setup'>Admin</a>
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cmm">
+<h1>CMM<a class="headerlink" href="#cmm" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created dimanche 23 décembre 2012</div>
+</div>
+<div class="section" id="open-icc">
+<h2>Open ICC<a class="headerlink" href="#open-icc" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.freedesktop.org/wiki/OpenIcc">http://www.freedesktop.org/wiki/OpenIcc</a></div>
+<div class="line"><a class="reference external" href="http://lists.freedesktop.org/archives/openicc/2012q1/004509.html">http://lists.freedesktop.org/archives/openicc/2012q1/004509.html</a></div>
+</div>
+<div class="section" id="michael-sweet-msweet-at-apple-com">
+<h3>Michael Sweet msweet at apple.com<a class="headerlink" href="#michael-sweet-msweet-at-apple-com" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">Wed Jan 18 10:34:55 PST 2012</div>
+</div>
+<div class="line-block">
+<div class="line">Previous message: [Openicc] printer, driver, CUPS, PPD, printing GUI, ICC-profiles, colord, Oyranos, taxi....</div>
+<div class="line">Next message: [Openicc] printer, driver, CUPS, PPD, printing GUI, ICC-profiles, colord, Oyranos, taxi....</div>
+<div class="line">Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]</div>
+</div>
+<div class="line-block">
+<div class="line">On Jan 18, 2012, at 9:21 AM, Kai-Uwe Behrmann wrote:</div>
+<div class="line">&gt; ...</div>
+<div class="line">&gt; This is fine for selecting existing ICC profiles for well supported media. We want to create new ICC profiles for unsupported media, which likely need new driver calibration settings, as Robert and Edmund pointed out.</div>
+</div>
+<div class="line-block">
+<div class="line">NOTE: IPP Everywhere DOES NOT DEFINE IMPLEMENTATION DETAILS SUCH AS &#8220;DRIVERS&#8221;.  In fact, the whole goal is to eliminate drivers and have &#8220;smarter&#8221; printers.</div>
+</div>
+<div class="line-block">
+<div class="line">So, if you have a new media you want the printer to advertise, you use Set-Printer-Attributes to register it with the printer, just like for profiles.</div>
+</div>
+</div>
+</div>
+<div class="section" id="oyranos">
+<h2>Oyranos<a class="headerlink" href="#oyranos" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.oyranos.org/2012/02/linux-printing/">http://www.oyranos.org/2012/02/linux-printing/</a></div>
+<div class="line">______________________________________________________________________&#8211;</div>
+<div class="line">On 01/29/2012 11:53 AM, edmund ronald wrote:</div>
+<div class="line">&gt; Michael,</div>
+<div class="line">&gt;</div>
+<div class="line">&gt;   <em>How</em> does CUPS on non-mac systems know about ICC profiles?</div>
+<div class="line">&gt;   I have found your very clear and informative post here</div>
+<div class="line">&gt; <a class="reference external" href="http://lists.freedesktop.org/archives/openicc/2005q2/000208.html">http://lists.freedesktop.org/archives/openicc/2005q2/000208.html</a></div>
+<div class="line">&gt; which indicates that the <a href="#id1"><span class="problematic" id="id2">*</span></a>cupsiccprofile keyword in the PPD is the</div>
+<div class="line">&gt; appropriate declaration on the Mac. Is this now generally supported?</div>
+<div class="line">&gt;   Also, do non-mac distribs now have a filter called up by CUPS which</div>
+<div class="line">&gt; then does the appropriate profile conversion?</div>
+</div>
+<div class="line-block">
+<div class="line">AFAIK the only filter which does thid under Linux is gstoraster, a</div>
+<div class="line">Ghostscript-based filter which turns PDF or PostScript into CUPS Raster.</div>
+<div class="line">The filter is part of the Ghostscript package and to actually use it it</div>
+<div class="line">must be taken care that its cost factors in the MIME conversion rules</div>
+<div class="line">are lower than the factors of pdftoraster (Poppler-based filter).</div>
+<div class="line">gstoraster reads out the <a href="#id3"><span class="problematic" id="id4">*</span></a>cupsiccprofile keywords in the PPD and makes</div>
+<div class="line">Ghostscript applying the appropriate ICC profile if the profile is</div>
+<div class="line">actually installed.</div>
+</div>
+<div class="line-block">
+<div class="line">This naturally works only for CUPS-Rster based drivers, not for native</div>
+<div class="line">PostScript printers or for foomatic-rip-based drivers for example.</div>
+<div class="line">______________________________________________________________________</div>
+</div>
+<div class="line-block">
+<div class="line">[Openicc] Gutenprint mission ... Printer profiling workflow</div>
+<div class="line">Jan-Peter Homann homann at colormanagement.de</div>
+<div class="line">Tue May 15 01:30:12 PDT 2012</div>
+</div>
+<div class="line-block">
+<div class="line">Previous message: [Openicc] Gutenprint mission as Linux moves towards color managed workflows</div>
+<div class="line">Next message: [Openicc] Gutenprint mission ... Printer profiling workflow</div>
+<div class="line">Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]</div>
+</div>
+<div class="line-block">
+<div class="line">Hello to all, some feedback from a non-developer:</div>
+</div>
+<div class="line-block">
+<div class="line">The color transformation from the document space to printer colorspace</div>
+<div class="line">can be done in several places:</div>
+<div class="line">- local application like e.g. gimp, scribus or other</div>
+<div class="line">- CUPS filter like e.g. GhostScript, Poppler</div>
+<div class="line">- Printer Driver like e.g. Turoprint</div>
+</div>
+<div class="line-block">
+<div class="line">For working with printer profiles, it is necessary, that the whole chain</div>
+<div class="line">application-&gt;CUPS-Filter-&gt;Driver is transparent to the enduser, and that</div>
+<div class="line">the enduser can be shure, that there is no double or triple</div>
+<div class="line">transformation of print data in the chain. Reaching such transparency is</div>
+<div class="line">a very challinging tasks, which has not been solved till today in Mac OS</div>
+<div class="line">X or Windows environments incl. Adobe applications and drivers of the</div>
+<div class="line">main printer vendor.</div>
+</div>
+<div class="line-block">
+<div class="line">Typical tasks for endusers are:</div>
+<div class="line">1) decide, where the printer profile should be used (application,</div>
+<div class="line">CUPS/Filter, Driver)</div>
+<div class="line">2) Configure the chain, to avoid double or triple color transformations</div>
+<div class="line">3) create or choose a printing queue / driver setting which relates to</div>
+<div class="line">the printer profile</div>
+<div class="line-block">
+<div class="line">3a. Install a standard printer profile for this queue / setting</div>
+</div>
+<div class="line">(This could be also a printer profile which have embedded driver settings)</div>
+<div class="line-block">
+<div class="line">3b. Optionally print a testchart  for profiling</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">From my experience of making printer profiles since 15 years, it makes</div>
+</div>
+<div class="line">a lot of sense, that the tasks of:</div>
+<div class="line">- choosing the driver setting (optional with calibration / setup of inkl</div>
+<div class="line">limits, ...)</div>
+<div class="line">- printing the testchart</div>
+<div class="line">- measuring the testchart and calculating the printer profile</div>
+<div class="line">- connecting the printer profile and the driver settings</div>
+</div>
+<div class="line-block">
+<div class="line">are done in very controlled environment. If possible I would prefer a</div>
+<div class="line">solution which by passes CUPS and any filters and sends the testchart</div>
+<div class="line">for profiling as bitmap data direct to the printer driver (e.g.</div>
+<div class="line">Gutenprint).</div>
+<div class="line">(For shure it helps very much, if we have optional a controlled way to</div>
+<div class="line">send profiling testcharts through the CUPS / Filter chain. If this is</div>
+<div class="line">the case, I would recommend, that the printed testchart has an</div>
+<div class="line">additional control slug / text line, which documents the color settings</div>
+<div class="line">of the CUPS queue and all involved filters)</div>
+</div>
+<div class="line-block">
+<div class="line">In a LINUX environment with ArgyllCMS and Gutenprint, I would prefer a</div>
+<div class="line">special application, which guides the user through the differnt steps</div>
+<div class="line">for profiling the printer and which has a direct connection to ArgyllCMS</div>
+<div class="line">and Gutenprint.</div>
+</div>
+<div class="line-block">
+<div class="line">A basic scenario for a first version of such applicazion could be:</div>
+<div class="line">- Choose a predefined Gutenprint setup (creating such setups and</div>
+<div class="line">calibration is a task for a future version)</div>
+<div class="line">- Choose your measurement instrument</div>
+<div class="line">- Choose the testchart</div>
+<div class="line">- Send the testchart as bitmap directly to Gutenprint</div>
+<div class="line">- Measure the testchart</div>
+<div class="line">- Calculate the printer profile automatically with ArgyllCMS</div>
+<div class="line">- Embedd the Gutenprint Settings as Metadata into the printer profile</div>
+</div>
+<div class="line-block">
+<div class="line">Perfect would be, when the printer profile would be automatically</div>
+<div class="line">configured in the printing enviroment. But this tasl is very dependend</div>
+<div class="line">from the choosen printing environment. If Oyranos or colord is part of</div>
+<div class="line">the printing enviroment and connected to the profiling application, the</div>
+<div class="line">automatic configuration of the printer profile should be possible.</div>
+</div>
+<div class="line-block">
+<div class="line">Best regards</div>
+<div class="line">Jan-Peter</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">GRAVURE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../The_Gravure_Project.html">The Gravure Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python gravure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="../../../search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+            <p class="searchtip" style="font-size: 90%">
+                Enter search terms or a module, class or function name.
+            </p>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="../../../genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+              <br/>
+              <a href="../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/Color_Management.txt"
+                rel="nofollow">Show Source</a>
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

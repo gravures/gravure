@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16 bit OUTPUT &mdash; {g}: gravure - free rip project for gnu/linux</title>
+    
+    <link rel="stylesheet" href="../../../../_static/gravure.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="{g}: gravure - free rip project for gnu/linux" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="claim">{g}: gravure, free rip project for gnu / linux</div>
+          <p class="logo"><a href="../../../../index.html">
+            <img class="logo" src="../../../../_static/{g}.png" alt="Logo"/>
+          </a></p>
+        <div class="headertitle"><a
+          href="../../../../index.html">{g}: gravure - free rip project for gnu/linux</a>
+        </div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href='..../home'>Home</a>
+          <a href=''>Documentation</a>
+          <a href='..../timeline'>Timeline</a>
+          <a href='..../dir?ci=tip'>Code</a>
+          <a href='..../brlist'>Branches</a>
+          <a href='..../taglist'>Tags</homea>
+          <a href='..../reportlist'>Tickets</a>
+          <a href='..../wiki'>Wiki</a>
+          <a href='..../setup'>Admin</a>
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bit-output">
+<h1>16 bit OUTPUT<a class="headerlink" href="#bit-output" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Created mercredi 11 septembre 2013</div>
+</div>
+<div class="section" id="grayscale-levels-problem-in-16-bit-rasters">
+<h2>grayscale levels problem in 16-bit rasters<a class="headerlink" href="#grayscale-levels-problem-in-16-bit-rasters" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://comments.gmane.org/gmane.comp.printing.ghostscript.devel/2584">http://comments.gmane.org/gmane.comp.printing.ghostscript.devel/2584</a></div>
+</div>
+<div class="line-block">
+<div class="line">Here&#8217;s how I&#8217;m setting up the gx_device:</div>
+</div>
+<div class="line-block">
+<div class="line">pdev-&gt;color_info.depth = 16;</div>
+<div class="line">pdev-&gt;color_info.max_gray = 65535;</div>
+<div class="line">pdev-&gt;color_info.max_color = 65535;</div>
+<div class="line">pdev-&gt;color_info.dither_grays = 65536;</div>
+<div class="line">pdev-&gt;color_info.dither_colors = 65536;</div>
+</div>
+<div class="line-block">
+<div class="line">Can someone please explain what I am doing wrong?</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line">Close, but the &#8216;depth&#8217; is the total number of bits, so it should be</div>
+</div>
+<div class="line-block">
+<div class="line">64 for 4 16 bit channels.</div>
+</div>
+<div class="line-block">
+<div class="line">Also you need to set num_components (4 for CMYK) and polarity (a</div>
+<div class="line">gx_color_polarity_t enum, GX_CM_POLARITY_SUBTRACTIVE for CMYK)</div>
+</div>
+<div class="line-block">
+<div class="line">Your initialization looks plausible. Note that for gradients and so on</div>
+<div class="line">you need to set a smaller smoothness parameter than the default to get</div>
+<div class="line">meaningful 16 bit output. Compare with the png48 device.I am experimenting with Ghostscript trying to create 16-bit output for grayscale, RGB and CMYK. The number of discrete gray levels appears to</div>
+<div class="line">be wrong.</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line-block">
+<div class="line">I looked through the code for png48 and didn&#8217;t see anything resembling a smoothness parameter. Why is grayscale only affected? RGB look ok</div>
+</div>
+<div class="line">____________________________________________________________________</div>
+<div class="line">&gt; For 16 bit, I&#8217;d recommend a smaller [smoothness] value such as 0.0005</div>
+</div>
+<div class="line-block">
+<div class="line">It&#8217;s a bug that the png48 device doesn&#8217;t set this. Ray, do you have</div>
+<div class="line">any suggestions how to override the default? Can the open_device</div>
+<div class="line">method just call gs_setsmoothness()?</div>
+<div class="line">_______________________________________________________________________________</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro.html">GRAVURE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../The_Gravure_Project.html">The Gravure Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python gravure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="../../../../search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+            <p class="searchtip" style="font-size: 90%">
+                Enter search terms or a module, class or function name.
+            </p>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="../../../../genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+              <br/>
+              <a href="../../../../_sources/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/16_bit_OUTPUT.txt"
+                rel="nofollow">Show Source</a>
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer">
+        &copy; Copyright 2015, Atelier Obscur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>
