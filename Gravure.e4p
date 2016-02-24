@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project Gravure -->
-<!-- Saved: 2015-12-07, 09:41:08 -->
-<!-- Copyright (C) 2015 Gilles Coissac, gilles@atelierobscur.org -->
+<!-- Saved: 2016-02-23, 11:57:28 -->
+<!-- Copyright (C) 2016 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
   <Hash>392578d70faf1893959699a9a8b4af82454dbca7</Hash>
@@ -70,6 +70,45 @@
     <Source>carray3k-0.6/persistence.rst</Source>
     <Source>carray3k-0.6/setup.py</Source>
     <Source>distribute_setup.py</Source>
+    <Source>docs/api.rst</Source>
+    <Source>docs/conf.py</Source>
+    <Source>docs/gravure.core.property.rst</Source>
+    <Source>docs/gravure.halftone.spotfunctions.rst</Source>
+    <Source>docs/index.rst</Source>
+    <Source>docs/intro.rst</Source>
+    <Source>docs/rst_exporter.py</Source>
+    <Source>docs/zim_rst/DEVELOPPER.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Design_Documentations.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Developpement_Guide_Line.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Developpement_Guide_Line/Debian_Packaging.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Developpement_Guide_Line/Debian_Packaging/PBUILDER.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Gravure_Ghostscript_device.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Gravure_Ghostscript_device/Building_ghostsctipt.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Gravure_Ghostscript_device/NOTES.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/THresold_Array_Generator.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/THresold_Array_Generator/MOIRE.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/CUPS.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/CUPS/JDF.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/CUPS/PPD.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Color_Management.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/16_bit_OUTPUT.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Devicen_change_since_version_9.02.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Halftoning.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Line_thickness.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Making_a_pdf_grayscale_with_ghostscript.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Raster_object_tagging.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Wts_&amp;_genordered.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Gutenprint_library.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Imposition.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Interesting_Graphic_Library.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Postscript.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Python.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Tonal_Reproduction_Curve.rst</Source>
+    <Source>docs/zim_rst/Design_Documentations.rst</Source>
+    <Source>docs/zim_rst/The_Gravure_Project.rst</Source>
+    <Source>ez_setup.py</Source>
     <Source>gravure/PARAM.py</Source>
     <Source>gravure/__init__.py</Source>
     <Source>gravure/core/__init__.py</Source>
@@ -105,7 +144,9 @@
     <Source>gravure/tools/__init__.py</Source>
     <Source>gravure/tools/am_screen_builder.py</Source>
     <Source>gravure/tools/fm_screener.py</Source>
+    <Source>gravure/tools/hclut2icc.py</Source>
     <Source>gravure/tools/mpl_widgets.py</Source>
+    <Source>gravure/version.py</Source>
     <Source>pdfminer3k-1.3.0/build_cmap.py</Source>
     <Source>pdfminer3k-1.3.0/pdfminer/__init__.py</Source>
     <Source>pdfminer3k-1.3.0/pdfminer/arcfour.py</Source>
@@ -143,6 +184,7 @@
     <Source>ressources/__init__.py</Source>
     <Source>ressources/calibrate/GrayTestPatch.py</Source>
     <Source>ressources/calibrate/ruler.py</Source>
+    <Source>rundev.py</Source>
     <Source>setup.py</Source>
     <Source>src/CairoChart.py</Source>
     <Source>src/cinepaint_catmul/cinepaint_curve.c</Source>

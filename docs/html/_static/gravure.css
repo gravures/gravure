@@ -13,15 +13,12 @@
 /* BASELINE.CSS						     */
 /* --------------------------------------------------------- */
 
-body { font-size: 12px; line-height: 1.3333333333333333em; }
-h1, h2, h3, h4, h5, h6, p, blockquote {font-size:1em; line-height:1.3333333333333333em; margin-bottom:1.3333333333333333em}
-h1 { font-size: 3em; line-height: 0.8888888888888888em; margin-top: -0em; margin-bottom: 0.4444444444444444em; }
-h2 { font-size: 2em; line-height: 1.3333333333333333em; margin-top: -0em; margin-bottom: 0.6666666666666666em; 
-	 font-weight:bolder;
-	 letter-spacing : .05em;
-	 }
-h3 { font-size: 1.5em; line-height: 0.8888888888888888em; margin-top: -0em; margin-bottom: 0.8888888888888888em;  }
-h4 { font-size: 1.2em; line-height: 1.1111111111111112em; margin-top: -0em; margin-bottom: 1.1111111111111112em; }
+body { font-size: 16px; line-height: 1.3333333333333333em; }
+h1, h2, h3, h4, h5, h6, p, blockquote {font-size:1em; line-height:1.3333333333333333em; margin-bottom:1.3333333333333333em; }
+h1 { font-size: 1.8em; line-height: 0.8888888888888888em; margin-top: -0em; margin-bottom: 0.4444444444444444em; }
+h2 { font-size: 1.4em; line-height: 1.3333333333333333em; margin-top: -0em; margin-bottom: 0.6666666666666666em; letter-spacing : .05em;}
+h3 { font-size: 1.2em; line-height: 0.8888888888888888em; margin-top: -0em; margin-bottom: 0.8888888888888888em;  }
+h4 { font-size: 1.1em; line-height: 1.1111111111111112em; margin-top: -0em; margin-bottom: 1.1111111111111112em; }
 h5 { font-size: 1em; line-height: 1.3333333333333333em; margin-top: -0em; margin-bottom: 1.3333333333333333em; }
 h6 { font-size: 1em; line-height: 1.3333333333333333em; margin-top: -0em; margin-bottom: 1.3333333333333333em; }
 * {
@@ -68,13 +65,13 @@ body {
 
 
 div.header, div.content, div.footer {
-  width: 956px;/*70em;*/
-  margin-left: 0;
+  width:956px;
+  margin-left: 0px;
   margin-right: auto;
 }
 
 div.header-wrapper {
-  background: #000000 url(bgtop.png) top left repeat-x;
+  background: #555555;
   border-bottom: 3px solid #2e3436;
 }
 
@@ -112,19 +109,10 @@ div.bodywrapper a, div.footer a {
     margin-left: 1.5em;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
   font-family: "Helvetica", Arial, sans-serif;
   font-weight: bold;
   color: #333333;
-}
-
-h1 {
-  color: #222222;
-}
-
-h2 {
-  padding-bottom: .5em;
-  border-bottom: 1px solid #333333;
 }
 
 a.headerlink {
@@ -175,27 +163,13 @@ div.header {
   padding-bottom: 2px;
 }
 
-/* The login status message in the top right-hand corner */
+/* The message in the top left-hand corner */
 div.claim {
   display: block;
   text-align: left;
   padding: 6px 6px 2px 16px;
   vertical-align: bottom;
   font-size: 1em;
-  font-weight: normal;
-  min-width: 200px;
-  white-space: nowrap;
-  color: white;
-  font-family: "Helvetica", Arial, sans-serif;
-}
-
-/* The login status message in the top right-hand corner */
-div.status {
-  display: float;
-  text-align: right;
-  padding: 6px 6px 2px 0;
-  vertical-align: bottom;
-  font-size: 0.8em;
   font-weight: normal;
   min-width: 200px;
   white-space: nowrap;
@@ -239,7 +213,7 @@ p.logo {
   text-align: center;
   vertical-align: bottom;
   font-weight: bold;
-  color: #000;
+  /*color: #000;*/
   min-width: 200px;
   padding-left: 12px;
   margin:0px;
@@ -261,8 +235,8 @@ div.content-wrapper {
 }
 
 div.document {
-  width: 638px;/*50em;*/
-  /*float: left;*/
+  width:638px;
+  float: left;
 }
 
 div.body {
@@ -270,9 +244,6 @@ div.body {
   text-align: left;
 }
 
-div.document h1 {
-  line-height: 120%;
-}
 
 div.document ul {
   margin: 1.3333333333em;
@@ -318,13 +289,6 @@ div.document div.code-block-caption span.caption-number {
 div.document div.code-block-caption span.caption-text {
 }
 
-div.document h2 {
-  margin-top: .7em;
-}
-
-div.document p {
-  margin-bottom: .5em;
-}
 
 div.document li.toctree-l1 {
   margin-bottom: 1em;
@@ -335,7 +299,7 @@ div.document .descname {
 }
 
 div.document .sig-paren {
-    /*font-size: larger;*/
+    font-size: larger;
 }
 
 div.document .docutils.literal {
@@ -360,9 +324,8 @@ div.document ol {
 /* Sidebar */
 
 div.sidebar {
-  width: 318px;/*20em;*/
-  float: right;
-  font-size: .9em;
+  width: 318px;
+  float: left;
 }
 
 div.sidebar a, div.header a {
@@ -376,7 +339,7 @@ div.sidebar a:hover, div.header a:hover {
 div.sidebar h3 {
   color: #2e3436;
   text-transform: uppercase;
-  /*font-size: 130%;*/
+  font-size: 100%;
   /*letter-spacing: .1em;*/
 }
 
@@ -390,7 +353,7 @@ div.sidebar li.toctree-l1 a {
   border: 1px solid #dddddd;
   background-color: #eeeeec;
   margin-bottom: .4em;
-  padding-left: 3px;
+  padding-left: 4px;
   color: #2e3436;
 }
 
@@ -432,7 +395,7 @@ div.sidebar input[type="submit"] {
 /* Footer */
 
 div.footer-wrapper {
-  background: url(bgfooter.png) top left repeat-x;
+  background: #555555;
   border-top: 4px solid #babdb6;
   padding-top: 10px;
   padding-bottom: 10px;
