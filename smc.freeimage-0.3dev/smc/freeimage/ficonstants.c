@@ -124,7 +124,7 @@ initficonstants(void)
     PyModule_AddIntConstant(m, "FIF_PFM", FIF_PFM);
     PyModule_AddIntConstant(m, "FIF_PICT", FIF_PICT);
     PyModule_AddIntConstant(m, "FIF_RAW", FIF_RAW);
-    PyModule_AddIntConstant(m, "FIF_WEBP", FIF_WEBP);
+    /*PyModule_AddIntConstant(m, "FIF_WEBP", FIF_WEBP);*/
     PyModule_AddIntConstant(m, "FIF_LOAD_NOPIXELS", FIF_LOAD_NOPIXELS);
 
     /* Enum: FREE_IMAGE_QUANTIZE */
@@ -355,8 +355,8 @@ initficonstants(void)
     PyModule_AddIntConstant(m, "TIFF_JPEG", TIFF_JPEG);
     PyModule_AddIntConstant(m, "TIFF_LOGLUV", TIFF_LOGLUV);
     PyModule_AddIntConstant(m, "WBMP_DEFAULT", WBMP_DEFAULT);
-    PyModule_AddIntConstant(m, "WEBP_DEFAULT", WEBP_DEFAULT);
-    PyModule_AddIntConstant(m, "WEBP_LOSSLESS", WEBP_LOSSLESS);
+    /*PyModule_AddIntConstant(m, "WEBP_DEFAULT", WEBP_DEFAULT);
+    PyModule_AddIntConstant(m, "WEBP_LOSSLESS", WEBP_LOSSLESS);*/
     PyModule_AddIntConstant(m, "XBM_DEFAULT", XBM_DEFAULT);
     PyModule_AddIntConstant(m, "XPM_DEFAULT", XPM_DEFAULT);
 #if PY_MAJOR_VERSION >= 3
