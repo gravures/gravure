@@ -1,7 +1,7 @@
 ================
 The Gravure Project
 ================
-| UDERS
+| USERS
 
 | :doc:`DEVELOPPER`
 | 	- :doc:`DEVELOPPER/Design_Documentations`

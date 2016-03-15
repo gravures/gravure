@@ -71,7 +71,7 @@ div.header, div.content, div.footer {
 }
 
 div.header-wrapper {
-  background: #555555;
+  background: #333333;
   border-bottom: 3px solid #2e3436;
 }
 
@@ -210,12 +210,12 @@ div.header div.rel a {
 p.logo {
   display: block;
   clear: both;
-  text-align: center;
+  text-align: left;
   vertical-align: bottom;
   font-weight: bold;
   /*color: #000;*/
   min-width: 200px;
-  padding-left: 12px;
+  padding-left: 16px;
   margin:0px;
   /*float: left;*/
 }
@@ -228,20 +228,26 @@ img.logo {
 /* Content */
 div.content-wrapper {
   background-color: white;
-  padding-top: 16px;
-  padding-bottom: 20px;
-  margin-left:18px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-left:0px;
   margin-right:10px;
+  display: table;
+  
 }
 
 div.document {
-  width:638px;
-  float: left;
+  width:608px;
+  padding-left: 30px;
+  padding-top: 16px;
+  display: table-cell;
+  vertical-align: top;
 }
 
 div.body {
   padding-right: 2em;
   text-align: left;
+  min-height:800px;
 }
 
 
@@ -324,8 +330,25 @@ div.document ol {
 /* Sidebar */
 
 div.sidebar {
-  width: 318px;
-  float: left;
+  width: 307px;
+  background-color: #efefef;
+  padding-left: 10px;
+  padding-top: 8px;
+  border-right: 1px solid #444;
+  display: table-cell;
+  vertical-align: top;
+}
+
+div.nav { 
+  text-transform: uppercase;
+  font-family: "Helvetica", Arial, sans-serif;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-align: right;
+  letter-spacing: 1px;
+  padding: 6px 10px 0px 0px;
+  margin: 0 0 0 -10px;
+  border-bottom: 1px solid #cccccc;
 }
 
 div.sidebar a, div.header a {
@@ -340,6 +363,7 @@ div.sidebar h3 {
   color: #2e3436;
   text-transform: uppercase;
   font-size: 100%;
+  padding-bottom: 1em;
   /*letter-spacing: .1em;*/
 }
 
@@ -350,7 +374,7 @@ div.sidebar ul {
 div.sidebar li.toctree-l1 a {
   display: block;
   padding: 1px;
-  border: 1px solid #dddddd;
+  border-bottom: 1px solid #cccccc;
   background-color: #eeeeec;
   margin-bottom: .4em;
   padding-left: 4px;
@@ -361,18 +385,19 @@ div.sidebar li.toctree-l2 a {
   background-color: transparent;
   border: none;
   margin-left: 1em;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #cccccc;
 }
 
 div.sidebar li.toctree-l3 a {
   background-color: transparent;
   border: none;
   margin-left: 2em;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #cccccc;
 }
 
 div.sidebar li.toctree-l2:last-child a {
   border-bottom: none;
+  border-bottom: 1px solid #cccccc;
 }
 
 div.sidebar li.toctree-l1.current a {
@@ -395,9 +420,9 @@ div.sidebar input[type="submit"] {
 /* Footer */
 
 div.footer-wrapper {
-  background: #555555;
+  background: #333333;
   border-top: 4px solid #babdb6;
-  padding-top: 10px;
+  padding-left: 10px;
   padding-bottom: 10px;
   min-height: 80px;
 }

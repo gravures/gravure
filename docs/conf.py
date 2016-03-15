@@ -141,7 +141,7 @@ html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = '{g}: gravure - free rip project for gnu/linux'
+html_title = 'gravure documentation'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
