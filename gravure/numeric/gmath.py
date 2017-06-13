@@ -64,10 +64,16 @@ __all__ = ['acos', 'ANGLE', 'asin', 'atan', 'atan2',
            'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
            'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
 
+
 @enum.unique
 class ANGLE(enum.IntEnum):
+    """Enumeration used to set unit measurement of angle in the gmath.Context.
+
+        Valid values are : ANGLE.DEGREE and ANGLE.RADIAN.
+        """
     DEGREE = 1
     RADIAN = 0
+
 
 #TODO: __repr__()
 class GContext(decimal.Context):
@@ -132,13 +138,29 @@ def localcontext(c=None):
         c = getcontext()
     if not isinstance(c, GContext):
         c = __to_GContext(c)
-    return decimal.localcontext(c)
+    return _ContextManager(c)
 
 
 def setcontext(c):
     if not isinstance(c, GContext):
         c = __to_GContext(c)
     decimal.setcontext(c)
+
+
+class _ContextManager(object):
+    """Context manager class to support localcontext().
+
+      Sets a copy of the supplied context in __enter__() and restores
+      the previous decimal context in __exit__()
+    """
+    def __init__(self, new_context):
+        self.new_context = new_context.copy()
+    def __enter__(self):
+        self.saved_context = getcontext()
+        setcontext(self.new_context)
+        return self.new_context
+    def __exit__(self, t, v, tb):
+        setcontext(self.saved_context)
 
 
 BasicContext = __to_GContext(decimal.BasicContext)
