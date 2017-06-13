@@ -49,6 +49,7 @@ setcontext(), localcontext()) and the DefaultContext, BasicContext and
 ExtendedContext facilities.
 
 """
+import enum
 import math
 import decimal
 from decimal import Decimal
@@ -56,24 +57,23 @@ from fractions import Fraction
 from numbers import Number
 
 
-__all__ = ['acos', 'DEGREE', 'RADIAN', 'asin', 'atan', 'atan2',
+__all__ = ['acos', 'ANGLE', 'asin', 'atan', 'atan2',
            'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
            'DefaultContext', 'degrees',
            'e', 'exp', 'ExtendedContext', 'floor', 'GContext', 'getcontext',
            'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
            'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
 
-
-
-
-DEGREE = 1
-RADIAN = 0
+@enum.unique
+class ANGLE(enum.IntEnum):
+    DEGREE = 1
+    RADIAN = 0
 
 #TODO: __repr__()
 class GContext(decimal.Context):
     def __init__(self, prec=None, rounding=None, Emin=None, Emax=None, \
                  capitals=None, clamp=None, flags=None, traps=None, \
-                 angle=RADIAN, Dfraction=True):
+                 angle=ANGLE.RADIAN, Dfraction=True):
         decimal.Context.__init__(self, prec=prec, rounding=rounding, Emin=Emin, \
                                  Emax=Emax, capitals=capitals, clamp=clamp, \
                                  flags=flags, traps=traps)
@@ -87,8 +87,8 @@ class GContext(decimal.Context):
 
     @angle.setter
     def angle(self, a):
-        self.__property['angle'] = a if a in [DEGREE,
-                           RADIAN] else RADIAN
+        self.__property['angle'] = a if a in [ANGLE.DEGREE,
+                           ANGLE.RADIAN] else ANGLE.RADIAN
 
     @property
     def Dfraction(self):
@@ -163,7 +163,7 @@ def _cast_fractions(func):
 
 def _cast_angles_args(func):
     def cast_angles_args(*args):
-        if getcontext().angle == DEGREE:
+        if getcontext().angle == ANGLE.DEGREE:
             rargs = []
             for e in args:
                 if isinstance(e, Number):
@@ -177,7 +177,7 @@ def _cast_angles_args(func):
 
 def _cast_return_angles(func):
     def cast_return_angles(*args):
-        if getcontext().angle == DEGREE:
+        if getcontext().angle == ANGLE.DEGREE:
             return degrees(func(*args))
         else:
             return func(*args)
@@ -235,7 +235,7 @@ def cos(x):
 
     Unit of measurement for angle x depends on the context.
     Default is to express x in radians. To set unit to degrees :
-    getcontext().angle = DEGREE
+    getcontext().angle = ANGLE.DEGREE
 
     :param x: Angle express by any real numbers or decimal number.
     :type x: int, float, fraction, decimal.
@@ -265,7 +265,7 @@ def sin(x):
 
     Unit of measurement for angle x depends on the context.
     Default is to express x in radians. To set unit to degrees :
-    getcontext().angle = DEGREE
+    getcontext().angle = ANGLE.DEGREE
 
     :param x: Angle express by any real numbers or decimal number.
     :type x: int, float, fraction, decimal.
@@ -683,14 +683,14 @@ def main():
     c = cos(Decimal(45))
     print("cos(Decimal(45))            ", c)
 
-    getcontext().angle = DEGREE
+    getcontext().angle = ANGLE.DEGREE
     print("Context angle", ['radian', 'degree'][getcontext().angle])
 
     c = cos(Decimal(45))
     print("cos(Decimal(45))            ", c)
 
     with localcontext() as lc:
-        lc.angle = RADIAN
+        lc.angle = ANGLE.RADIAN
         c = cos(Decimal(45))
         print("cos(Decimal(45))            ", c)
 

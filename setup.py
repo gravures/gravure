@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 
+#
 # SETUP install python file
 #
 # This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 #
 # Provided as-is; use at your own risk; no warranty; no promises; enjoy!
 #
-# 
+#
 
 __author__  = "Gilles Coissac <gilles@atelierobscur.org>"
 __date__    = "2 March 2011"
@@ -89,15 +89,15 @@ else:
                 sources.append(sfile)
             extension.sources[:] = sources
         return extensions
-        
+
 #
 #=== Python version ===================
 if sys.version_info[0] == 3:
-    if sys.version_info[1] < 2:
-        print("You need Python 3.2 or greater")
+    if sys.version_info[1] < 4:
+        print("You need Python 3.4 or greater")
         sys.exit(1)
 elif sys.version_info[0] < 3:
-    print("You need Python 3.2 or greater")
+    print("You need Python 3.4 or greater")
     sys.exit(1)
 
 #
@@ -128,23 +128,23 @@ setup(
     name              = 'gravure',
     version           = '0.1.dev',
     platforms         = ['any'],
-      
+
     namespace_packages= ['gravure'],
     packages = ['gravure', 'gravure.ghostscript',  'gravure.ghostscript.test'],
     package_data={ '': ['*.pxd'] },
-    
+
     # 'setup.py build' will build either .py and .pyx
     cmdclass={'build_ext': build_ext},
     ext_package = '',
     ext_modules = extensions,
-    
+
     #test_suite = '',
     #tests_require = 'nose'
-    
+
     # Project uses reStructuredText,
     # and sphinx 1.1
     # install_requires = ['sphinx>=1.1'],
-      
+
     author = 'Gilles Coissac',
     author_email = 'dev@atelierobscur.org',
     maintainer = 'Gilles Coissac',
@@ -154,11 +154,11 @@ setup(
     long_description  = open('README.txt').read(),
     license           = 'LGPL v3',
     keywords          = '',
-    
+
     url = 'http://www.atelierobscur.org/',
     download_url = 'http://www.atelierobscur.org/',
 
     #classifiers       = []
-      
+
 )
 
