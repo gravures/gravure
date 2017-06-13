@@ -56,7 +56,7 @@ from fractions import Fraction
 from numbers import Number
 
 
-__all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
+__all__ = ['acos', 'DEGREE', 'RADIAN', 'asin', 'atan', 'atan2',
            'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
            'DefaultContext', 'degrees',
            'e', 'exp', 'ExtendedContext', 'floor', 'GContext', 'getcontext',
@@ -66,29 +66,29 @@ __all__ = ['acos', 'ANGLE_DEGREE', 'ANGLE_RADIAN', 'asin', 'atan', 'atan2',
 
 
 
-ANGLE_DEGREE = 1
-ANGLE_RADIAN = 0
+DEGREE = 1
+RADIAN = 0
 
 #TODO: __repr__()
 class GContext(decimal.Context):
     def __init__(self, prec=None, rounding=None, Emin=None, Emax=None, \
                  capitals=None, clamp=None, flags=None, traps=None, \
-                 angle_unit=ANGLE_RADIAN, Dfraction=True):
+                 angle=RADIAN, Dfraction=True):
         decimal.Context.__init__(self, prec=prec, rounding=rounding, Emin=Emin, \
                                  Emax=Emax, capitals=capitals, clamp=clamp, \
                                  flags=flags, traps=traps)
-        self.__property = {'angle_unit' : None, 'Dfraction' : None}
-        self.angle_unit = angle_unit
+        self.__property = {'angle' : None, 'Dfraction' : None}
+        self.angle = angle
         self.Dfraction = Dfraction
 
     @property
-    def angle_unit(self):
-        return self.__property['angle_unit']
+    def angle(self):
+        return self.__property['angle']
 
-    @angle_unit.setter
-    def angle_unit(self, a):
-        self.__property['angle_unit'] = a if a in [ANGLE_DEGREE,
-                           ANGLE_RADIAN] else ANGLE_RADIAN
+    @angle.setter
+    def angle(self, a):
+        self.__property['angle'] = a if a in [DEGREE,
+                           RADIAN] else RADIAN
 
     @property
     def Dfraction(self):
@@ -102,14 +102,14 @@ class GContext(decimal.Context):
         """Returns a shallow copy from self."""
         nc = GContext(self.prec, self.rounding,  self.Emin, self.Emax, \
                       self.capitals, self.clamp, self.flags, self.traps, \
-                      self.angle_unit, self.Dfraction)
+                      self.angle, self.Dfraction)
         return nc
 
     def copy(self):
         """Returns a deep copy from self."""
         nc = GContext(self.prec, self.rounding, self.Emin, self.Emax, \
                       self.capitals, self.clamp, self.flags.copy(), self.traps.copy(),\
-                      self.angle_unit, self.Dfraction)
+                      self.angle, self.Dfraction)
         return nc
     __copy__ = copy
 
@@ -163,7 +163,7 @@ def _cast_fractions(func):
 
 def _cast_angles_args(func):
     def cast_angles_args(*args):
-        if getcontext().angle_unit == ANGLE_DEGREE:
+        if getcontext().angle == DEGREE:
             rargs = []
             for e in args:
                 if isinstance(e, Number):
@@ -177,7 +177,7 @@ def _cast_angles_args(func):
 
 def _cast_return_angles(func):
     def cast_return_angles(*args):
-        if getcontext().angle_unit == ANGLE_DEGREE:
+        if getcontext().angle == DEGREE:
             return degrees(func(*args))
         else:
             return func(*args)
@@ -235,7 +235,7 @@ def cos(x):
 
     Unit of measurement for angle x depends on the context.
     Default is to express x in radians. To set unit to degrees :
-    getcontext().angle_unit = ANGLE_DEGREE
+    getcontext().angle = DEGREE
 
     :param x: Angle express by any real numbers or decimal number.
     :type x: int, float, fraction, decimal.
@@ -265,7 +265,7 @@ def sin(x):
 
     Unit of measurement for angle x depends on the context.
     Default is to express x in radians. To set unit to degrees :
-    getcontext().angle_unit = ANGLE_DEGREE
+    getcontext().angle = DEGREE
 
     :param x: Angle express by any real numbers or decimal number.
     :type x: int, float, fraction, decimal.
@@ -671,28 +671,35 @@ def main():
 
     a = math.cos(math.radians(45))
     print("math.cos(math.radians(45))  ", a)
+
     b = cos(math.radians(45))
     print("cos(math.radians(45))       ", b)
+
     c = cos(radians(Decimal(45)))
     print("cos(radians(Decimal(45)))   ", c)
 
-    print("Context angle unit", ['radian', 'degree'][getcontext().angle_unit])
+    print("Context angle", ['radian', 'degree'][getcontext().angle])
+
     c = cos(Decimal(45))
     print("cos(Decimal(45))            ", c)
-    getcontext().angle_unit = ANGLE_DEGREE
-    print("Context angle unit", ['radian', 'degree'][getcontext().angle_unit])
+
+    getcontext().angle = DEGREE
+    print("Context angle", ['radian', 'degree'][getcontext().angle])
+
     c = cos(Decimal(45))
     print("cos(Decimal(45))            ", c)
 
     with localcontext() as lc:
-        lc.angle_unit = ANGLE_RADIAN
+        lc.angle = RADIAN
         c = cos(Decimal(45))
         print("cos(Decimal(45))            ", c)
 
     d = cos(Fraction(2, 3))
     print("cos(Fraction(2,3))          ", d)
+
     d = cos(Decimal(2) / Decimal(3))
     print("cos(Decimal(2) / Decimal(3))", d)
+
     d = cos(2/3)
     print("cos(2/3)                    ", d)
 
