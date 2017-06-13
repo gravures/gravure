@@ -312,7 +312,7 @@ def sin(x):
 
 @_cast_fractions
 def cosh(x):
-    """Return the hyperbolic cosine of Decimal x.
+    """Return the hyperbolic cosine of x.
        Result type matches input type.
     """
     if isinstance(x, Decimal):
@@ -334,7 +334,7 @@ def cosh(x):
 
 @_cast_fractions
 def sinh(x):
-    """Return the hyperbolic sine of Decimal x.
+    """Return the hyperbolic sine of x.
        Result type matches input type.
     """
     if isinstance(x, Decimal):
@@ -357,7 +357,7 @@ def sinh(x):
 @_cast_return_angles
 @_cast_fractions
 def asin(x):
-    """Return the arc sine (measured in radians) of Decimal x.
+    """Return the arc sine (measured in radians) of x.
        Result type matches input type.
     """
     if isinstance(x, Decimal):
@@ -391,7 +391,7 @@ def asin(x):
 @_cast_return_angles
 @_cast_fractions
 def acos(x):
-    """Return the arc cosine (measured in radians) of Decimal x.
+    """Return the arc cosine (measured in radians) of x.
        Result type matches input type.
     """
     if isinstance(x, Decimal):
@@ -422,21 +422,24 @@ def acos(x):
         return math.acos(x)
 
 
-@_cast_return_angles
 @_cast_fractions
 def tan(x):
-    """Return the tangent of Decimal x (measured in radians).
+    """Return the tangent of angle x.
        Result type matches input type.
     """
     if isinstance(x, Decimal):
         return +(sin(x) / cos(x))
     else:
-        return math.tan(x)
+        return _math_tan(x)
+
+@_cast_angles_args
+def _math_tan(x):
+    return math.tan(x)
 
 
 @_cast_fractions
 def tanh(x):
-    """Return the hyperbolic tangent of Decimal x.
+    """Return the hyperbolic tangent of x.
        Result type matches input type.
     """
     if isinstance(x, Decimal):

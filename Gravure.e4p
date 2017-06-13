@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project Gravure -->
-<!-- Saved: 2016-03-16, 18:27:53 -->
-<!-- Copyright (C) 2016 Gilles Coissac, gilles@atelierobscur.org -->
+<!-- Saved: 2017-06-13, 15:36:46 -->
+<!-- Copyright (C) 2017 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
   <Hash>392578d70faf1893959699a9a8b4af82454dbca7</Hash>
   <ProgLanguage mixed="1">Python3</ProgLanguage>
   <ProjectType>Other</ProjectType>
-  <Description></Description>
   <Version>0.2</Version>
   <Author>Gilles Coissac</Author>
   <Email>gilles@atelierobscur.org</Email>
-  <Eol index="-1"/>
   <Sources>
     <Source>carray3k-0.6/README.rst</Source>
     <Source>carray3k-0.6/bench/arange.py</Source>
@@ -125,6 +123,7 @@
     <Source>gravure/curve/curve.py</Source>
     <Source>gravure/grvApp.py</Source>
     <Source>gravure/halftone/__init__.py</Source>
+    <Source>gravure/halftone/am.py</Source>
     <Source>gravure/halftone/base.py</Source>
     <Source>gravure/halftone/gen_ordered.c</Source>
     <Source>gravure/halftone/spotfunctions.py</Source>
