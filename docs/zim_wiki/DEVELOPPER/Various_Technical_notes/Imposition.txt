@@ -5,6 +5,7 @@ Creation-Date: 2013-09-09T13:59:15+02:00
 ====== Imposition ======
 
 
+
 ==== SOFTWARE ====
 
 === Gtkpsproc ===
@@ -15,3 +16,8 @@ http://freecode.com/projects/impose
 
 
 ==== PAPERS ====
+http://web.archive.org/web/20061114071945/www.prepress.pps.com/TechReports/imposetr.html
+
+https://wiki.scribus.net/canvas/Imposition
+
+https://wiki.scribus.net/canvas/Imposition_proposal

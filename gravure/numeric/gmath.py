@@ -18,8 +18,7 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-#TODO:  * copyright et licence
-#       * docstring du module et des fonctions
+#TODO:  * docstring du module et des fonctions
 #       * unitest
 #       * version c des fonctions (cython) ?
 
@@ -72,14 +71,12 @@ ANGLE_RADIAN = 0
 
 #TODO: __repr__()
 class GContext(decimal.Context):
-
-    def __init__(self, prec=None, rounding=None,
-                 traps=None, flags=None, Emin=None,
-                 Emax=None, capitals=None, clamp=None, _ignored_flags=None,
+    def __init__(self, prec=None, rounding=None, Emin=None, Emax=None, \
+                 capitals=None, clamp=None, flags=None, traps=None, \
                  angle_unit=ANGLE_RADIAN, Dfraction=True):
-        decimal.Context.__init__(self, prec, rounding, traps,
-                                flags, Emin, Emax, capitals,
-                                clamp, _ignored_flags)
+        decimal.Context.__init__(self, prec=prec, rounding=rounding, Emin=Emin, \
+                                 Emax=Emax, capitals=capitals, clamp=clamp, \
+                                 flags=flags, traps=traps)
         self.__property = {'angle_unit' : None, 'Dfraction' : None}
         self.angle_unit = angle_unit
         self.Dfraction = Dfraction
@@ -103,25 +100,23 @@ class GContext(decimal.Context):
 
     def _shallow_copy(self):
         """Returns a shallow copy from self."""
-        nc = GContext(self.prec, self.rounding, self.traps,
-                     self.flags, self.Emin, self.Emax,
-                     self.capitals, self.clamp, self._ignored_flags,
-                     self.angle_unit, self.Dfraction)
+        nc = GContext(self.prec, self.rounding,  self.Emin, self.Emax, \
+                      self.capitals, self.clamp, self.flags, self.traps, \
+                      self.angle_unit, self.Dfraction)
         return nc
 
     def copy(self):
         """Returns a deep copy from self."""
-        nc = GContext(self.prec, self.rounding, self.traps.copy(),
-                     self.flags.copy(), self.Emin, self.Emax,
-                     self.capitals, self.clamp, self._ignored_flags,
-                     self.angle_unit, self.Dfraction)
+        nc = GContext(self.prec, self.rounding, self.Emin, self.Emax, \
+                      self.capitals, self.clamp, self.flags.copy(), self.traps.copy(),\
+                      self.angle_unit, self.Dfraction)
         return nc
     __copy__ = copy
 
 
 def __to_GContext(c):
-    return GContext(c.prec, c.rounding, c.traps.copy(), c.flags.copy(),\
-                    c.Emin, c.Emax, c.capitals, c._clamp, c._ignored_flags)
+    return GContext(c.prec, c.rounding, c.Emin, c.Emax, \
+                    c.capitals, c.clamp, c.flags.copy(), c.traps.copy())
 
 
 def getcontext():

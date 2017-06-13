@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project Gravure -->
-<!-- Saved: 2016-03-01, 06:07:42 -->
+<!-- Saved: 2016-03-16, 18:27:53 -->
 <!-- Copyright (C) 2016 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -92,6 +92,7 @@
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/CUPS/JDF.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/CUPS/PPD.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Color_Management.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Densitometry.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/16_bit_OUTPUT.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Devicen_change_since_version_9.02.rst</Source>
@@ -101,6 +102,14 @@
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Raster_object_tagging.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Ghostscript/Wts_&amp;_genordered.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Gutenprint_library.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccApplyNamedCmm.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccAppplyProfiles.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccDumpProfile.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccGamutMapGirdle.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccGetBPCinfo.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccProfLibTest.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccRoundTrip.rst</Source>
+    <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/IccStripUnknowTags.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Imposition.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Interesting_Graphic_Library.rst</Source>
     <Source>docs/zim_rst/DEVELOPPER/Various_Technical_notes/Postscript.rst</Source>
