@@ -60,7 +60,7 @@ from numbers import Number
 __all__ = ['acos', 'ANGLE', 'asin', 'atan', 'atan2',
            'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
            'DefaultContext', 'degrees',
-           'e', 'exp', 'ExtendedContext', 'floor', 'GContext', 'getcontext',
+           'e', 'exp', 'ExtendedContext', 'floor', 'Context', 'getcontext',
            'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
            'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
 
@@ -75,8 +75,27 @@ class ANGLE(enum.IntEnum):
     RADIAN = 0
 
 
-#TODO: __repr__()
-class GContext(decimal.Context):
+class Context(decimal.Context):
+    """Contains the context for a Decimal instance. Inherits from decimal.context.
+
+        :param prec: precision (for use in rounding, division, square roots..)
+        :param rounding: rounding type (how you round)
+        :param traps: If traps[exception] = 1, then the exception is
+                               raised when it is caused.  Otherwise, a value is
+                               substituted in.
+        :param flags: When an exception is caused, flags[exception] is set.
+                              (Whether or not the trap_enabler is set)
+                              Should be reset by user of Decimal instance.
+        :param Emin: Minimum exponent
+        :param Emax: Maximum exponent
+        :param capitals: If 1, 1*10^1 is printed as 1E+1.
+                                   If 0, printed as 1e1
+        :param clamp: If 1, change exponents if too high (Default 0)
+        :param angle: Define unit of mesurement for angle in trigonometric functions.
+                                should be ANGLE.RADIAN or ANGLE.DEGREE, default use radian.
+        :param Dfraction: if True express Fractions 'f' pass to gmath functions as
+                                     Decimal(f.numerator) / Decimal(f.denominator), default to True.
+        """
     def __init__(self, prec=None, rounding=None, Emin=None, Emax=None, \
                  capitals=None, clamp=None, flags=None, traps=None, \
                  angle=ANGLE.RADIAN, Dfraction=True):
@@ -106,28 +125,47 @@ class GContext(decimal.Context):
 
     def _shallow_copy(self):
         """Returns a shallow copy from self."""
-        nc = GContext(self.prec, self.rounding,  self.Emin, self.Emax, \
+        nc = Context(self.prec, self.rounding,  self.Emin, self.Emax, \
                       self.capitals, self.clamp, self.flags, self.traps, \
                       self.angle, self.Dfraction)
         return nc
 
     def copy(self):
         """Returns a deep copy from self."""
-        nc = GContext(self.prec, self.rounding, self.Emin, self.Emax, \
+        nc = Context(self.prec, self.rounding, self.Emin, self.Emax, \
                       self.capitals, self.clamp, self.flags.copy(), self.traps.copy(),\
                       self.angle, self.Dfraction)
         return nc
     __copy__ = copy
 
+    def __repr__(self):
+        """Show the current context."""
+        s = []
+        s.append('Context(prec=%(prec)d, rounding=%(rounding)s, '
+                 'Emin=%(Emin)d, Emax=%(Emax)d, capitals=%(capitals)d, '
+                 'clamp=%(clamp)d'
+                 % {'prec':self.prec, 'rounding':self.rounding, 'Emin':self.Emin,\
+                    'Emax':self.Emax, 'capitals':self.capitals, 'clamp':self.clamp})
+        names = [f.__name__ for f, v in self.flags.items() if v]
+        s.append('flags=[' + ', '.join(names) + ']')
+        names = [t.__name__ for t, v in self.traps.items() if v]
+        s.append('traps=[' + ', '.join(names) + ']')
+        s.append('angle=%s' % ['ANGLE.RADIAN','ANGLE.DEGREE'][self.angle])
+        s.append('Dfraction=%s' % (bool(self.Dfraction)))
+        return ', '.join(s) + ')'
+
+    def __str__(self):
+        return self.__repr__()
+
 
 def __to_GContext(c):
-    return GContext(c.prec, c.rounding, c.Emin, c.Emax, \
+    return Context(c.prec, c.rounding, c.Emin, c.Emax, \
                     c.capitals, c.clamp, c.flags.copy(), c.traps.copy())
 
 
 def getcontext():
     c = decimal.getcontext()
-    if not isinstance(c, GContext):
+    if not isinstance(c, Context):
         c = __to_GContext(c)
         decimal.setcontext(c)
     return c
@@ -136,13 +174,13 @@ def getcontext():
 def localcontext(c=None):
     if c is None:
         c = getcontext()
-    if not isinstance(c, GContext):
+    if not isinstance(c, Context):
         c = __to_GContext(c)
     return _ContextManager(c)
 
 
 def setcontext(c):
-    if not isinstance(c, GContext):
+    if not isinstance(c, Context):
         c = __to_GContext(c)
     decimal.setcontext(c)
 
