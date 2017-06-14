@@ -18,9 +18,11 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-#TODO:  * docstring du module et des fonctions
-#       * unitest
-#       * version c des fonctions (cython) ?
+#TODO: add new functions in __notimplemented__ and __todo__
+#TODO: here math functions don't take context as optional argument like in Decimal
+#TODO: docstring du module et des fonctions
+#TODO: unitest
+#TODO: version c des fonctions (cython) ?
 
 """
 This module provides the same mathematical functions defined by the math \
@@ -49,24 +51,42 @@ setcontext(), localcontext()) and the DefaultContext, BasicContext and
 ExtendedContext facilities.
 
 """
-import enum
-import math
-import decimal
+import enum as _enum
+import math as _math
+import decimal as _decimal
 from decimal import Decimal
 from fractions import Fraction
 from numbers import Number
 
+# not implemented functions present in math module
+__notimplemented__= ['acosh', 'asinh', 'atanh', 'erf', 'erfc', 'expm1', 'fabs', 'factorial',
+                     'fmod', 'frexp', 'fsum', 'gamma', 'gcd', 'inf', 'isclose', 'isfinite',
+                     'isinf', 'isnan', 'ldexp', 'lgamma', 'log1p', 'log2', 'modf', 'nan', 'trunc']
 
-__all__ = ['acos', 'ANGLE', 'asin', 'atan', 'atan2',
-           'BasicContext', 'ceil', 'cos', 'cosh', 'copysign',
-           'DefaultContext', 'degrees',
-           'e', 'exp', 'ExtendedContext', 'floor', 'Context', 'getcontext',
-           'hypot', 'localcontext', 'log', 'log10', 'pi', 'pow', 'radians',
-           'setcontext', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+# in decimal.Decimal and not implemented here
+__todo__ = ['copy_abs', 'copy_negate', 'imag', 'ln', 'logb', 'max', 'min', 'normalize']
+
+# already implemented in decimal.Decimal
+__inDecimal__ = ['copy_sign', 'exp', 'log10', 'sqrt']
+
+__all__ = [# Math functions
+           'acos', 'asin', 'atan', 'atan2', 'ceil', 'copysign', 'cos', 'cosh',
+           'degrees', 'e', 'exp', 'floor', 'hypot', 'log', 'log10',
+           'pi', 'pow', 'radians', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh',
+
+           # Context
+           'Context', 'BasicContext', 'DefaultContext', 'ExtendedContext',
+
+           # Enum for use in setting up contexts
+           'ANGLE',
+
+           # Functions for manipulating contexts
+           'localcontext', 'getcontext', 'setcontext']
 
 
-@enum.unique
-class ANGLE(enum.IntEnum):
+
+@_enum.unique
+class ANGLE(_enum.IntEnum):
     """Enumeration used to set unit measurement of angle in the gmath.Context.
 
         Valid values are : ANGLE.DEGREE and ANGLE.RADIAN.
@@ -75,7 +95,7 @@ class ANGLE(enum.IntEnum):
     RADIAN = 0
 
 
-class Context(decimal.Context):
+class Context(_decimal.Context):
     """Contains the context for a Decimal instance. Inherits from decimal.context.
 
         :param prec: precision (for use in rounding, division, square roots..)
@@ -99,7 +119,7 @@ class Context(decimal.Context):
     def __init__(self, prec=None, rounding=None, Emin=None, Emax=None, \
                  capitals=None, clamp=None, flags=None, traps=None, \
                  angle=ANGLE.RADIAN, Dfraction=True):
-        decimal.Context.__init__(self, prec=prec, rounding=rounding, Emin=Emin, \
+        _decimal.Context.__init__(self, prec=prec, rounding=rounding, Emin=Emin, \
                                  Emax=Emax, capitals=capitals, clamp=clamp, \
                                  flags=flags, traps=traps)
         self.__property = {'angle' : None, 'Dfraction' : None}
@@ -164,10 +184,10 @@ def __to_GContext(c):
 
 
 def getcontext():
-    c = decimal.getcontext()
+    c = _decimal.getcontext()
     if not isinstance(c, Context):
         c = __to_GContext(c)
-        decimal.setcontext(c)
+        _decimal.setcontext(c)
     return c
 
 
@@ -182,7 +202,7 @@ def localcontext(c=None):
 def setcontext(c):
     if not isinstance(c, Context):
         c = __to_GContext(c)
-    decimal.setcontext(c)
+    _decimal.setcontext(c)
 
 
 class _ContextManager(object):
@@ -201,10 +221,10 @@ class _ContextManager(object):
         setcontext(self.saved_context)
 
 
-BasicContext = __to_GContext(decimal.BasicContext)
-ExtendedContext = __to_GContext(decimal.ExtendedContext)
-DefaultContext = __to_GContext(decimal.DefaultContext)
-decimal.DefaultContext = DefaultContext
+BasicContext = __to_GContext(_decimal.BasicContext)
+ExtendedContext = __to_GContext(_decimal.ExtendedContext)
+DefaultContext = __to_GContext(_decimal.DefaultContext)
+_decimal.DefaultContext = DefaultContext
 
 
 def _cast_fractions(func):
@@ -284,7 +304,7 @@ def exp(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.exp(x)
+        return _math.exp(x)
 e = exp(Decimal(1))
 
 
@@ -315,7 +335,7 @@ def cos(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.cos(x)
+        return _math.cos(x)
 
 
 @_cast_angles_args
@@ -345,7 +365,7 @@ def sin(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.sin(x)
+        return _math.sin(x)
 
 
 @_cast_fractions
@@ -367,7 +387,7 @@ def cosh(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.cosh(x)
+        return _math.cosh(x)
 
 
 @_cast_fractions
@@ -389,7 +409,7 @@ def sinh(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.sinh(x)
+        return _math.sinh(x)
 
 
 @_cast_return_angles
@@ -423,7 +443,7 @@ def asin(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.asin(x)
+        return _math.asin(x)
 
 
 @_cast_return_angles
@@ -457,7 +477,7 @@ def acos(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.acos(x)
+        return _math.acos(x)
 
 
 @_cast_fractions
@@ -472,7 +492,7 @@ def tan(x):
 
 @_cast_angles_args
 def _math_tan(x):
-    return math.tan(x)
+    return _math.tan(x)
 
 
 @_cast_fractions
@@ -483,7 +503,7 @@ def tanh(x):
     if isinstance(x, Decimal):
         return +(sinh(x) / cosh(x))
     else:
-        return math.tanh(x)
+        return _math.tanh(x)
 
 
 @_cast_return_angles
@@ -525,7 +545,7 @@ def atan(x):
         getcontext().prec -= 2
         return +s
     else:
-        return math.atan(x)
+        return _math.atan(x)
 
 
 @_cast_fractions
@@ -563,7 +583,7 @@ def atan2(y, x):
         else:
             return Decimal(0)
     else:
-        return math.atan2(x, y)
+        return _math.atan2(x, y)
 
 
 @_cast_fractions
@@ -593,10 +613,10 @@ def log(x, base=None):
 
         if base is None:
             log_base = 1
-            approx = math.log(x)
+            approx = _math.log(x)
         else:
             log_base = log(base)
-            approx = math.log(x, base)
+            approx = _math.log(x, base)
 
         lasts, s = 0, Decimal(repr(approx))
         while lasts != s:
@@ -606,7 +626,7 @@ def log(x, base=None):
         getcontext().prec -= 2
         return +s
     else:
-        return math.log(x, base)
+        return _math.log(x, base)
 
 
 def log10(x):
@@ -632,7 +652,7 @@ def sqrt(x):
     if isinstance(x, Decimal):
         return Decimal.sqrt(x)
     else:
-        return math.sqrt(x)
+        return _math.sqrt(x)
 
 
 @_cast_fractions
@@ -649,7 +669,7 @@ def pow(x, y):
     if isinstance(x, Decimal) or isinstance(y, Decimal):
         raise x ** y
     else:
-        return math.pow(x, y)
+        return _math.pow(x, y)
 
 
 @_cast_fractions
@@ -660,7 +680,7 @@ def degrees(x):
     if isinstance(x, Decimal):
         return +(x * 180 / pi())
     else:
-        return math.degrees(x)
+        return _math.degrees(x)
 
 
 @_cast_fractions
@@ -671,7 +691,7 @@ def radians(x):
     if isinstance(x, Decimal):
         return +(x * pi() / 180)
     else:
-        return math.radians(x)
+        return _math.radians(x)
 
 
 @_cast_fractions
@@ -684,9 +704,9 @@ def ceil(x):
 
     """
     if isinstance(x, Decimal):
-        return x.to_integral(rounding=decimal.ROUND_CEILING)
+        return x.to_integral(rounding=_decimal.ROUND_CEILING)
     else:
-        return math.ceil(x)
+        return _math.ceil(x)
 
 
 @_cast_fractions
@@ -699,9 +719,9 @@ def floor(x):
 
     """
     if isinstance(x, Decimal):
-        return x.to_integral(rounding=decimal.ROUND_FLOOR)
+        return x.to_integral(rounding=_decimal.ROUND_FLOOR)
     else:
-        return math.floor(x)
+        return _math.floor(x)
 
 
 @_cast_fractions
@@ -710,7 +730,7 @@ def hypot(x, y):
     if isinstance(x, Decimal) and isinstance(y, Decimal):
         return sqrt(x * x + y * y)
     else:
-        return math.hypot(x, y)
+        return _math.hypot(x, y)
 
 
 @_cast_fractions
@@ -727,15 +747,15 @@ def copysign(x, y):
     if isinstance(x, Decimal):
         return x.copy_sign(y)
     else:
-        return math.copysign(x, y)
+        return _math.copysign(x, y)
 
 
 def main():
 
-    a = math.cos(math.radians(45))
+    a = _math.cos(_math.radians(45))
     print("math.cos(math.radians(45))  ", a)
 
-    b = cos(math.radians(45))
+    b = cos(_math.radians(45))
     print("cos(math.radians(45))       ", b)
 
     c = cos(radians(Decimal(45)))
