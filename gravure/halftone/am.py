@@ -31,45 +31,62 @@ import numeric.gmath as gm
 # IRREGULIERES ET SEMI-REGULIERES
 # VICTOR OSTROMOUKHOV - THESE N0. 1330 (1994)
 #
-def irationalToRationalAngle(angle, precision=0.01):
+def irationalToRationalAngle(angle, precision=0.001):
     if precision == 0 :
         raise ValueError("precision could'not be absolut (precision==0)")
     # approximation d’un angle irrationnel A
     # par un angle rationnel Pythagoricien A' = arctan(b/a),
     # avec une précision P
 
-    # (1) pour un angle donné A calculer tan(A/2)
+    # pour un angle donné A calculer tan(A/2)
     gm.getcontext().angle = gm.ANGLE.DEGREE
-    tan = gm.tan(Decimal(angle)/2)
+    angle = Decimal(angle)
+    tan = gm.tan(angle/2)
 
-    # (2) développer tan(A/2) en suite de fractions continues Ni/Mi
+    # développer tan(A/2) en suite de fractions continues n/m
     frac = Fraction(tan)
     suite = []
     prev = None
     err = Decimal(100)
     i = 1
 
+    # calculer les écarts entre A et arctan(b/a),
+    # prendre la première approximation qui satisfait
+    # le critère || A - arctan(bi/ai) ||  < E.
+    # et calculer les triplets Pythagoriciens {ai; bi; ci}
     while err.copy_abs() > precision:
         tmp = frac.limit_denominator(i)
         if tmp != prev:
+            # error precision
             err = angle - gm.atan(Decimal(tmp.numerator) / Decimal(tmp.denominator)) * 2
-            suite.append((tmp, err))
+
+            # find pythagoricians triplet (a,b,c)
+            a = tmp.denominator * tmp.denominator - tmp.numerator * tmp.numerator
+            b = 2 * tmp.denominator * tmp.numerator
+            c = tmp.denominator * tmp.denominator + tmp.numerator * tmp.numerator
+
+            # reduce the triplet (a,b,c)
+            gcd = pgcd(a, b, c)
+            suite.append([tmp, (a//gcd, b//gcd, c//gcd), err])
         prev = tmp
         i += 1
-    print(len(suite), suite)
+
+    return suite
 
 
-    # (3) calculer les triplets Pythagoriciens {ai; bi; ci}
-    # en appliquant les formules 5.6
-
-
-    # (4) calculer les écarts entre A et arctan(bi/ai),
-    #     prendre la première approximation qui satisfait
-    # le critère || A - arctan(bi/ai) ||  < E.
+def pgcd(a, b, c):
+    da = math.gcd(a, b)
+    db = math.gcd(b, c)
+    dc = math.gcd(a, c)
+    if da==db and db==dc:
+        return da
+    else:
+        return 1
 
 def main():
-    irationalToRationalAngle(30)
-
+    suite = irationalToRationalAngle(22.5, 0.01)
+    for r in suite:
+        print(r,  '\n')
 
 if __name__ == '__main__':
     print()
