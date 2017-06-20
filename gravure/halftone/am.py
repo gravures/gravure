@@ -22,6 +22,8 @@ import math
 from fractions import Fraction
 from decimal import *
 import numeric.gmath as gm
+from base import *
+from spotfunctions import *
 
 
 #
@@ -88,12 +90,67 @@ def main():
     for r in suite:
         print(r,  '\n')
 
+    c = Cell(8, 8)
+    TosSpotFunction(RoundDot()).fillCell(c)
+    print(c)
+
 if __name__ == '__main__':
     print()
     main()
 
 
 
-
-
-
+###########################################
+###########################################
+#def findScreen(lpi, angle, xdpi, ydpi):
+#    min_angle = angle -5
+#    max_angle = angle + 5
+#    min_lpi = lpi-10
+#    max_lpi = lpi+10
+#
+#    r_dpi = Decimal(xdpi) / Decimal(ydpi)
+#
+#    tan = math.tan(math.radians(angle))
+#    cell_width = Decimal(xdpi) / Decimal(lpi)
+#    x_slope = Decimal(math.sin(math.radians(angle))) * Decimal(cell_width)
+#    y_slope = Decimal(math.cos(math.radians(angle))) * Decimal(cell_width)
+#
+#    rational_tan = Fraction(x_slope/y_slope).limit_denominator(10)
+#    delta_a = Decimal(tan) - (Decimal(rational_tan.numerator) / Decimal(rational_tan.denominator))
+#
+#    r_x_slope = Decimal(round(x_slope))
+#    r_y_slope = Decimal(round(Decimal(round(y_slope / r_dpi))))
+#    hr_y_slope = r_y_slope * r_dpi
+#
+#    delta_b = Decimal(tan) - (r_x_slope / hr_y_slope)
+#
+#    rational_angle = getAngle(r_x_slope, hr_y_slope)
+#    result_cell_width = (r_x_slope * r_x_slope + hr_y_slope * hr_y_slope).sqrt()
+#    grey_levels = (r_x_slope * r_x_slope + r_y_slope * r_y_slope) + 1
+#    result_lpi = Decimal(xdpi) / result_cell_width
+#
+##    print ""
+##    print "device resolution : %d/%d dpi" % (xdpi, ydpi)
+##    print "request lpi :", lpi
+##    print "request angle :", angle
+##    print "tan :", tan
+##    print "cell_width :", cell_width
+##    print "x_slope :", x_slope
+##    print "y_slope :", y_slope
+##    print "best rational tan :", rational_tan
+##    print "delta_a :", delta_a
+##    print "delta_b :", delta_b
+##    print "reverse angle :", getAngle(x_slope, y_slope)
+##    print "-------------------------------------"
+##    print "rational angle:", rational_angle
+##    print "result lpi :", result_lpi
+##    print "rational x_slope", r_x_slope
+##    print "rational y_slope", r_y_slope
+##    print "result cell width :", result_cell_width
+##    print "grey levels number :", grey_levels
+#
+#
+#def getAngle(x, y):
+#    return math.degrees(math.atan(x/y))
+#
+#

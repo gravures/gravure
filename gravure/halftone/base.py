@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 
 # Copyright (C) 2011 Atelier Obscur.
 # Authors:
@@ -18,16 +18,17 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-
-__all__ = ['Point', 'DotCell', 'Cell', 'BuildOrder', 'BuildOrderSpotFunction']
-
-
 import math
 from fractions import Fraction
 from decimal import *
 
 import numeric.gmath as gm
 from halftone import spotfunctions
+
+
+
+__all__ = ['Point', 'DotCell', 'Cell', 'Tos', 'TosSpotFunction']
+
 
 
 class Point():
@@ -44,6 +45,10 @@ class Point():
     def __repr__(self):
         return 'Point(%.2f, %.2f)' % (self.x, self.y)
 
+
+    #
+    # Equality Special Methods
+    #
     def __eq__(self, other):
         if isinstance(other, Point):
             return self.x == other.x and self.y == other.y
@@ -53,11 +58,18 @@ class Point():
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __nonzero__(self):
-        return self.x != 0 or self.y != 0
 
+    #
+    # Iteration Special Methods
+    #
     def __iter__(self):
         return iter((self.x, self.y))
+
+    #
+    # Arithmetic Special Methods
+    #
+    def __nonzero__(self):
+        return self.x != 0 or self.y != 0
 
     def __add__(self, other):
         if isinstance(other, Point):
@@ -126,6 +138,9 @@ class Point():
 
     __pos__ = __copy__
 
+    #
+    # Math Methods
+    #
     def __abs__(self):
         return math.sqrt(self.x ** 2 + self.y ** 2)
 
@@ -160,6 +175,9 @@ class DotCell(Point):
     def __repr__(self):
         return 'DotCell(%i, %i, %.5f)' % (self.x, self.y, self.w)
 
+    #
+    # Comparaison Special Methods
+    #
     def __eq__(self, other):
         if isinstance(other, DotCell):
             return other.w == self.w
@@ -199,6 +217,9 @@ class DotCell(Point):
     def __nonzero__(self):
         return self.w != 0
 
+    #
+    # Iteration Special Methods
+    #
     def __iter__(self):
         return iter((self.x, self.y, self.w))
 
@@ -209,136 +230,67 @@ class Cell():
        coordinates ±1.0 horizontally and vertically. Each pixel in
        the cell is centered at horizontal and vertical coordinates
        that both lie in the range −1.0 to +1.0.
-    """
+        """
     __slot__ = ['width',
                 'height',
-                'data',
-                'normSpace',
+                'threshold',
+                'coordinates',
                 'whiteningOrder',
-                'buildOrder']
+                ]
     __hash__ = None
 
     def __init__(self, width=2, height=2):
         area = width * height
         self.width = int(width)
         self.height = int(height)
-
-        self.data = [None] * area
-        self.normSpace = [None] * area
+        self.threshold = [None] * area
+        self.coordinates = [None] * area
         self.whiteningOrder = [None] * area
+        self._normalize()
 
-        self.buildOrder = None
-        self._computeNormSpace()
-
-    def _computeNormSpace(self):
-        hc = self.height
-        wc = self.width
-        nm = self.normSpace
-        wh = self.whiteningOrder
+    def _normalize(self):
         i = 0
-        for h in range(hc):
-            y = (float(h) / (hc-1) * 2.0) - 1
-            for w in range(wc):
-                x = (float(w) / (wc-1) * 2.0) - 1
-                nm[i] = Point(x, y)
-                wh[i] = DotCell(w, h)
+        for h in range(self.height):
+            y = (float(h) / (self.height - 1) * 2.0) - 1
+            for w in range(self.width):
+                x = (float(w) / (self.width - 1) * 2.0) - 1
+                self.coordinates[i] = Point(x, y)
+                self.whiteningOrder[i] = DotCell(w, h)
                 i += 1
-
-    def _checkWhtorder(self):
-        for e in self.whiteningOrder:
-            c = self.whiteningOrder.count(e)
-            if(c > 1):
-                print(c, 'X same value')
-
-    def setBuildOrder(self, o):
-        self.buildOrder = o
-
-    def fill(self):
-        self.buildOrder(self.normSpace, self.whiteningOrder)
-        #self._checkWhtorder()
-        #print (self.whiteningOrder)
-        self.whiteningOrder.sort()
-        #print()
-        #print (self.whiteningOrder)
-        wd = self.width
-        for e in self.whiteningOrder:
-            self.data[e.x + (wd * e.y)] = e.w
 
     def __str__(self):
         s = 'Halftone cell ' + str(self.width) + 'x' + str(self.height)
-#        s += '\n'
-#        for i in range(self.height):
-#            s += str(self.data[i:i + self.width]) + '\n'
+        s += '\n'
+        for i in range(self.height):
+            s += str(self.whiteningOrder[i:i + self.width]) + '\n'
         return s
 
 
-class BuildOrder():
+class Tos():
     """Turn On Sequence Basic Class
-    """
+        """
     def __init__(self):
         pass
 
 
-class BuildOrderSpotFunction(BuildOrder):
+class TosSpotFunction(Tos):
     """
-    """
+        """
     __slot__ = ['spotFunc']
 
     def __init__(self, spotFunc):
         self.spotFunc = spotFunc
 
-    def __call__(self, norm_space, whiteningOrder):
-        for i, pt in enumerate(norm_space):
-            whiteningOrder[i].w = self.spotFunc(pt.x, pt.y)
+    def fillCell(self, cell):
+        for i, pt in enumerate(cell.coordinates):
+            cell.whiteningOrder[i].w = self.spotFunc(pt.x, pt.y)
+
+        #TODO: ici comme la spotfunction retourne plusieurs valeurs
+        # identiques, devellopez des strategies d'odonnances final
+        cell.whiteningOrder.sort()
+        i = 0
+        for e in cell.whiteningOrder:
+            e.w = i
+            i += 1
 
 
-def findScreen(lpi, angle, xdpi, ydpi):
-    min_angle = angle -5
-    max_angle = angle + 5
-    min_lpi = lpi-10
-    max_lpi = lpi+10
-
-    r_dpi = Decimal(xdpi) / Decimal(ydpi)
-
-    tan = math.tan(math.radians(angle))
-    cell_width = Decimal(xdpi) / Decimal(lpi)
-    x_slope = Decimal(math.sin(math.radians(angle))) * Decimal(cell_width)
-    y_slope = Decimal(math.cos(math.radians(angle))) * Decimal(cell_width)
-
-    rational_tan = Fraction(x_slope/y_slope).limit_denominator(10)
-    delta_a = Decimal(tan) - (Decimal(rational_tan.numerator) / Decimal(rational_tan.denominator))
-
-    r_x_slope = Decimal(round(x_slope))
-    r_y_slope = Decimal(round(Decimal(round(y_slope / r_dpi))))
-    hr_y_slope = r_y_slope * r_dpi
-
-    delta_b = Decimal(tan) - (r_x_slope / hr_y_slope)
-
-    rational_angle = getAngle(r_x_slope, hr_y_slope)
-    result_cell_width = (r_x_slope * r_x_slope + hr_y_slope * hr_y_slope).sqrt()
-    grey_levels = (r_x_slope * r_x_slope + r_y_slope * r_y_slope) + 1
-    result_lpi = Decimal(xdpi) / result_cell_width
-
-#    print ""
-#    print "device resolution : %d/%d dpi" % (xdpi, ydpi)
-#    print "request lpi :", lpi
-#    print "request angle :", angle
-#    print "tan :", tan
-#    print "cell_width :", cell_width
-#    print "x_slope :", x_slope
-#    print "y_slope :", y_slope
-#    print "best rational tan :", rational_tan
-#    print "delta_a :", delta_a
-#    print "delta_b :", delta_b
-#    print "reverse angle :", getAngle(x_slope, y_slope)
-#    print "-------------------------------------"
-#    print "rational angle:", rational_angle
-#    print "result lpi :", result_lpi
-#    print "rational x_slope", r_x_slope
-#    print "rational y_slope", r_y_slope
-#    print "result cell width :", result_cell_width
-#    print "grey levels number :", grey_levels
-
-
-def getAngle(x, y):
-    return math.degrees(math.atan(x/y))
