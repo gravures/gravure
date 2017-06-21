@@ -21,9 +21,15 @@
 import math
 from fractions import Fraction
 from decimal import *
+
 import numeric.gmath as gm
 from base import *
 from spotfunctions import *
+
+#TODO: change to normal import in futur
+#import pyximport; pyximport.install()
+#from numeric.mdarray import *
+import numpy as np
 
 
 #
@@ -90,9 +96,14 @@ def main():
     for r in suite:
         print(r,  '\n')
 
-    c = Cell(8, 8)
+    # test build of threshold matrix
+    size = 32
+    c = Cell(size, size)
     TosSpotFunction(RoundDot()).fillCell(c)
-    print(c)
+    tresh = np.zeros(shape=(size * 20, size * 20), dtype=np.uint8)
+    print(tresh)
+
+
 
 if __name__ == '__main__':
     print()

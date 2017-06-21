@@ -19,16 +19,10 @@
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 import math
-from fractions import Fraction
 from decimal import *
-
-import numeric.gmath as gm
-from halftone import spotfunctions
-
 
 
 __all__ = ['Point', 'DotCell', 'Cell', 'Tos', 'TosSpotFunction']
-
 
 
 class Point():
@@ -173,7 +167,7 @@ class DotCell(Point):
         return self.__class__(self.x, self.y,  self.w)
 
     def __repr__(self):
-        return 'DotCell(%i, %i, %.5f)' % (self.x, self.y, self.w)
+        return 'DotCell(%i, %i, %i)' % (self.x, self.y, self.w)
 
     #
     # Comparaison Special Methods
@@ -262,7 +256,7 @@ class Cell():
         s = 'Halftone cell ' + str(self.width) + 'x' + str(self.height)
         s += '\n'
         for i in range(self.height):
-            s += str(self.whiteningOrder[i:i + self.width]) + '\n'
+            s += str(self.whiteningOrder[i*self.height:(i*self.height)+self.width]) + '\n'
         return s
 
 
@@ -276,10 +270,11 @@ class Tos():
 class TosSpotFunction(Tos):
     """
         """
-    __slot__ = ['spotFunc']
+    __slot__ = ['spotFunc', 'quantize']
 
-    def __init__(self, spotFunc):
+    def __init__(self, spotFunc, quantize=256):
         self.spotFunc = spotFunc
+        self.quantize = quantize
 
     def fillCell(self, cell):
         for i, pt in enumerate(cell.coordinates):
@@ -288,9 +283,13 @@ class TosSpotFunction(Tos):
         #TODO: ici comme la spotfunction retourne plusieurs valeurs
         # identiques, devellopez des strategies d'odonnances final
         cell.whiteningOrder.sort()
+
+        # quantize
         i = 0
+        level = cell.width * cell.height
         for e in cell.whiteningOrder:
-            e.w = i
             i += 1
+            e.w = i / level * self.quantize - 1
+
 
 

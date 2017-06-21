@@ -18,11 +18,15 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureGTKCanvas
+from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as NavigationToolbar
 from matplotlib.patches import Rectangle
+import matplotlib.image as image
+import numpy as np
 
 
 class MatPlotLibGTKWindow(Gtk.Window):
@@ -37,10 +41,20 @@ class MatPlotLibGTKWindow(Gtk.Window):
     def __init__(self, title="", application=None):
         Gtk.Window.__init__(self, application=application)
 
-        # matplotlib
-        self.figure = Figure()
+        # matplotlib figure and canvas
+        self.figure = Figure(dpi=36)
         self.gtk_drawing_area = FigureGTKCanvas(self.figure)
-        self.add(self.gtk_drawing_area)
+
+        # container and layout
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.add(box)
+
+        self.sw = Gtk.ScrolledWindow()
+        self.sw.add_with_viewport(self.gtk_drawing_area)
+        box.pack_start(self.sw, True, True, 0)
+
+        toolbar = NavigationToolbar(self.gtk_drawing_area, self)
+        box.pack_start(toolbar, False, True, 0)
 
         # window config
         self.set_title(title)
@@ -63,8 +77,10 @@ class CellViewer(MatPlotLibGTKWindow):
             raise AttributeError("cell should not be None")
         MatPlotLibGTKWindow.__init__(self, title="Cell view", application=application)
         self.cell = cell
-        #self.prepareFigure()
-        self.draw()
+
+        self.prepareFigure()
+        self.plotWhiteningOrder()
+        #self.draw()
         self.show_all()
 
     def prepareFigure(self):
@@ -76,40 +92,47 @@ class CellViewer(MatPlotLibGTKWindow):
         f_axes.spines['left'].set_color('black')
 
         # x-ticks
-        cn = self.cell.normSpace
+        cn = self.cell.coordinates
         xt = [p.x for p in cn[0:self.cell.width]]
-        f_axes.set_xticks(xt)
+        #f_axes.set_xticks(xt)
 
         # y-ticks
         yt = []
         for i in range(0, len(cn), self.cell.width):
             yt.append(cn[i].y)
-        f_axes.set_yticks(yt)
+        #f_axes.set_yticks(yt)
 
         f_axes.grid(True)
-        #f_axes.box(on=True)
 
         # draw pixel limit
-        ix = (xt[1] - xt[0]) / 2
-        iy = (yt[1] - yt[0]) / 2
-        xt.append(xt[-1:][0] + (2 * ix))
-        f_axes.vlines([x - ix for x in xt], -1 - iy, 1 + iy)
-        yt.append(yt[-1:][0] + (2 * iy))
-        f_axes.hlines([y - iy for y in yt], -1 - ix, 1 + ix)
+#        ix = (xt[1] - xt[0]) / 2
+#        iy = (yt[1] - yt[0]) / 2
+#        xt.append(xt[-1:][0] + (2 * ix))
+#        f_axes.vlines([x - ix for x in xt], -1 - iy, 1 + iy)
+#        yt.append(yt[-1:][0] + (2 * iy))
+#        f_axes.hlines([y - iy for y in yt], -1 - ix, 1 + ix)
 
     def plotWhiteningOrder(self):
-        f_axes = self.figure.gca()
-        cwo = self.cell.whiteningOrder
-        cn = self.cell.normSpace
-        dcw = cn[1].x - cn[0].x
-        dch = cn[self.cell.width].y - cn[0].y
-        ix = dcw / 2
-        iy = dch / 2
-        for d in cwo:
-            np = cn[d.x + self.cell.width * d.y]
-            col = str(1 - (d.w + 1) / 2)
-            r = Rectangle((np.x - ix, np.y - iy), dcw, dch, color=col)
-            f_axes.add_patch(r)
+        arr = np.zeros((self.cell.width, self.cell.height), dtype=np.uint8)
+        for p in self.cell.whiteningOrder:
+            arr[p.x][p.y] = 1 - (p.w / 255)
+        self.figure.figimage(arr)
+
+
+#        f_axes = self.figure.gca()
+#        cwo = self.cell.whiteningOrder
+#        cn = self.cell.coordinates
+#
+#        dcw = cn[1].x - cn[0].x
+#        dch = cn[self.cell.width].y - cn[0].y
+#        ix = dcw / 2
+#        iy = dch / 2
+#
+#        for d in cwo:
+#            np = cn[d.x + self.cell.width * d.y]
+#            col = str(1 - (d.w / 255))
+#            r = Rectangle((np.x - ix, np.y - iy), dcw, dch, color=col)
+#            f_axes.add_patch(r)
 
     def plotCellData(self):
         pass
