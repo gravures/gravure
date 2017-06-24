@@ -20,10 +20,12 @@
 
 import math
 from decimal import *
-
+from halftone.spotfunctions import *
+import numpy as np
 
 __all__ = ['Point', 'DotCell', 'Cell', 'Tos', 'TosSpotFunction']
-
+__type__ = [np.uint8, np.uint16, np.uint32, np.uint64, \
+                     np.float16, np.float32, np.float64]
 
 class Point():
     __slots__ = ['x', 'y']
@@ -272,24 +274,38 @@ class TosSpotFunction(Tos):
         """
     __slot__ = ['spotFunc', 'quantize']
 
-    def __init__(self, spotFunc, quantize=256):
-        self.spotFunc = spotFunc
-        self.quantize = quantize
+
+    def __init__(self, spotfunc, qtype=np.uint8):
+        if issubclass(spotfunc.__class__, SpotFunction):
+            self.spotfunc = spotfunc
+        else :
+            raise TypeError("Argument spotfunc is not a subclass of SpotFunction")
+
+        if qtype in __type__ :
+            self.qtype = qtype
+        else :
+            raise TypeError("Argument given to determin quantization \
+                                                    level should be of type : %s", str(__type__))
 
     def fillCell(self, cell):
         for i, pt in enumerate(cell.coordinates):
-            cell.whiteningOrder[i].w = self.spotFunc(pt.x, pt.y)
+            cell.whiteningOrder[i].w = self.spotfunc(pt.x, pt.y)
+        self._sort(cell)
+        self.quantize(cell)
 
+    def _sort(self, cell):
         #TODO: ici comme la spotfunction retourne plusieurs valeurs
         # identiques, devellopez des strategies d'odonnances final
         cell.whiteningOrder.sort()
 
+    def quantize(self, cell):
         # quantize
         i = 0
+        m = np.iinfo(self.qtype).max
         level = cell.width * cell.height
         for e in cell.whiteningOrder:
             i += 1
-            e.w = i / level * self.quantize - 1
+            e.w = self.qtype(i / level * (m + 1) - 1)
 
 
 

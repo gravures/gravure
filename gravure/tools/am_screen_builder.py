@@ -22,13 +22,15 @@
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gio, Gtk, GObject
+from gi.repository import Gio, Gtk, Gdk, GObject, GdkPixbuf
+import cairo
 import numpy as np
 from halftone import spotfunctions
 from halftone.base import *
 
 
 __all__ = ['GtkMatrixView', 'CellViewer']
+__types__ = [np.uint8, np.uint16, np.uint32, np.uint64, np.float16, np.float32, np.float64]
 
 
 class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
@@ -43,7 +45,9 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
     def __init__(self, data=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.data = data
-        self.set_zoom(20)
+        self._pixbuf = None
+        self.zoom = 20
+        self.show_numbers=False
         self.connect('draw', self._on_draw_cb)
 
 
@@ -59,7 +63,19 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         self._zoom = value
         self.queue_draw()
 
-    data = property(fget=get_zoom, fset=set_zoom)
+    zoom = property(fget=get_zoom, fset=set_zoom)
+
+    #
+    # show_numbers property
+    #
+    def get_show_numbers(self):
+        return self._show_numbers
+
+    def set_show_numbers(self, value):
+        self._show_numbers = bool(value)
+        self.queue_draw()
+
+    show_numbers = property(fget=get_show_numbers, fset=set_show_numbers)
 
     #
     # data property
@@ -176,11 +192,11 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
 
         self.hadjustment.set_page_size(w)
         self.hadjustment.set_lower(-50)
-        self.hadjustment.set_upper(self.data.shape[1] * self.get_zoom() + 100)
+        self.hadjustment.set_upper(self.data.shape[1] * self.get_zoom() + 50)
 
         self.vadjustment.set_page_size(h)
         self.vadjustment.set_lower(-50)
-        self.vadjustment.set_upper(self.data.shape[0] * self.get_zoom() + 100)
+        self.vadjustment.set_upper(self.data.shape[0] * self.get_zoom() + 50)
 
         self._draw_background(ctx, w, h)
         self._draw_matrix(ctx, w, h, (- self.hadjustment.get_value(), \
@@ -189,18 +205,18 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
 
     def _draw_background(self, ctx, w, h):
         ctx.rectangle(0, 0, w, h)
-        ctx.set_source_rgba(1, 1, 1)
+        ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
 
     def _draw_bounding_box(self, ctx, w, h):
         ctx.rectangle(50, 50, 50, 50)
-        ctx.set_source_rgba(0.5, 0.5, 0.5)
+        ctx.set_source_rgb(0.5, 0.5, 0.5)
         ctx.fill()
 
     def _draw_matrix(self, ctx, w, h, origin=(0, 0)):
         ox = origin[0]
         oy = origin[1]
-        scale = self.get_zoom()
+        scale = self.zoom
 
         # clip data
         dw = self.data.shape[1]
@@ -218,12 +234,32 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         dw = min(dw, view.shape[1])
         dh = min(dh, view.shape[0])
 
-        for ih in range(dh-1):
-            for iw in range(dw-1):
-                color = view[ih][iw]
-                ctx.rectangle(ox + iw * scale, oy + ih * scale, scale, scale)
-                ctx.set_source_rgba(color, color, color)
-                ctx.fill()
+        if self.zoom >= 10:
+            ctx.set_antialias(cairo.ANTIALIAS_NONE)
+            for ih in range(dh-1):
+                for iw in range(dw-1):
+                    color = view[ih][iw] / np.iinfo(view.dtype).max
+                    ctx.rectangle(ox + iw * scale, oy + ih * scale, scale, scale)
+                    ctx.set_source_rgb(color, color, color)
+                    ctx.fill()
+                    if self.show_numbers and self.zoom>=20:
+                        ctx.set_font_size(6 * self.zoom / 20)
+                        color = .71 - color
+                        ctx.set_source_rgb(color , color , color)
+                        ctx.move_to(ox + iw * scale + scale // 4, \
+                                    oy + ih * scale + scale // 2)
+                        ctx.show_text(str(view[ih][iw]))
+                        ctx.stroke()
+        else:
+            cs = GdkPixbuf.Colorspace.RGB
+            data = view.repeat(3)
+            data = (data / np.iinfo(view.dtype).max * 255).astype(np.uint8)
+            self._pixbuf = GdkPixbuf.Pixbuf.new_from_data(data, cs, \
+                           False, 8, dw, dh, dw*3, None, None)
+            ctx.set_antialias(cairo.ANTIALIAS_NONE)
+            ctx.scale(self.zoom, self.zoom)
+            Gdk.cairo_set_source_pixbuf(ctx, self._pixbuf, 0, 0)
+            ctx.paint()
 
 
 
@@ -244,8 +280,13 @@ class CellViewer(Gtk.Window):
         zoomin.connect("clicked", self.on_zoomin)
         zoomout = Gtk.ToolButton(label="zoom out")
         zoomout.connect("clicked", self.on_zoomout)
+        #nb_label = Gtk.Label("show numbers")
+        show_numbers = Gtk.ToggleToolButton(label="show numbers")
+        show_numbers.set_active(False)
+        show_numbers.connect("toggled", self.on_show_numbers)
         tools.insert(zoomin, 0)
         tools.insert(zoomout, 1)
+        tools.insert(show_numbers, 2)
 
         scroll_win = Gtk.ScrolledWindow()
         self.viewer = GtkMatrixView()
@@ -259,18 +300,20 @@ class CellViewer(Gtk.Window):
 
         # data initialisation
         self.cell = cell
-        arr = np.zeros((self.cell.width, self.cell.height), dtype=np.float)
+        qtype = self.cell.whiteningOrder[0].w.dtype
+        arr = np.zeros((self.cell.width, self.cell.height), dtype=qtype)
         for p in self.cell.whiteningOrder:
-            arr[p.x][p.y] = 1 - (p.w / 255)
+            arr[p.x][p.y] = p.w #1 - (p.w / 255)
         self.viewer.set_data(arr)
 
     def on_zoomout(self, button):
-        self.viewer.set_zoom(max(self.viewer.get_zoom() // 2, 1))
+        self.viewer.zoom = max(self.viewer.zoom // 2, 1)
 
     def on_zoomin(self, button):
-        self.viewer.set_zoom(min(self.viewer.get_zoom() * 2, 40))
+        self.viewer.zoom = min(self.viewer.zoom * 2, 100)
 
-
+    def on_show_numbers(self, switch):
+        self.viewer.show_numbers = switch.get_active()
 
 # This would typically be its own file
 MENU_XML="""
@@ -329,10 +372,10 @@ class App(Gtk.Application):
         if not self.topwin:
             # Windows are associated with the application
             # when the last one is closed the application shuts down
-            size = 300
+            size = 16
             spot_f = spotfunctions.SimpleDot()
             self.h_cell = Cell(size, size)
-            TosSpotFunction(spot_f, 256).fillCell(self.h_cell)
+            TosSpotFunction(spot_f, np.uint8).fillCell(self.h_cell)
             self.topwin = CellViewer(self.h_cell, application=self)
 
         self.topwin.present()
