@@ -229,6 +229,7 @@ class Cell():
         """
     __slot__ = ['width',
                 'height',
+                'area',
                 'threshold',
                 'coordinates',
                 'whiteningOrder',
@@ -236,12 +237,12 @@ class Cell():
     __hash__ = None
 
     def __init__(self, width=2, height=2):
-        area = width * height
+        self.area = width * height
         self.width = int(width)
         self.height = int(height)
-        self.threshold = [None] * area
-        self.coordinates = [None] * area
-        self.whiteningOrder = [None] * area
+        self.threshold = [None] * self.area
+        self.coordinates = [None] * self.area
+        self.whiteningOrder = [None] * self.area
         self._normalize()
 
     def _normalize(self):
@@ -296,7 +297,7 @@ class TosSpotFunction(Tos):
     def _sort(self, cell):
         #TODO: ici comme la spotfunction retourne plusieurs valeurs
         # identiques, devellopez des strategies d'odonnances final
-        cell.whiteningOrder.sort()
+        cell.whiteningOrder.sort(reverse=True)
 
     def quantize(self, cell):
         # quantize

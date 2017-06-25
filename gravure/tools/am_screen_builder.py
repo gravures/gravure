@@ -47,7 +47,9 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         self.data = data
         self._pixbuf = None
         self.zoom = 20
-        self.show_numbers=False
+        self.show_numbers = False
+        self.thresh_view = False
+        self.thresh_level = 0
         self.connect('draw', self._on_draw_cb)
 
 
@@ -64,6 +66,30 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         self.queue_draw()
 
     zoom = property(fget=get_zoom, fset=set_zoom)
+
+    #
+    # thresh_view property
+    #
+    def get_thresh_view(self):
+        return self._thresh_view
+
+    def set_thresh_view(self, value):
+        self._thresh_view = bool(value)
+        self.queue_draw()
+
+    thresh_view = property(fget=get_thresh_view, fset=set_thresh_view)
+
+    #
+    # thresh_level property
+    #
+    def get_thresh_level(self):
+        return self._thresh_level
+
+    def set_thresh_level(self, value):
+        self._thresh_level = value
+        self.queue_draw()
+
+    thresh_level = property(fget=get_thresh_level, fset=set_thresh_level)
 
     #
     # show_numbers property
@@ -95,6 +121,8 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
             if value.ndim < 2 :
                 raise ValueError("Data should at least be 2 dimensional")
             self._data = value
+            self._rangelevels = np.unique(value)
+            self._levels = self._rangelevels.size
 
     data = property(fget=get_data, fset=set_data)
 
@@ -234,14 +262,20 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         dw = min(dw, view.shape[1])
         dh = min(dh, view.shape[0])
 
+        # Vector drawinng
         if self.zoom >= 10:
             ctx.set_antialias(cairo.ANTIALIAS_NONE)
             for ih in range(dh-1):
                 for iw in range(dw-1):
-                    color = view[ih][iw] / np.iinfo(view.dtype).max
+                    # Threshold FIlter
+                    if self.thresh_view:
+                        color =  1 if (view[ih][iw] >= self.thresh_level) else 0
+                    else :
+                        color = view[ih][iw] / np.iinfo(view.dtype).max
                     ctx.rectangle(ox + iw * scale, oy + ih * scale, scale, scale)
                     ctx.set_source_rgb(color, color, color)
                     ctx.fill()
+                    # Data number visualization
                     if self.show_numbers and self.zoom>=20:
                         ctx.set_font_size(6 * self.zoom / 20)
                         color = .71 - color
@@ -250,6 +284,7 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
                                     oy + ih * scale + scale // 2)
                         ctx.show_text(str(view[ih][iw]))
                         ctx.stroke()
+        # PixBuf Drawinng
         else:
             cs = GdkPixbuf.Colorspace.RGB
             data = view.repeat(3)
@@ -270,50 +305,91 @@ class CellViewer(Gtk.Window):
             raise AttributeError("cell should be an halfone.base.Cell Type")
         Gtk.Window.__init__(self, title="Halftone Cell viewer",  application=application)
 
-        # Layout
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(box)
 
-        tools = Gtk.Toolbar()
-        box.pack_start(tools, False, True, 0)
-        zoomin = Gtk.ToolButton(label="zoom in")
-        zoomin.connect("clicked", self.on_zoomin)
-        zoomout = Gtk.ToolButton(label="zoom out")
-        zoomout.connect("clicked", self.on_zoomout)
-        #nb_label = Gtk.Label("show numbers")
-        show_numbers = Gtk.ToggleToolButton(label="show numbers")
-        show_numbers.set_active(False)
-        show_numbers.connect("toggled", self.on_show_numbers)
-        tools.insert(zoomin, 0)
-        tools.insert(zoomout, 1)
-        tools.insert(show_numbers, 2)
-
-        scroll_win = Gtk.ScrolledWindow()
+        # Matrix Viewer widget
         self.viewer = GtkMatrixView()
-        scroll_win.add(self.viewer)
-        box.pack_start(scroll_win, True, True, 0)
-
-        # window setting
-        self.set_default_size(400, 400)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.show_all()
 
         # data initialisation
         self.cell = cell
         qtype = self.cell.whiteningOrder[0].w.dtype
         arr = np.zeros((self.cell.width, self.cell.height), dtype=qtype)
         for p in self.cell.whiteningOrder:
-            arr[p.x][p.y] = p.w #1 - (p.w / 255)
+            arr[p.x][p.y] = p.w
         self.viewer.set_data(arr)
 
+        # Layout
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.add(box)
+
+        # Tools Box
+        tools = Gtk.ActionBar()
+        box.pack_start(tools, False, True, 0)
+
+        zoomin = Gtk.Button(label="zoom in")
+        zoomin.connect("clicked", self.on_zoomin)
+
+        zoomout = Gtk.Button(label="zoom out")
+        zoomout.connect("clicked", self.on_zoomout)
+
+        show_numbers = Gtk.ToggleButton(label="show numbers")
+        show_numbers.set_active(False)
+        show_numbers.connect("toggled", self.on_show_numbers)
+
+        self.slider_thresh = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, \
+                        arr.min(), arr.max(), 1)
+        self.slider_thresh.set_has_origin(True)
+        self.slider_thresh.set_draw_value(True)
+        self.slider_thresh.set_hexpand(True)
+        self.slider_thresh.set_sensitive(False)
+        self.slider_thresh.connect("value_changed", self.on_level_changed)
+
+        thresh_toggle = Gtk.ToggleButton(label="thresh")
+        thresh_toggle.set_active(False)
+        thresh_toggle.connect("toggled", self.on_thresh_toggle)
+
+
+        tools.pack_start(zoomin)
+        tools.pack_start(zoomout)
+        tools.pack_start(show_numbers)
+        tools.pack_end(self.slider_thresh)
+        tools.pack_end(thresh_toggle)
+
+        # Viewport
+        scroll_win = Gtk.ScrolledWindow()
+        scroll_win.add(self.viewer)
+        box.pack_start(scroll_win, True, True, 0)
+
+         # Status Bar
+        stbar = Gtk.Statusbar()
+        box.pack_start(stbar, False, True, 0)
+        mess = "%i x %i %s matrix | %i positions | %i levels | max : %i / min : %i | %.2f ko" \
+                %(cell.width, cell.height, str(arr.dtype), cell.area, \
+                  self.viewer._levels , arr.max(), arr.min(), arr.nbytes / 1024)
+        stbar.push(0, mess)
+
+        # window setting
+        self.set_default_size(400, 400)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.show_all()
+
+
     def on_zoomout(self, button):
-        self.viewer.zoom = max(self.viewer.zoom // 2, 1)
+        self.viewer.zoom = max(self.viewer.zoom - 2, 1)
 
     def on_zoomin(self, button):
-        self.viewer.zoom = min(self.viewer.zoom * 2, 100)
+        self.viewer.zoom = min(self.viewer.zoom + 2, 100)
 
     def on_show_numbers(self, switch):
         self.viewer.show_numbers = switch.get_active()
+
+    def on_thresh_toggle(self, toggle):
+        self.viewer.thresh_view = toggle.get_active()
+        self.slider_thresh.set_sensitive(toggle.get_active())
+
+    def on_level_changed(self, slider):
+        self.viewer.thresh_level = slider.get_value()
+
+
 
 # This would typically be its own file
 MENU_XML="""
