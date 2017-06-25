@@ -44,14 +44,17 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
 
     def __init__(self, data=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+        self._margins =(100, 100)
         self.data = data
-        self._pixbuf = None
         self.zoom = 20
+
         self.show_numbers = False
         self.thresh_view = False
         self.thresh_level = 0
+        self._pixbuf = None
         self.connect('draw', self._on_draw_cb)
-
 
     #
     # zoom property
@@ -63,6 +66,7 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         if value is None:
             return
         self._zoom = value
+        self._update_canvas()
         self.queue_draw()
 
     zoom = property(fget=get_zoom, fset=set_zoom)
@@ -111,6 +115,7 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
 
     def set_data(self, value):
         if value is None:
+            self._data = None
             return
 
         # Testing for buffer protocols
@@ -123,8 +128,46 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
             self._data = value
             self._rangelevels = np.unique(value)
             self._levels = self._rangelevels.size
+            self._update_canvas()
+            self.queue_draw()
 
     data = property(fget=get_data, fset=set_data)
+
+
+    def _update_canvas(self):
+        if self.data is None:
+            self._canvas_size = (100, 100)
+        else :
+            self._canvas_size = (self.data.shape[1] * self.zoom + self._margins[0] * 2, \
+                                self.data.shape[0] * self.zoom + self._margins[1] * 2)
+            self._update_adjustement()
+
+
+    def _update_adjustement(self):
+        if not self.hadjustment :
+            return
+        self._update_hadjustement()
+        self._update_vadjustement()
+
+    def _update_hadjustement(self):
+        self.hadjustment.configure(self.hadjustment.get_value(), 0, self._canvas_size[0], 1, \
+                                   self.get_allocated_width()//100, \
+                                   self.get_allocated_width())
+
+    def _update_vadjustement(self):
+        self.vadjustment.configure(self.vadjustment.get_value(), 0, self._canvas_size[1], 1, \
+                                   self.get_allocated_height()//100, \
+                                   self.get_allocated_height())
+
+
+    #
+    # canvas_size property
+    #
+    def get_canvas_size(self):
+        return self._canvas_size
+
+    canvas_size = property(fget=get_canvas_size)
+
 
     #
     # h & v scroll_policy property
@@ -139,11 +182,11 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
     #
     # hadjustment property
     #
-    def set_hadjustment(self, value):
-        setattr(GtkMatrixView.hadjustment, '_property_helper_hadjustment', value)
-        self.hadjustment.set_page_increment(5)
-        self.hadjustment.set_step_increment(1)
+    def set_hadjustment(self, adj):
+        setattr(GtkMatrixView.hadjustment, '_property_helper_hadjustment', adj)
+        self._update_hadjustement()
         self.hadjustment.connect('value-changed', self._on_hscroll)
+
 
     def get_hadjustment(self):
         return getattr(GtkMatrixView.hadjustment, '_property_helper_hadjustment')
@@ -154,13 +197,16 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
                                    getter=get_hadjustment,
                                    flags=GObject.PARAM_READWRITE)
 
+    def _on_hscroll(self, adjustment):
+        pass
+        #print("H scroll", adjustment.get_value())
+
     #
     # vadjustment property
     #
-    def set_vadjustment(self, value):
-        setattr(GtkMatrixView.vadjustment, '_property_helper_vadjustment', value)
-        self.vadjustment.set_page_increment(5)
-        self.vadjustment.set_step_increment(1)
+    def set_vadjustment(self, adj):
+        setattr(GtkMatrixView.vadjustment, '_property_helper_vadjustment', adj)
+        self._update_vadjustement()
         self.vadjustment.connect('value-changed', self._on_vscroll)
 
     def get_vadjustment(self):
@@ -172,43 +218,9 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
                                    getter=get_vadjustment,
                                    flags=GObject.PARAM_READWRITE)
 
-    def _on_hscroll(self, adjustment):
-        pass
-        #print("H scroll", adjustment.get_value())
-
     def _on_vscroll(self, adjustment):
         pass
         #sprint("V scroll", adjustment.get_value())
-
-    #
-    # size property
-    #
-    hsize = GObject.property(type=int,
-                             flags=GObject.PARAM_READWRITE,
-                             default=1,
-                             minimum=1,
-                             maximum=8000)
-
-    vsize = GObject.property(type=int,
-                             flags=GObject.PARAM_READWRITE,
-                             default=1,
-                             minimum=1,
-                             maximum=8000)
-
-    def set_size(self, h, v):
-        self.hsize, self.vsize = h, v
-
-    def get_size(self):
-        return self.hsize, self.vsize
-
-
-    #
-    # scale property
-    #
-    scale = GObject.property(type=float,
-                             flags=GObject.PARAM_READWRITE,
-                             default=1.0,
-                             minimum=1.0)
 
 
     #
@@ -218,74 +230,71 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
         w = self.get_allocated_width()
         h = self.get_allocated_height()
 
-        self.hadjustment.set_page_size(w)
-        self.hadjustment.set_lower(-50)
-        self.hadjustment.set_upper(self.data.shape[1] * self.get_zoom() + 50)
-
-        self.vadjustment.set_page_size(h)
-        self.vadjustment.set_lower(-50)
-        self.vadjustment.set_upper(self.data.shape[0] * self.get_zoom() + 50)
-
+        origin = ( self.hadjustment.get_value(), \
+                   self.vadjustment.get_value())
         self._draw_background(ctx, w, h)
-        self._draw_matrix(ctx, w, h, (- self.hadjustment.get_value(), \
-                                      - self.vadjustment.get_value()))
+        self._draw_matrix(ctx, w, h, origin)
+
         return True
+
 
     def _draw_background(self, ctx, w, h):
         ctx.rectangle(0, 0, w, h)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
 
-    def _draw_bounding_box(self, ctx, w, h):
-        ctx.rectangle(50, 50, 50, 50)
-        ctx.set_source_rgb(0.5, 0.5, 0.5)
-        ctx.fill()
 
     def _draw_matrix(self, ctx, w, h, origin=(0, 0)):
-        ox = origin[0]
-        oy = origin[1]
+        ox, oy = origin
+        cw, ch = self._canvas_size
+        mw, mh = self._margins
+        dh, dw = self.data.shape
+        dox = doy = 0 # origin of visible part in data
+        dx = mw - ox
+        dy = mh - oy
         scale = self.zoom
 
         # clip data
-        dw = self.data.shape[1]
-        dh = self.data.shape[0]
-        dox = doy = 0
-        if dw * scale > w :
-            dw = w // scale + 3
-            dox = int(- min(ox // scale, 0))
-            ox = ox % scale - scale
-        if dh * scale > h :
-            dh = h // scale + 3
-            doy = int(- min(oy // scale, 0))
-            oy = oy % scale - scale
+        dw = (w // scale) + 2
+        dox = - int(dx // scale) - 1
+        dox = dox if dox>0 else 0
+        dx = dx + dox * scale
+        dh = (h // scale) + 2
+        doy = - int(dy // scale) - 1
+        doy = doy if doy>0 else 0
+        dy = dy + doy * scale
+
+        # memory view creation for the cliped area
         view = self.data[doy:doy+dh, dox:dox+dw]
         dw = min(dw, view.shape[1])
         dh = min(dh, view.shape[0])
 
+
         # Vector drawinng
         if self.zoom >= 10:
             ctx.set_antialias(cairo.ANTIALIAS_NONE)
-            for ih in range(dh-1):
-                for iw in range(dw-1):
+            for ih in range(dh):
+                for iw in range(dw):
                     # Threshold FIlter
                     if self.thresh_view:
                         color =  1 if (view[ih][iw] >= self.thresh_level) else 0
                     else :
                         color = view[ih][iw] / np.iinfo(view.dtype).max
-                    ctx.rectangle(ox + iw * scale, oy + ih * scale, scale, scale)
+                    ctx.rectangle(dx + iw * scale, dy + ih * scale, scale, scale)
                     ctx.set_source_rgb(color, color, color)
                     ctx.fill()
                     # Data number visualization
                     if self.show_numbers and self.zoom>=20:
                         ctx.set_font_size(6 * self.zoom / 20)
-                        color = .71 - color
+                        color = .9 - color
                         ctx.set_source_rgb(color , color , color)
-                        ctx.move_to(ox + iw * scale + scale // 4, \
-                                    oy + ih * scale + scale // 2)
+                        ctx.move_to(dx + iw * scale + scale // 4, \
+                                    dy + ih * scale + scale // 2)
                         ctx.show_text(str(view[ih][iw]))
                         ctx.stroke()
         # PixBuf Drawinng
         else:
+            #TODO: Add threshold filter
             cs = GdkPixbuf.Colorspace.RGB
             data = view.repeat(3)
             data = (data / np.iinfo(view.dtype).max * 255).astype(np.uint8)
@@ -295,6 +304,23 @@ class GtkMatrixView(Gtk.DrawingArea, Gtk.Scrollable):
             ctx.scale(self.zoom, self.zoom)
             Gdk.cairo_set_source_pixbuf(ctx, self._pixbuf, 0, 0)
             ctx.paint()
+
+        # Bounding Box
+        dh *= scale
+        dw *= scale
+        ctx.set_source_rgb(1, 0.7, 0.7)
+
+        ctx.move_to(0, dy)
+        ctx.line_to(w, dy)
+        ctx.move_to(0, dy + dh)
+        ctx.line_to(w, dy + dh)
+
+        ctx.move_to(dx, 0)
+        ctx.line_to(dx, h)
+        ctx.move_to(dx + dw, 0)
+        ctx.line_to(dx + dw, h)
+
+        ctx.stroke()
 
 
 
@@ -357,6 +383,7 @@ class CellViewer(Gtk.Window):
         # Viewport
         scroll_win = Gtk.ScrolledWindow()
         scroll_win.add(self.viewer)
+        #scroll_win.set_overlay_scrolling(False)
         box.pack_start(scroll_win, True, True, 0)
 
          # Status Bar
