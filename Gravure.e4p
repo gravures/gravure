@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project Gravure -->
-<!-- Saved: 2017-06-20, 16:11:38 -->
+<!-- Saved: 2017-06-25, 17:36:41 -->
 <!-- Copyright (C) 2017 Gilles Coissac, gilles@atelierobscur.org -->
 <Project version="5.1">
   <Language>en</Language>
@@ -153,9 +153,10 @@
     <Source>gravure/tools/am_screen_builder.py</Source>
     <Source>gravure/tools/fm_screener.py</Source>
     <Source>gravure/tools/hclut2icc.py</Source>
-    <Source>gravure/tools/mpl_test.py</Source>
     <Source>gravure/tools/mpl_widgets.py</Source>
     <Source>gravure/version.py</Source>
+    <Source>gravure/widgets/__init__.py</Source>
+    <Source>gravure/widgets/widgets.py</Source>
     <Source>mahotas-1.4.1/README.rst</Source>
     <Source>mahotas-1.4.1/bin/mahotas-features.py</Source>
     <Source>mahotas-1.4.1/docs/source/api.rst</Source>
@@ -412,6 +413,7 @@
     <Source>src/python_epics/scanDisplay.py</Source>
     <Source>src/python_epics/spline.py</Source>
     <Source>src/test.py</Source>
+    <Source>ui/__init__.py</Source>
   </Sources>
   <Forms/>
   <Translations/>

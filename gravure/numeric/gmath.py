@@ -51,12 +51,14 @@ setcontext(), localcontext()) and the DefaultContext, BasicContext and
 ExtendedContext facilities.
 
 """
-import enum as _enum
+
 import math as _math
 import decimal as _decimal
 from decimal import Decimal
 from fractions import Fraction
 from numbers import Number
+from gravure import *
+
 
 # not implemented functions present in math module
 __notimplemented__= ['acosh', 'asinh', 'atanh', 'erf', 'erfc', 'expm1', 'fabs', 'factorial',
@@ -77,22 +79,9 @@ __all__ = [# Math functions
            # Context
            'Context', 'BasicContext', 'DefaultContext', 'ExtendedContext',
 
-           # Enum for use in setting up contexts
-           'ANGLE',
-
            # Functions for manipulating contexts
            'localcontext', 'getcontext', 'setcontext']
 
-
-
-@_enum.unique
-class ANGLE(_enum.IntEnum):
-    """Enumeration used to set unit measurement of angle in the gmath.Context.
-
-        Valid values are : ANGLE.DEGREE and ANGLE.RADIAN.
-        """
-    DEGREE = 1
-    RADIAN = 0
 
 
 class Context(_decimal.Context):
@@ -112,7 +101,7 @@ class Context(_decimal.Context):
                                    If 0, printed as 1e1
         :param clamp: If 1, change exponents if too high (Default 0)
         :param angle: Define unit of mesurement for angle in trigonometric functions.
-                                should be ANGLE.RADIAN or ANGLE.DEGREE, default use radian.
+                                should be gravure.ANGLE.RADIAN or gravure.ANGLE.DEGREE, default use radian.
         :param Dfraction: if True express Fractions 'f' pass to gmath functions as
                                      Decimal(f.numerator) / Decimal(f.denominator), default to True.
         """
@@ -170,7 +159,7 @@ class Context(_decimal.Context):
         s.append('flags=[' + ', '.join(names) + ']')
         names = [t.__name__ for t, v in self.traps.items() if v]
         s.append('traps=[' + ', '.join(names) + ']')
-        s.append('angle=%s' % ['ANGLE.RADIAN','ANGLE.DEGREE'][self.angle])
+        s.append('angle=%s' % ['gravure.ANGLE.RADIAN','gravure.ANGLE.DEGREE'][self.angle])
         s.append('Dfraction=%s' % (bool(self.Dfraction)))
         return ', '.join(s) + ')'
 
@@ -315,7 +304,7 @@ def cos(x):
 
     Unit of measurement for angle x depends on the context.
     Default is to express x in radians. To set unit to degrees :
-    getcontext().angle = ANGLE.DEGREE
+    getcontext().angle = gravure.ANGLE.DEGREE
 
     :param x: Angle express by any real numbers or decimal number.
     :type x: int, float, fraction, decimal.
@@ -345,7 +334,7 @@ def sin(x):
 
     Unit of measurement for angle x depends on the context.
     Default is to express x in radians. To set unit to degrees :
-    getcontext().angle = ANGLE.DEGREE
+    getcontext().angle = gravure.ANGLE.DEGREE
 
     :param x: Angle express by any real numbers or decimal number.
     :type x: int, float, fraction, decimal.

@@ -1,3 +1,66 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import with_statement
+
+# metadata
+"open source RIP(Raster Image Processing)"
+__version__ = "0"
+__license__ = "LGPL v3"
+__author__ = "G"
+__email__ = "g"
+__url__ = "http://www.atelierobscur.org/'"
+__date__ = "2017-06-26T11:27:14"
+__prj__ = "Gravure"
+
+
+from setuptools import setup, find_packages
+
+
+def get_long_description():
+    descr = []
+    for fname in ["README.txt"]:
+        with open(fname) as f:
+            descr.append(f.read())
+    return "\n\n".join(descr)
+
+
+setup(
+    name="Gravure",
+    version="0",
+    description="open source RIP(Raster Image Processing)",
+    long_description=get_long_description(),
+    author="G",
+    author_email="g",
+    maintainer="Gilles Coissac",
+    maintainer_email="dev@atelierobscur.org",
+    url="http://www.atelierobscur.org/'",
+    download_url="http://www.atelierobscur.org/'",
+    license="LGPL v3",
+    platforms=[
+        "any"
+    ],
+    classifiers=[
+        "Environment :: X11 Applications :: Gnome",
+        "Environment :: X11 Applications :: GTK",
+        "Intended Audience :: End Users/Desktop",
+        "Natural Language :: English",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: C",
+        "Programming Language :: Cython",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.4",
+        "Topic :: Artistic Software",
+        "Topic :: Desktop Environment :: Gnome",
+        "Topic :: Printing",
+        "Topic :: Software Development :: Libraries :: Python Modules"
+    ],
+    keywords="graphic rip halfton print",
+    packages=find_packages(
+        "/home/gilles/FOSSILS/gravure/gravure"
+    ),
+    include_package_data = True,
+)
 # -*- coding: utf-8 -*-
 #
 # SETUP install python file
@@ -14,7 +77,7 @@
 #
 #
 
-__author__  = "Gilles Coissac <gilles@atelierobscur.org>"
+__author__  = "Gilles Coissac <dev@atelierobscur.org>"
 __date__    = "2 March 2011"
 __version__ = "$Revision: 0.1 $"
 __credits__ = "Atelier Obscur : www.atelierobscur.org"
@@ -118,8 +181,45 @@ X_LINK_ARGS = []
 
 #
 #=== Extensions list =================
-extensions = []
-
+extensions = [ \
+    Extension(\
+        'property', \
+        sources = [os.path.join(SRC_DIR, 'core/property.pyx')], \
+        include_dirs = INCLUDE_DIRS, \
+        libraries = LIBRARIES, \
+        runtime_library_dirs=DYN_LIBRARY_DIRS, \
+        extra_objects = EXTRA_OBJECTS,  \
+        extra_compile_args = COMPILE_ARGS
+    ),  \
+      Extension(\
+        'stoch', \
+        sources = [os.path.join(SRC_DIR, 'halftone/stoch.pyx')], \
+        include_dirs = INCLUDE_DIRS, \
+        libraries = LIBRARIES, \
+        runtime_library_dirs=DYN_LIBRARY_DIRS, \
+        extra_objects = EXTRA_OBJECTS,  \
+        extra_compile_args = ['-fopenmp'], \
+        extra_link_args=['-fopenmp']
+    ),  \
+    Extension(\
+        'enum', \
+        sources = [os.path.join(SRC_DIR, 'numeric/enum.pyx')], \
+        include_dirs = INCLUDE_DIRS, \
+        libraries = LIBRARIES, \
+        runtime_library_dirs=DYN_LIBRARY_DIRS, \
+        extra_objects = EXTRA_OBJECTS,  \
+        extra_compile_args = COMPILE_ARGS
+    ),  \
+        Extension(\
+        'mdarray', \
+        sources = [os.path.join(SRC_DIR, 'numeric/mdarray.pyx')], \
+        include_dirs = INCLUDE_DIRS, \
+        libraries = LIBRARIES, \
+        runtime_library_dirs=DYN_LIBRARY_DIRS, \
+        extra_objects = EXTRA_OBJECTS,  \
+        extra_compile_args = COMPILE_ARGS
+    ),
+]
 
 #
 #=== SETUP COMMAND ==============
@@ -130,7 +230,18 @@ setup(
     platforms         = ['any'],
 
     namespace_packages= ['gravure'],
-    packages = ['gravure', 'gravure.ghostscript',  'gravure.ghostscript.test'],
+    packages = ['gravure', \
+                'gravure.core',  \
+                'gravure.curve', \
+                'gravure.halftone', \
+                'gravure.halftone.test', \
+                'gravure.numeric', \
+                'gravure.numeric.test', \
+                'gravure.rip', \
+                'gravure..tools', \
+                'gravure.ui' \
+                ],
+
     package_data={ '': ['*.pxd'] },
 
     # 'setup.py build' will build either .py and .pyx

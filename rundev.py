@@ -7,7 +7,7 @@ import subprocess
 
 def build():
     try :
-        arg = ['python3', '/home/gilles/FOSSILS/pyghostscript/setup.py', 'build_ext', '--inplace']
+        arg = ['python3', '/home/gilles/FOSSILS/gravure/setup.py', 'build_ext', '--inplace']
         sub = subprocess.Popen(arg, stdout=subprocess.PIPE)
         returnDatas = sub.communicate()
         (out , err) = returnDatas

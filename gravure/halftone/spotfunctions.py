@@ -86,6 +86,9 @@ class SpotFunction():
     :rtype: float or decimal depending on input type.\n\
     :raises: ValueError\n"
 
+    def __init__(self, polarity):
+        pass
+
     @staticmethod
     def _checkBounds(func):
         def _checkBounds(self, x, y):

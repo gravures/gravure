@@ -19,6 +19,18 @@
 # Fifth Floor, Boston, MA 02110-1301, USA.
 
 # this is a namespace package
-
 import pkg_resources
 pkg_resources.declare_namespace(__name__)
+
+import enum as _enum
+
+__all__ =['ANGLE']
+
+@_enum.unique
+class ANGLE(_enum.IntEnum):
+    """Enumeration used to set unit measurement of angle.
+
+        Valid values are : ANGLE.DEGREE and ANGLE.RADIAN.
+        """
+    DEGREE = 1
+    RADIAN = 0

@@ -1,0 +1,8 @@
+
+# Enter a commit message for this check-in. Lines beginning with # are ignored.
+#
+# user: gilles
+# tags: trunk
+#
+# EDITED     gravure/halftone/am.py
+# EDITED     gravure/halftone/base.py
