@@ -31,6 +31,10 @@ MIN_CYTHON_VERSION = '0.19'
 MIN_PYTHON_VERSION = (3, 4)
 
 
+
+sys.stderr = open('.errlog', 'w')
+
+
 # Cython requierement
 try:
     import Cython
@@ -135,8 +139,15 @@ extensions = [ \
     ),  \
     Extension(\
         'mdarray', \
-        sources = [os.path.join(SRC_DIR, 'numeric/mdarray.pyx')], \
-        include_dirs = INCLUDE_DIRS, \
+        sources = [
+                   os.path.join(SRC_DIR, 'numeric/bit_width_type.pxd'), \
+                   os.path.join(SRC_DIR, 'numeric/max_const.pyx'), \
+                   os.path.join(SRC_DIR, 'numeric/TYPE_DEF.pxi'), \
+                   os.path.join(SRC_DIR, 'numeric/type_promotion.pyx'), \
+                   os.path.join(SRC_DIR, 'numeric/_struct.pyx'), \
+                   os.path.join(SRC_DIR, 'numeric/mdarray.pyx') \
+                   ],  \
+        include_dirs = [os.path.join(SRC_DIR, 'numeric/')], \
         libraries = LIBRARIES, \
         runtime_library_dirs=DYN_LIBRARY_DIRS, \
         extra_objects = EXTRA_OBJECTS,  \

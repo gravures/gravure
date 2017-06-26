@@ -166,7 +166,7 @@ cdef object get_pylong(object v):
 # PYTHON EXPORT OF ENUMERATION
 #
 
-cdef class BitWidthType(_IntEnum):
+class BitWidthType(_IntEnum):
     BOOL        = BitWidthType(_b.BOOL)
     INT8        = BitWidthType(_b.INT8)
     INT16       = BitWidthType(_b.INT16)
@@ -214,7 +214,7 @@ cdef class BitWidthType(_IntEnum):
         COMPLEX512  = BitWidthType(_b.COMPLEX512)
 
 
-cdef class MinMaxType(_IntEnum):
+class MinMaxType(_IntEnum):
     MAX_INT8    = MinMaxType(_b.MAX_INT8)
     MIN_INT8    = MinMaxType(_b.MIN_INT8)
     MAX_UINT8   = MinMaxType(_b.MAX_UINT8)
