@@ -1,105 +1,37 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
-
-# metadata
-"open source RIP(Raster Image Processing)"
-__version__ = "0"
-__license__ = "LGPL v3"
-__author__ = "G"
-__email__ = "g"
-__url__ = "http://www.atelierobscur.org/'"
-__date__ = "2017-06-26T11:27:14"
-__prj__ = "Gravure"
-
-
-from setuptools import setup, find_packages
-
-
-def get_long_description():
-    descr = []
-    for fname in ["README.txt"]:
-        with open(fname) as f:
-            descr.append(f.read())
-    return "\n\n".join(descr)
-
-
-setup(
-    name="Gravure",
-    version="0",
-    description="open source RIP(Raster Image Processing)",
-    long_description=get_long_description(),
-    author="G",
-    author_email="g",
-    maintainer="Gilles Coissac",
-    maintainer_email="dev@atelierobscur.org",
-    url="http://www.atelierobscur.org/'",
-    download_url="http://www.atelierobscur.org/'",
-    license="LGPL v3",
-    platforms=[
-        "any"
-    ],
-    classifiers=[
-        "Environment :: X11 Applications :: Gnome",
-        "Environment :: X11 Applications :: GTK",
-        "Intended Audience :: End Users/Desktop",
-        "Natural Language :: English",
-        "Operating System :: POSIX :: Linux",
-        "Programming Language :: C",
-        "Programming Language :: Cython",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3.4",
-        "Topic :: Artistic Software",
-        "Topic :: Desktop Environment :: Gnome",
-        "Topic :: Printing",
-        "Topic :: Software Development :: Libraries :: Python Modules"
-    ],
-    keywords="graphic rip halfton print",
-    packages=find_packages(
-        "/home/gilles/FOSSILS/gravure/gravure"
-    ),
-    include_package_data = True,
-)
 # -*- coding: utf-8 -*-
-#
-# SETUP install python file
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-# Provided as-is; use at your own risk; no warranty; no promises; enjoy!
-#
-#
 
-__author__  = "Gilles Coissac <dev@atelierobscur.org>"
-__date__    = "2 March 2011"
-__version__ = "$Revision: 0.1 $"
-__credits__ = "Atelier Obscur : www.atelierobscur.org"
+# Copyright (C) 2015 Atelier Obscur.
+# Authors:
+# Gilles Coissac <dev@atelierobscur.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
 
-"""
-Created on Wed Mar  2 10:27:44 2011
-
-@author: Gilles Coissac
-"""
 import os
 import sys
-
 import ez_setup
 ez_setup.use_setuptools()
 
 import setuptools
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.extension import Extension
 from setuptools.command import build_ext
 
+
+MIN_CYTHON_VERSION = '0.19'
+MIN_PYTHON_VERSION = (3, 4)
+
+
 # Cython requierement
-min_cython_version = '0.19'
 try:
     import Cython
     has_cython = True
@@ -112,16 +44,16 @@ if devtree:
     # we are not in a source distribution tree
     # cython min version is an absolute requirement.
     try:
-        setuptools.dist.Distribution(dict(setup_requires=['cython>=' + min_cython_version]))
+        setuptools.dist.Distribution(dict(setup_requires=['cython>=' + MIN_CYTHON_VERSION]))
     except:
-        print("At least Cython %s is needed to generate c extensions files!" % (min_cython_version, ))
+        print("At least Cython %s is needed to generate c extensions files!" % (MIN_CYTHON_VERSION, ))
         sys.exit(1)
     else:
         use_cython = True
 else:
     # we are in a source distribution
     # and pyx files extensions should be already cythonized.
-    if has_cython and Cython.__version__ >= min_cython_version:
+    if has_cython and Cython.__version__ >= MIN_CYTHON_VERSION:
         # Cython is present and match minimum version
         # so we could use it.
         use_cython = True
@@ -137,7 +69,7 @@ if use_cython:
     def get_extensions(extensions, **_ignore):
         return cythonize(extensions, **{'cython-c-in-temp':1})
 else:
-    print("Cython %s is not present but try to continue without it..." % (min_cython_version, ))
+    print("Cython %s is not present but try to continue without it..." % (MIN_CYTHON_VERSION, ))
     def get_extensions(extensions, **_ignore):
         for extension in extensions:
             sources = []
@@ -155,16 +87,16 @@ else:
 
 #
 #=== Python version ===================
-if sys.version_info[0] == 3:
-    if sys.version_info[1] < 4:
-        print("You need Python 3.4 or greater")
+if sys.version_info[0] == MIN_PYTHON_VERSION[0]:
+    if sys.version_info[1] < MIN_PYTHON_VERSION[1]:
+        print("You need Python %i.%i or greater" %MIN_PYTHON_VERSION)
         sys.exit(1)
-elif sys.version_info[0] < 3:
-    print("You need Python 3.4 or greater")
+elif sys.version_info[0] < MIN_PYTHON_VERSION[0]:
+    print("You need Python %i.%i or greater" %MIN_PYTHON_VERSION)
     sys.exit(1)
 
 #
-#=== version ========================
+#=== gravure version ===================
 version = open('VERSION').read().strip()
 open('gravure/version.py', 'w').write('__version__ = "%s"\n' % version)
 
@@ -217,7 +149,7 @@ extensions = [ \
 
 setup(
     name              = 'gravure',
-    version           = '0.1.dev',
+    version           = version,
     platforms         = ['any'],
 
     namespace_packages= ['gravure'],
@@ -251,16 +183,30 @@ setup(
     author_email = 'dev@atelierobscur.org',
     maintainer = 'Gilles Coissac',
     maintainer_email = 'dev@atelierobscur.org',
-
     description       = 'open source RIP(Raster Image Processing)',
     long_description  = open('README.txt').read(),
     license           = 'LGPL v3',
-    keywords          = '',
-
+    keywords          = "graphic rip halfton print",
     url = 'http://www.atelierobscur.org/',
     download_url = 'http://www.atelierobscur.org/',
 
-    #classifiers       = []
+    classifiers=[
+        "Environment :: X11 Applications :: Gnome",
+        "Environment :: X11 Applications :: GTK",
+        "Intended Audience :: End Users/Desktop",
+        "Natural Language :: English",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: C",
+        "Programming Language :: Cython",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.4",
+        "Topic :: Artistic Software",
+        "Topic :: Desktop Environment :: Gnome",
+        "Topic :: Printing",
+        "Topic :: Software Development :: Libraries :: Python Modules"
+    ]
 
 )
+
+
 
