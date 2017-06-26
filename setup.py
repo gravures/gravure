@@ -202,15 +202,6 @@ extensions = [ \
         extra_link_args=['-fopenmp']
     ),  \
     Extension(\
-        'enum', \
-        sources = [os.path.join(SRC_DIR, 'numeric/enum.pyx')], \
-        include_dirs = INCLUDE_DIRS, \
-        libraries = LIBRARIES, \
-        runtime_library_dirs=DYN_LIBRARY_DIRS, \
-        extra_objects = EXTRA_OBJECTS,  \
-        extra_compile_args = COMPILE_ARGS
-    ),  \
-        Extension(\
         'mdarray', \
         sources = [os.path.join(SRC_DIR, 'numeric/mdarray.pyx')], \
         include_dirs = INCLUDE_DIRS, \
