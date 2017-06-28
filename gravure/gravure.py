@@ -36,6 +36,16 @@ class ANGLE(_enum.IntEnum):
 
 
 @_enum.unique
+class POLARITY(_enum.IntEnum):
+    """Enumeration describing how to interpret numerical values of colorant.
+
+        Valid values are : POLARITY.ADDITIVE and POLARITY.SUBSTRACTIVE.
+        """
+    ADDITIVE = 0
+    SUBSTRACTIVE = 1
+
+
+@_enum.unique
 class PARAM(_enum.IntEnum):
     SYSTEM_SERVER                 = 10
     SYSTEM_LIMITS                 = 11

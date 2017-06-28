@@ -62,8 +62,13 @@ followed by the postscript procedure. ex :
 """
 
 from decimal import Decimal
-import numeric.gmath as gm
+import gravure.numeric.gmath as gm
+from gravure.gravure import POLARITY
 
+
+__all__ = ['CosineDot', 'Cross', 'Diamond', 'Double', 'DoubleDot', 'Ellipse', 'EllipseA', \
+        'EllipseB', 'EllipseC','EllipseBlischke', 'HillDot', 'Line', 'LineX', 'LineY', \
+        'Rhomboid', 'RoundDot', 'SimpleDot', 'SpotFunction', 'Square']
 
 class SpotFunction():
     """This is the abstract base class for all spot functions in this module.
@@ -86,16 +91,20 @@ class SpotFunction():
     :rtype: float or decimal depending on input type.\n\
     :raises: ValueError\n"
 
-    def __init__(self, polarity):
-        pass
+    def __init__(self, polarity=POLARITY.ADDITIVE):
+        if not issubclass(POLARITY, type(polarity)):
+            raise TypeError('Polarity should be a value of Enum POLARITY.')
+        self.polarity = polarity
 
     @staticmethod
     def _checkBounds(func):
-        def _checkBounds(self, x, y):
+        def _checkBounds(*args, **kwargs):
+            x = args[1]
+            y = args[2]
             if x < -1.0 or x > 1.0 or y < -1.0 or y > 1.0:
                 raise ValueError("x and y function arguments \
                 should lie in the range [-1.0, 1.0]")
-            return func(self, x, y)
+            return func(*args, **kwargs)
         return _checkBounds
 
     def _checkFloat(self, f, x, y):
@@ -103,6 +112,15 @@ class SpotFunction():
             return Decimal(str(f))
         else:
             return f
+
+    @staticmethod
+    def _cast_polarity(func):
+        def cast_polarity(*args, **kwargs):
+            if args[0].polarity:
+                return 1 - func(*args, **kwargs)
+            else:
+                return func(*args, **kwargs)
+        return cast_polarity
 
     def __call__(self, x, y):
         raise NotImplementedError
@@ -120,6 +138,7 @@ class LineX(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'LineX'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         return x
@@ -136,6 +155,7 @@ class LineY(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'LineY'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         return y
@@ -152,6 +172,7 @@ class Line(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'Line'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         return - abs(y)
@@ -173,6 +194,7 @@ class SimpleDot(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'SimpleDot'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         y *= y
@@ -192,12 +214,14 @@ class SimpleDot(SpotFunction):
         return ps
 
 
+
 class CosineDot(SpotFunction):
     """CosineDot spotFunction.
     """
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'CosineDot'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         y = gm.cos(y * 180)
@@ -222,6 +246,7 @@ class RoundDot(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'RoundDot'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         x = abs(x)
@@ -269,6 +294,7 @@ class HillDot(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'HillDot'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         a = self._checkFloat(0.1, x, y)
@@ -303,6 +329,7 @@ class Rhomboid(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'Rhomboid'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         a = self._checkFloat(0.9, x, y)
@@ -328,6 +355,7 @@ class Square(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'Square'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         x = abs(x)
@@ -358,6 +386,7 @@ class Cross(SpotFunction):
     __doc__ += SpotFunction._DOC_SIGN
     __name__ = 'Cross'
 
+    @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
         x = abs(x)
@@ -380,3 +409,307 @@ class Cross(SpotFunction):
 }"""
         ps = "/" + cls.__name__ + body
         return ps
+
+
+class Diamond(SpotFunction):
+    """Diamond spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'Diamond'
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  abs exch abs
+  2 copy add
+  .75 le
+  {
+  dup mul exch
+  dup mul add
+  1 exch sub
+  }
+  { 2 copy add
+  1.23 le
+  { .85 mul add
+  1 exch sub
+  }
+  { 1 sub dup
+  mul exch 1
+  sub dup mul
+  add 1 sub
+  }
+  ifelse
+  }
+  ifelse
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+
+class Double(SpotFunction):
+    """Double spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'Double'
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  exch 2 div
+  exch 2
+  {
+  360 mul sin
+  2 div exch
+  }
+  repeat add
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+
+class DoubleDot(SpotFunction):
+    """DoubleDot spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'DoubleDot'
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  2
+  {
+  360 mul sin
+  2 div exch
+  }
+  repeat add
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+
+class EllipseA(SpotFunction):
+    """EllipseA spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'EllipseA'
+
+    def __init__(self, junction=65, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if junction<1 or junction>99:
+            raise ValueError('junction value should be between 1 and 99')
+        self.junction /= 100
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  dup mul .9
+  mul exch dup
+  mul add 1
+  exch sub
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+class EllipseB(SpotFunction):
+    """EllipseB spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'EllipseB'
+
+    def __init__(self, junction=65, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if junction<1 or junction>99:
+            raise ValueError('junction value should be between 1 and 99')
+        self.junction /= 100
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  dup 5 mul
+  8 div mul
+  exch dup mul
+  exch add sqrt
+  1 exch sub
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+
+#FIXME: orifginal ps code buggy
+class EllipseC(SpotFunction):
+    """EllipseC spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'EllipseC'
+
+    def __init__(self, junction=65, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if junction<1 or junction>99:
+            raise ValueError('junction value should be between 1 and 99')
+        self.junction /= 100
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  dup .5 gt
+  { 1 exch sub } if
+  dup .25 ge
+  { .5 exch sub 4 mul dup mul 1 sub }
+  { 4 mul dup mul 1 exch sub } ifelse
+  exch dup .5 gt
+  { 1 exch sub } if
+  dup .25 ge
+  { .5 exch sub 4 mul dup mul 1 sub }
+  { 4 mul dup mul 1 exch sub } ifelse
+  add -2 div
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+
+class Ellipse(SpotFunction):
+    """Ellipse spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'Ellipse'
+
+    def __init__(self, junction=65, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if junction<1 or junction>99:
+            raise ValueError('junction value should be between 1 and 99')
+        self.junction /= 100
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  abs exch abs
+  2 copy 3 mul
+  exch 4 mul add
+  3 sub dup 0 lt
+  {
+  pop dup mul
+  exch .80 div
+  dup mul add
+  4 div
+  1 exch sub
+  }
+  {
+  dup 1 gt
+  {
+  pop 1 exch
+  sub dup mul
+  exch 1 exch sub
+  .80 div dup mul add
+  4 div 1 sub
+  }
+  {
+  .5 exch sub
+  exch pop exch pop
+  } ifelse
+  } ifelse
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+
+class EllipseBlischke(SpotFunction):
+    """Ellipse Blischke spotFunction.
+    """
+    __doc__ += SpotFunction._DOC_SIGN
+    __name__ = 'EllipseBlischke'
+
+    def __init__(self, junction=65, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if junction<1 or junction>99:
+            raise ValueError('junction value should be between 1 and 99')
+        self.junction /= 100
+
+    @SpotFunction._cast_polarity
+    @SpotFunction._checkBounds
+    def __call__(self, x, y):
+        raise NotImplementedError
+
+    @classmethod
+    def postscript(cls):
+        body = """
+{
+  exch abs exch
+  abs 2 copy 0.65 mul
+  add 0.65 lt
+  {
+  exch 0.65 div
+  dup dup mul
+  exch 2 mul
+  3 sub mul exch
+  dup dup mul
+  exch 2 mul 3
+  sub mul add
+  0.65 mul 1 add
+  }
+  { 2 copy 0.65
+  mul add 1 gt
+    {
+    1 sub exch
+    1 sub 0.65
+    div dup dup
+    mul exch 2
+    mul 3 add mul
+    exch dup dup
+    mul exch 2 mul
+    3 add mul add
+    0.65 mul 1 sub
+    }
+    { 0.65 mul add
+    2 mul neg 1
+    add 0.65 add
+    }
+    ifelse
+  }
+  ifelse
+}"""
+        ps = "/" + cls.__name__ + body
+        return ps
+
+

@@ -20,7 +20,7 @@
 
 import math
 from decimal import *
-from halftone.spotfunctions import *
+from gravure.halftone.spotfunctions import *
 import numpy as np
 
 __all__ = ['Point', 'DotCell', 'Cell', 'Tos', 'TosSpotFunction']
@@ -297,7 +297,7 @@ class TosSpotFunction(Tos):
     def _sort(self, cell):
         #TODO: ici comme la spotfunction retourne plusieurs valeurs
         # identiques, devellopez des strategies d'odonnances final
-        cell.whiteningOrder.sort(reverse=True)
+        cell.whiteningOrder.sort()
 
     def quantize(self, cell):
         # quantize

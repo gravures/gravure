@@ -22,9 +22,9 @@ import math
 from fractions import Fraction
 from decimal import *
 
-import numeric.gmath as gm
-from base import *
-from spotfunctions import *
+import gravure.numeric.gmath as gm
+from gravure.halftone.base import *
+from gravure.halftone.spotfunctions import *
 
 #TODO: change to normal import in futur
 #import pyximport; pyximport.install()

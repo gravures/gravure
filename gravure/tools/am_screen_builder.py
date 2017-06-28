@@ -24,9 +24,9 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk
 import numpy as np
-from halftone import spotfunctions
-from halftone.base import *
-from ui.widgets import *
+from gravure.halftone import spotfunctions
+from gravure.halftone.base import *
+from gravure.ui.widgets import *
 
 
 __all__ = ['CellViewer', 'CellViewerApp']
