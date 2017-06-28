@@ -411,6 +411,7 @@ class Cross(SpotFunction):
         return ps
 
 
+#TODO: implement __call__ method
 class Diamond(SpotFunction):
     """Diamond spotFunction.
     """
@@ -452,6 +453,7 @@ class Diamond(SpotFunction):
         return ps
 
 
+#TODO: implement __call__ method
 class Double(SpotFunction):
     """Double spotFunction.
     """
@@ -479,6 +481,7 @@ class Double(SpotFunction):
         return ps
 
 
+#TODO: implement __call__ method
 class DoubleDot(SpotFunction):
     """DoubleDot spotFunction.
     """
@@ -505,6 +508,7 @@ class DoubleDot(SpotFunction):
         return ps
 
 
+#TODO: implement __call__ method
 class EllipseA(SpotFunction):
     """EllipseA spotFunction.
     """
@@ -534,6 +538,7 @@ class EllipseA(SpotFunction):
         ps = "/" + cls.__name__ + body
         return ps
 
+#TODO: implement __call__ method
 class EllipseB(SpotFunction):
     """EllipseB spotFunction.
     """
@@ -566,6 +571,7 @@ class EllipseB(SpotFunction):
 
 
 #FIXME: orifginal ps code buggy
+#TODO: implement __call__ method
 class EllipseC(SpotFunction):
     """EllipseC spotFunction.
     """
@@ -613,12 +619,24 @@ class Ellipse(SpotFunction):
         super().__init__(*args, **kwargs)
         if junction<1 or junction>99:
             raise ValueError('junction value should be between 1 and 99')
-        self.junction /= 100
+        self.junction = junction / 100
 
     @SpotFunction._cast_polarity
     @SpotFunction._checkBounds
     def __call__(self, x, y):
-        raise NotImplementedError
+        p = self.junction
+        abs_y = abs(y)
+        abs_x = abs(x)
+        z = (abs_x * 3.0 + abs_y * 4.0) - 3.0
+
+        if z < 0:
+            return 1.0 - (((abs_x * abs_x) + ((abs_y / p) * (abs_y / p))) / 4.0)
+        else:
+            if z > 1:
+                return (((1.0 - abs_x) * (1.0 - abs_x) + ((1.0 - abs_y) / p) \
+                        * ((1.0 - abs_y) / p)) / 4.0) - 1.0
+            else:
+                return (.5 - z)
 
     @classmethod
     def postscript(cls):
@@ -654,6 +672,7 @@ class Ellipse(SpotFunction):
         return ps
 
 
+#TODO: implement __call__ method
 class EllipseBlischke(SpotFunction):
     """Ellipse Blischke spotFunction.
     """

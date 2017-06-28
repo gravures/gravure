@@ -24,6 +24,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk
 import numpy as np
+from gravure import gravure
 from gravure.halftone import spotfunctions
 from gravure.halftone.base import *
 from gravure.ui.widgets import *
@@ -184,8 +185,8 @@ class CellViewerApp(Gtk.Application):
         if not self.topwin:
             # Windows are associated with the application
             # when the last one is closed the application shuts down
-            size = 16
-            spot_f = spotfunctions.SimpleDot()
+            size = 64
+            spot_f = spotfunctions.Ellipse(polarity=gravure.POLARITY.SUBSTRACTIVE)
             self.h_cell = Cell(size, size)
             TosSpotFunction(spot_f, np.uint8).fillCell(self.h_cell)
             self.topwin = CellViewer(self.h_cell, application=self)
