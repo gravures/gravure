@@ -1,3 +1,0 @@
-compiler: VS 2008 Professional
-freeimage: 3.15.3
-lcms2: 2.3
