@@ -57,8 +57,9 @@ import decimal as _decimal
 from decimal import Decimal
 from fractions import Fraction
 from numbers import Number
-from gravure import *
+from gravure import gravure
 
+print(gravure.ANGLE)
 
 # not implemented functions present in math module
 __notimplemented__= ['acosh', 'asinh', 'atanh', 'erf', 'erfc', 'expm1', 'fabs', 'factorial',
@@ -107,7 +108,7 @@ class Context(_decimal.Context):
         """
     def __init__(self, prec=None, rounding=None, Emin=None, Emax=None, \
                  capitals=None, clamp=None, flags=None, traps=None, \
-                 angle=ANGLE.RADIAN, Dfraction=True):
+                 angle=gravure.ANGLE.RADIAN, Dfraction=True):
         _decimal.Context.__init__(self, prec=prec, rounding=rounding, Emin=Emin, \
                                  Emax=Emax, capitals=capitals, clamp=clamp, \
                                  flags=flags, traps=traps)
@@ -121,8 +122,8 @@ class Context(_decimal.Context):
 
     @angle.setter
     def angle(self, a):
-        self.__property['angle'] = a if a in [ANGLE.DEGREE,
-                           ANGLE.RADIAN] else ANGLE.RADIAN
+        self.__property['angle'] = a if a in [gravure.ANGLE.DEGREE,
+                           gravure.ANGLE.RADIAN] else gravure.ANGLE.RADIAN
 
     @property
     def Dfraction(self):
@@ -232,7 +233,7 @@ def _cast_fractions(func):
 
 def _cast_angles_args(func):
     def cast_angles_args(*args):
-        if getcontext().angle == ANGLE.DEGREE:
+        if getcontext().angle == gravure.ANGLE.DEGREE:
             rargs = []
             for e in args:
                 if isinstance(e, Number):
@@ -246,7 +247,7 @@ def _cast_angles_args(func):
 
 def _cast_return_angles(func):
     def cast_return_angles(*args):
-        if getcontext().angle == ANGLE.DEGREE:
+        if getcontext().angle == gravure.ANGLE.DEGREE:
             return degrees(func(*args))
         else:
             return func(*args)
@@ -755,14 +756,14 @@ def main():
     c = cos(Decimal(45))
     print("cos(Decimal(45))            ", c)
 
-    getcontext().angle = ANGLE.DEGREE
+    getcontext().angle = gravure.ANGLE.DEGREE
     print("Context angle", ['radian', 'degree'][getcontext().angle])
 
     c = cos(Decimal(45))
     print("cos(Decimal(45))            ", c)
 
     with localcontext() as lc:
-        lc.angle = ANGLE.RADIAN
+        lc.angle = gravure.ANGLE.RADIAN
         c = cos(Decimal(45))
         print("cos(Decimal(45))            ", c)
 

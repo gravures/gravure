@@ -23,6 +23,8 @@ cimport cython
 # SIZED TYPE DEFINITION
 include "TYPE_DEF.pxi"
 
+from _struct cimport *
+
 #
 # Whatever TYPE_DEF.pxi define, we don't have yet routines for the types below.
 #
