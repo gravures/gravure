@@ -59,7 +59,6 @@ from fractions import Fraction
 from numbers import Number
 from gravure import gravure
 
-print(gravure.ANGLE)
 
 # not implemented functions present in math module
 __notimplemented__= ['acosh', 'asinh', 'atanh', 'erf', 'erfc', 'expm1', 'fabs', 'factorial',
