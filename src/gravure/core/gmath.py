@@ -56,7 +56,7 @@ from decimal import Decimal
 from fractions import Fraction
 from numbers import Number
 
-from gravure import gravure
+import gravure
 
 # not implemented functions present in math module
 __notimplemented__= [
