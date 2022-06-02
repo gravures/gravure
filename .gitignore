@@ -83,3 +83,6 @@ tox.ini
 *.o
 *.so
 .errors_log
+
+# setuptools_scm
+_version.py
