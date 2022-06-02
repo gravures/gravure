@@ -1,7 +1,0 @@
-Content-Type: text/x-zim-wiki
-Wiki-Format: zim 0.4
-Creation-Date: 2013-01-25T10:49:48+01:00
-
-====== Postscript ======
-Created vendredi 25 janvier 2013
-
