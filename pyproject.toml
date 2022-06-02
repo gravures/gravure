@@ -3,7 +3,7 @@ requires = ["setuptools>=52", "wheel", "setuptools_scm>=5.0.1", "cython"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "VERSION.txt"
+write_to = "src/gravure/_version.py"
 root = "."
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
