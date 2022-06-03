@@ -1,8 +1,7 @@
-Module gravure.halftone.spotfunctions
+gravure.halftone.spotfunctions module
 =====================================
 
 .. automodule:: gravure.halftone.spotfunctions
    :members:
    :undoc-members:
-   :special-members:
-   
+   :show-inheritance:
