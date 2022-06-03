@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-
+#
 # Copyright (C) 2011 Atelier Obscur.
 # Authors:
 # Gilles Coissac <gilles@atelierobscur.org>
-
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License
 # as published by the Free Software Foundation.
@@ -17,8 +17,7 @@
 # the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
 # if not, write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301, USA.
-
-
+#
 #TODO: implement min_white_dot
 #TODO: make user documentaion
 #TODO: make tests
@@ -30,9 +29,6 @@
 #TODO: optimisation, parallelisme
 #NOTE: what about inkjet overlap dot model
 
-# distutils: extra_compile_args = -fopenmp
-# distutils: extra_link_args = -fopenmp
-
 cimport cython
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.stdlib cimport rand, srand, qsort, RAND_MAX
@@ -41,6 +37,7 @@ from libc.math cimport floor as c_floor
 from libc.math cimport pow as c_pow
 from libc.math cimport sqrt as c_sqrt
 from libc.math cimport cos, sin, acos, asin, tan, atan
+
 from cython.parallel import prange
 
 import cython

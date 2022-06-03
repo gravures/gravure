@@ -114,7 +114,7 @@ class Context(_decimal.Context):
         angle=gravure.ANGLE.RADIAN, Dfraction=True
     ):
         super().__init__(
-            self, prec=prec, rounding=rounding, Emin=Emin, Emax=Emax,
+            prec=prec, rounding=rounding, Emin=Emin, Emax=Emax,
             capitals=capitals, clamp=clamp, flags=flags, traps=traps
         )
         self.__property = {'angle': None, 'Dfraction': None}
